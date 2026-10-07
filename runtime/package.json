@@ -1,0 +1,26 @@
+{
+  "name": "hdsi-remake-runtime",
+  "version": "0.2.0",
+  "private": true,
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "start": "koishi start",
+    "check": "node check.cjs",
+    "smoke": "node plugin-smoke.cjs"
+  },
+  "dependencies": {
+    "@koishijs/plugin-config": "2.8.6",
+    "@koishijs/plugin-console": "5.30.11",
+    "@koishijs/plugin-help": "2.4.6",
+    "@koishijs/plugin-http": "0.6.3",
+    "@koishijs/plugin-logger": "2.6.9",
+    "@koishijs/plugin-proxy-agent": "^0.3.3",
+    "@koishijs/plugin-server": "^3.2.9",
+    "@koishijs/plugin-status": "7.4.10",
+    "koishi": "4.18.11",
+    "koishi-plugin-adapter-onebot": "6.9.4",
+    "koishi-plugin-hdsi-remake": "file:.."
+  }
+}

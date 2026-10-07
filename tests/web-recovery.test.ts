@@ -1,0 +1,15 @@
+import {afterEach,expect,it,vi} from 'vitest';
+import {setup,narrative,emptyMemory,saveInput,NOW} from './helpers';
+import {HdsiApp} from '../src/app';
+import {ModelClient} from '../src/model/client';
+import {WebSearchStore} from '../src/web/store';
+import {WebSearchService} from '../src/web/service';
+import {discardUnattempted} from '../src/recovery';
+const close:Array<()=>void>=[];afterEach(()=>close.splice(0).forEach(f=>f()));
+function fixture(){const d=setup();close.push(()=>d.storage.close());const provider={signature:'fixture',search:vi.fn(async()=>[]),read:vi.fn(async()=>({title:'正文',body:'恢复所需正文'}))};return {...d,provider,web:new WebSearchService(new WebSearchStore(d.storage),provider,d.clock,{enabled:true})};}
+it('unfrozen regeneration retains stage identity, counters and confirmed body across discardUnattempted',async()=>{
+ const d=fixture();let n=0;const models=new ModelClient({complete:async r=>{if(r.task.name==='narrative'){if(++n===1)return {webRead:{url:'https://example.test/a'}};if(n===2)throw Error('model HTTP 400 context length exceeded');return narrative;}if(r.task.name==='personal_life')return d.models.outputs.personal_life;return emptyMemory;}});const app=new HdsiApp({...d,models});await expect(app.runTurn({inputMessageIds:[],taskIds:[],triggerKinds:['autonomous']})).rejects.toThrow('context length');const old=d.storage.unfinishedTurn()!,ref=d.web.store.openStage('turn',old.id,'narrative','narrative');discardUnattempted(d,old);d.storage.set('runtime',{...d.storage.runtime(),paused:false});await app.resumeUnfinishedTurn();expect(d.provider.read).toHaveBeenCalledTimes(1);expect(d.web.store.snapshot(ref.runId).counters.successReads).toBe(1);expect(d.storage.read('turns',old.id)!.done).toBe(true);
+});
+it('frozen send recovery does not regenerate/search and postprocessing still reads saved life sources',async()=>{
+ const d=fixture();d.random.next=()=>0;let life=0;const models=new ModelClient({complete:async r=>r.task.name==='narrative'?narrative:r.task.name==='personal_life'?++life===1?{webRead:{url:'https://example.test/a'}}:{innerThought:'查阅恢复资料',emotions:[],contact:{willing:true,intention:'分享',draft:'阅读所得'}}:r.task.name==='expression'?{parts:[{kind:'text',content:'阅读所得'}]}:emptyMemory});let send=0;const sender={sendError:async()=>{},sendItem:async()=>{if(++send===1)throw Error('offline send failure');return {platformMessageIds:['confirmed']};}};const app=new HdsiApp({...d,models,sender});await expect(app.runTurn({inputMessageIds:[],taskIds:[],triggerKinds:['autonomous']})).rejects.toThrow('send failure');const turn=d.storage.unfinishedTurn()!,source=d.web.selfReadSources(turn.id)[0];d.storage.set('runtime',{...d.storage.runtime(),paused:false});await app.resumeUnfinishedTurn();expect(life).toBe(2);expect(d.provider.read).toHaveBeenCalledTimes(1);expect(d.storage.read('post_jobs',turn.id)!.selfWebReadSources).toEqual([source]);expect(d.storage.outbox(turn.id)[0].status).toBe('confirmed');expect(d.storage.read('turns',turn.id)!.done).toBe(true);
+});

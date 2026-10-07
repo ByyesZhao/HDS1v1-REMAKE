@@ -1,0 +1,105 @@
+import { Context, Schema, h } from 'koishi';
+import { readFileSync } from 'node:fs';
+import { resolve, extname } from 'node:path';
+import { randomUUID } from 'node:crypto';
+import { Storage } from './storage';
+import { HdsiApp } from './app';
+import { SerialHost } from './host/runtime';
+import { arrangeSleep, autonomousMinutes } from './host/state';
+import { MemoryStore } from './memory/store';
+import { assembleMemory } from './deployment/memory-runtime';
+import { assembleWeb } from './deployment/web-runtime';
+import { ModelClient, ChatCompletionsTransport } from './model/client';
+import { StickerLibrary, HttpEmbeddingProvider } from './output/stickers';
+import { renderItem } from './output/qq';
+import { systemClock, addMs } from './time';
+import { loadSettings, connectionFor, modelRoles, appConfig, initialState } from './settings';
+import type { Sender } from './types';
+import { isTargetSession } from './host/input';
+export { isTargetSession } from './host/input';
+
+export const name = 'hdsi-remake';
+export interface Config { botId: string; userId: string; databasePath: string; storyConfigPath: string }
+export const Config: Schema<Config> = Schema.object({
+  botId: Schema.string().default('1000000000').description('机器人 QQ 号'),
+  userId: Schema.string().default('1000000001').description('目标用户 QQ 号'),
+  databasePath: Schema.string().default('data/hdsi-remake.sqlite').description('独立故事数据库路径'),
+  storyConfigPath: Schema.string().default('../config.local.json').description('角色、各任务模型和作息配置文件'),
+});
+export function apply(ctx: Context, config: Config): void {
+  const settings = loadSettings(resolve(ctx.baseDir, config.storyConfigPath));
+  // Validate deployment prerequisites before creating a formal story database.
+  modelRoles.forEach(role => connectionFor(settings, role));
+  if(settings.webSearch.enabled)throw new Error('web search enabled but provider not configured; select and inject a provider first');
+  const databasePath = resolve(ctx.baseDir, config.databasePath);
+  const storage = new Storage(databasePath);
+  const memoryStore=new MemoryStore(storage),fresh=!storage.get('character');
+  if(!fresh&&memoryStore.schemaVersion()!==3){storage.close();throw new Error('Stop HDSI and run npm run memory:migrate -- --stopped before starting this existing database');}
+  const random = { next: () => Math.random() }, clock = systemClock, options = appConfig(settings);
+  if (!storage.get('character')) {
+    storage.transaction(() => {
+      const state = initialState(settings, clock.now());
+      state.sleep ??= arrangeSleep(state, clock.now(), options, random, []);
+      state.nextAutonomousAt = addMs(clock.now(), autonomousMinutes(random) * 60_000);
+      storage.set('character', state); storage.set('background', settings.background);
+      settings.initialDetails.forEach(detail => memoryStore.saveOwner(memoryStore.makeOwner({ownerType:'detail',ownerId:detail.key},{...detail,content:detail.value,effectiveAt:clock.now()},clock.now())));
+      settings.initialEvents.forEach(event => storage.save('events', event.id, event));
+      storage.set('runtime', { ...storage.runtime(), nextWorldAt: clock.now(), nextSchoolAt: clock.now() });
+    });
+  }
+  if(fresh)memoryStore.migrate(clock.now());
+  let stickers: StickerLibrary | undefined;
+  if (options.stickersEnabled) {
+    const e = settings.embedding;
+    if (!e || !process.env[e.apiKeyEnv]) { storage.close(); throw new Error('configure qwen embedding before enabling stickers'); }
+    stickers = new StickerLibrary(storage, new HttpEmbeddingProvider(e.model, e.baseUrl, process.env[e.apiKeyEnv]!, fetch, e.dimensions));
+    try { stickers.checkReady(); } catch (error) { storage.close(); throw error; }
+  }
+  const models = new ModelClient(new ChatCompletionsTransport(task => connectionFor(settings, task)));
+  const web=assembleWeb(storage,settings,clock);
+  let host:SerialHost;
+  let memory:ReturnType<typeof assembleMemory>;
+  try{memory=assembleMemory(storage,settings,models,clock,()=>void host.wake(),process.env,memoryStore,web);}catch(error){storage.close();throw error;}
+  const bot = () => {
+    const found = ctx.bots.find(bot => bot.selfId === config.botId);
+    if (!found) throw new Error('bound QQ bot is not available');
+    return found;
+  };
+  const sender: Sender = {
+    async sendItem(item) {
+      let content: string | ReturnType<typeof h.image> = renderItem(item);
+      if (item.kind === 'sticker') {
+        const sticker = storage.read('stickers', item.payload)!;
+        const extension = extname(sticker.path).toLowerCase();
+        const mime = extension === '.gif' ? 'image/gif' : extension === '.jpg' || extension === '.jpeg' ? 'image/jpeg' : extension === '.webp' ? 'image/webp' : 'image/png';
+        content = h.image(readFileSync(sticker.path), mime);
+      }
+      return { platformMessageIds: await bot().sendPrivateMessage(config.userId, content) };
+    },
+    async sendError(message) { await bot().sendPrivateMessage(config.userId, message); },
+  };
+  const app = new HdsiApp({
+    storage, clock, random, models, config: options, sender, stickers,web,memoryStore:memory.store,memoryLifecycle:memory.lifecycle,retrieval:memory.retrieval,maintenance:memory.maintenance,
+    wait: ms => new Promise(resolve => setTimeout(resolve, ms)),
+  });
+  const logger = ctx.logger(name);
+  host = new SerialHost(app, { onError: error => logger.error(error) });
+  ctx.middleware(async (session, next) => {
+    if (!isTargetSession(session, config)) return next();
+    const rawContent = session.content ?? '';
+    if (/^hdsi\.(status|pause|resume)(?:\s|$)/.test(rawContent.trim())) return next();
+    const text = h.parse(rawContent).filter(element => element.type === 'text').map(element => element.attrs.content).join('');
+    if (!text.trim()) return;
+    await host.acceptInput({ id: randomUUID(), receivedAt: clock.now(), content: text, platformMessageIds: session.messageId ? [session.messageId] : [] });
+  });
+  for (const command of ['status', 'pause', 'resume'] as const) {
+    ctx.command(`hdsi.${command}`, command === 'status' ? '故事状态' : command === 'pause' ? '暂停新故事回合' : '恢复故事', { authority: 0 }).action(async ({ session }) => {
+      if (!session || !isTargetSession(session, config)) return;
+      if (command === 'pause') await host.pause();
+      if (command === 'resume') void host.resume();
+      return host.status();
+    });
+  }
+  ctx.on('ready', () => host.start());
+  ctx.on('dispose', async () => { await host.stop(); storage.close(); });
+}

@@ -1,0 +1,31 @@
+{
+  "background": "仅供开发验证的样例：一名性格自然、亲近用户的大学生。正式角色背景尚未确定。",
+  "chatExamples": "用户：今天累吗？\n角色：有点呀\n角色：不过刚吃完饭，好多了",
+  "worldSetting": "开发样例：普通现代城市，世界简报采用虚构信息。",
+  "schoolSetting": "开发样例：普通大学，住校。",
+  "timezone": "Asia/Shanghai",
+  "initialScene": { "description": "开发样例：在宿舍休息", "activity": null },
+  "initialPlan": "开发样例：按照学校安排生活，空闲时休息。",
+  "initialEnergy": { "level": "正常", "reason": "开发初始状态" },
+  "initialSleep": null,
+  "initialDetails": [],
+  "initialEvents": [],
+  "sleepHabits": { "sleepStart": "23:30", "sleepEnd": "00:30", "wakeStart": "08:00", "wakeEnd": "09:00", "preparationMinutes": 60 },
+  "worldTimes": ["06:00"],
+  "schoolTimes": ["06:10", "16:00"],
+  "historyBudget": 8000,
+  "stickersEnabled": false,
+  "models": {
+    "narrative": { "model": "deepseek-flash", "reasoningEffort": "low" },
+    "narrative_shared": { "model": "deepseek-flash", "reasoningEffort": "low" },
+    "personal_chat": { "model": "deepseek-flash", "reasoningEffort": "low" },
+    "personal_life": { "model": "deepseek-flash", "reasoningEffort": "low" },
+    "personal_shared": { "model": "deepseek-flash", "reasoningEffort": "low" },
+    "expression": { "model": "deepseek-flash", "reasoningEffort": "low" },
+    "memory": { "model": "deepseek-flash", "reasoningEffort": "high" },
+    "world": { "model": "deepseek-flash", "reasoningEffort": "low" },
+    "school": { "model": "deepseek-flash", "reasoningEffort": "low" }
+  },
+  "stickerDescriptionModel": { "model": "deepseek-flash", "reasoningEffort": "high" },
+  "webSources": []
+}

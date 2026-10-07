@@ -1,0 +1,16 @@
+import { readFileSync,writeFileSync,mkdirSync,existsSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { prepareCharacterBackground,BackgroundSelection } from '../src/deployment/character-background';
+const path=resolve(process.argv[2]??'梁思璃设定.txt');
+const selectionPath=resolve('runtime/data/background-selection.json');
+const selection=existsSync(selectionPath)?JSON.parse(readFileSync(selectionPath,'utf8')) as BackgroundSelection[]:[];
+const original=readFileSync(path,'utf8'),candidate=prepareCharacterBackground(original,selection);
+const existingDetails=existsSync('config.local.json')?(JSON.parse(readFileSync('config.local.json','utf8')).initialDetails??[]):[];
+const initializationDiff=existingDetails.map((detail:{key:string;value:string;aliases:string[]})=>({...detail,source:'existing reviewed initialDetails',matchingParagraphs:candidate.paragraphs.filter(p=>p.content.includes(detail.value)).map(p=>p.paragraph),action:'keep existing, review core duplication before switching'}));
+mkdirSync('runtime/data',{recursive:true});
+writeFileSync('runtime/data/character-core-candidate.txt',candidate.core);
+writeFileSync('runtime/data/character-details-candidate.json',JSON.stringify(candidate.details,null,2));
+writeFileSync('runtime/data/character-background-review.json',JSON.stringify({source:path,...candidate},null,2));
+writeFileSync('runtime/data/character-detail-initialization-diff.json',JSON.stringify(initializationDiff,null,2));
+if(!existsSync(selectionPath))writeFileSync(selectionPath,'[]\n');
+console.log(JSON.stringify({status:candidate.status,paragraphCount:candidate.paragraphs.length,selectedDetails:candidate.details.length,existingStableDetails:initializationDiff.length,sourceUnchanged:true,productionSwitch:false,review:'runtime/data/character-background-review.json'}));

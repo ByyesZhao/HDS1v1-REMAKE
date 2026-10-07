@@ -1,0 +1,18 @@
+[
+  {"split":"train","group":"fact","query":"手机","content":"手机型号是A","relevant":true},
+  {"split":"train","group":"fact","query":"室友专业","content":"室友专业是数学","relevant":true},
+  {"split":"train","group":"fact","query":"室友专业","content":"专业课程表","relevant":false},
+  {"split":"train","group":"fact","query":"今天继续生活","content":"今天继续休息","relevant":false},
+  {"split":"validation","group":"fact","query":"手机型号","content":"手机型号是B","relevant":true},
+  {"split":"validation","group":"fact","query":"室友姓名","content":"室友姓名是林安","relevant":true},
+  {"split":"validation","group":"fact","query":"室友姓名","content":"姓名登记表","relevant":false},
+  {"split":"validation","group":"fact","query":"继续聊天计划","content":"聊天安排","relevant":false},
+  {"split":"train","group":"experience","query":"生日蛋糕","content":"生日蛋糕上蜡烛点亮时很开心","relevant":true},
+  {"split":"train","group":"experience","query":"雨天散步","content":"雨天散步淋湿衣服又觉得好玩","relevant":true},
+  {"split":"train","group":"experience","query":"雨天散步","content":"散步时天气晴朗","relevant":false},
+  {"split":"train","group":"experience","query":"今天生活故事","content":"今天继续平静生活","relevant":false},
+  {"split":"validation","group":"experience","query":"去年那次生日礼物","content":"生日礼物是自己做的卡片","relevant":true},
+  {"split":"validation","group":"experience","query":"手机损坏","content":"手机损坏导致当天无法联系","relevant":true},
+  {"split":"validation","group":"experience","query":"手机损坏","content":"玻璃杯损坏","relevant":false},
+  {"split":"validation","group":"experience","query":"还记得那次生活经历吗","content":"生活里今天的普通对话","relevant":false}
+]

@@ -1,0 +1,27 @@
+{
+  "name": "koishi-plugin-hdsi-remake",
+  "version": "0.2.0",
+  "private": true,
+  "description": "Single-character QQ life simulation for Koishi",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "files": ["lib", "README.md", "examples"],
+  "engines": { "node": ">=22.13.0" },
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "build": "tsc -p tsconfig.build.json",
+    "demo": "tsx scripts/demo.ts",
+    "stickers": "tsx scripts/stickers.ts",
+    "stickers:catalog": "tsx scripts/import-catalog.ts",
+    "check:models": "node scripts/check-models.cjs",
+    "memory:migrate": "tsx scripts/migrate-memory.ts",
+    "memory:check": "tsx scripts/check-memory-retrieval.ts",
+    "memory:background": "tsx scripts/prepare-character-background.ts",
+    "web:check": "tsx scripts/check-web-context.ts"
+  },
+  "dependencies": { "zod": "4.6.5" },
+  "peerDependencies": { "koishi": "^4.18.11" },
+  "devDependencies": { "@types/node": "^24.0.0", "koishi": "4.18.11", "typescript": "^6.0.0", "vitest": "5.0.3", "tsx": "^4.0.0" },
+  "koishi": { "description": { "zh": "HDSI 单角色私聊生活模拟重制版" } }
+}

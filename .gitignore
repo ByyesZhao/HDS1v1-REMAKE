@@ -1,0 +1,27 @@
+node_modules/
+lib/
+.npm-cache/
+data/
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+.env
+.env.*
+!.env.example
+config.local.json
+key.txt
+梁思璃设定.txt
+coverage/
+runtime/smoke-*/
+runtime/logs/
+
+# Local deployment configuration and historical working copies
+runtime/koishi.yml
+runtime/*backup*/
+*.log
+*.tsbuildinfo
+
+# Local tool state
+.codex/
+.agents/
+.aws/
