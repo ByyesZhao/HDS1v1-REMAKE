@@ -14,6 +14,8 @@ DSH 二轮确认后的修订见 [修订与验证记录](docs/DSH_REVIEW_FIXES_20
 
 记忆V0.3任务1～7已实施，规则及实测见[记忆实施记录](docs/MEMORY_V0.3_IMPLEMENTATION_LOG_20261007.md)。直接依据仍为记忆细化／执行计划、搜索设计／执行计划四份。搜索任务1～6离线核心已实施；具体搜索provider稍后选择，不能把离线接口当已联网。
 
+共同活动 V0.3 尚未实施：手动 `【推进】`、双方静默60秒、最多20轮自然收尾、公开代写共享经历及统一自主空闲周期已整理为[方案](docs/SHARED_ACTIVITY_V0.3_PROPOSAL_20261007.md)、[实施细化](docs/SHARED_ACTIVITY_V0.3_IMPLEMENTATION_20261007.md)和[执行计划](docs/SHARED_ACTIVITY_V0.3_EXECUTION_PLAN_20261007.md)。后续改造直接参考细化及任务1～7；当前程序仍按已有共同活动机制运行。
+
 ## 开发与验证
 
 需要 Node >= 22.13（本机验证为 24.21.0），npm。

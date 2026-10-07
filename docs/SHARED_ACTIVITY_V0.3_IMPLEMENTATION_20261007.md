@@ -1,0 +1,233 @@
+# 共同活动 V0.3 实施细化
+
+日期：2026-10-07。状态：待实施；本次只编写文档。代码基线：`880b6ad`；后续共同活动方案修订为文档提交，未改变运行行为。
+
+设计依据：[共同活动方案](SHARED_ACTIVITY_V0.3_PROPOSAL_20261007.md)及已接受的[第八轮回应](../DSH-review/CODEX_REBUTTAL_SHARED_ACTIVITY_20261007.md)。实施顺序见[执行计划](SHARED_ACTIVITY_V0.3_EXECUTION_PLAN_20261007.md)。本文固定字段、合同和提交时序；方案保留决策理由。已实施的记忆 V0.3、搜索、来源约束和冻结恢复继续有效。
+
+## 1. 范围与实现路径
+
+复用 `SerialHost → Scheduler → generateTurn → freezeTurn → sendFrozen → finishPostprocessing`。共同活动使用同一串行故事槽；不增加独立执行器、即时反应轮、前置自主生活轮、已读回执或动作语法解析器。
+
+新增一个 `src/host/shared.ts`，集中维护活动身份、计时和唯一节点。其余在现有输入、调度、模型合同、生成及恢复模块内接入，不顺带重构记忆／搜索系统。所有时间仍为 ISO 时刻，比较使用既有 `milliseconds`；配置时区沿用现有设置。
+
+固定行为：普通私聊合批 15 秒；共同活动静默窗口默认 60 秒；首节点立即；共同活动默认最多 20 个成功提交轮；每次成功前台故事完成后重新抽样安排 150～210 分钟自主间隔。后台环境、维护和工具调用不单独计轮或重置自主时间。
+
+## 2. 共享类型、配置与存储
+
+新增／扩展类型统一放在 `src/types.ts`；模型 JSON 仍由 `src/model/contracts.ts` 定义，不让模型填写程序字段。
+
+| 类型／位置 | 固定字段及含义 |
+| --- | --- |
+| `SharedOutline` | `goal: string`、`openThreads: string[]`、`endingCondition: string`；未来活动走向，不是已发生经历。 |
+| `Scene.shared` | `activityId: string`、既有 `title/progress/lastPublicNode`、`completedSteps: number`、`maxSteps: number`、`idleSeconds: number`、`outline: SharedOutline \| null`、`nextStepAt: string \| null`。进入时计数 0、outline null；结束后整个 shared 为 null。 |
+| `SharedClock` | `activityId: string`、`mode: 'shared_online' \| 'shared_offline'`、`status: 'active' \| 'ended'`、`startedAt: string`、`lastInputAt/lastOutputAt/lastSilentCompletedAt: string \| null`。startedAt 使用开始标志发送确认时间。 |
+| `Runtime` | `sharedActivityVersion: 1 \| null`、`sharedClock: SharedClock \| null`；保留原有所有字段。旧存储缺版本按 null 识别，不能被新默认值遮蔽。新库初始化为 1/null。 |
+| `Message` | 可选 `sharedActivityId?: string \| null`，旧行缺失视为 null。仅记录活动关联；不改变 incoming 原文或行为主体。 |
+| `ControlRequest` | `id: string`、`activityId: string \| null`、`receivedAt: string`、`platformMessageIds: string[]`、`status: 'pending' \| 'consumed' \| 'cancelled'`、`consumedTurnId: string \| null`。活动外记录 cancelled，activityId null；不能以后生效。 |
+| `SharedTurnMeta` | `activityId: string`、`stepNumber/maxSteps/idleSeconds: number`、`advanceReason: 'initial' \| 'manual' \| 'automatic' \| 'appointment'`、`phase: 'opening' \| 'ongoing' \| 'wrap_up' \| 'final'`、`controlRequestIds: string[]`、`sceneTaskId: string`、`allowSimulatedUserActions: boolean`。 |
+| `TurnRequest/TurnRecord` | 增加 `sharedMeta?: SharedTurnMeta \| null`；普通轮为 null。TurnRecord 的该字段在 done 后保留，用于审计及恢复；不能随 frozenResult 清空。 |
+| `TurnRecord` 抽样留存 | `autonomousIntervalMinutes?: number \| null`；第一次 freeze 时同时保存候选抽样，缺失表示尚未冻结过抽样。discardUnattempted 也保留，重生成不得再抽；done 后保留审计。 |
+| `ScheduledTask` | 可选 `sharedActivityId?: string`，程序生成的 scene_step 必填。一个活动只使用任务 ID `scene:${activityId}`。 |
+| `TurnCandidate` | 继续使用 `autonomousIntervalMinutes`；由每个实际运行角色主叙事的前台轮填写一次，其他轮为 null。开始所需活动 ID 及配置快照保存于 nextState.shared。 |
+
+`src/storage.ts` 新增 JSON 表 `control_requests`，接入现有读写和事务；不混入 messages、近期原文、未读、记忆来源或网页来源。只需现有 JSON 存储能力，不另建消息队列系统。
+
+`src/settings.ts`、`src/config.ts` 增加：
+
+| 配置 | 默认／校验 | 生效方式 |
+| --- | --- | --- |
+| `sharedIdleSeconds` | 60；正整数 | 开始准备轮冻结到活动的 idleSeconds。 |
+| `sharedMaxSteps` | 20；1～20 的整数 | 开始准备轮冻结到活动的 maxSteps；不能配置超过 20。 |
+
+普通 15 秒规则不变。运行中调整配置不改变已开始活动的快照；下一活动使用新值。无新增字符／token 预算，无模型、思考强度或搜索额度变更。
+
+## 3. 活动身份和公开边界
+
+区分“公开标志确认后接收哪类输入”和“段 B 已提交哪些故事事实”。这是输入路由所需的短暂阶段，不新增第二套故事状态。
+
+1. 普通准备轮的个人导演合法确认 start 后，生成 activityId 并冻结活动字段；不能因收到推进命令自动 start。
+2. `【共同活动开始】` 是准备轮第一个 outbox 项。确认发送的事务内，建立 Runtime.sharedClock active。此后收到的输入／推进命令立即绑定该活动，即使该轮记忆后处理尚未完成。故事仍等段 B 完成后才可选首节点。
+3. 开始标志尚未确认时，输入按普通 15 秒路由；准备轮段 B 将它未消费的普通输入转交该活动。已经本轮看到的输入不能再次交付。
+4. `【共同活动结束】` 必须是结束轮最后一个 outbox 项。确认发送的事务内把对应 sharedClock 标为 ended；此后输入按普通私聊路由，推进命令返回活动外提示。
+5. 结束段 B 提交后清除对应 sharedClock；尚未处理的该活动输入转回普通合批。结束标志已确认但段 B 未完成时，恢复仍必须完成同一结束轮，不能另开故事。
+
+输入路由优先使用已确认标志对应的 sharedClock；没有这种过渡时使用已经提交且身份合法的 Scene.shared。ended 明确覆盖尚未提交的旧 shared 模式。未确认的冻结 start 不能提前作为活动入口。
+
+所有回调按 activityId 比对；不能让旧活动的结束、请求或节点改动下一活动。发送确认与 clock 记录在同一 SQLite 事务完成；重放已确认项不会重复执行边界转换。
+
+## 4. 输入分类与选轮快照
+
+### 4.1 控制指令
+
+绑定目标私聊入口仍先完成身份检查。去除首尾空白后全文恰为 `【推进】` 才进入控制分支；正文包含它、`【动作：推进】` 或混合内容都按普通原文保存。
+
+有效命令创建 pending ControlRequest 并唤醒 SerialHost；不更新静默锚点，不创建普通批次。不在活动中则保存 cancelled 审计记录，返回固定系统提示“当前没有共同活动”，不调用模型；该提示不写角色消息／记忆，不重置活动或自主计时。入口采用返回值告知 index.ts 是否发送系统提示，避免绕过既有角色 outbox 伪装发言。
+
+选轮时收集当前 activityId 的全部 pending 请求 ID，冻结到 sharedMeta；同一次选择只推进一轮。选轮以后到达的请求保留 pending。只有段 B 成功时将选中的 ID 标为 consumed；失败、暂停、发送恢复均不提前消费。结束段 B 将该活动剩余 pending 标为 cancelled。
+
+### 4.2 普通输入和动作
+
+共同输入立即写 messages，`sharedActivityId=当前活动`、`batchId=null`、`seenTurnId=null`，更新 lastInputAt；不进入普通 openBatch/pendingBatchIds。共同选轮查询限定为当前活动、incoming、batchId null、未看；不能把旧活动遗留或普通 openBatch 内容混进来。
+
+普通模式保持既有合批。开始转交／结束重组时清理相应普通批次引用，并保留每条原文、消息 ID、平台 ID、接收时间与已看标记。sharedActivityId 可保留为出处；普通入轮由批次及普通待看规则判断，不能仅因该关联字段非 null 就永久排除。
+
+线下 `【动作：把水杯递给她】` 是用户行为／尝试，括号外普通文字是发言；混合消息按原顺序交给两个共同模型。线上同样文字结合游戏／虚拟活动理解。没有新增 parser。真实输入不自动证明角色自愿配合，输出主体仍由发送方和 outbox 种类区分。
+
+### 4.3 本轮固定项
+
+Scheduler 选择时固定 inputMessageIds、taskIds、controlRequestIds 和 SharedTurnMeta，并在任何模型调用前保存 TurnRecord。后续输入只落库，不能追加到正在生成的轮。
+
+`stepNumber=completedSteps+1`；不得选择大于 maxSteps 的轮。推进原因按 initial → manual → appointment → automatic 选择展示值；同到期原因仍合并 taskIds。普通输入等待窗口不是另一个推进原因。各类共同轮沿用 `scene_step` 触发种类，sharedMeta 区分手动等原因；不添加 autonomous。
+
+`remainingSteps=maxSteps-stepNumber`。phase：剩余为 0 为 final；剩余 1～3 为 wrap_up；否则第 1 轮为 opening，其余 ongoing。默认 17～19 收束、20 终结；配置较小时提前进入相同剩余轮数阶段。
+
+静默代写权限固定为：合法共同轮，且本次选择没有新的真实用户输入（inputMessageIds 为空）。已看消息的延后回复复议不算新输入。它表达“本轮开始时没有新的用户发言／动作”，不要求预测本轮个人导演之后是否开口；历史角色台词不永久阻止后续静默推进。真实新输入存在时权限为 false；生成后新输入留下一轮。主叙事和个人导演收到同一 sharedMeta。
+
+## 5. 唯一节点、60 秒及调度让位
+
+### 5.1 单一计算入口
+
+`src/host/shared.ts` 提供以下同步接口，均不调用模型或网络：
+
+```ts
+sharedRoutingActivity(storage: Storage): { activityId: string; mode: 'shared_online' | 'shared_offline' } | null
+sharedDeadline(shared: NonNullable<Scene['shared']>, clock: SharedClock): string
+refreshSharedStep(storage: Storage, now: string): void
+selectSharedMeta(storage: Storage, now: string, inputMessageIds: string[], taskIds: string[]): SharedTurnMeta | null
+recordSharedOutput(storage: Storage, turn: TurnRecord, item: OutboxItem, confirmedAt: string): void
+finishSharedTurn(storage: Storage, turn: TurnRecord, completedAt: string): void
+```
+
+前三者供输入及 Scheduler 使用；recordSharedOutput 由发送确认事务调用；finishSharedTurn 由段 B 事务调用。所有写入辅助函数由调用方包在既有事务中，不自建嵌套事务；Scheduler 独立刷新时提供一个短事务。selectSharedMeta 固定权限、轮号、理由和关联 ID，不消费数据。finishSharedTurn 只管理活动计数、clock、控制记录及 scene_step，不重新调用模型或抽随机数。
+
+首节点 `completedSteps=0` 时立即到期，截止为 startedAt；准备轮段 B 后可直接选。其后：
+
+```text
+anchor = max(startedAt, lastInputAt, lastOutputAt, lastSilentCompletedAt 中非空时刻)
+nextStepAt = anchor + idleSeconds
+```
+
+startedAt 仅为初始兜底锚点。角色侧每个已确认 narration/text/action/sticker 更新 lastOutputAt，取最新确认；无可见输出的共同轮在段 B 更新 lastSilentCompletedAt。后台消息、错误、控制指令、日志和状态不更新锚点。
+
+Runtime 的真实锚点由输入／发送更新；`Scene.shared.nextStepAt` 是同一公式的程序投影，`scene:${activityId}` 的 at 必须与它相同。refreshSharedStep 集中刷新这两处，不接受模型时间。正式 shared 尚未建立时只保存 clock，开始段 B 建立后再投影；结束标志确认后不再刷新旧活动。
+
+即使旧轮未完成也允许记下新锚点／更新投影，但 Scheduler 的未完成轮门禁始终优先，不能据此开启第二轮。旧候选不得用冻结的 nextStepAt 覆盖最新锚点，段 B 最后统一刷新。全活动只一条 scene_step 记录，下一窗口复用同一个任务 ID；已选中的 ID保存在 TurnRecord，更新其时间不改变该轮选择。
+
+### 5.2 选择优先级
+
+SerialHost 先恢复未完成轮；否则 Scheduler 按以下顺序选择：
+
+1. 可运行前台：共同首节点、手动请求、共同截止、到期具体预约；或普通可处理消息、预约、待看／复议、起床。共同到期原因合并为一个节点。
+2. 无可运行前台时，到期世界／学校更新，保留既有 world 在 school 前的顺序。
+3. 无前台待办、无合法共同活动、无普通 openBatch/pendingBatch 时，清醒且到期的自主轮。
+4. 无以上可运行工作时，沿用记忆维护准备槽及“应用一个单元后让位”的既有规则。
+
+已开始的模型任务仍串行完成，不中断冻结输出。只改尚未开始工作的选择次序；后台维护异步准备继续使用已有机制。
+
+共同 check_messages 不单独绕过窗口：到期后等下一合法共同节点合并交付，不能在 nextDeadline 中以过期检查任务反复立即唤醒。到期具体 appointment 可以提前触发共同协调，计同一轮，不能直接覆盖场景或另开活动。未来预约不长期抑制自主轮。
+
+nextDeadline 和 collectReady 必须共用上述资格判断：被 shared/openBatch/前台待办抑制的自主截止、活动中的旧 sleepAt/wakeAt、等待下一节点的复议任务，不再贡献过期的立即截止。普通睡眠暂存、不可读消息的原门禁及待看恢复仍有效；暂存输入本身不一直阻止正常私人生活。
+
+重启先完成旧轮，再最多选一个当前到期节点；不按离线时长补跑。后处理超过 60 秒时也只开一轮；生成中收到新消息按最新锚点重算，有 pending 手动请求则直接选。
+
+## 6. 模型合同与叙事职责
+
+共同主叙事结果保留普通 narrative 字段、publicNarration、progress，删除可写 nextStepAt；新增必填 `outline: SharedOutline`、`simulatedUserActions: string[]`。每轮返回当前走向；首轮建立 goal/openThreads/endingCondition，收束阶段解决重点、减少新线索，final 必须非空 publicNarration。
+
+simulatedUserActions 是本轮代写用户行为的显式清单，不是模拟用户消息或记忆新类型。程序校验：权限 false 时清单必须空；清单每个非空文本须原样出现在 publicNarration 中。模型正文不带外层 `【】`，既有发送格式统一包裹。程序不能仅靠这项字符串检查证明散文没有漏报代写，提示词仍约束全部代写公开；不增加语义审计模型。
+
+共同个人导演接收相同 phase/remainingSteps/outline/publicNarration/输入，决定角色自身的自愿行为、情绪及是否发言。final 合同要求 `sharedChange.action='end'`；非 final 可合理提前 end。角色允许 reply none/later，表达按既有意图调用，不能强制台词。scene_step 由程序独占：个人模型不得 create/update/cancel 这种任务；普通预约和检查合同继续使用。
+
+两个合同工厂及 directors 包装函数增加末尾可选 `sharedMeta?: SharedTurnMeta | null` 参数；普通调用兼容原签名，共同调用必传。轮号、activityId、权限、配置快照不属于模型输出字段。格式不合格继续原任务最多两次修补、同模型／思考强度；仍不合格保留报错／暂停，不自行清场或生成第 21 轮。
+
+提示词固定：
+
+- 先补齐 `[narratedUntil, at]`，不能跳到未来或把一分钟写成三小时；可以没有新经历。
+- 真实用户发言和 `【动作：…】` 优先。静默权限允许既有活动内行动选择及客观结果，所有代写公开；不编用户台词、心理、新长期承诺、活动外重大选择或重大关系决定。
+- 主叙事不能代替个人导演决定角色是否配合。收尾可以暂停、约下次继续，但本次活动有合理结束过程和结果。
+- outline、计划和未来预约是意图，不送作已发生的记忆依据；每轮进展不要求必须出现角色台词。
+- 已公开代写是共享模拟经历，不推断现实用户做过同样的事或改变真实背景。用户随后纠正时，公开澄清／按提出的剧情修正继续；保留既有发送历史。
+
+所有阶段继续各自搜索会话与 20/40 额度；普通 narrative 仍不得接触本轮未看消息正文、派生检索或搜索查询。共同 narrative 可以读本次固定的真实输入。搜索不足、接口超限仍按已确认方案处理，无自动裁历史。
+
+## 7. 生成、发送及段 B 顺序
+
+### 7.1 生成和冻结
+
+1. 按 entryMode 与合法身份判断普通睡眠／接收门禁；合法共同模式视为清醒参与。
+2. 主叙事补到 at，更新候选 narratedUntil、场景、体力及活动走向；普通未看输入继续隔离。
+3. 个人导演反应、安排任务／作息、决定 start/end；有意图才表达；保持现有表情策略。
+4. 实际运行了角色 narrative 的前台轮抽一次 autonomousMinutes，写候选；环境／无 narrative 控制轮写 null。
+5. start 生成活动身份、配置快照；共同轮保留已选的 sharedMeta。候选生成期间不消费控制请求或加正式轮数。
+6. outbox 顺序：开始标志（如有）→公开剧情→表达／动作及表情→结束标志（如有）。结束标志不能早于最后一个表情。冻结后沿用原序号和发送恢复。
+
+共同选轮号与静默权限在未尝试稿重生成时仍保留；at 可按既有恢复规则更新，不能把新输入塞进该轮。首次 freeze 同时将 autonomousIntervalMinutes 留在 TurnRecord，discardUnattempted 不清此字段，重新生成时复用；普通前台轮也如此。generateTurn 增加末尾可选 `retainedInterval?: number | null` 参数，execute 从 TurnRecord 传入；尚未留存才抽样，实际没有 narrative 的轮仍令候选为 null。已冻结并尝试发送后，故事候选、活动 ID、计数、抽样及 outbox 固定。尚未冻结的失败重跑可以重新生成，但只在最终冻结稿保存一次有效抽样。
+
+### 7.2 发送确认
+
+sendFrozen 在既有确认事务内保存 outgoing Message（带活动关联），调用 recordSharedOutput，更新下一项延迟及 outputComplete。已确认项跳过；失败未确认不能当作共享公开事实。普通系统错误提示不走此回调。
+
+开始／结束标志的身份与类型由冻结结果和 outbox 位置判断，不按任意旁白内容的关键词触发；不能让一段剧情恰好包含“共同活动结束”就改变入口。
+
+### 7.3 段 B 单次提交
+
+继续先取得／保存记忆整理结果，再在既有事务内执行以下顺序：
+
+1. 重读 TurnRecord，done 则直接返回。
+2. 读取最新 Runtime；应用合法来源的记忆和经历、候选角色状态、普通任务变更及本轮 visibleMessageIds 已看标记。
+3. finishSharedTurn：共同轮计数设置为已固定的 stepNumber（相当于只增一次）；消费选中的控制 ID。开始轮建立 shared、转交未消费输入；结束轮撤销唯一节点、取消该活动剩余请求、转回未处理消息。结束轮的最终计数留在 TurnRecord.sharedMeta，不另建全活动历史表。
+4. 共同继续时采用最新 clock 重算节点；无输出轮以 completedAt 写补充锚点。不得把旧候选 Runtime 或 nextStepAt 覆盖新输入／请求。
+5. 从 storage 重读已经过 finishSharedTurn 的角色状态，再判睡眠和写自主字段；清醒且 interval 非空则 `nextAutonomousAt=completedAt+interval`，睡眠为 null。不能再次整份写回旧 c.nextState 而覆盖新计数／截止；不恢复旧自主截止，不累加延期。
+6. 再次重读最新 Runtime，仅合并本轮批次、概率及环境截止等本轮负责字段；保留辅助函数刚写的 clock 和转交批次，不回写第2步的旧整份对象。标 turn.done/completedAt，清 frozenResult。事务异常全部回滚。
+
+开始转交与结束重组均仅处理未看 incoming：开始将等待的普通输入转为共同队列；结束将剩余共同输入加入普通 openBatch，截止取 `max(completedAt, 这些输入最近 receivedAt, 已有普通窗口锚点)+15秒`。已在结束标志后建立的普通批次合并保留，不能删除。未消费复议任务保留原 messageIds；回归普通模式后按可读／睡眠门禁运行。
+
+没有可见输出不表示没有经历，仍可整理有来源记忆、计共同轮、推进 narratedUntil 及重排自主。只有控制／后台操作不能冒充一次前台生活完成。
+
+## 8. 睡眠、生活补齐与自主周期
+
+`isSleeping`、`canRead`、Scheduler 收集／截止、generateTurn 早退和 waking、段 B 及恢复共用合法活动判断。mode 为 shared 但缺身份／版本的旧行不自动豁免。
+
+普通睡眠规则保留。start 必须来自可运行的普通准备轮；命令不能叫醒、证明用户到场或跳过参与判定。合法共同模式下旧 sleepAt/wakeAt 是计划，不能睡眠早退、清自主截止、触发伪起床或用普通 phoneAccess 拦住参与。角色要睡觉先由共同个人导演 end。
+
+结束轮按个人导演 sleepPreference 与已调整预约安排候选作息；段 B 用 completedAt 判门禁。旧 sleepAt 已过且 wakeAt 尚未来、没有新安排，则结束后入睡，自主为 null；新 sleepAt 仍未来则清醒并重新安排自主。旧 wakeAt 也已过去时，旧计划已失效，清除该过期 sleep，不能额外伪造刚醒；下一普通故事按既有睡眠习惯建立有效新计划。这项清理不在段 B 新抽随机数。新的明确作息优先于旧计划。
+
+普通消息、预约、待看、起床、共享节点、自主轮都先补一次生活。沉默或仅 narrative 的轮也推进正式 narratedUntil 并重置自主机会；睡眠／不可接收的仅暂存、输入接收、环境更新、维护、工具续调用及修补不推进该字段。前台和自主同到期只选前台，不带 autonomous 原因，不抽主动联系机会；未来预约不阻止正常空闲自主。
+
+自主间隔依现有 `autonomousMinutes`：整数 150～210，均匀抽样。sampleOpportunity 的主动联系资格仍只属于真正自主轮；普通聊天／共同轮即使重设自主时间也不算主动联系机会。
+
+## 9. 共享经历与记忆
+
+复用现有 organizeMemory 的 experiences、实际确认 outgoing、首次可见 incoming 及合法查阅来源。`simulatedUserActions` 和公开旁白作为合同上下文说明共享剧情，不能独立制造来源 ID；仍至少引用一个合法本轮来源。outline 可放意图区，不放事实来源区。
+
+成功发送的代写可以形成活动事件／感受记忆并被提起，无已读／在场字段。没有公开依据的代写不能只凭内部 experiences/progress 进入共享事实；提示词及显式清单校验实现边界，不新增审计模型。模拟活动记忆不能自动修改现实用户背景。
+
+用户纠正剧情时按已有后续输出和带来源的记忆变更处理，不能直接改历史 outgoing 或重放旧轮。短期 7 天、长期 90 天、唤醒／稳定认识及向量流程全部继续既有记忆细化，不增加人为长度预算。
+
+## 10. 升级与实施检查
+
+新增 `src/deployment/shared-upgrade.ts`、`scripts/migrate-shared-activity.ts`，package 增加 `shared:migrate`。缺版本的正式库不得因加载新默认值而自动声称已升级。
+
+- 默认 `--check` 只读检查；报告普通／共同模式、缺身份的活动、未完成轮、旧 scene_step 及可重建记录数量，不打印消息正文、背景或密钥。
+- `--apply --stopped` 要求服务已停止，先备份数据库及存在的 WAL/SHM 同伴，再执行事务升级；备份路径和结果写入实施记录。
+- 无旧活动、无未完成旧共同轮时，初始化 clock/control 表与版本；保留普通轮、消息、任务、记忆和原截止。重复升级不重排现有时间、不改计数。
+- 遇到旧活动或未完成旧共同轮，check 给出具体记录范围。可从已提交 turns/outbox 明确重建的，先提供重建报告；无法确认首尾和计数时不静默清空或从零重开，待用户决定具体接续。基础自动升级不执行猜测性重建；因此只在实际遇到此状态时才需用户判断。
+- 正式装配入口在启动故事调度前检查版本；旧活动未升级时停止故事启动并给明确诊断，不发送伪结束标志。新临时／开发库直接初始化新版本。
+
+不新增旧故事导入。实施时先用临时 SQLite、假模型和假 Sender 验证；不为测试启动 QQ、SnowLuma 或发送正式背景。正式库升级和真实故事验证作为独立部署步骤记录，不把离线测试当成已联调。
+
+## 11. 验收归属与资料更新
+
+| 验收组 | 执行计划任务 |
+| --- | --- |
+| 身份、字段、配置快照、唯一节点及 60 秒公式 | 1 |
+| 精确控制分类、普通／共同输入、动作原文、边界输入 | 2、5 |
+| 首节点、手动／自动合并、预约例外、前台让位及无定时器空转 | 3 |
+| 收束合同、静默代写、动作主体、outline 不是事实 | 4、5 |
+| 冻结恢复、最新输入保留、单次计数及自主重排、共享记忆 | 5 |
+| 旧库检查、停止备份、幂等升级、旧活动诊断、装配 | 6 |
+| 全回归、离线示例／Koishi smoke、文档对齐及实施日志 | 7 |
+
+本次没有运行程序测试或在线验证。实施后再更新 `REMAKE_V0.2*.md` 中受影响的实际行为说明、README 和配置样例；旧的记忆／搜索实施记录不改成重新实施。新增 `docs/SHARED_ACTIVITY_V0.3_IMPLEMENTATION_LOG_20261007.md` 记录每任务代码提交、RED/GREEN 证据、偏差、升级检查及真实故事验收结果。
+
+结构、时序、格式、来源及恢复由离线测试验证；叙事自然性、真实模型是否正确理解动作／代写、20 轮内的文学收尾质量需后续真实故事验收，不能以 mock 输出声称保证。

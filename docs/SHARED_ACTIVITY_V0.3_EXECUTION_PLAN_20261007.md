@@ -1,0 +1,171 @@
+# 共同活动 V0.3 执行计划
+
+> **For agentic workers:** REQUIRED SUB-SKILL: 使用 `superpowers:executing-plans` 按任务逐项实施。本计划推荐在当前会话顺序执行，任务共享活动身份、时钟与恢复接口；如用户另选代理协作，再使用 `superpowers:subagent-driven-development`。步骤采用复选框跟踪。
+
+**Goal:** 实现共同活动的手动推进、双方静默 60 秒推进、最多 20 轮自然收尾，以及统一的前台空闲自主周期。
+
+**Architecture:** 沿用单故事串行 Host 和既有冻结发送／段 B 事务。新增 shared 辅助模块集中维护计时及唯一 scene_step，输入与发送只更新真实锚点，模型负责剧情与角色选择。已有记忆、搜索模块只延续合同边界，不建立第二套故事系统。
+
+**Tech Stack:** 现有 TypeScript、Node.js 内置 SQLite、Zod、Vitest、Koishi；不新增依赖。版本沿用 package.json，Node >=22.13.0。
+
+**Spec:** [实施细化](SHARED_ACTIVITY_V0.3_IMPLEMENTATION_20261007.md)，同时阅读[方案](SHARED_ACTIVITY_V0.3_PROPOSAL_20261007.md)。字段／时序以细化为准，步骤以本计划为准；已实施记忆／搜索细化继续约束相应模块。
+
+日期：2026-10-07。状态：待执行，全部步骤未勾选；本次只生成文档。代码基线 `880b6ad`。任务 1→7 有顺序依赖，本文件不是已完成开发记录。
+
+## Global Constraints
+
+- 普通输入 15 秒合批；共同输入立即保存、等待双方最新输入／确认输出后默认 60 秒；无输出轮以 completedAt 补充锚点；首节点立即。
+- 全文精确 `【推进】` 是绑定私聊控制信息，独立持久化；不进 messages、近期原文、未读、记忆来源。活动外固定提示“当前没有共同活动”。
+- 默认最多 20 个成功段 B 共同轮；准备轮不计，首节点计 1，静默轮计；默认 17～19 收束，20 必须公开收尾并 end。失败／恢复不另计。
+- 每个实际运行角色 narrative 的前台轮冻结一次 150～210 分钟整数抽样，以成功 completedAt 重排自主；睡眠为 null；后台不重排；不恢复旧截止或累加延期。
+- 真实用户动作原文保留；`【动作：…】` 的含义通过共同合同说明，不新增 parser。静默代写权限只取选轮时没有新输入；全部公开为 `【…】`，不编用户台词／心理／活动外承诺。
+- 成功公开代写作为共享模拟经历，沿用合法来源和段 B；无已读／在场归属机制，不变成现实用户背景事实。
+- 合法共同活动清醒参与，旧睡眠计划不硬阻断；普通睡眠／不可读门禁保留。当前输入、核心背景不因容量错误自动裁剪，无新增人为输入预算。
+- 各任务沿用用户确认的独立 Flash 配置和思考强度；原任务修补最多两次；搜索会话各自 20 成功／40 失败，不新增 provider。
+- 先完成未完成轮，保留生成中输入／控制请求；一次只一条活动节点，无按离线时长追补和过期定时器空转。
+- 测试使用临时 SQLite、假时钟／模型／Sender；不启动 QQ 或 SnowLuma，不发送正式角色背景或密钥。正式升级需停止、备份及检查实际旧活动。
+
+## Review Focus
+
+1. 开始／结束标志已发送而记忆未提交时，紧接的新输入按用户看到的边界接收，推进请求不绑定错误活动（任务 2、5）。
+2. 生成、分段发送、后处理期间又来消息／多个推进，旧候选提交保留它们；同到期手动和自动只一轮（任务 3、5）。
+3. 活动跨过旧 sleepAt 和 wakeAt，不误睡、不伪起床；结束回普通模式正确清自主或重新计时（任务 3、5）。
+4. 双方无人回应仍可推进完；第 20 轮修补失败不偷清场、不发 21 轮；成功公开代写能成为共享记忆（任务 4、5）。
+5. 重开数据库、无输出轮、过期自主／检查任务及旧活动升级，不重复计数、立即循环、丢控制请求或从零再给 20 轮（任务 1、3、5、6）。
+
+## 文件和接口归属
+
+| 文件 | 改动责任 |
+| --- | --- |
+| `src/types.ts`、`storage.ts`、`settings.ts`、`config.ts` | 细化 §2 的类型、控制表、配置默认值与快照。 |
+| 新 `src/host/shared.ts` | 细化 §5 的六个同步接口，另导出 `hasValidSharedScene(state: CharacterState): boolean`，仅判断合法 shared 字段；版本门禁由装配处理。 |
+| `src/host/input.ts`、`runtime.ts`、`src/index.ts` | 输入分类、路由、固定系统反馈、唤醒及串行门禁；入口身份校验保留。 |
+| `src/host/scheduler.ts`、`state.ts` | 共同选择、前台优先、节点／自主／睡眠定时资格统一。 |
+| `src/model/contracts.ts`、`prompts.ts`、`src/directors/narrative.ts`、`personal.ts` | 走向、显式代写清单、末轮合同及动作／职责提示词。 |
+| `src/app.ts`、`recovery.ts`、`src/memory/organize.ts` | 参数传递、冻结、确认边界、段 B 最新状态合并与来源上下文。 |
+| 新 `src/deployment/shared-upgrade.ts`、`scripts/migrate-shared-activity.ts` | 只读检查、停止备份、普通旧库初始化及旧活动诊断。 |
+| `tests/shared-v3-*.test.ts`、新 `tests/shared-v3-fixture.ts` | 下面各任务指定的业务断言；复用现有 setup/TestClock/ScriptedModels/RecordingSender。 |
+| `examples/story.sample.json`、`scripts/demo.ts`、`runtime/plugin-smoke.cjs`、现有受影响测试 | 配置与固定模型返回兼容；不改正式私有配置来完成测试。 |
+| README、受影响的根目录 `REMAKE_V0.2*.md`、新实施日志 | 功能实施后才改实际行为说明，保留历史记录与未联调边界。 |
+
+所有 shared 类型使用细化 §2 的同一名称。shared.ts 不依赖 host/state.ts，避免合法性／睡眠函数互相导入。公共时间工具继续在 src/time.ts，不建立另一套时区算法。
+
+## 任务 1：类型、配置和活动时钟基础
+
+**Files:** 新增 `src/host/shared.ts`、`tests/shared-v3-fixture.ts`、`tests/shared-v3-state.test.ts`；修改 `src/types.ts`、`storage.ts`、`settings.ts`、`config.ts`；`src/app.ts` 仅适配开始时新字段初始化；按类型错误更新既有夹具。
+
+**Interfaces:** 定义细化 §2 全部类型；实现 `hasValidSharedScene`、`sharedRoutingActivity`、`sharedDeadline`、`refreshSharedStep`。其余三个 shared 接口在任务 3／5 实现，暂不导出空实现。测试辅助 `makeSharedFixture(d: ReturnType<typeof setup>, overrides?: Partial<NonNullable<Scene['shared']>>): void` 设合法 online 活动、同身份 clock、新版本及远期环境截止，避免环境调用干扰断言。
+
+- [ ] 写 `defaults_and_snapshot`：settings 默认 60/20；0 秒和 maxSteps 21 拒绝；正在进行活动保留旧 idleSeconds/maxSteps，重新开始才取新配置。
+- [ ] 写 `clock_uses_latest_real_anchor`：startedAt 为 10:00:00，用户 10:00:10，最后表情确认 10:00:30，截止为 10:01:30；新用户 10:01:00 改为 10:02:00；后台消息不改变结果。
+- [ ] 写 `first_step_and_single_projection`：completedSteps 0 时截止立即；完成数 1 后采用 60 秒；重复刷新只有一个 `scene:${activityId}`，任务 at 等于 Scene.shared.nextStepAt。
+- [ ] 写 `silent_and_reopen`：最后静默完成 10:03:00，截止 10:04:00；临时文件保存、关闭重开后 anchors/关联任务相同。旧缺版本读为 null；新库版本为 1。
+- [ ] 运行 `npm test -- tests/shared-v3-state.test.ts`，确认因新字段／公式缺失失败；修正夹具错误后保留真实 RED 证据。
+- [ ] 实现上述基础接口和配置校验，新 JSON 表接入现有事务；旧字段缺失不自动填成已迁移。开始初始化增加身份和快照，暂不改变现有选轮节奏。
+- [ ] 运行同组测试及 `npm run typecheck`，全部通过后记录结果。提交仅本任务文件：`feat: add shared activity state and clocks`。
+
+## 任务 2：输入控制、动作原文和公开边界路由
+
+**Files:** 修改 `src/host/input.ts`、`runtime.ts`、`src/index.ts`、必要的普通未读查询；新增 `tests/shared-v3-input.test.ts`，扩展 `tests/input.test.ts`、`plugin.test.ts`。
+
+**Interfaces:** `InputAcceptance = { kind: 'message' | 'advance'; systemReply: string | null }` 在 src/types.ts 导出。`InputBuffer.acceptInput(message: IncomingMessage): Promise<InputAcceptance>` 和 `SerialHost.acceptInput` 同返回类型；后者保存成功后唤醒并返回。index 只对 systemReply 使用既有私聊发送能力，固定反馈不写角色消息。消耗任务 1 的路由／时钟接口。
+
+- [ ] 写 `exact_control_is_not_a_message`：`'  【推进】  '` 创建 pending 控制且 messages/openBatch 不增加；句子内推进、`【动作：推进】` 仍为普通消息；其他用户／群聊由入口排除。
+- [ ] 写 `inactive_control_is_cancelled`：活动外得到“当前没有共同活动”、cancelled/null 活动记录；没有模型调用、待生效请求或新消息。
+- [ ] 写 `shared_input_keeps_action_text`：线下 `【动作：推门】你好` 原文、顺序及平台 ID 保留；batchId null，更新 lastInputAt，不建普通 15 秒窗口；chat 输入仍是 receivedAt+15秒。
+- [ ] 写 `published_boundary_routes_before_B`：模拟 clock active 而正式 character 仍 chat，新推进绑定该活动；模拟 clock ended 而正式 character 仍 shared，新文字进普通批次、新推进 cancelled。两个测试随后由任务 5 使用真实 sendFrozen 补集成验证。
+- [ ] 运行 `npm test -- tests/shared-v3-input.test.ts tests/input.test.ts tests/plugin.test.ts` 获取 RED。
+- [ ] 实现分类／返回值、控制记录和输入关联；输入事务内刷新最新活动截止。普通 unread 路径不得把 batchId null 的共同队列误交付。
+- [ ] 运行同组测试、typecheck，记录并提交：`feat: route shared inputs and advance controls`。
+
+## 任务 3：共同选轮、前台优先和统一定时资格
+
+**Files:** 修改 `src/host/scheduler.ts`、`runtime.ts`、`state.ts`，补 `src/host/shared.ts`；新增 `tests/shared-v3-scheduler.test.ts`，更新 `tests/scheduler.test.ts`。
+
+**Interfaces:** 实现 `selectSharedMeta(storage: Storage, now: string, inputMessageIds: string[], taskIds: string[]): SharedTurnMeta | null`。Scheduler 原 collectReady/nextDeadline 签名不变；返回请求增加 sharedMeta。isSleeping/canRead 签名不变，合法共同场景采用清醒参与，普通门禁保留。collectReady 与 nextDeadline 使用相同的 shared／foreground／autonomous 资格，不能各写一套例外。
+
+- [ ] 写 `manual_and_due_share_one_selection`：活动截止与两条 pending 控制同到期，只有一个请求，两个控制 ID 固定；选择后新控制不出现在已选集合。输入集合也只取选轮时已有 ID。
+- [ ] 写 `wait_60_and_first_immediate`：第 1 轮立即；后续 at=截止-1毫秒无共同请求，截止时可选；新输入延后；先合并手动、自动、预约，同轮不另跑一次。
+- [ ] 写 `phase_and_quiet_permission`：默认 step17 为 wrap_up、20 为 final；maxSteps=3 的第3轮 final；有新输入禁止代写、无新输入允许；已看复议不算新输入。completedSteps=maxSteps 不产生下一共同请求。
+- [ ] 写 `foreground_before_environment_and_autonomous`：可处理消息／共同节点优先于尚未启动 world/school；60秒等待可运行环境；前台与自主同到期无 autonomous 原因。未来预约不会抑制无干扰自主。
+- [ ] 写 `suppressed_deadlines_do_not_spin`：过期自主+共同等待、过期 check_messages+共同未到期、普通 openBatch，都不返回旧的立即自主截止；共同期间跨旧 sleepAt/wakeAt 无 sleep 原因；普通睡眠保留 wakeAt 门禁。
+- [ ] 写 `appointment_exception_and_maintenance_yield`：具体预约早于60秒可选共同协调；reply later 到期只能合并下一节点；维护应用一单元后真实输入到达，下一单元让位给该输入可运行的轮。
+- [ ] 运行 `npm test -- tests/shared-v3-scheduler.test.ts tests/scheduler.test.ts tests/memory-v3-host.test.ts tests/review7-maintenance.test.ts` 获取 RED。
+- [ ] 实现合并选择、共有资格判断与前台优先；任务 1 的唯一节点刷新负责截止，不再由模型调度。保留未完成轮与暂停门禁、不可读普通消息暂存。
+- [ ] 同组 GREEN、typecheck，记录并提交：`feat: schedule shared turns with foreground priority`。
+
+## 任务 4：走向、公开代写及末轮合同
+
+**Files:** 修改 `src/model/contracts.ts`、`prompts.ts`、`src/directors/narrative.ts`、`personal.ts`、`src/types.ts` 的 narrative 结果类型；`src/app.ts` 适配 sharedMeta 保存／透传、走向结果及删除旧模型时间赋值；新增 `tests/shared-v3-contracts.test.ts`；更新 `tests/shared-scene.test.ts` 和受影响的 shared 固定输出夹具。
+
+**Interfaces:** narrativeTask 原参数之后加 `sharedMeta?: SharedTurnMeta | null`；personalTask 同样在 messageIds 后追加该参数；runNarrative/runPersonal 在 options 后追加同参数，并传入工厂。共享结果必填 outline 和 simulatedUserActions，删除 nextStepAt。普通合同／返回值保持原约束。
+
+- [ ] 写 `shared_result_has_no_model_deadline`：共同结果含 outline/空代写清单通过；尝试提供模型 nextStepAt 不成为内部调度字段；共同调用缺 sharedMeta 拒绝。
+- [ ] 写 `simulated_actions_must_be_public`：false 权限却有清单拒绝；true 权限且动作只在 experiences 没在 publicNarration 拒绝；公开包含每个清单原文通过。普通私聊不能走此授权。
+- [ ] 写 `final_requires_public_close_and_end`：final 空旁白拒绝，个人不 end 拒绝；非空收尾+end 通过；非 final 可以提前 end。拒绝个人模型创建／更新／取消 scene_step，保留合法预约和检查。
+- [ ] 写 `prompts_keep_actor_and_fact_boundaries`：共同提示明确用户动作／外部发言、角色自愿行为、无用户台词／心理、公开共享模拟经历及 outline 是未来意图；真实动作模型输入仍原样。测试验证合同与传递，不声称真实语义质量。
+- [ ] 运行 `npm test -- tests/shared-v3-contracts.test.ts tests/model-call-context.test.ts tests/shared-scene.test.ts` 获取 RED。
+- [ ] 实现结构校验及提示词，复用原角色的格式修补，不新建规划／语义审计调用。app 保存／重建 request 时透传 sharedMeta，给两个共同模型相同轮号和权限；保存 outline 并删掉读取模型 nextStepAt 的旧赋值。直接调用 app 的共同测试先用任务3接口构造 sharedMeta，夹具符合新合同；公开边界和段 B 接入留给任务5。
+- [ ] 同组 GREEN、typecheck，记录并提交：`feat: constrain shared narration and final closure`。
+
+## 任务 5：流水线、确认边界、段 B 与恢复
+
+**Files:** 修改 `src/app.ts`、`recovery.ts`、`src/host/shared.ts`、必要的 `state.ts` 及 `src/memory/organize.ts`；新增 `tests/shared-v3-recovery.test.ts`、`tests/shared-v3-flow.test.ts`；更新 `tests/turn.test.ts`、`recovery.test.ts`、`shared-scene.test.ts`、`tasks.test.ts` 中被新策略替代的断言。
+
+**Interfaces:** 实现 `recordSharedOutput(storage: Storage, turn: TurnRecord, item: OutboxItem, confirmedAt: string): void`、`finishSharedTurn(storage: Storage, turn: TurnRecord, completedAt: string): void`。二者由既有事务调用，不嵌套 transaction。继续任务4的 sharedMeta 透传，恢复未尝试稿仍保留它；done 的 TurnRecord 仍保留它。generateTurn 现有参数后增加 `retainedInterval?: number | null`，execute 从 TurnRecord.autonomousIntervalMinutes 传入；freeze 首次保存、discardUnattempted 保留，复用已抽间隔。
+
+- [ ] 写 `begin_publish_before_post`：实际发送开始标志后阻塞 memory，接收输入和推进；它们绑定活动但不能开新轮。释放后计数仍0，立即第一共同节点，首节点完成为1。
+- [ ] 写 `end_publish_and_late_input`：最后结束标志确认后阻塞 post，新文字进入普通15秒批次、新推进活动外提示；段 B 不覆盖它们。此前未看共同输入按细化重组，已看不重复，遗留控制取消。
+- [ ] 写 `late_inputs_survive_frozen_commit`：生成期间新 input/control，发送期间分段文字／表情，后处理超60秒；旧轮只消费固定ID，最新 anchors 和 pending 保留，下一步只一轮；手动替代原节点不再次触发。
+- [ ] 写 `silent_20_steps_natural_close`：假模型可无角色对话自动持续，成功提交第17收束、第20非空旁白并最后结束；计20、无第21模型调用。无输出普通共同轮完成+60秒，不立即循环。末轮修补后仍不合格则暂停、未提交轮数不增加、不自动清场。
+- [ ] 写 `recover_exact_same_step`：临时文件在发送一部分／输出完整未post／已post事务待恢复处重开；已确认不重发，角色最终计数只增加一次，控制只消费一次，轮号／权限／已冻结抽样不改变。未尝试稿重生成仍同选轮号／输入／控制集合；普通及共同冻结未尝试稿都复用原间隔，断言恢复不增加自主抽样调用数。
+- [ ] 写 `sleep_and_idle_cycle`：shared 跨23:00和次日旧wakeAt不伪起床；结束时旧sleep窗口有效则自主null，新sleepAt未来则自主completedAt+180分钟，过期sleep清理不生成伪wake。普通睡眠不能因推进开始活动。
+- [ ] 写 `all_foreground_resets_once`：普通对话、预约、起床、共同、仅 narrative／沉默前台均从各自completedAt+180分钟安排；pure环境／保存输入／维护不重置；已冻结同轮恢复不再抽样或累计。真正自主轮的主动联系资格保留，前台合并不抽联系。
+- [ ] 写 `life_and_shared_memory`：连续前台以最后已提交 narratedUntil 补生活、不泄露普通未看正文；公开代写可作为带合法来源的共享模拟记忆；outline／隐藏代写不作为新事实，生成中用户回来纠正留下一轮，已发送记录保留。
+- [ ] 运行 `npm test -- tests/shared-v3-recovery.test.ts tests/shared-v3-flow.test.ts tests/turn.test.ts tests/recovery.test.ts tests/shared-scene.test.ts tests/tasks.test.ts` 获取 RED。
+- [ ] 接入生成／冻结／发送事务回调，集中替代 app 内旧模型 scene_step 维护；完成段 B 最新 clock 合并、控制消费、单次计数、入退场批次、作息与自主重排。记忆仅补合同上下文，继续原来源机制。
+- [ ] 同组 GREEN、typecheck，记录并提交：`feat: commit and recover bounded shared activities`。
+
+## 任务 6：旧库检查、停止升级与装配
+
+**Files:** 新增 `src/deployment/shared-upgrade.ts`、`scripts/migrate-shared-activity.ts`、`tests/shared-v3-upgrade.test.ts`；修改 `package.json`、`src/index.ts`、配置装配及 `tests/deployment.test.ts`、`plugin.test.ts`。
+
+**Interfaces:** 在 shared-upgrade.ts 导出 `SharedUpgradeReport`，字段 `version: number | null`、`mode: string | null`、`activeLegacyShared: boolean`、`unfinishedSharedTurnIds/oldSceneTaskIds: string[]`、`committedSharedTurnCount: number`、`canInitialize: boolean`、`requiresUserDecision: boolean`、`backupPath: string | null`。导出：
+
+```ts
+inspectSharedUpgrade(databasePath: string): SharedUpgradeReport
+upgradeSharedActivity(databasePath: string, now: string, options: { stopped: boolean; backupDirectory: string }): SharedUpgradeReport
+ensureSharedActivityVersion(storage: Storage): void
+```
+
+inspect 使用只读 SQLite，不能调用会建表／初始化的 Storage 构造器。upgrade 仅支持无旧共同活动的明确初始化，已版本1直接幂等返回；旧活动报告并拒绝猜测性升级。ensure 在调度启动前检查，缺版本提供 shared:migrate 指引。CLI 参数：`--database <路径> --check` 或 `--database <路径> --apply --stopped --backup-dir <目录>`，默认 check；报告不包含正文。
+
+- [ ] 写 `readonly_check_does_not_initialize`：缺字段旧普通库 check 后文件数据／schema不变，canInitialize=true；有旧共同状态／未完成旧共同轮 requiresUserDecision=true，并列出实际 ID；不能凭 memories=0 认定没故事。
+- [ ] 写 `stopped_backup_then_upgrade`：无 stopped 拒绝；旧普通临时库 apply 先有可打开备份，再新版本／控制表，普通输入、tasks、memories和未完成普通轮均保留；重复apply不改截止、不重排自主。
+- [ ] 写 `legacy_shared_is_not_reset`：旧活动／旧未完成共同轮 apply 拒绝，原 shared/turn/outbox 保持，不伪结束、不初始化20轮；新版本活动重开保留计数和请求。
+- [ ] 写 `entry_checks_before_host_start`：新库正常装配；未升级库在故事启动前明确报错，QQ不收到伪活动标志；配置60/20贯穿AppConfig，普通status/pause/resume保留。
+- [ ] 运行 `npm test -- tests/shared-v3-upgrade.test.ts tests/deployment.test.ts tests/plugin.test.ts` 获取 RED。
+- [ ] 实现只读报告、停止备份／事务升级和启动检查；package添加 `shared:migrate`。仅用临时库验证CLI，不运行正式库 apply。
+- [ ] 同组 GREEN、typecheck，记录并提交：`feat: inspect and migrate shared activity state`。若正式检查以后实际发现旧活动，另向用户给具体接续建议，不在本任务猜测接续。
+
+## 任务 7：整体验证、示例及实施记录
+
+**Files:** 修改 `examples/story.sample.json`、`scripts/demo.ts`、`runtime/plugin-smoke.cjs` 及确需适配的测试夹具；更新 README、根目录 `REMAKE_V0.2.md`、`REMAKE_V0.2_LIFE.md`、`REMAKE_V0.2_INTERFACES.md`、`REMAKE_V0.2_RECOVERY.md`、`REMAKE_V0.2_IMPLEMENTATION.md` 的受影响说明；新增 `docs/SHARED_ACTIVITY_V0.3_IMPLEMENTATION_LOG_20261007.md`。记忆文件仅在实际合同说明受影响时最小更新。
+
+**Interfaces:** 无新运行接口。sample 明列默认60/20；demo/smoke 的共同固定返回与合同一致；runtime smoke 继续使用真实 Koishi Context、假 HTTP、临时库，不连接 QQ。
+
+- [ ] 核对 Review Focus 五项均有对应测试名称和断言；初次执行全部 `npm test`，如果回归失败，先区分新策略替代的旧断言与真正故障，记录原因。不能仅为了全绿删除原来源、恢复或睡眠测试。
+- [ ] 适配离线 demo/smoke 与样例。更新文档中“共同15秒／模型nextStepAt／聊天不重排自主／共同硬睡眠”旧行为，明确新的控制、60秒、20轮、代写共享经历和升级入口；历史实施记录保留日期。
+- [ ] 依次运行 `npm test`、`npm run typecheck`、`npm run build`、`npm run demo`、`npm run check --prefix runtime`、`npm run smoke --prefix runtime`。测试零失败、类型／构建退出0，demo/smoke离线完成且无真实QQ操作才算通过。失败修复后重跑相关项和被影响的整体验证。
+- [ ] 写实施日志：每任务提交、实际RED/GREEN命令及数量、必要方案偏差、迁移临时库证据、正式库尚未升级／故事尚未联调状态。完成的复选框与实际交付一致。
+- [ ] 做最终 diff 自查：只提交必要代码／测试／样例／文档；无 key.txt、背景、正式数据库、私有配置或构建产物泄露。提交：`docs: record shared activity delivery and validation`。
+
+## 交付门禁与后续运行
+
+任务 1～7 完成表示离线实现及验证完成。实际正式库先 check，再按明确结果停止、备份和升级；若有旧活动，用户先决定具体接续。正式背景语义、动作理解、连续静默推进及自然收尾的真实模型验收另记结果，不能由模拟测试替代。
+
+用户仍通过根目录两个 cmd 手动启动服务。本计划不安排自动启动、真实消息发送或新的在线验证。当前阶段只供用户／DSH审阅；没有开始任何任务。
+
+## 文档自查
+
+已按方案逐项映射到任务 1～7：输入／时间／计数／职责／共享记忆／生活补齐／睡眠／自主／前后台让位／恢复／升级均有归属。六个共享接口、类型和配置名在细化与本计划一致；Review Focus 均有具体验收。本次自查是文档检查，未运行上述程序测试。
