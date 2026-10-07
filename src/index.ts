@@ -1,5 +1,5 @@
 import { Context, Schema, h } from 'koishi';
-import { readFileSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
 import { resolve, extname } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { Storage } from './storage';
@@ -9,6 +9,7 @@ import { arrangeSleep, autonomousMinutes } from './host/state';
 import { MemoryStore } from './memory/store';
 import { assembleMemory } from './deployment/memory-runtime';
 import { assembleWeb } from './deployment/web-runtime';
+import { inspectSharedUpgrade, ensureSharedActivityVersion } from './deployment/shared-upgrade';
 import { ModelClient, ChatCompletionsTransport } from './model/client';
 import { StickerLibrary, HttpEmbeddingProvider } from './output/stickers';
 import { renderItem } from './output/qq';
@@ -32,7 +33,9 @@ export function apply(ctx: Context, config: Config): void {
   modelRoles.forEach(role => connectionFor(settings, role));
   if(settings.webSearch.enabled)throw new Error('web search enabled but provider not configured; select and inject a provider first');
   const databasePath = resolve(ctx.baseDir, config.databasePath);
+  if (existsSync(databasePath) && inspectSharedUpgrade(databasePath).version !== 1) throw new Error('Stop HDSI and run npm run shared:migrate -- --database <path> --check before enabling this existing database.');
   const storage = new Storage(databasePath);
+  try { ensureSharedActivityVersion(storage); } catch (error) { storage.close(); throw error; }
   const memoryStore=new MemoryStore(storage),fresh=!storage.get('character');
   if(!fresh&&memoryStore.schemaVersion()!==3){storage.close();throw new Error('Stop HDSI and run npm run memory:migrate -- --stopped before starting this existing database');}
   const random = { next: () => Math.random() }, clock = systemClock, options = appConfig(settings);

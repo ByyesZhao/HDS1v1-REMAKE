@@ -20,7 +20,7 @@
 | 3 调度 | 完成 | 新7项及维护／调度测试通过，216/216全套 |
 | 4 合同 | 完成 | 13/13目标测试，221/221全套，typecheck通过 |
 | 5 流水线与恢复 | 完成 | 42/42目标测试，244/244全套，typecheck通过 |
-| 6 升级 | 待执行 | |
+| 6 升级 | 完成 | 9/9目标测试，248/248全套，CLI临时库check/apply通过 |
 | 7 回归与交付 | 待执行 | |
 
 ## 后续真实多轮验收
@@ -63,3 +63,10 @@ Ruling: 普通待看查询按“活动关联且batchId=null”排除，共同结
 Ruling: 既有表情概率夹具新增一个前台间隔抽样并预设作息；概率公式、三次文字机会和跨轮计数断言不变。旧无限期不可读检查的null截止改为成功narrative后180分钟自主截止。— 本次统一前台周期明确替代旧行为。— 随机抽样顺序变动时须保持业务机会测试明确。
 一条新记忆测试曾误写成不应存在模拟摘要；MemoryLifecycle确实合并eventSummary，纠正为肯定断言，并保留合法outgoing来源及outline意图区检查。
 Task 5: complete（从2a4127e开始，提交`feat: commit and recover bounded shared activities`）。正式服务未启动，正式库未写入；所有Sender／模型为离线替身。
+
+## 任务6证据
+
+RED：目标新4项失败，入口明确因旧实现不拒绝启动；先修复Vitest对Koishi loader的变换不兼容，用native CJS加载实际Koishi，再修复失败清理，避免把工具错误当业务RED。
+GREEN：`npm test -- tests/shared-v3-upgrade.test.ts tests/deployment.test.ts tests/plugin.test.ts` 9/9通过；全套49文件／248测试通过；typecheck退出0。
+CLI：隔离目录`data/shared-cli-fixture.sqlite`（完全虚构普通库）运行`shared:migrate --check`报告null/canInitialize=true；运行`--apply --stopped --backup-dir data/shared-cli-backups`报告version1及唯一备份目录。备份可只读打开且仍为旧版本；测试验证普通消息／预约／未完成轮保留、重复apply字节不变。旧共同库明确列出old、old-scene及3个提交轮，拒绝猜测并保持字节和schema不变。
+Task 6: complete（从f850e0a开始，提交`feat: inspect and migrate shared activity state`）。入口先只读查版本，才打开Storage；旧库不因加载新代码自动填版本。本次没有check/apply正式库。
