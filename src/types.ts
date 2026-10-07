@@ -56,7 +56,7 @@ export interface NarrativeResult {
   currentScene: { description: string; activity: Activity | null };
   energy: CharacterState['energy'];
 }
-export interface SharedNarrativeResult extends NarrativeResult { publicNarration: string | null; progress: string; nextStepAt: ISOTime | null }
+export interface SharedNarrativeResult extends NarrativeResult { publicNarration: string | null; progress: string; outline: SharedOutline; simulatedUserActions: string[] }
 export type SpeechPart = { kind: 'text' | 'action'; content: string };
 export interface UtteranceIntent { intention: string; draft: string; actions?: string[] }
 export type ReplyDecision = ({ decision: 'now' } & UtteranceIntent) | { decision: 'later'; reconsiderAt: ISOTime; intention: string } | { decision: 'none' };

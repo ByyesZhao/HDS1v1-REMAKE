@@ -2,6 +2,8 @@ import { it, expect } from 'vitest';
 import { HdsiApp } from '../src/app';
 import { setup, saveInput, NOW, narrative } from './helpers';
 import { Scheduler } from '../src/host/scheduler';
+import { makeSharedFixture } from './shared-v3-fixture';
+import { selectSharedMeta } from '../src/host/shared';
 
 // Task 3 tests selection from a committed active fixture; real send/B clock integration is task 5.
 function seedConfirmedClock(d: ReturnType<typeof setup>) {
@@ -11,8 +13,10 @@ function seedConfirmedClock(d: ReturnType<typeof setup>) {
 }
 
 function makeShared(d: ReturnType<typeof setup>, mode: 'shared_online' | 'shared_offline') {
-  d.storage.set('character', { ...d.storage.character(), scene: { mode, description: '共同活动', activity: { description: '游戏', startsAt: NOW, expectedEndAt: null, phoneAccess: false }, shared: { title: '一起玩', progress: '刚开始', lastPublicNode: '', nextStepAt: null } } });
-  d.models.outputs.narrative_shared = { ...narrative, currentScene: { description: '继续活动', activity: { description: '游戏', startsAt: NOW, expectedEndAt: null, phoneAccess: false } }, publicNarration: '门口亮起灯', progress: '走到门口', nextStepAt: null };
+  makeSharedFixture(d, { completedSteps: 0 });
+  const state = d.storage.character(); state.scene.mode = mode; state.scene.activity = { description: '游戏', startsAt: NOW, expectedEndAt: null, phoneAccess: false }; d.storage.set('character', state);
+  seedConfirmedClock(d);
+  d.models.outputs.narrative_shared = { ...narrative, currentScene: { description: '继续活动', activity: { description: '游戏', startsAt: NOW, expectedEndAt: null, phoneAccess: false } }, publicNarration: '门口亮起灯', progress: '走到门口', outline: { goal: '一起游戏', openThreads: [], endingCondition: '结束本次游戏' }, simulatedUserActions: [] };
   d.models.outputs.personal_shared = { emotions: [], reply: { decision: 'now', intention: '反应', draft: '一起进去吧' }, taskChanges: [] };
   d.models.outputs.expression = { parts: [{ kind: 'action', content: '点头' }, { kind: 'text', content: '一起进去吧' }] };
 }
@@ -20,7 +24,7 @@ it('starts only after confirmation, emits the marker and schedules the immediate
   const d = setup(); saveInput(d.storage, 'a', '好，现在开始');
   d.models.outputs.personal_chat = { emotions: [], reply: { decision: 'now', intention: '确认', draft: '好' }, taskChanges: [], sharedChange: { action: 'start', mode: 'shared_offline', title: '一起散步' } };
   d.models.outputs.expression = { parts: [{ kind: 'text', content: '好' }] };
-  await new HdsiApp(d).runTurn({ inputMessageIds: ['a'], taskIds: [], triggerKinds: ['input'] });
+  await new HdsiApp(d).runTurn({ inputMessageIds: ['a'], taskIds: [], triggerKinds: ['input'], sharedMeta: selectSharedMeta(d.storage, NOW, ['a'], []) });
   expect(d.models.calls[0].name).toBe('narrative');
   expect(d.models.calls.find(c => c.name === 'expression')!.input.mode).toBe('shared_offline');
   expect(d.sender.sent.map(i => i.payload)).toEqual(['共同活动开始', '好']);
@@ -32,9 +36,11 @@ it('starts only after confirmation, emits the marker and schedules the immediate
 });
 it.each(['shared_online', 'shared_offline'] as const)('keeps closed scene input visible without phone access in %s', async mode => {
   const d = setup(); makeShared(d, mode); saveInput(d.storage, 'a', '【动作：推门】');
-  await new HdsiApp(d).runTurn({ inputMessageIds: ['a'], taskIds: [], triggerKinds: ['input'] });
+  await new HdsiApp(d).runTurn({ inputMessageIds: ['a'], taskIds: [], triggerKinds: ['input'], sharedMeta: selectSharedMeta(d.storage, NOW, ['a'], []) });
   expect(d.models.calls[0].input.visibleMessages[0].content).toBe('【动作：推门】');
   expect(d.models.calls[1].input.visibleMessages[0].content).toBe('【动作：推门】');
+  expect(d.models.calls[0].input.sharedMeta).toEqual(d.models.calls[1].input.sharedMeta);
+  expect(d.storage.all('turns')[0].sharedMeta!.allowSimulatedUserActions).toBe(false);
   expect(d.sender.sent.map(i => i.kind)).toEqual(['narration', 'action', 'text']);
   expect(d.sender.sent[0].payload).toBe('门口亮起灯');
   expect(d.storage.character().scene.shared!.lastPublicNode).toBe('门口亮起灯');
@@ -44,7 +50,7 @@ it('ends after the public node and reaction without revoking current input visib
   const d = setup(); makeShared(d, 'shared_offline'); saveInput(d.storage, 'a', '结束吧');
   d.storage.save('tasks', 'node', { id: 'node', kind: 'scene_step', at: '2026-10-07T11:00:00+08:00', description: '下一节点', status: 'pending' });
   d.models.outputs.personal_shared.sharedChange = { action: 'end' };
-  await new HdsiApp(d).runTurn({ inputMessageIds: ['a'], taskIds: [], triggerKinds: ['input'] });
+  await new HdsiApp(d).runTurn({ inputMessageIds: ['a'], taskIds: [], triggerKinds: ['input'], sharedMeta: selectSharedMeta(d.storage, NOW, ['a'], []) });
   expect(d.sender.sent.map(i => i.payload)).toEqual(['门口亮起灯', '点头', '一起进去吧', '共同活动结束']);
   expect(d.storage.read('messages', 'a')!.seenTurnId).toBeTruthy();
   expect(d.storage.character().scene).toMatchObject({ mode: 'chat', shared: null });
@@ -57,7 +63,7 @@ it('sends start and end markers even without any character speech', async () => 
   const app = new HdsiApp(d); await app.runTurn({ inputMessageIds: ['a'], taskIds: [], triggerKinds: ['input'] });
   expect(d.sender.sent.map(i => i.payload)).toEqual(['共同活动开始']);
   seedConfirmedClock(d);
-  d.models.outputs.narrative_shared = { ...narrative, publicNarration: null, progress: '结束', nextStepAt: null };
+  d.models.outputs.narrative_shared = { ...narrative, publicNarration: null, progress: '结束', outline: { goal: '游戏', openThreads: [], endingCondition: '结束' }, simulatedUserActions: [] };
   d.models.outputs.personal_shared = { emotions: [], reply: { decision: 'none' }, taskChanges: [], sharedChange: { action: 'end' } };
   await app.runTurn((await new Scheduler(d.storage).collectReady(d.clock.now()))!);
   expect(d.sender.sent.map(i => i.payload)).toEqual(['共同活动开始', '共同活动结束']);

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import type { ModelTask, NarrativeResult, SharedNarrativeResult, PersonalResult, ExpressionResult, MemoryResult, EnvironmentResult, ScheduledTask, EnvironmentEvent } from '../types';
+import type { ModelTask, NarrativeResult, SharedNarrativeResult, SharedTurnMeta, SharedOutline, PersonalResult, ExpressionResult, MemoryResult, EnvironmentResult, ScheduledTask, EnvironmentEvent } from '../types';
 import { prompts } from './prompts';
 import { milliseconds } from '../time';
 import type { MemoryCandidate, MaintenanceUnit, OwnerVersion } from '../memory/types';
@@ -13,7 +13,9 @@ const narrative = z.object({
   experiences: z.array(z.object({ happenedAt: time, description: text, relatedEventIds: z.array(text) })),
   currentScene: z.object({ description: text, activity: activity.nullable() }), energy,
 });
-const sharedNarrative = narrative.extend({ publicNarration: text.nullable(), progress: text, nextStepAt: time.nullable() });
+const sharedNarrative = narrative.extend({ publicNarration: text.nullable(), progress: text,
+  outline: z.object({ goal: text.min(1), openThreads: z.array(text.min(1)), endingCondition: text.min(1) }),
+  simulatedUserActions: z.array(text.trim().min(1)) }).strict();
 const intent = { intention: text, draft: text, actions: z.array(text).optional() };
 const reply = z.discriminatedUnion('decision', [z.object({ decision: z.literal('now'), ...intent }), z.object({ decision: z.literal('later'), reconsiderAt: time, intention: text }), z.object({ decision: z.literal('none') })]);
 const contact = z.discriminatedUnion('willing', [z.object({ willing: z.literal(true), ...intent }), z.object({ willing: z.literal(false) })]);
@@ -43,7 +45,7 @@ export function modelTask<T>(name: keyof typeof prompts, schema: z.ZodType, vali
 }
 const requireControl = (condition: boolean, path: string, message: string) => { if (!condition) throw new Error(`${path}: ${message}`); };
 
-export function narrativeTask(shared: boolean, from: string, at: string, eventIds: string[] = []): ModelTask<NarrativeResult | SharedNarrativeResult> {
+export function narrativeTask(shared: boolean, from: string, at: string, eventIds: string[] = [], sharedMeta?: SharedTurnMeta | null, previousOutline?: SharedOutline | null): ModelTask<NarrativeResult | SharedNarrativeResult> {
   return modelTask(shared ? 'narrative_shared' : 'narrative', shared ? sharedNarrative : narrative, (r: NarrativeResult | SharedNarrativeResult) => {
     r.experiences.forEach((e, i) => {
       requireControl(milliseconds(e.happenedAt) >= milliseconds(from) && milliseconds(e.happenedAt) <= milliseconds(at), `experiences.${i}.happenedAt`, 'must be within the elapsed interval');
@@ -54,12 +56,26 @@ export function narrativeTask(shared: boolean, from: string, at: string, eventId
       requireControl(milliseconds(a.startsAt) <= milliseconds(at), 'currentScene.activity.startsAt', 'current activity cannot start in the future');
       requireControl(a.expectedEndAt === null || milliseconds(a.expectedEndAt) >= milliseconds(a.startsAt), 'currentScene.activity.expectedEndAt', 'must follow startsAt');
     }
-    if ('nextStepAt' in r) requireControl(r.nextStepAt === null || milliseconds(r.nextStepAt) > milliseconds(at), 'nextStepAt', 'must be later than at');
+    if (shared) {
+      requireControl(!!sharedMeta, 'sharedMeta', 'shared calls require fixed selection metadata');
+      const result = r as SharedNarrativeResult;
+      requireControl(sharedMeta!.allowSimulatedUserActions || result.simulatedUserActions.length === 0, 'simulatedUserActions', 'not allowed with new user input');
+      requireControl(result.simulatedUserActions.every(action => !!result.publicNarration?.includes(action)), 'publicNarration', 'every simulatedUserActions entry must appear verbatim');
+      if (sharedMeta!.phase === 'wrap_up' && previousOutline) requireControl(result.outline.openThreads.every(thread => previousOutline.openThreads.includes(thread)), 'outline.openThreads', 'wrap_up may only retain or remove original strings');
+      if (sharedMeta!.phase === 'final') {
+        requireControl(result.outline.openThreads.length === 0, 'outline.openThreads', 'final must leave no open threads');
+        requireControl(!!result.publicNarration?.trim(), 'publicNarration', 'final requires a public closing node');
+      }
+    }
   });
 }
 
-export function personalTask(kind: 'chat' | 'life' | 'shared', at: string, tasks: ScheduledTask[], mode: string, messageIds: string[]): ModelTask<PersonalResult> {
+export function personalTask(kind: 'chat' | 'life' | 'shared', at: string, tasks: ScheduledTask[], mode: string, messageIds: string[], sharedMeta?: SharedTurnMeta | null): ModelTask<PersonalResult> {
   return modelTask(`personal_${kind}`, kind === 'life' ? life : chat, (r: PersonalResult) => {
+    if (kind === 'shared') {
+      requireControl(!!sharedMeta, 'sharedMeta', 'shared calls require fixed selection metadata');
+      if (sharedMeta!.phase === 'final') requireControl(r.sharedChange?.action === 'end', 'sharedChange', 'final must end the shared activity');
+    }
     if ('reply' in r && r.reply.decision === 'later') requireControl(milliseconds(r.reply.reconsiderAt) > milliseconds(at), 'reply.reconsiderAt', 'must be later than at');
     const touched = new Set<string>();
     for (const [i, change] of (r.taskChanges ?? []).entries()) {
@@ -67,10 +83,12 @@ export function personalTask(kind: 'chat' | 'life' | 'shared', at: string, tasks
       if (change.action !== 'create') {
         const old = tasks.find(t => t.id === change.id);
         requireControl(!!old, `taskChanges.${i}.id`, 'unknown task ID');
+        requireControl(old?.kind !== 'scene_step', `taskChanges.${i}`, 'scene_step is program-owned');
         requireControl(!touched.has(change.id), `taskChanges.${i}.id`, 'duplicate change');
         touched.add(change.id);
         if (change.action === 'update') final = { ...old!, ...change.task };
       } else final = change.task;
+      requireControl(final?.kind !== 'scene_step', `taskChanges.${i}`, 'scene_step is program-owned');
       if (final?.kind === 'check_messages') {
         requireControl(milliseconds(final.at) > milliseconds(at), `taskChanges.${i}.task.at`, 'must be later than at');
         requireControl(!!final.checkReason && Array.isArray(final.messageIds), `taskChanges.${i}.task`, 'check_messages requires checkReason and messageIds');

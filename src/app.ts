@@ -28,6 +28,7 @@ export class HdsiApp {
       id: randomUUID(), at: d.clock.now(), inputMessageIds: request.inputMessageIds, triggerTaskIds: request.taskIds,
       triggerKinds: request.triggerKinds, batchIds: request.batchIds ?? [], entryMode: d.storage.character().scene.mode,
       completedAt: null, frozenResult: null, outputComplete: false, done: false, environmentKind: request.environmentKind,
+      sharedMeta: request.sharedMeta ?? null,
     };
     d.storage.save('turns', turn.id, turn);
     await this.execute(turn);
@@ -49,7 +50,7 @@ export class HdsiApp {
     try {
       let turn = initialTurn;
       if (!turn.frozenResult) {
-        const generated = await generateTurn(d, { inputMessageIds: turn.inputMessageIds, taskIds: turn.triggerTaskIds, triggerKinds: turn.triggerKinds, batchIds: turn.batchIds, environmentKind: turn.environmentKind }, turn.id, turn.at);
+        const generated = await generateTurn(d, { inputMessageIds: turn.inputMessageIds, taskIds: turn.triggerTaskIds, triggerKinds: turn.triggerKinds, batchIds: turn.batchIds, environmentKind: turn.environmentKind, sharedMeta: turn.sharedMeta }, turn.id, turn.at);
         turn = freezeTurn(d, turn, generated.candidate, generated.items);
       }
       if (!turn.outputComplete) await sendFrozen(d, turn);
@@ -100,15 +101,15 @@ export async function generateTurn(d: Dependencies, request: TurnRequest, turnId
   const waking = request.triggerKinds.includes('sleep') || !!state.sleep && due(state.sleep.wakeAt, at);
   if (waking) state.sleep = null;
   const narrativeInput = { from: state.narratedUntil, at, background: d.config.background, state, waking, events, dueTasks: tasks, recent, history: narrativeHistory,
-    ...(shared ? { visibleMessages: messages } : {}) };
-  const narrative = await runNarrative(d.models, shared, state.narratedUntil, at, events.map(e => e.id), narrativeInput,phaseOptions(d.web,'turn',turnId,'narrative',shared?'narrative_shared':'narrative',{lookup:q=>contextBuilder.retrieval.lookup(q,narrativeRequest)}));
+    ...(shared ? { visibleMessages: messages, sharedMeta: request.sharedMeta, remainingSteps: request.sharedMeta ? request.sharedMeta.maxSteps - request.sharedMeta.stepNumber : null } : {}) };
+  const narrative = await runNarrative(d.models, shared, state.narratedUntil, at, events.map(e => e.id), narrativeInput,phaseOptions(d.web,'turn',turnId,'narrative',shared?'narrative_shared':'narrative',{lookup:q=>contextBuilder.retrieval.lookup(q,narrativeRequest)}), request.sharedMeta, state.scene.shared?.outline);
   state.narratedUntil = at;
   state.scene.description = narrative.currentScene.description;
   state.scene.activity = narrative.currentScene.activity;
   state.energy = narrative.energy;
   if ('progress' in narrative && state.scene.shared) {
     state.scene.shared.progress = narrative.progress;
-    state.scene.shared.nextStepAt = narrative.nextStepAt;
+    state.scene.shared.outline = narrative.outline;
     if (narrative.publicNarration) state.scene.shared.lastPublicNode = narrative.publicNarration;
   }
   const visible = shared || canRead(state, at) ? messages : [];
@@ -124,7 +125,8 @@ export async function generateTurn(d: Dependencies, request: TurnRequest, turnId
   let intent: UtteranceIntent | null = null;
   let contactMisses = runtime.contactMisses;
   if (runPerson) {
-    personal = await runPersonal(d.models, kind, at, allTasks, entryMode, [...visible, ...reconsider].map(m => m.id), { at, background: d.config.background, state, experiences: narrative.experiences, visibleMessages: visible, reconsiderMessages: reconsider, dueTasks: tasks.filter(t => t.kind !== 'check_messages' || canRead(state, at)), tasks: allTasks, events, history: personalHistory, contactEligible },phaseOptions(d.web,'turn',turnId,'personal',`personal_${kind}`,{lookup:q=>contextBuilder.retrieval.lookup(q,personalRequest)}));
+    personal = await runPersonal(d.models, kind, at, allTasks, entryMode, [...visible, ...reconsider].map(m => m.id), { at, background: d.config.background, state, experiences: narrative.experiences, visibleMessages: visible, reconsiderMessages: reconsider, dueTasks: tasks.filter(t => t.kind !== 'check_messages' || canRead(state, at)), tasks: allTasks, events, history: personalHistory, contactEligible,
+      ...(shared ? { sharedMeta: request.sharedMeta, remainingSteps: request.sharedMeta ? request.sharedMeta.maxSteps - request.sharedMeta.stepNumber : null, outline: state.scene.shared?.outline, publicNarration: 'publicNarration' in narrative ? narrative.publicNarration : null } : {}) },phaseOptions(d.web,'turn',turnId,'personal',`personal_${kind}`,{lookup:q=>contextBuilder.retrieval.lookup(q,personalRequest)}), request.sharedMeta);
     state.emotions = personal.emotions;
     if (typeof personal.nextPlan === 'string') state.plan = personal.nextPlan;
     if ('reply' in personal && personal.reply.decision === 'now') intent = personal.reply;

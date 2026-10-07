@@ -18,7 +18,7 @@
 | 1 状态与时钟 | 完成 | 4/4目标测试，204/204全套，typecheck通过 |
 | 2 输入控制 | 完成 | 8/8目标测试，209/209全套，typecheck通过 |
 | 3 调度 | 完成 | 新7项及维护／调度测试通过，216/216全套 |
-| 4 合同 | 待执行 | |
+| 4 合同 | 完成 | 13/13目标测试，221/221全套，typecheck通过 |
 | 5 流水线与恢复 | 待执行 | |
 | 6 升级 | 待执行 | |
 | 7 回归与交付 | 待执行 | |
@@ -47,3 +47,9 @@ GREEN：调度／维护目标21项及全套45文件／216测试通过；typechec
 Ruling: 旧“环境先于输入”和“预约合并自主”断言被已确认规则替代；恢复旧轮、维护让步断言保留。原自主截止检查改为纯选择检查，统一重排行为由任务5集中测试。— 防止把旧策略当回归目标。— 若覆盖遗漏，任务5及整体验收需补。
 Ruling: task3选轮需要合法clock，而真实发送集成属task5；旧start集成测试暂在选轮前显式建立已确认clock夹具，task5移除该夹具并用真实send回调验证。— 不提前分散实现发送接口。— 此时不能声称确认边界已真实集成。
 Task 3: complete（从6e108c5开始，提交`feat: schedule shared turns with foreground priority`）。环境截止保留；共享／合批抑制自主，合法活动豁免旧睡眠计划；维护单元让步复用旧测试。
+
+## 任务4证据
+
+RED：`npm test -- tests/shared-v3-contracts.test.ts tests/model-call-context.test.ts tests/shared-scene.test.ts` 新5项失败、旧8项通过。
+GREEN：同组13/13通过；全套46文件／221测试通过；typecheck退出0。共同夹具补合法身份／meta和新outline／simulatedUserActions；旧“个人可创建scene_step”断言改为允许预约，独占节点由新合同测试覆盖。
+Task 4: complete（从1fb3a8f开始，提交`feat: constrain shared narration and final closure`）。严格拒绝模型nextStepAt，wrap_up原字符串集合包含和final空线索／公开结束约束已落实；共享meta固定在轮记录并透传两个模型。提示词词项测试只确认任务指令存在，不声称文学／语义验收通过。

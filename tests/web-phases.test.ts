@@ -6,6 +6,8 @@ import {WebSearchStore} from '../src/web/store';
 import {WebSearchService} from '../src/web/service';
 import {environmentTask} from '../src/model/contracts';
 import {describeSticker} from '../src/output/sticker-description';
+import {makeSharedFixture} from './shared-v3-fixture';
+import {selectSharedMeta} from '../src/host/shared';
 const close:Array<()=>void>=[];afterEach(()=>close.splice(0).forEach(f=>f()));
 function fixture(){const d=setup();close.push(()=>d.storage.close());const store=new WebSearchStore(d.storage),provider={signature:'fixture',search:vi.fn(async()=>[{url:'https://example.test/page',title:'Snippet'}]),read:vi.fn(async()=>({title:'公开',body:'查阅了解到雨后空气清新。'}))},web=new WebSearchService(store,provider,d.clock,{enabled:true});return {...d,web,provider};}
 it('runs narrative, life, expression and memory in independent sessions; memory receives actual reading body and grounded reaction',async()=>{
@@ -26,8 +28,8 @@ it('keeps unseen private messages out of ordinary narrative search input; chat g
  const d=fixture();saveInput(d.storage,'private','未看私聊秘密');await new HdsiApp(d).runTurn({inputMessageIds:['private'],taskIds:[],triggerKinds:['input']});const call=d.models.calls[0];expect(JSON.stringify(call.input)).not.toContain('未看私聊秘密');expect(call.options?.runRef?.taskName).toBe('narrative');expect(d.models.calls.find(c=>c.name==='personal_chat')?.options?.web?.ref.stageKey).toBe('personal');
 });
 it('shared variants and sticker description actually obtain their own tool sessions without running mutually exclusive ordinary variants',async()=>{
- const d=fixture(),names:string[]=[];d.storage.set('character',{...d.storage.character(),scene:{...d.storage.character().scene,mode:'shared_online',shared:{title:'共同复习',progress:'开始',lastPublicNode:'',nextStepAt:null}}});saveInput(d.storage,'s','共同复习');
- const models=new ModelClient({complete:async r=>{names.push(r.task.name);if(!r.webMaterials?.length)return {webRead:{url:'https://example.test/page'}};if(r.task.name==='narrative_shared')return {...narrative,publicNarration:null,progress:'继续',nextStepAt:null};if(r.task.name==='personal_shared')return {emotions:[],reply:{decision:'none'},taskChanges:[]};if(r.task.name==='sticker_description')return {description:'实际图片中的挥手表情'};return emptyMemory;}});
- await new HdsiApp({...d,models}).runTurn({inputMessageIds:['s'],taskIds:[],triggerKinds:['input']});await describeSticker(models,d.web,'asset','image1','data:image/png;base64,OFFLINE');expect([...new Set(names)].sort()).toEqual(['memory','narrative_shared','personal_shared','sticker_description']);expect(d.web.store.openStage('asset','asset','sticker:image1','sticker_description').ownerType).toBe('asset');expect(d.web.selfReadSources('asset')).toEqual([]);
+ const d=fixture(),names:string[]=[];makeSharedFixture(d,{completedSteps:0});saveInput(d.storage,'s','共同复习');
+ const models=new ModelClient({complete:async r=>{names.push(r.task.name);if(!r.webMaterials?.length)return {webRead:{url:'https://example.test/page'}};if(r.task.name==='narrative_shared')return {...narrative,publicNarration:null,progress:'继续',outline:{goal:'复习',openThreads:[],endingCondition:'结束本次复习'},simulatedUserActions:[]};if(r.task.name==='personal_shared')return {emotions:[],reply:{decision:'none'},taskChanges:[]};if(r.task.name==='sticker_description')return {description:'实际图片中的挥手表情'};return emptyMemory;}});
+ await new HdsiApp({...d,models}).runTurn({inputMessageIds:['s'],taskIds:[],triggerKinds:['input'],sharedMeta:selectSharedMeta(d.storage,NOW,['s'],[])});await describeSticker(models,d.web,'asset','image1','data:image/png;base64,OFFLINE');expect([...new Set(names)].sort()).toEqual(['memory','narrative_shared','personal_shared','sticker_description']);expect(d.web.store.openStage('asset','asset','sticker:image1','sticker_description').ownerType).toBe('asset');expect(d.web.selfReadSources('asset')).toEqual([]);
 });
 

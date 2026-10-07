@@ -21,8 +21,8 @@ it('allows future check changes and cancellation of an existing due check', () =
   expect(() => task.parse({ ...silent, taskChanges: [{ action: 'update', id: 'check', task: { at: '2026-10-07T10:01:00+08:00' } }] })).not.toThrow();
   expect(() => task.parse({ ...silent, taskChanges: [{ action: 'cancel', id: 'check' }] })).not.toThrow();
 });
-it('does not apply the personal check deadline rule to appointments or scene steps', () => {
-  for (const kind of ['appointment', 'scene_step'] as const) {
+it('does not apply the personal check deadline rule to appointments', () => {
+  for (const kind of ['appointment'] as const) {
     expect(() => personalTask('chat', NOW, [], 'chat', []).parse({ ...silent, taskChanges: [{ action: 'create', task: { kind, at: NOW, description: '已有安排' } }] })).not.toThrow();
   }
 });
