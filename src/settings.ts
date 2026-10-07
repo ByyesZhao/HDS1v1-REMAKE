@@ -33,6 +33,7 @@ const settingsSchema = z.object({
   sleepHabits: z.object({ sleepStart: clockTime, sleepEnd: clockTime, wakeStart: clockTime, wakeEnd: clockTime, preparationMinutes: z.number().nonnegative() }).default(defaultConfig.sleepHabits),
   worldTimes: z.array(clockTime).min(1).default(defaultConfig.worldTimes), schoolTimes: z.array(clockTime).min(1).default(defaultConfig.schoolTimes),
   historyBudget: nullableLimit, stickersEnabled: z.boolean().default(false),memory:memorySettings,memoryEmbedding:embedding.prefault({}),
+  sharedIdleSeconds: z.number().int().positive().default(60), sharedMaxSteps: z.number().int().min(1).max(20).default(20),
   models: z.object(Object.fromEntries(modelRoles.map(role => [role, connection])) as Record<typeof modelRoles[number], typeof connection>),
   stickerDescriptionModel: connection.optional(),
   embedding: embedding.optional(),

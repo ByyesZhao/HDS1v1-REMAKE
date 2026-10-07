@@ -5,9 +5,30 @@ export interface Clock { now(): ISOTime }
 export interface Random { next(): number }
 export interface Activity { description: string; startsAt: ISOTime; expectedEndAt: ISOTime | null; phoneAccess: boolean }
 export interface Emotion { label: string; degree: string; reason: string }
+export interface SharedOutline { goal: string; openThreads: string[]; endingCondition: string }
+export interface SharedScene {
+  activityId: string; title: string; progress: string; lastPublicNode: string;
+  completedSteps: number; maxSteps: number; idleSeconds: number;
+  outline: SharedOutline | null; nextStepAt: ISOTime | null;
+}
+export interface SharedClock {
+  activityId: string; mode: Exclude<Mode, 'chat'>; status: 'active' | 'ended'; startedAt: ISOTime;
+  lastInputAt: ISOTime | null; lastOutputAt: ISOTime | null; lastSilentCompletedAt: ISOTime | null;
+}
+export interface ControlRequest {
+  id: string; activityId: string | null; receivedAt: ISOTime; platformMessageIds: string[];
+  status: 'pending' | 'consumed' | 'cancelled'; consumedTurnId: string | null;
+}
+export interface SharedTurnMeta {
+  activityId: string; stepNumber: number; maxSteps: number; idleSeconds: number;
+  advanceReason: 'initial' | 'manual' | 'automatic' | 'appointment';
+  phase: 'opening' | 'ongoing' | 'wrap_up' | 'final'; controlRequestIds: string[];
+  sceneTaskId: string; allowSimulatedUserActions: boolean;
+}
+export interface InputAcceptance { kind: 'message' | 'advance'; systemReply: string | null }
 export interface Scene {
   mode: Mode; description: string; activity: Activity | null;
-  shared: null | { title: string; progress: string; lastPublicNode: string; nextStepAt: ISOTime | null };
+  shared: SharedScene | null;
 }
 export interface CharacterState {
   narratedUntil: ISOTime; scene: Scene; emotions: Emotion[];
@@ -20,12 +41,14 @@ export interface Message {
   id: string; platformMessageIds: string[]; direction: 'incoming' | 'outgoing';
   receivedAt: ISOTime; content: string; batchId: string | null; seenTurnId: string | null;
   turnId: string | null; outboxSeq: number | null;
+  sharedActivityId?: string | null;
 }
 export interface Runtime {
   openBatch: { id: string; readyAt: ISOTime } | null; pendingBatchIds: string[]; paused: boolean;
   contactMisses: number; stickerMisses: number; nextWorldAt: ISOTime | null; nextSchoolAt: ISOTime | null;
   lastError: string | null;
   nextMaintenanceAt: string | null;
+  sharedActivityVersion: 1 | null; sharedClock: SharedClock | null;
 }
 export interface Experience { id: string; happenedAt: ISOTime; description: string; relatedEventIds: string[] }
 export interface NarrativeResult {
@@ -47,7 +70,7 @@ export type PersonalResult = ChatPersonalResult | LifePersonalResult;
 export interface ExpressionResult { parts: SpeechPart[] }
 export type TaskKind = 'appointment' | 'check_messages' | 'scene_step';
 export interface TaskDetails { kind: TaskKind; at: ISOTime; description: string; checkReason?: 'unread' | 'deferred_reply'; messageIds?: string[] }
-export interface ScheduledTask extends TaskDetails { id: string; status: 'pending' | 'completed' | 'cancelled' }
+export interface ScheduledTask extends TaskDetails { id: string; status: 'pending' | 'completed' | 'cancelled'; sharedActivityId?: string }
 export type TaskChange = { action: 'create'; task: TaskDetails; id?: string } | { action: 'update'; id: string; task: Partial<TaskDetails> } | { action: 'cancel'; id: string };
 export interface MemorySummary { content: string; topics: string[]; sourceIds: string[] }
 export type MemoryResult = import('./memory/types').MemoryResultV3;
@@ -59,11 +82,12 @@ export type EnvironmentChange = { action: 'create'; event: Omit<EnvironmentEvent
 export interface EnvironmentResult { changes: EnvironmentChange[] }
 export interface Sticker { id: string; path: string; description: string; aliases?: string[]; embeddingInput?: string; embedding: number[]; embeddingModel: string; embeddingBaseUrl?: string; legacyFingerprint?: string }
 export type TriggerKind = 'input' | 'autonomous' | 'sleep' | 'activity' | 'appointment' | 'check_messages' | 'scene_step' | 'environment';
-export interface TurnRequest { inputMessageIds: string[]; taskIds: string[]; triggerKinds: TriggerKind[]; batchIds?: string[]; environmentKind?: 'world' | 'school' }
+export interface TurnRequest { inputMessageIds: string[]; taskIds: string[]; triggerKinds: TriggerKind[]; batchIds?: string[]; environmentKind?: 'world' | 'school'; sharedMeta?: SharedTurnMeta | null }
 export interface TurnRecord {
   id: string; inputMessageIds: string[]; triggerTaskIds: string[]; triggerKinds: TriggerKind[];
   at: ISOTime; completedAt: ISOTime | null; frozenResult: TurnCandidate | null; outputComplete: boolean; done: boolean;
   batchIds: string[]; entryMode: Mode; environmentKind?: 'world' | 'school';
+  sharedMeta?: SharedTurnMeta | null; autonomousIntervalMinutes?: number | null;
 }
 export interface TurnCandidate {
   visibleMessageIds: string[]; reconsiderMessageIds: string[];

@@ -160,7 +160,8 @@ export async function generateTurn(d: Dependencies, request: TurnRequest, turnId
   const nodeTask = allTasks.find(t => t.kind === 'scene_step');
   if (change?.action === 'start') {
     state.scene.mode = change.mode;
-    state.scene.shared = { title: change.title, progress: '已确认开始，待首个公开节点', lastPublicNode: '', nextStepAt: at };
+    state.scene.shared = { activityId: randomUUID(), title: change.title, progress: '已确认开始，待首个公开节点', lastPublicNode: '', nextStepAt: at,
+      completedSteps: 0, maxSteps: d.config.sharedMaxSteps, idleSeconds: d.config.sharedIdleSeconds, outline: null };
     maintainTask(candidate.taskChanges, nodeTask, { kind: 'scene_step', at, description: change.title });
   } else if (change?.action === 'end') {
     state.scene.mode = 'chat'; state.scene.shared = null;

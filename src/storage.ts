@@ -2,14 +2,15 @@ import { DatabaseSync } from 'node:sqlite';
 import { mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
 import { nextDaily } from './time';
-import type { CharacterState, Detail, DetailHistory, EnvironmentEvent, Experience, Memory, Message, OutboxItem, PostJob, Runtime, ScheduledTask, Sticker, TurnRecord } from './types';
+import type { CharacterState, ControlRequest, Detail, DetailHistory, EnvironmentEvent, Experience, Memory, Message, OutboxItem, PostJob, Runtime, ScheduledTask, Sticker, TurnRecord } from './types';
 
 interface Tables {
   messages: Message; turns: TurnRecord; outbox: OutboxItem; post_jobs: PostJob;
   tasks: ScheduledTask; details: Detail; detail_history: DetailHistory; memories: Memory;
   events: EnvironmentEvent; experiences: Experience; stickers: Sticker;
+  control_requests: ControlRequest;
 }
-const tables: Array<keyof Tables> = ['messages', 'turns', 'outbox', 'post_jobs', 'tasks', 'details', 'detail_history', 'memories', 'events', 'experiences', 'stickers'];
+const tables: Array<keyof Tables> = ['messages', 'turns', 'outbox', 'post_jobs', 'tasks', 'details', 'detail_history', 'memories', 'events', 'experiences', 'stickers', 'control_requests'];
 export class Storage {
   private readonly db: DatabaseSync;
   constructor(path: string) {
@@ -30,6 +31,7 @@ export class Storage {
     if (!this.get('runtime')) this.set('runtime', {
       openBatch: null, pendingBatchIds: [], paused: false, contactMisses: 0, stickerMisses: 0,
       nextWorldAt: null, nextSchoolAt: null, nextMaintenanceAt: nextDaily(new Date().toISOString(), ['04:30'], 'Asia/Shanghai'), lastError: null,
+      sharedActivityVersion: 1, sharedClock: null,
     } satisfies Runtime);
   }
   close(): void { this.db.close(); }
@@ -60,7 +62,7 @@ export class Storage {
     this.db.prepare(`INSERT INTO ${table}(id, data) VALUES (?, ?) ON CONFLICT(id) DO UPDATE SET data = excluded.data`).run(id, JSON.stringify(value));
   }
   remove<K extends keyof Tables>(table: K, id: string): void { this.db.prepare(`DELETE FROM ${table} WHERE id = ?`).run(id); }
-  runtime(): Runtime { return this.get<Runtime>('runtime')!; }
+  runtime(): Runtime { const r = this.get<Runtime>('runtime')!; return { ...r, sharedActivityVersion: r.sharedActivityVersion ?? null, sharedClock: r.sharedClock ?? null }; }
   character(): CharacterState { return this.get<CharacterState>('character')!; }
   messages(): Message[] { return this.all('messages').sort((a, b) => Date.parse(a.receivedAt) - Date.parse(b.receivedAt)); }
   unreadMessages(): Message[] {
