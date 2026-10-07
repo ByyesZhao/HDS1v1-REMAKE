@@ -1,4 +1,4 @@
-import type { IncomingMessage } from '../types';
+import type { IncomingMessage, InputAcceptance } from '../types';
 import { HdsiApp } from '../app';
 import { InputBuffer } from './input';
 import { Scheduler } from './scheduler';
@@ -17,9 +17,10 @@ export class SerialHost {
     this.input = new InputBuffer(app.dependencies.storage); this.scheduler = new Scheduler(app.dependencies.storage);
   }
   start(): Promise<void> { this.recover = true; return this.wake(); }
-  async acceptInput(message: IncomingMessage): Promise<void> {
-    await this.input.acceptInput(message);
+  async acceptInput(message: IncomingMessage): Promise<InputAcceptance> {
+    const accepted = await this.input.acceptInput(message);
     void this.wake();
+    return accepted;
   }
   wake(): Promise<void> {
     if (this.stopped) return Promise.resolve();

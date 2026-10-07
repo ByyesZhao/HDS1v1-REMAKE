@@ -16,7 +16,7 @@
 | 任务 | 状态 | 证据 |
 | --- | --- | --- |
 | 1 状态与时钟 | 完成 | 4/4目标测试，204/204全套，typecheck通过 |
-| 2 输入控制 | 待执行 | |
+| 2 输入控制 | 完成 | 8/8目标测试，209/209全套，typecheck通过 |
 | 3 调度 | 待执行 | |
 | 4 合同 | 待执行 | |
 | 5 流水线与恢复 | 待执行 | |
@@ -33,3 +33,9 @@
 RED：`npm test -- tests/shared-v3-state.test.ts` 四项失败（缺配置及新时钟模块）。
 GREEN：同命令4/4通过；全套43文件／204测试通过；typecheck退出0。测试导入调整为NodeNext动态导入要求的`.js`后缀。
 Task 1: complete（从eaf0b53开始，提交`feat: add shared activity state and clocks`）。字段／表、配置快照、唯一节点和持久锚点基础已落实；流水线边界在任务5接入。
+
+## 任务2证据
+
+RED：`npm test -- tests/shared-v3-input.test.ts tests/input.test.ts tests/plugin.test.ts` 新5项失败、旧3项通过。
+GREEN：同命令8/8通过；全套44文件／209测试通过；typecheck退出0。维护测试的Promise<void>回调适配新返回类型，不改变断言。
+Task 2: complete（从d0fd98b开始，提交`feat: route shared inputs and advance controls`）。实际QQ入口使用固定systemReply，控制不成为角色消息；确认发送集成留任务5。

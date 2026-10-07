@@ -67,7 +67,7 @@ export class Storage {
   messages(): Message[] { return this.all('messages').sort((a, b) => Date.parse(a.receivedAt) - Date.parse(b.receivedAt)); }
   unreadMessages(): Message[] {
     const open = this.runtime().openBatch?.id;
-    return this.messages().filter(m => m.direction === 'incoming' && m.seenTurnId === null && m.batchId !== open);
+    return this.messages().filter(m => m.direction === 'incoming' && m.seenTurnId === null && !m.sharedActivityId && m.batchId !== open);
   }
   unfinishedTurn(): TurnRecord | null { return this.all('turns').find(t => !t.done) ?? null; }
   outbox(turnId: string): OutboxItem[] { return this.all('outbox').filter(i => i.turnId === turnId).sort((a, b) => a.seq - b.seq); }

@@ -1,7 +1,8 @@
 import { randomUUID } from 'node:crypto';
-import type { IncomingMessage } from '../types';
+import type { IncomingMessage, InputAcceptance } from '../types';
 import { Storage } from '../storage';
 import { addMs, due } from '../time';
+import { sharedRoutingActivity, refreshSharedStep } from './shared';
 
 export function isTargetSession(session: { isDirect?: boolean; selfId?: string; userId?: string }, config: { botId: string; userId: string }): boolean {
   return session.isDirect === true && session.selfId === config.botId && session.userId === config.userId;
@@ -9,17 +10,37 @@ export function isTargetSession(session: { isDirect?: boolean; selfId?: string; 
 
 export class InputBuffer {
   constructor(private readonly storage: Storage) {}
-  async acceptInput(message: IncomingMessage): Promise<void> {
-    this.storage.transaction(() => {
+  async acceptInput(message: IncomingMessage): Promise<InputAcceptance> {
+    return this.storage.transaction(() => {
+      const activity = sharedRoutingActivity(this.storage);
+      if (message.content.trim() === '【推进】') {
+        this.storage.save('control_requests', message.id, { id: message.id, receivedAt: message.receivedAt,
+          platformMessageIds: message.platformMessageIds ?? [], activityId: activity?.activityId ?? null,
+          status: activity ? 'pending' : 'cancelled', consumedTurnId: null });
+        return { kind: 'advance', systemReply: activity ? null : '当前没有共同活动' };
+      }
+      if (activity) {
+        this.storage.save('messages', message.id, { ...message, platformMessageIds: message.platformMessageIds ?? [],
+          direction: 'incoming', batchId: null, sharedActivityId: activity.activityId, seenTurnId: null, turnId: null, outboxSeq: null });
+        const runtime = this.storage.runtime();
+        if (runtime.sharedClock?.activityId === activity.activityId) {
+          const old = runtime.sharedClock.lastInputAt;
+          runtime.sharedClock.lastInputAt = old && Date.parse(old) > Date.parse(message.receivedAt) ? old : message.receivedAt;
+          this.storage.set('runtime', runtime);
+        }
+        refreshSharedStep(this.storage, message.receivedAt);
+        return { kind: 'message', systemReply: null };
+      }
       this.closeExpired(message.receivedAt);
       const runtime = this.storage.runtime();
       const batchId = runtime.openBatch?.id ?? randomUUID();
       this.storage.save('messages', message.id, {
         ...message, platformMessageIds: message.platformMessageIds ?? [], direction: 'incoming',
-        batchId, seenTurnId: null, turnId: null, outboxSeq: null,
+        batchId, sharedActivityId: null, seenTurnId: null, turnId: null, outboxSeq: null,
       });
       runtime.openBatch = { id: batchId, readyAt: addMs(message.receivedAt, 15_000) };
       this.storage.set('runtime', runtime);
+      return { kind: 'message', systemReply: null };
     });
   }
   closeReady(now: string): void { this.storage.transaction(() => this.closeExpired(now)); }

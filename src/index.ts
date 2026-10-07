@@ -90,7 +90,8 @@ export function apply(ctx: Context, config: Config): void {
     if (/^hdsi\.(status|pause|resume)(?:\s|$)/.test(rawContent.trim())) return next();
     const text = h.parse(rawContent).filter(element => element.type === 'text').map(element => element.attrs.content).join('');
     if (!text.trim()) return;
-    await host.acceptInput({ id: randomUUID(), receivedAt: clock.now(), content: text, platformMessageIds: session.messageId ? [session.messageId] : [] });
+    const accepted = await host.acceptInput({ id: randomUUID(), receivedAt: clock.now(), content: text, platformMessageIds: session.messageId ? [session.messageId] : [] });
+    if (accepted.systemReply) await bot().sendPrivateMessage(config.userId, accepted.systemReply);
   });
   for (const command of ['status', 'pause', 'resume'] as const) {
     ctx.command(`hdsi.${command}`, command === 'status' ? '故事状态' : command === 'pause' ? '暂停新故事回合' : '恢复故事', { authority: 0 }).action(async ({ session }) => {

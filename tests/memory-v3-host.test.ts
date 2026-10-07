@@ -32,7 +32,7 @@ it('yields after one ready unit, accepts actual input and delays the second unti
   d.clock.advance(15000);await host.wake();expect(d.sender.sent).toHaveLength(1);expect(d.storage.read('messages','input')!.seenTurnId).not.toBeNull();expect(store.owner({ownerType:'long',ownerId:'b'})!.content).toBe('手机refined1');
 });
 it('uses real setImmediate to give an already queued input I/O callback priority over the next unit',async()=>{
-  const {d,store,host}=create();ready(store);response(d);const arrived=new Promise<void>(resolve=>setImmediate(()=>{void host.acceptInput({id:'real-io',receivedAt:d.clock.now(),content:'你好',platformMessageIds:[]}).then(resolve);}));await host.start();await arrived;
+  const {d,store,host}=create();ready(store);response(d);const arrived=new Promise<void>(resolve=>setImmediate(()=>{void host.acceptInput({id:'real-io',receivedAt:d.clock.now(),content:'你好',platformMessageIds:[]}).then(()=>resolve());}));await host.start();await arrived;
   expect(d.storage.read('messages','real-io')).not.toBeNull();expect(store.owner({ownerType:'long',ownerId:'b'})!.content).toBe('手机preview');d.clock.advance(15000);await host.wake();expect(d.storage.read('messages','real-io')!.seenTurnId).toBeTruthy();
   expect(store.owner({ownerType:'long',ownerId:'a'})!.content).toBe('手机refined0');
 });

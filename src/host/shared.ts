@@ -12,7 +12,7 @@ export function sharedRoutingActivity(storage: Storage): { activityId: string; m
   const clock = storage.runtime().sharedClock;
   if (clock) return clock.status === 'active' ? { activityId: clock.activityId, mode: clock.mode } : null;
   const state = storage.character();
-  return hasValidSharedScene(state) ? { activityId: state.scene.shared!.activityId, mode: state.scene.mode as 'shared_online' | 'shared_offline' } : null;
+  return state && hasValidSharedScene(state) ? { activityId: state.scene.shared!.activityId, mode: state.scene.mode as 'shared_online' | 'shared_offline' } : null;
 }
 
 export function sharedDeadline(shared: NonNullable<Scene['shared']>, clock: SharedClock): string {
