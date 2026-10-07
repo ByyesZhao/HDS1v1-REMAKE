@@ -2,13 +2,15 @@ import { randomUUID } from 'node:crypto';
 import type { CharacterState, Random, ScheduledTask, TaskChange, TaskDetails, SleepPreference } from '../types';
 import type { AppConfig } from '../config';
 import { milliseconds, localParts, localTime } from '../time';
+import { hasValidSharedScene } from './shared';
 
 export function isSleeping(state: CharacterState, now: string): boolean {
+  if (hasValidSharedScene(state)) return false;
   return !!state.sleep && milliseconds(state.sleep.sleepAt) <= milliseconds(now) && milliseconds(now) < milliseconds(state.sleep.wakeAt);
 }
 export function canRead(state: CharacterState, now: string): boolean {
   if (isSleeping(state, now)) return false;
-  if (state.scene.mode !== 'chat') return true;
+  if (hasValidSharedScene(state)) return true;
   const a = state.scene.activity;
   return !a || a.phoneAccess || milliseconds(a.startsAt) > milliseconds(now)
     || (a.expectedEndAt !== null && milliseconds(now) >= milliseconds(a.expectedEndAt));

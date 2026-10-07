@@ -4,21 +4,14 @@ import { InputBuffer } from '../src/host/input';
 import { HdsiApp } from '../src/app';
 import { setup, saveInput, NOW, narrative } from './helpers';
 
-it('merges appointments and autonomous time but does not reset the cycle on chat', async () => {
+it('selects appointment before due autonomous without adding a contact opportunity', async () => {
   const d = setup();
   d.storage.set('character', { ...d.storage.character(), nextAutonomousAt: NOW });
   d.storage.save('tasks', 'lunch', { id: 'lunch', kind: 'appointment', at: NOW, description: '一起吃饭', status: 'pending' });
   const request = await new Scheduler(d.storage).collectReady(NOW);
-  expect(request!.triggerKinds).toEqual(['appointment', 'autonomous']);
-  d.models.outputs.personal_chat = { emotions: [], reply: { decision: 'now', intention: '协调', draft: '你到了吗' }, taskChanges: [] };
-  d.models.outputs.expression = { parts: [{ kind: 'text', content: '你到了吗' }] };
-  const app = new HdsiApp(d); await app.runTurn(request!);
-  expect(d.models.calls.find(c => c.name.startsWith('personal'))!.name).toBe('personal_chat');
-  expect(d.storage.character().nextAutonomousAt).toBe('2026-10-07T05:00:00.000Z');
-  expect(d.storage.runtime().contactMisses).toBe(0);
-  saveInput(d.storage, 'a', '到了'); d.clock.advance(30_000);
-  await app.runTurn({ inputMessageIds: ['a'], taskIds: [], triggerKinds: ['input'] });
-  expect(d.storage.character().nextAutonomousAt).toBe('2026-10-07T05:00:00.000Z');
+  expect(request!.triggerKinds).toEqual(['appointment']);
+  expect(d.storage.character().nextAutonomousAt).toBe(NOW);
+  expect(d.models.calls).toHaveLength(0);
   d.storage.close();
 });
 it('ends the cycle at sleep and wakes once with pending appointments and only closed inputs', async () => {

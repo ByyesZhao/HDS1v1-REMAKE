@@ -1,6 +1,20 @@
-import type { CharacterState, Scene, SharedClock } from '../types';
+import type { CharacterState, Scene, SharedClock, SharedTurnMeta } from '../types';
 import { Storage } from '../storage';
 import { addMs, milliseconds } from '../time';
+
+export function selectSharedMeta(storage: Storage, now: string, inputMessageIds: string[], taskIds: string[]): SharedTurnMeta | null {
+  const state = storage.character(); const s = state.scene.shared; const clock = storage.runtime().sharedClock;
+  if (!hasValidSharedScene(state) || !s || !clock || clock.status !== 'active' || clock.activityId !== s.activityId || s.completedSteps >= s.maxSteps) return null;
+  const controls = storage.all('control_requests').filter(c => c.activityId === s.activityId && c.status === 'pending');
+  const appointment = taskIds.some(id => storage.read('tasks', id)?.kind === 'appointment');
+  const automatic = milliseconds(sharedDeadline(s, clock)) <= milliseconds(now);
+  if (!automatic && !controls.length && !appointment) return null;
+  const stepNumber = s.completedSteps + 1, remaining = s.maxSteps - stepNumber;
+  return { activityId: s.activityId, stepNumber, maxSteps: s.maxSteps, idleSeconds: s.idleSeconds,
+    advanceReason: s.completedSteps === 0 ? 'initial' : controls.length ? 'manual' : appointment ? 'appointment' : 'automatic',
+    phase: remaining === 0 ? 'final' : remaining <= 3 ? 'wrap_up' : stepNumber === 1 ? 'opening' : 'ongoing',
+    controlRequestIds: controls.map(c => c.id), sceneTaskId: `scene:${s.activityId}`, allowSimulatedUserActions: inputMessageIds.length === 0 };
+}
 
 export function hasValidSharedScene(state: CharacterState): boolean {
   const s = state.scene.shared;

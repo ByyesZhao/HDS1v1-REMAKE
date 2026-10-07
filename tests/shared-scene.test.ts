@@ -3,6 +3,13 @@ import { HdsiApp } from '../src/app';
 import { setup, saveInput, NOW, narrative } from './helpers';
 import { Scheduler } from '../src/host/scheduler';
 
+// Task 3 tests selection from a committed active fixture; real send/B clock integration is task 5.
+function seedConfirmedClock(d: ReturnType<typeof setup>) {
+  const state = d.storage.character();
+  d.storage.set('runtime', { ...d.storage.runtime(), sharedClock: { activityId: state.scene.shared!.activityId,
+    mode: state.scene.mode, status: 'active', startedAt: d.clock.now(), lastInputAt: null, lastOutputAt: null, lastSilentCompletedAt: null } });
+}
+
 function makeShared(d: ReturnType<typeof setup>, mode: 'shared_online' | 'shared_offline') {
   d.storage.set('character', { ...d.storage.character(), scene: { mode, description: '共同活动', activity: { description: '游戏', startsAt: NOW, expectedEndAt: null, phoneAccess: false }, shared: { title: '一起玩', progress: '刚开始', lastPublicNode: '', nextStepAt: null } } });
   d.models.outputs.narrative_shared = { ...narrative, currentScene: { description: '继续活动', activity: { description: '游戏', startsAt: NOW, expectedEndAt: null, phoneAccess: false } }, publicNarration: '门口亮起灯', progress: '走到门口', nextStepAt: null };
@@ -19,6 +26,7 @@ it('starts only after confirmation, emits the marker and schedules the immediate
   expect(d.sender.sent.map(i => i.payload)).toEqual(['共同活动开始', '好']);
   expect(d.storage.character().scene.mode).toBe('shared_offline');
   expect(d.storage.character().scene.shared!.lastPublicNode).toBe('');
+  seedConfirmedClock(d);
   expect((await new Scheduler(d.storage).collectReady(d.clock.now()))!.triggerKinds).toContain('scene_step');
   d.storage.close();
 });
@@ -48,6 +56,7 @@ it('sends start and end markers even without any character speech', async () => 
   d.models.outputs.personal_chat = { emotions: [], reply: { decision: 'none' }, taskChanges: [], sharedChange: { action: 'start', mode: 'shared_online', title: '游戏' } };
   const app = new HdsiApp(d); await app.runTurn({ inputMessageIds: ['a'], taskIds: [], triggerKinds: ['input'] });
   expect(d.sender.sent.map(i => i.payload)).toEqual(['共同活动开始']);
+  seedConfirmedClock(d);
   d.models.outputs.narrative_shared = { ...narrative, publicNarration: null, progress: '结束', nextStepAt: null };
   d.models.outputs.personal_shared = { emotions: [], reply: { decision: 'none' }, taskChanges: [], sharedChange: { action: 'end' } };
   await app.runTurn((await new Scheduler(d.storage).collectReady(d.clock.now()))!);

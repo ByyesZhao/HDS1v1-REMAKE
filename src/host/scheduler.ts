@@ -3,6 +3,7 @@ import { Storage } from '../storage';
 import { InputBuffer } from './input';
 import { due, milliseconds } from '../time';
 import { canRead, isSleeping } from './state';
+import { hasValidSharedScene, refreshSharedStep, selectSharedMeta, sharedDeadline } from './shared';
 import type { TurnRequest, TriggerKind } from '../types';
 
 export class Scheduler {
@@ -10,7 +11,7 @@ export class Scheduler {
   async collectReady(now: string): Promise<TurnRequest | null> {
     new InputBuffer(this.storage).closeReady(now);
     if (this.storage.runtime().paused || this.storage.unfinishedTurn()) return null;
-    let state = this.storage.character();
+    const state = this.storage.character();
     if (isSleeping(state, now)) {
       this.storage.transaction(() => {
         state.nextAutonomousAt = null; this.storage.set('character', state);
@@ -18,27 +19,47 @@ export class Scheduler {
       });
     }
     const runtime = this.storage.runtime();
+    const front = this.foreground(now);
+    if (front) return front;
+    if (!hasValidSharedScene(state) && !isSleeping(state, now) && runtime.pendingBatchIds.length && !canRead(state, now)) this.stashPending(now);
     const environmentKind = due(runtime.nextWorldAt, now) ? 'world' : due(runtime.nextSchoolAt, now) ? 'school' : undefined;
-    if (environmentKind) return { inputMessageIds: [], taskIds: [], triggerKinds: ['environment'], batchIds: [], environmentKind };
+    if (environmentKind) return { inputMessageIds: [], taskIds: [], triggerKinds: ['environment'], batchIds: [], environmentKind, sharedMeta: null };
+    if (this.autonomousEligible(now) && due(state.nextAutonomousAt, now)) return {
+      inputMessageIds: this.storage.unreadMessages().map(m => m.id), taskIds: [], triggerKinds: ['autonomous'], batchIds: [], sharedMeta: null };
+    return null;
+  }
+
+  private foreground(now: string): TurnRequest | null {
+    const state = this.storage.character(), runtime = this.storage.runtime();
+    const dueTasks = this.storage.all('tasks').filter(t => t.status === 'pending' && due(t.at, now));
+    if (hasValidSharedScene(state)) {
+      this.storage.transaction(() => refreshSharedStep(this.storage, now));
+      const inputs = this.storage.messages().filter(m => m.direction === 'incoming' && m.seenTurnId === null
+        && m.batchId === null && m.sharedActivityId === state.scene.shared!.activityId);
+      const tasks = dueTasks.filter(t => t.kind !== 'scene_step');
+      const meta = selectSharedMeta(this.storage, now, inputs.map(m => m.id), tasks.map(t => t.id));
+      if (!meta) return null;
+      return { inputMessageIds: inputs.map(m => m.id), taskIds: [meta.sceneTaskId, ...tasks.map(t => t.id)],
+        triggerKinds: ['scene_step', ...new Set(tasks.map(t => t.kind))], batchIds: [], sharedMeta: meta };
+    }
     if (isSleeping(state, now)) return null;
     const wake = !!state.sleep && due(state.sleep.wakeAt, now);
-    const autonomous = due(state.nextAutonomousAt, now);
-    const pending = this.storage.runtime().pendingBatchIds;
-    const hasOther = wake || autonomous || this.storage.all('tasks').some(t => t.status === 'pending' && t.kind !== 'check_messages' && due(t.at, now));
-    const tasks = this.storage.all('tasks').filter(t => t.status === 'pending' && due(t.at, now) && (t.kind !== 'check_messages' || canRead(state, now) || hasOther));
-    if (pending.length && !canRead(state, now) && !hasOther && tasks.length === 0) {
-      this.stashPending(now); return null;
-    }
-    const check = tasks.some(t => t.kind === 'check_messages');
-    const batchIds = wake || check ? [...pending] : pending.slice(0, 1);
-    const inputs = this.storage.unreadMessages().filter(m => !pending.includes(m.batchId!) || batchIds.includes(m.batchId!));
+    const hasOther = wake || dueTasks.some(t => t.kind !== 'check_messages');
+    const tasks = dueTasks.filter(t => t.kind !== 'check_messages' || canRead(state, now) || hasOther);
+    const pending = runtime.pendingBatchIds;
+    const batchIds = wake || tasks.some(t => t.kind === 'check_messages') ? [...pending] : canRead(state, now) ? pending.slice(0, 1) : [];
     const kinds: TriggerKind[] = [];
     if (batchIds.length) kinds.push('input');
     for (const task of tasks) if (!kinds.includes(task.kind)) kinds.push(task.kind);
-    if (autonomous) kinds.push('autonomous');
     if (wake) kinds.push('sleep');
     if (!kinds.length) return null;
-    return { inputMessageIds: inputs.map(m => m.id), taskIds: tasks.map(t => t.id), triggerKinds: kinds, batchIds };
+    const inputs = this.storage.unreadMessages().filter(m => !pending.includes(m.batchId!) || batchIds.includes(m.batchId!));
+    return { inputMessageIds: inputs.map(m => m.id), taskIds: tasks.map(t => t.id), triggerKinds: kinds, batchIds, sharedMeta: null };
+  }
+
+  private autonomousEligible(now: string): boolean {
+    const r = this.storage.runtime(), state = this.storage.character();
+    return !hasValidSharedScene(state) && !isSleeping(state, now) && !r.openBatch && !r.pendingBatchIds.length && !this.foreground(now);
   }
   private stashPending(now: string): void {
     this.storage.transaction(() => {
@@ -53,18 +74,22 @@ export class Scheduler {
   async nextDeadline(now: string): Promise<string | null> {
     const runtime = this.storage.runtime();
     if (runtime.paused) return runtime.openBatch?.readyAt ?? null;
+    if (this.storage.unfinishedTurn()) return null;
     const state = this.storage.character();
     const candidates: string[] = [];
     if (runtime.openBatch) candidates.push(runtime.openBatch.readyAt);
-    if (runtime.pendingBatchIds.length) candidates.push(now);
-    if (state.sleep) {
+    if (this.foreground(now)) candidates.push(now);
+    const shared = hasValidSharedScene(state);
+    if (state.sleep && !shared) {
       if (isSleeping(state, now)) candidates.push(state.sleep.wakeAt);
       else if (due(state.sleep.wakeAt, now)) candidates.push(now);
       else candidates.push(state.sleep.sleepAt);
     }
     if (!isSleeping(state, now)) {
-      if (state.nextAutonomousAt) candidates.push(state.nextAutonomousAt);
+      if (state.nextAutonomousAt && this.autonomousEligible(now)) candidates.push(state.nextAutonomousAt);
+      if (shared && state.scene.shared!.completedSteps < state.scene.shared!.maxSteps && runtime.sharedClock?.status === 'active') candidates.push(sharedDeadline(state.scene.shared!, runtime.sharedClock));
       for (const task of this.storage.all('tasks').filter(t => t.status === 'pending')) {
+        if (shared && task.kind !== 'appointment') continue;
         if (task.kind !== 'check_messages' || canRead(state, now)) candidates.push(task.at);
         else if (state.scene.activity?.expectedEndAt) candidates.push(new Date(Math.max(milliseconds(task.at), milliseconds(state.scene.activity.expectedEndAt))).toISOString());
       }
