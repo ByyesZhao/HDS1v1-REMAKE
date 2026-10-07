@@ -8,7 +8,11 @@ import { MemoryStore } from '../src/memory/store';
 import { initialCharacter } from '../src/config';
 import { loadSettings, appConfig } from '../src/settings';
 import { apply } from '../src/index';
-import { NOW } from './helpers';
+import { NOW, setup, saveInput, silent } from './helpers';
+import { generateTurn } from '../src/app';
+import { freezeTurn } from '../src/recovery';
+import { makeSharedFixture } from './shared-v3-fixture';
+import type { TurnRequest, TurnRecord } from '../src/types';
 // Load Koishi through its native CJS entry; transforming its loader's inheritance in Vitest is incompatible.
 vi.mock('koishi', async () => (await import('node:module')).createRequire(`${process.cwd()}/package.json`)('koishi'));
 
@@ -24,6 +28,30 @@ function legacy(path: string, shared = false) {
   return db;
 }
 function schema(path: string) { const db = new DatabaseSync(path, { readOnly: true }); try { return db.prepare('SELECT name,sql FROM sqlite_master ORDER BY name').all(); } finally { db.close(); } }
+it.each(['preparation', 'environment'] as const)('version_one_unfinished_%s_is_not_legacy: readonly check and repeated apply preserve valid unfinished work', async kind => {
+  const root = mkdtempSync(join(tmpdir(), 'shared-current-')), path = join(root, 'state.sqlite');
+  const d = setup(); d.storage.close(); d.storage = new Storage(path); d.storage.set('character', initialCharacter(NOW)); new MemoryStore(d.storage).migrate(NOW);
+  let closed = false;
+  try {
+    let request: TurnRequest;
+    if (kind === 'preparation') {
+      saveInput(d.storage, 'input', '开始共同活动');
+      d.models.outputs.personal_chat = { ...silent, sharedChange: { action: 'start', mode: 'shared_online', title: '游戏' } };
+      request = { inputMessageIds: ['input'], taskIds: [], triggerKinds: ['input'] };
+    } else {
+      makeSharedFixture(d); d.models.outputs.world = { changes: [] };
+      request = { inputMessageIds: [], taskIds: [], triggerKinds: ['environment'], environmentKind: 'world' };
+    }
+    const turn: TurnRecord = { id: 'current', at: NOW, inputMessageIds: request.inputMessageIds, triggerTaskIds: [], triggerKinds: request.triggerKinds,
+      batchIds: [], entryMode: d.storage.character().scene.mode, sharedMeta: null, completedAt: null, frozenResult: null, outputComplete: false, done: false, environmentKind: request.environmentKind };
+    const generated = await generateTurn(d, request, turn.id); freezeTurn(d, turn, generated.candidate, generated.items); d.storage.close(); closed = true;
+    const before = readFileSync(path), tables = schema(path);
+    const { inspectSharedUpgrade, upgradeSharedActivity } = await import('../src/deployment/shared-upgrade.js');
+    expect(inspectSharedUpgrade(path)).toMatchObject({ version: 1, activeLegacyShared: false, unfinishedSharedTurnIds: [], canInitialize: false, requiresUserDecision: false });
+    expect(upgradeSharedActivity(path, NOW, { stopped: true, backupDirectory: join(root, 'backup') })).toMatchObject({ version: 1, requiresUserDecision: false, backupPath: null });
+    expect(readFileSync(path)).toEqual(before); expect(schema(path)).toEqual(tables); expect(existsSync(join(root, 'backup'))).toBe(false);
+  } finally { if (!closed) d.storage.close(); rmSync(root, { recursive: true, force: true }); }
+});
 it('readonly_check_does_not_initialize: check neither edits the file nor adds schema', async () => {
   const root = mkdtempSync(join(tmpdir(), 'shared-check-')), path = join(root, 'state.sqlite');
   try {

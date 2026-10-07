@@ -23,7 +23,7 @@ export function inspectSharedUpgrade(databasePath: string): SharedUpgradeReport 
     const runtime = state<Runtime>('runtime'), character = state<CharacterState>('character');
     const version = runtime?.sharedActivityVersion ?? null, turns = rows<TurnRecord>('turns');
     const activeLegacyShared = version !== 1 && !!character && character.scene.mode !== 'chat';
-    const unfinishedSharedTurnIds = turns.filter(t => !t.done && !t.sharedMeta && (t.entryMode !== 'chat'
+    const unfinishedSharedTurnIds = turns.filter(t => version !== 1 && !t.done && !t.sharedMeta && (t.entryMode !== 'chat'
       || t.frozenResult?.nextState.scene.mode !== undefined && t.frozenResult.nextState.scene.mode !== 'chat'
       || t.triggerKinds.includes('scene_step'))).map(t => t.id);
     const oldSceneTaskIds = rows<ScheduledTask>('tasks').filter(t => t.kind === 'scene_step' && !t.sharedActivityId).map(t => t.id);

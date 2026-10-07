@@ -21,7 +21,7 @@
 | 4 合同 | 完成 | 13/13目标测试，221/221全套，typecheck通过 |
 | 5 流水线与恢复 | 完成 | 42/42目标测试，244/244全套，typecheck通过 |
 | 6 升级 | 完成 | 9/9目标测试，248/248全套，CLI临时库check/apply通过 |
-| 7 回归与交付 | 完成 | 49文件／248测试、typecheck/build/demo/runtime check/smoke全部通过；真实语义待办 |
+| 7 回归与交付 | 完成 | 任务结束248测试全绿；最终复核修正后250测试全绿、typecheck/build/smoke通过；demo/runtime check已通过；真实语义待办 |
 
 ## 后续真实多轮验收
 
@@ -81,12 +81,27 @@ Review Focus映射：
 
 | 项 | 实际离线断言 |
 | --- | --- |
-| 1 公开边界 | shared-v3-flow的begin_publish_before_post、advance_before_start_confirmation_is_inactive、end_publish_and_late_input；开始／结束真实send回调阻塞post后接收新输入。 |
-| 2 忙时合并 | shared-v3-flow的late_inputs_survive_frozen_commit、last_sticker_confirmation_sets_deadline；shared-v3-scheduler的manual_and_due_share_one_selection；冻结集合与晚到集合分开，确认锚点独立于post。 |
+| 1 公开边界 | shared-v3-flow的begin_publish_before_post、end_publish_and_late_input；shared-v3-recovery的begin_publish_before_post（未确认开始）；开始／结束真实send回调阻塞post后接收新输入。 |
+| 2 忙时合并 | shared-v3-flow的late_inputs_survive_frozen_commit、deadline_uses_last_send_confirmation；shared-v3-scheduler的manual_and_due_share_one_selection；冻结集合与晚到集合分开，确认锚点独立于post。 |
 | 3 旧作息 | shared-v3-flow中旧sleep/wake区间内、过期、新推迟作息三类；调度无伪wake，结束睡眠清自主或完成时重排。 |
-| 4 20轮／公开记忆 | shared-v3-flow的silent_twenty_steps_end_naturally、invalid_final_pauses_without_step_21、public_simulation_is_shared_memory_and_correction_keeps_history及合同测试；文学、goal/endingCondition语义与稳定设定仍需后述真实模型验收。 |
+| 4 20轮／公开记忆 | shared-v3-flow的silent_20_steps_natural_close（成功收尾／非法final暂停两例）、life_and_shared_memory及合同测试；文学、goal/endingCondition语义与稳定设定仍需后述真实模型验收。 |
 | 5 持久恢复／升级 | shared-v3-recovery的partial/post/committed文件重开、未尝试稿间隔复用；shared-v3-state静默锚点；shared-v3-scheduler被抑制定时资格；shared-v3-upgrade只读、拒绝旧活动、停止备份普通库及启动门禁。 |
 
 提交索引：任务1 d0fd98b；任务2 6e108c5；任务3 1fb3a8f；任务4 2a4127e；任务5 f850e0a；任务6 73d3c48；任务7使用提交主题`docs: record shared activity delivery and validation`（本段随该提交保存）。
 
 Task 7: complete（从73d3c48开始）。最终diff检查无私有配置、key、角色背景、正式数据库或构建产物；独立最终代码复核结论随后记录。正式库尚未check/apply，正式服务未启动，真实故事尚未联调。
+
+## 最终独立复核及唯一修正批次
+
+Final review: 独立代码审核代理静态只读审查eaf0b53..b00f3c7，五项Review Focus已检查；原结论Critical/Important无，Minor一项，Ready to merge=Yes。完整结论及处理见[最终复核记录](SHARED_ACTIVITY_V0.3_FINAL_REVIEW_20261008.md)。
+
+Final: Ruling: 审查原Minor“已升级库正常准备／环境轮误报旧活动”重评Important — 重复apply被正常未完成状态阻断，违反计划幂等升级；进入唯一修正批次，而非顺带润色。— 若低估会误导用户以为需人工接续，正常升级检查／重复操作失败；修正以两项业务RED→GREEN验证。
+
+Final: fixed 已升级库正常未完成轮误判旧活动 — version_one_unfinished_preparation_is_not_legacy / version_one_unfinished_environment_is_not_legacy RED→GREEN，目标6/6，suite 250/250（49文件）。命令npm test -- tests/shared-v3-upgrade.test.ts、npm test、npm run typecheck、npm run build、npm run smoke --prefix runtime均通过。夹具重复close已在业务RED之前排除；没有第二次审核。
+
+Final: Ruling: 真实模型语义质量不由静态审查判定 — 按计划登记必做真实多轮验收，本次不启动在线模型或服务。— 若后续跳过会遗漏目标漂移、稳定设定放大或不自然收尾。
+Final: Ruling: 正式库升级兼容性不由临时库结果冒充 — 正式启动前实际check、停止备份/apply，旧活动另决策，本次未碰正式库。— 若跳过，版本门禁阻止启动，旧活动接续也不能自动保证。
+Final: Ruling: QQ送达但未本地确认的跨系统去重沿用基线 — 已确认跳过、未知可重发，没有扩展平台幂等协议。— 确认丢失时恢复可能重复消息。
+Final: Ruling: 本地整合回原项目，不再展示技能的分支菜单 — 用户已授权在该项目实施，隔离是本次执行选择；将验证提交快进到原main满足交付，不上传远端。— 若原目录发生并行改动，快进失败即保留后处理；不覆盖用户审核文件。
+
+Final: minor (deferred): 无。
