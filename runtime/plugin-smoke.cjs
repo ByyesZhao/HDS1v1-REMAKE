@@ -26,8 +26,8 @@ async function main() {
     if (requests !== 2) throw new Error(`expected world and school calls, received ${requests}`);
     if (!ctx.$commander.get('hdsi.status')) throw new Error('HDSI command registration failed');
     const {DatabaseSync}=require('node:sqlite'),inspect=new DatabaseSync(join(workspace,'offline.sqlite'),{readOnly:true});
-    try{const row=JSON.parse(inspect.prepare('SELECT data FROM details WHERE id=?').get('phone').data);if(row.ownerType!=='detail'||row.revision!==1)throw new Error('initial detail did not receive V0.3 owner versions');if(embeddingRequests!==1||inspect.prepare('SELECT count(*) AS n FROM memory_index').get().n!==1)throw new Error('initial detail vector not applied offline');}finally{inspect.close();}
-    console.log('Real Koishi context: plugin registration, initial environment turns, and commands verified offline.');
+    try{const row=JSON.parse(inspect.prepare('SELECT data FROM details WHERE id=?').get('phone').data);if(row.ownerType!=='detail'||row.revision!==1)throw new Error('initial detail did not receive V0.3 owner versions');if(embeddingRequests!==1||inspect.prepare('SELECT count(*) AS n FROM memory_index').get().n!==1)throw new Error('initial detail vector not applied offline');const runtime=JSON.parse(inspect.prepare("SELECT data FROM state WHERE key='runtime'").get().data);if(runtime.sharedActivityVersion!==1||runtime.sharedClock!==null||inspect.prepare('SELECT count(*) AS n FROM control_requests').get().n!==0)throw new Error('shared activity state was not initialized');}finally{inspect.close();}
+    console.log('Real Koishi context: plugin registration, initial environment turns, shared version/control table, and commands verified offline.');
   } finally {
     await ctx.stop();
     // Cordis stop() launches async disposers without awaiting them; let the host/SQLite disposer finish.

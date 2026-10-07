@@ -21,7 +21,7 @@
 | 4 合同 | 完成 | 13/13目标测试，221/221全套，typecheck通过 |
 | 5 流水线与恢复 | 完成 | 42/42目标测试，244/244全套，typecheck通过 |
 | 6 升级 | 完成 | 9/9目标测试，248/248全套，CLI临时库check/apply通过 |
-| 7 回归与交付 | 待执行 | |
+| 7 回归与交付 | 完成 | 49文件／248测试、typecheck/build/demo/runtime check/smoke全部通过；真实语义待办 |
 
 ## 后续真实多轮验收
 
@@ -70,3 +70,23 @@ RED：目标新4项失败，入口明确因旧实现不拒绝启动；先修复V
 GREEN：`npm test -- tests/shared-v3-upgrade.test.ts tests/deployment.test.ts tests/plugin.test.ts` 9/9通过；全套49文件／248测试通过；typecheck退出0。
 CLI：隔离目录`data/shared-cli-fixture.sqlite`（完全虚构普通库）运行`shared:migrate --check`报告null/canInitialize=true；运行`--apply --stopped --backup-dir data/shared-cli-backups`报告version1及唯一备份目录。备份可只读打开且仍为旧版本；测试验证普通消息／预约／未完成轮保留、重复apply字节不变。旧共同库明确列出old、old-scene及3个提交轮，拒绝猜测并保持字节和schema不变。
 Task 6: complete（从f850e0a开始，提交`feat: inspect and migrate shared activity state`）。入口先只读查版本，才打开Storage；旧库不因加载新代码自动填版本。本次没有check/apply正式库。
+
+## 任务7证据（2026-10-08）
+
+最终顺序检查：`npm test` 49文件／248测试通过；`npm run typecheck`、`npm run build`均退出0；`npm run demo`离线普通对话及共同首节点／手动／60秒末轮完整结束（仅演示maxSteps=3，正式默认20）；`npm run check --prefix runtime`模块加载通过；`npm run smoke --prefix runtime`真实Koishi Context装配、环境初始化、命令及共享版本／控制表通过。所有模型／HTTP／QQ均为固定替身，临时库与正式库隔离。
+
+样例和受影响根文档已同步当前代码；原V0.2历史测试记录明确保留日期，不能据其旧断言解释新行为。runtime/check先只读查版本再打开Storage，旧正式库不会因check自动建共享表。共同细化／执行计划更新离线完成状态，真实多轮验收未勾成已通过。
+
+Review Focus映射：
+
+| 项 | 实际离线断言 |
+| --- | --- |
+| 1 公开边界 | shared-v3-flow的begin_publish_before_post、advance_before_start_confirmation_is_inactive、end_publish_and_late_input；开始／结束真实send回调阻塞post后接收新输入。 |
+| 2 忙时合并 | shared-v3-flow的late_inputs_survive_frozen_commit、last_sticker_confirmation_sets_deadline；shared-v3-scheduler的manual_and_due_share_one_selection；冻结集合与晚到集合分开，确认锚点独立于post。 |
+| 3 旧作息 | shared-v3-flow中旧sleep/wake区间内、过期、新推迟作息三类；调度无伪wake，结束睡眠清自主或完成时重排。 |
+| 4 20轮／公开记忆 | shared-v3-flow的silent_twenty_steps_end_naturally、invalid_final_pauses_without_step_21、public_simulation_is_shared_memory_and_correction_keeps_history及合同测试；文学、goal/endingCondition语义与稳定设定仍需后述真实模型验收。 |
+| 5 持久恢复／升级 | shared-v3-recovery的partial/post/committed文件重开、未尝试稿间隔复用；shared-v3-state静默锚点；shared-v3-scheduler被抑制定时资格；shared-v3-upgrade只读、拒绝旧活动、停止备份普通库及启动门禁。 |
+
+提交索引：任务1 d0fd98b；任务2 6e108c5；任务3 1fb3a8f；任务4 2a4127e；任务5 f850e0a；任务6 73d3c48；任务7使用提交主题`docs: record shared activity delivery and validation`（本段随该提交保存）。
+
+Task 7: complete（从73d3c48开始）。最终diff检查无私有配置、key、角色背景、正式数据库或构建产物；独立最终代码复核结论随后记录。正式库尚未check/apply，正式服务未启动，真实故事尚未联调。

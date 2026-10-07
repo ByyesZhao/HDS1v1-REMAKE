@@ -14,7 +14,23 @@ DSH 二轮确认后的修订见 [修订与验证记录](docs/DSH_REVIEW_FIXES_20
 
 记忆V0.3任务1～7已实施，规则及实测见[记忆实施记录](docs/MEMORY_V0.3_IMPLEMENTATION_LOG_20261007.md)。直接依据仍为记忆细化／执行计划、搜索设计／执行计划四份。搜索任务1～6离线核心已实施；具体搜索provider稍后选择，不能把离线接口当已联网。
 
-共同活动 V0.3 尚未实施：手动 `【推进】`、双方静默60秒、最多20轮自然收尾、公开代写共享经历及统一自主空闲周期已整理为[方案](docs/SHARED_ACTIVITY_V0.3_PROPOSAL_20261007.md)、[实施细化](docs/SHARED_ACTIVITY_V0.3_IMPLEMENTATION_20261007.md)和[执行计划](docs/SHARED_ACTIVITY_V0.3_EXECUTION_PLAN_20261007.md)。后续改造直接参考细化及任务1～7；当前程序仍按已有共同活动机制运行。
+共同活动V0.3已接入离线核心：首节点立即；全文`【推进】`跳过等待；共同输入立即保存，按双方最近消息后默认60秒推进；最多20个成功共同轮，17～19收束、20公开结束，角色可沉默或提前收尾。每个实际角色叙事前台轮完成后重设150～210分钟空闲自主周期；环境和维护不重设。规则见[实施细化](docs/SHARED_ACTIVITY_V0.3_IMPLEMENTATION_20261007.md)，逐任务证据及真实多轮必做待办见[实施记录](docs/SHARED_ACTIVITY_V0.3_IMPLEMENTATION_LOG_20261007.md)。
+
+共同活动设置：`sharedIdleSeconds: 60`、`sharedMaxSteps: 20`（1～20），开始时保存快照。线下`【动作：…】`代表你的动作，括号外是发言。无新输入时允许主叙事公开代写活动内行为，形成共享模拟经历；不代写你的台词、心理或新增稳定背景。合法活动保持清醒参与，旧睡眠安排可由角色协调后结束。
+
+已有数据库先停止服务，再运行只读检查：
+
+```powershell
+npm run shared:migrate -- --database runtime/data/hdsi-remake.sqlite --check
+```
+
+仅报告`canInitialize=true`的普通旧库可运行以下升级，先复制数据库及已有WAL/SHM到唯一备份目录；若报告旧共同活动或未完成共同轮，先决定接续，不清空重开：
+
+```powershell
+npm run shared:migrate -- --database runtime/data/hdsi-remake.sqlite --apply --stopped --backup-dir runtime/shared-upgrade-backups
+```
+
+本次开发未检查或升级正式库，未启动正式服务；新临时库直接初始化版本1。
 
 ## 开发与验证
 

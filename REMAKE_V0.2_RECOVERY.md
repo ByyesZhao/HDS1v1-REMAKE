@@ -4,6 +4,9 @@
 
 返回 [总架构](REMAKE_V0.2.md)；配套 [实施细化与开发记录](REMAKE_V0.2_IMPLEMENTATION.md)、[实施记录](docs/IMPLEMENTATION_LOG.md)。记录字段见[接口、存储与代码组织](REMAKE_V0.2_INTERFACES.md)，输入合批与发送间隔见[生活方案](REMAKE_V0.2_LIFE.md)。
 
+
+共同活动V0.3于2026-10-08按新细化实施；当前离线证据见[共同活动实施记录](docs/SHARED_ACTIVITY_V0.3_IMPLEMENTATION_LOG_20261007.md)。真实模型多轮语义、正式库升级和QQ收发仍待独立验收。
+
 ## 1. 当前恢复合同与启动条件
 
 实现从本机成功保存输入开始提供以下恢复行为：
@@ -24,7 +27,7 @@
 
 Koishi 中间件只接收绑定机器人与用户的私聊，提取并拼接 text 元素。纯图片／语音等没有有效文字的输入忽略；当前没有保存完整平台消息对象。`hdsi.status / pause / resume` 管理命令绕过故事输入。
 
-InputBuffer 在同一事务先结算已到期的 openBatch，再保存提取文字、receivedAt、平台消息 ID、batchId 和新的 `runtime.openBatch.readyAt = receivedAt + 15 秒`。消息通过 batchId 关联，闭合批次 ID 进入 pendingBatchIds；不存在单独的批次历史表或 messages 副本列表。
+全文【推进】先作为独立控制保存；合法共同输入立即绑定activityId、batchId=null并更新锚点。普通InputBuffer在同一事务先结算已到期的 openBatch，再保存提取文字、receivedAt、平台消息 ID、batchId 和新的 `runtime.openBatch.readyAt = receivedAt + 15 秒`。消息通过 batchId 关联，闭合批次 ID 进入 pendingBatchIds；不存在单独的批次历史表或 messages 副本列表。
 
 旧回合处理中，新消息继续落库：不加入旧轮已经选定的闭合批次，但可继续加入当前尚未过期的新批次。开始故事回合时保存 turn ID、选定 inputMessageIds、triggerTaskIds、triggerKinds、batchIds、entryMode 和环境种类。没有用户输入的自主、预约、共同节点或环境回合也具有 turn ID。
 
@@ -34,7 +37,7 @@ InputBuffer 在同一事务先结算已到期的 openBatch，再保存提取文�
 
 generateTurn 克隆角色状态，在工作区计算叙事、个人选择、表达、经历、任务和概率候选。尚未提交时，不把新情绪、体力、计划、消息已看或概率计数写成正式故事效果。
 
-尚未尝试发送就退出，可丢弃未公开稿和随机结果，沿用回合 ID、选定消息／任务引用和原消息 receivedAt，以恢复时的当前时间更新 TurnRecord.at 及 entryMode 后重新生成。它不重新把新收到的输入塞入这个旧轮。已有任一发送尝试则保持冻结 at、输入引用、表达稿和候选，不重新抽样或重新判定本轮共同场景可见性。
+尚未尝试发送就退出，可丢弃未公开稿；第一次freeze已留存的autonomousIntervalMinutes和sharedMeta仍保留，沿用回合 ID、选定消息／任务引用和原消息 receivedAt，以恢复时的当前时间更新 TurnRecord.at 及 entryMode 后重新生成。它不重新把新收到的输入塞入这个旧轮。已有任一发送尝试则保持冻结 at、输入引用、表达稿和候选，不重新抽样或重新判定本轮共同场景可见性。
 
 恢复时若当前仍睡眠且旧稿从未尝试，会生成没有 narrative、personal、expression、经历或输出的睡眠控制候选，清自主周期，保留未读及未完成预约；不推进 narratedUntil。已有发送尝试的旧稿遵循冻结续发规则，不因后来进入睡眠而改写稿件。
 
@@ -42,7 +45,7 @@ generateTurn 克隆角色状态，在工作区计算叙事、个人选择、表�
 
 freezeTurn 用一次短事务保存：
 
-1. TurnRecord.frozenResult 中的 TurnCandidate：模型结果、可见／重新考虑消息 ID、经历、下一状态、任务变化、完成任务 ID、概率、自主间隔及环境变化。
+1. TurnRecord第一次freeze同时保存autonomousIntervalMinutes，后续不重抽；sharedMeta在选择时保存并在done后保留。frozenResult中的TurnCandidate：模型结果、可见／重新考虑消息 ID、经历、下一状态、任务变化、完成任务 ID、概率、自主间隔及环境变化。
 2. 全部 OutboxItem，按 seq 排序，保存最终文字／裸动作／素材 ID；首项 notBefore 设为当前时间，其余待上一项确认后设置。
 3. PostJob `{ turnId, result: null }`。
 
@@ -63,7 +66,7 @@ Sender 的接口为 `sendItem(item): Promise<{ platformMessageIds: string[] }>`�
 
 例：第一项 confirmed、第二项 retry、第三项 pending。用户解除持久化暂停后，恢复跳过第一项、重发第二项，确认后再发第三项；只有第二项可能重复。若是进程意外中止留下 sending 且 paused=false，重新启动执行同样流程。无 QQ 送达查询、幂等键或持续重试器。
 
-每次确认事务同时保存实际 outgoing 消息：旁白和动作使用展示包装，素材保存 `[表情素材:ID]` 占位文本，并保留平台 ID、确认时间、turnId/outboxSeq。系统 error 通知不经过这一故事消息记录路径。
+每次确认事务同时调用recordSharedOutput，按冻结开始／结束结果和outbox位置改变clock／入口边界，并更新最后确认锚点；旧轮仍完成后才选新轮。实际outgoing关联活动：旁白和动作使用展示包装，素材保存 `[表情素材:ID]` 占位文本，并保留平台 ID、确认时间、turnId/outboxSeq。系统 error 通知不经过这一故事消息记录路径。
 
 上一项确认时，同时保存下一项 notBefore，按下一角色段裸正文的字素数计算；旁白和素材本身不增加等待，首个角色短段无额外等待。重启只等剩余间隔，已到期可继续。最后一项确认与 outputComplete=true 在同一事务保存，避免确认完最后一项却丢失后处理入口。
 
@@ -71,7 +74,7 @@ Sender 的接口为 `sendItem(item): Promise<{ platformMessageIds: string[] }>`�
 
 ### 整理输入与结果
 
-普通叙事回合的记忆模型在事务外运行，输入由冻结及已确认记录重建：experiences、visibleMessages、reconsiderMessages、outgoing、候选 plan/taskChanges（arrangementsAndIntent），以及当前加载的背景、检索细节和长期记忆。它不直接收到整个个人导演结果或完整 nextState，也不是冻结了全部部署配置和模型上下文的快照。
+普通叙事回合的记忆模型在事务外运行，输入由冻结及已确认记录重建：experiences、visibleMessages、reconsiderMessages、outgoing、候选plan/taskChanges/outline（arrangementsAndIntent），以及sharedPublicExperience公开代写合同说明，以及当前加载的背景、检索细节和长期记忆。它不直接收到整个个人导演结果或完整 nextState，也不是冻结了全部部署配置和模型上下文的快照。
 
 实际 outgoing 包括已确认旁白、文字、动作和素材占位；首次可见输入、经历及 outgoing 的 ID 才可作为本轮新来源。重新考虑的旧消息和 retrieved 用于理解，不因再次出现就自动加强。是否真实发生、是否只是计划等语义由记忆提示要求约束；程序检查来源 ID 和旧记忆 ID 的范围，V0.3按(canonicalMemoryId,localDate)去重，同日只补来源。
 
@@ -85,7 +88,7 @@ finishPostprocessing 再次检查 done，使用同一个 DatabaseSync 连接和�
 
 1. 普通故事的短期／长期记忆、固定细节及独立 detail_history；新经历。
 2. 普通故事的 nextState，包括情绪、体力、场景、文字计划、睡眠和 narratedUntil；必要时安排下一自主周期。
-3. 任务变化和默认完成状态；可见消息 seenTurnId；从 runtime.pendingBatchIds 移除本轮 batchIds；保存概率计数。
+3. 任务及已看标记后finishSharedTurn：设置固定轮号、仅消费所选控制、开始转交普通未看输入／结束重组共同未看输入，按最新clock刷新唯一节点；重读状态再重排自主，重读Runtime再合并本轮批次／概率。
 4. 环境事件变更，以及环境回合相应的下一执行时间。
 5. turns.done=true、completedAt，并清空 frozenResult。
 
@@ -99,7 +102,7 @@ finishPostprocessing 再次检查 done，使用同一个 DatabaseSync 连接和�
 
 ### SQLite 与持久化范围
 
-当前采用 Node 内置 node:sqlite，单连接、WAL、synchronous=FULL；Storage.transaction 使用同步 BEGIN IMMEDIATE/COMMIT，回调抛错时 ROLLBACK。state 表为 key/data，原十一张业务表为id/data，另有六张记忆辅助表；普通JSON业务表为id/data，JSON TEXT 保存对象；不存在待选型的 Koishi 故事数据库适配层。网络、模型、发送和等待均在事务外。
+当前采用 Node 内置 node:sqlite，单连接、WAL、synchronous=FULL；Storage.transaction 使用同步 BEGIN IMMEDIATE/COMMIT，回调抛错时 ROLLBACK。state 表为 key/data，十二张业务表（含control_requests）为id/data，另有六张记忆辅助表；普通JSON业务表为id/data，JSON TEXT 保存对象；不存在待选型的 Koishi 故事数据库适配层。网络、模型、发送和等待均在事务外。
 
 普通正常关闭重开、同步事务回滚及 WAL/FULL 参数已有自动测试。尚未进行硬件断电、磁盘缓存故障或段 B 每个写入位置的强杀实验；不能把这些普通测试表述成物理断电验收。原子事务是当前代码提供的恢复基础，真实硬件持久性和平台确认仍在验证边界之外。
 
@@ -122,11 +125,11 @@ SerialHost 在持久化 paused=false 时才进入恢复与新轮调度；paused=
 
 ### 睡眠与环境调度顺序
 
-启动先恢复未完成旧轮。选择新轮时，调度器先处理到期世界更新，再处理到期学校更新，随后才选择起床、输入、自主及任务的合并故事轮。因此“先起床”仅描述个人故事的起床处理，不是高于旧轮恢复和环境更新的全局优先级。
+启动先恢复未完成旧轮；新轮可运行前台优先，其次到期world/school，再符合资格的自主，最后沿用维护让位规则。共同60秒等待中环境截止保留，没有前台就可处理；已经开始的环境仍串行完成，不中断。
 
-睡眠区间生效时，调度器保存 nextAutonomousAt=null，并把已闭合输入留为未读，预约保持 pending；到期世界／学校仍可更新，不运行个人导演。起床回合统一处理到期预约及已合批输入，并重新安排周期。尚未合批的新输入继续等待自己的截止。
+普通睡眠清自主并暂存未读，预约保持pending；起床补生活并交付已闭合输入。合法共同活动清醒，旧sleepAt/wakeAt不引发睡眠早退或伪起床。结束提交时有效睡眠窗口清自主，新睡眠未来重排自主，旧wake已过清过期计划，不额外抽作息或伪造刚醒。
 
-睡眠中恢复未尝试旧稿会走无模型、无输出控制提交；恢复已经尝试的旧稿仍续原输出。以上两类不能混写为“睡眠时所有恢复都不发送”。入睡边界终止周期不需要个人导演；活动预计结束通过检查消息任务参与调度，没有无条件独立 activity 回合。
+普通睡眠中未尝试旧稿重生成可走无叙事／无输出控制；已有尝试仍续原稿。合法共同稿不会被旧睡眠计划改成控制轮；恢复保持原固定轮号、输入／控制和已留存间隔。
 
 ### 错误、暂停与人工恢复
 
@@ -168,6 +171,12 @@ SerialHost 在持久化 paused=false 时才进入恢复与新轮调度；paused=
 
 准备结果和逐单元标记持久化，computing重开退pending、ready不重调模型、已应用单元不重写。每个单元正文／来源／grant／索引待办／标记同事务；stale仅作废本单元，合格内容新job重准备。维护失败或容量错误只记retryAt／后台错误，不设全局paused；前台容量错误保留未完成轮且暂停，不缩小重发。post job另保存短期clientRef映射及程序self_web_read来源，详见记忆实施记录。
 
+
+### 6.1 当前共同活动与新轮调度
+
+未完成轮先恢复；可运行前台先选，其次到期世界／学校，再符合资格的自主。共同等待允许环境运行，检查任务只能合并下一合法节点；共同／普通合批抑制旧自主截止，避免立即循环。公开开始／结束clock与实际outgoing同事务，段B仅设置本轮固定计数并消费固定控制；无输出轮用completedAt锚点，已确认输出不用post完成时间替代。新Runtime必须重读合并，保留晚到输入／控制和入口边界。
+
+旧库只读check不初始化，apply必须停止并先备份数据库／WAL／SHM；普通库保留既有记录和截止，旧活动拒绝猜测重建。正式入口检查sharedActivityVersion=1。本次只有临时库及离线Sender验收，正式库升级和真实语义仍待办。
 
 ## 搜索离线核心落地（2026-10-07）
 

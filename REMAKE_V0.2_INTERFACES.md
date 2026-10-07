@@ -4,9 +4,12 @@
 
 返回 [总架构](REMAKE_V0.2.md)；配套 [实施细化与开发记录](REMAKE_V0.2_IMPLEMENTATION.md)、[实施记录](docs/IMPLEMENTATION_LOG.md)。回合冻结、发送和提交边界见[恢复专题](REMAKE_V0.2_RECOVERY.md)。
 
+
+共同活动V0.3于2026-10-08按新细化实施；当前离线证据见[共同活动实施记录](docs/SHARED_ACTIVITY_V0.3_IMPLEMENTATION_LOG_20261007.md)。真实模型多轮语义、正式库升级和QQ收发仍待独立验收。
+
 ## 1. 数据传输原则
 
-程序内部传输 TypeScript 对象，模型返回 JSON。模型合同由 `src/model/contracts.ts` 的 Zod Schema 及额外控制校验组成，提示词在 `src/model/prompts.ts`。时间、模式、动作枚举和引用 ID 等参与程序判断；叙事、思想、活动描述与回复保留自由字符串。当前 Zod 对象会去除未声明字段，不能把附加字段也当成已被业务使用的内容。
+程序内部传输 TypeScript 对象，模型返回 JSON。模型合同由 `src/model/contracts.ts` 的 Zod Schema 及额外控制校验组成，提示词在 `src/model/prompts.ts`。时间、模式、动作枚举和引用 ID 等参与程序判断；叙事、思想、活动描述与回复保留自由字符串。普通Zod对象去除未声明字段；共同叙事采用strict，明确拒绝模型nextStepAt等额外字段。未声明字段不能视作业务已使用。
 
 时间使用带时区的 ISO 8601，允许 `Z` 或显式偏移，例如 `2026-10-07T12:00:00+08:00`。程序比较转换为时间戳，不按字符串排序；日程生成与状态显示使用配置时区，当前为 `Asia/Shanghai`。跨日睡眠保存完整起止日期；程序产生的时间可以是 UTC 表示，不要求每个存储字符串都写成 `+08:00`。
 
@@ -24,9 +27,30 @@ export interface Clock { now(): ISOTime }
 export interface Random { next(): number }
 export interface Activity { description: string; startsAt: ISOTime; expectedEndAt: ISOTime | null; phoneAccess: boolean }
 export interface Emotion { label: string; degree: string; reason: string }
+export interface SharedOutline { goal: string; openThreads: string[]; endingCondition: string }
+export interface SharedScene {
+  activityId: string; title: string; progress: string; lastPublicNode: string;
+  completedSteps: number; maxSteps: number; idleSeconds: number;
+  outline: SharedOutline | null; nextStepAt: ISOTime | null;
+}
+export interface SharedClock {
+  activityId: string; mode: Exclude<Mode, 'chat'>; status: 'active' | 'ended'; startedAt: ISOTime;
+  lastInputAt: ISOTime | null; lastOutputAt: ISOTime | null; lastSilentCompletedAt: ISOTime | null;
+}
+export interface ControlRequest {
+  id: string; activityId: string | null; receivedAt: ISOTime; platformMessageIds: string[];
+  status: 'pending' | 'consumed' | 'cancelled'; consumedTurnId: string | null;
+}
+export interface SharedTurnMeta {
+  activityId: string; stepNumber: number; maxSteps: number; idleSeconds: number;
+  advanceReason: 'initial' | 'manual' | 'automatic' | 'appointment';
+  phase: 'opening' | 'ongoing' | 'wrap_up' | 'final'; controlRequestIds: string[];
+  sceneTaskId: string; allowSimulatedUserActions: boolean;
+}
+export interface InputAcceptance { kind: 'message' | 'advance'; systemReply: string | null }
 export interface Scene {
   mode: Mode; description: string; activity: Activity | null;
-  shared: null | { title: string; progress: string; lastPublicNode: string; nextStepAt: ISOTime | null };
+  shared: SharedScene | null;
 }
 export interface CharacterState {
   narratedUntil: ISOTime; scene: Scene; emotions: Emotion[];
@@ -39,12 +63,14 @@ export interface Message {
   id: string; platformMessageIds: string[]; direction: 'incoming' | 'outgoing';
   receivedAt: ISOTime; content: string; batchId: string | null; seenTurnId: string | null;
   turnId: string | null; outboxSeq: number | null;
+  sharedActivityId?: string | null;
 }
 export interface Runtime {
   openBatch: { id: string; readyAt: ISOTime } | null; pendingBatchIds: string[]; paused: boolean;
   contactMisses: number; stickerMisses: number; nextWorldAt: ISOTime | null; nextSchoolAt: ISOTime | null;
   lastError: string | null;
   nextMaintenanceAt: string | null;
+  sharedActivityVersion: 1 | null; sharedClock: SharedClock | null;
 }
 export interface Experience { id: string; happenedAt: ISOTime; description: string; relatedEventIds: string[] }
 export interface NarrativeResult {
@@ -52,7 +78,7 @@ export interface NarrativeResult {
   currentScene: { description: string; activity: Activity | null };
   energy: CharacterState['energy'];
 }
-export interface SharedNarrativeResult extends NarrativeResult { publicNarration: string | null; progress: string; nextStepAt: ISOTime | null }
+export interface SharedNarrativeResult extends NarrativeResult { publicNarration: string | null; progress: string; outline: SharedOutline; simulatedUserActions: string[] }
 export type SpeechPart = { kind: 'text' | 'action'; content: string };
 export interface UtteranceIntent { intention: string; draft: string; actions?: string[] }
 export type ReplyDecision = ({ decision: 'now' } & UtteranceIntent) | { decision: 'later'; reconsiderAt: ISOTime; intention: string } | { decision: 'none' };
@@ -66,7 +92,7 @@ export type PersonalResult = ChatPersonalResult | LifePersonalResult;
 export interface ExpressionResult { parts: SpeechPart[] }
 export type TaskKind = 'appointment' | 'check_messages' | 'scene_step';
 export interface TaskDetails { kind: TaskKind; at: ISOTime; description: string; checkReason?: 'unread' | 'deferred_reply'; messageIds?: string[] }
-export interface ScheduledTask extends TaskDetails { id: string; status: 'pending' | 'completed' | 'cancelled' }
+export interface ScheduledTask extends TaskDetails { id: string; status: 'pending' | 'completed' | 'cancelled'; sharedActivityId?: string }
 export type TaskChange = { action: 'create'; task: TaskDetails; id?: string } | { action: 'update'; id: string; task: Partial<TaskDetails> } | { action: 'cancel'; id: string };
 export interface MemorySummary { content: string; topics: string[]; sourceIds: string[] }
 export type MemoryResult = import('./memory/types').MemoryResultV3;
@@ -78,11 +104,12 @@ export type EnvironmentChange = { action: 'create'; event: Omit<EnvironmentEvent
 export interface EnvironmentResult { changes: EnvironmentChange[] }
 export interface Sticker { id: string; path: string; description: string; aliases?: string[]; embeddingInput?: string; embedding: number[]; embeddingModel: string; embeddingBaseUrl?: string; legacyFingerprint?: string }
 export type TriggerKind = 'input' | 'autonomous' | 'sleep' | 'activity' | 'appointment' | 'check_messages' | 'scene_step' | 'environment';
-export interface TurnRequest { inputMessageIds: string[]; taskIds: string[]; triggerKinds: TriggerKind[]; batchIds?: string[]; environmentKind?: 'world' | 'school' }
+export interface TurnRequest { inputMessageIds: string[]; taskIds: string[]; triggerKinds: TriggerKind[]; batchIds?: string[]; environmentKind?: 'world' | 'school'; sharedMeta?: SharedTurnMeta | null }
 export interface TurnRecord {
   id: string; inputMessageIds: string[]; triggerTaskIds: string[]; triggerKinds: TriggerKind[];
   at: ISOTime; completedAt: ISOTime | null; frozenResult: TurnCandidate | null; outputComplete: boolean; done: boolean;
   batchIds: string[]; entryMode: Mode; environmentKind?: 'world' | 'school';
+  sharedMeta?: SharedTurnMeta | null; autonomousIntervalMinutes?: number | null;
 }
 export interface TurnCandidate {
   visibleMessageIds: string[]; reconsiderMessageIds: string[];
@@ -211,20 +238,20 @@ export interface MemoryResultV3 {schemaVersion:3;shortTermChanges:Array<ShortCre
 | 任务 | 实际主要字段 |
 | --- | --- |
 | 世界／学校 | `at / timezone / worldSetting / schoolSetting / events / webMaterials / campusDetails`；世界的 campusDetails 为空，学校按细节 key 的 `school|roommate|classmate` 匹配取值 |
-| 主叙事 | `from / at / background / state / waking / events / dueTasks / recent / history`；共同场景额外传 `visibleMessages` |
+| 主叙事 | `from / at / background / state / waking / events / dueTasks / recent / history`；共同场景额外传visibleMessages/sharedMeta/remainingSteps；工厂末尾另传previousOutline |
 | 个人导演 | `at / background / state / experiences / visibleMessages / reconsiderMessages / dueTasks / tasks / events / history / contactEligible` |
 | 表达 | `intent / mode / state / visibleMessages / history / chatExamples` |
 | 记忆整理 | `at / background / experiences / visibleMessages / reconsiderMessages / outgoing / arrangementsAndIntent / details / retrieved`；retrieved 为相关短期／长期／按需常驻记忆 |
 
 环境输入没有独立的地点或前次简报字段；既有信息由设定与 active 事件提供。叙事和个人导演收到的 `events` 包括未来安排，并非只含已到期事件；`dueTasks` 才是本轮选定的到期任务。`HistoryContext` 包含近期原文、短期／长期记忆、当前细节及按需历史，具体检索见[记忆方案](REMAKE_V0.2_MEMORY.md)。记忆整理单独构造 `{ details, retrieved }`，只对实际使用字段计算可选historyBudget，默认null；不把未使用的近期原文纳入整理预算。
 
-普通私聊的主叙事不读取本轮新消息正文；检索查询也不含该正文。主叙事先更新过去经历和当前处境，旁白再决定可见消息。共同场景读取本轮选定且已经合批的消息，不再做手机接收门禁；结束共同活动也不撤销本轮已见输入。睡眠中的新故事轮不运行个人导演；调度器会将已明确不可接收的单纯输入暂存，规则见[生活方案](REMAKE_V0.2_LIFE.md)。
+普通私聊的主叙事不读取本轮新消息正文；检索查询也不含该正文。主叙事先更新过去经历和当前处境，旁白再决定可见消息。共同场景读取本次选择的真实输入，不等待普通合批、不套手机或旧睡眠计划门禁；结束共同活动也不撤销本轮已见输入。睡眠中的新故事轮不运行个人导演；调度器会将已明确不可接收的单纯输入暂存，规则见[生活方案](REMAKE_V0.2_LIFE.md)。
 
 ### 连续输入接口
 
 Koishi 入口只接收绑定机器人与用户之间的私聊，解析并拼接 text 元素，忽略无有效文字的消息。当前不保存完整平台消息结构或图片／语音等非文字内容；`hdsi.status / pause / resume` 管理命令绕过故事输入。
 
-`InputBuffer.acceptInput()` 在同一事务先结算过期批次，再保存消息和 `runtime.openBatch = { id, readyAt }`，截止为末条 `receivedAt + 15 秒`。消息通过 `messages.batchId` 归属批次，到期批次 ID 进入 `pendingBatchIds`；不存在含消息副本的 `InputBatch` 对象或独立批次表。
+`InputBuffer.acceptInput(): Promise<InputAcceptance>`先精确分类【推进】，控制记录独立返回systemReply；共同原文立即关联活动、batchId=null并刷新clock。普通路径在同一事务先结算过期批次，再保存消息和 `runtime.openBatch = { id, readyAt }`，截止为末条 `receivedAt + 15 秒`。消息通过 `messages.batchId` 归属批次，到期批次 ID 进入 `pendingBatchIds`；不存在含消息副本的 `InputBatch` 对象或独立批次表。
 
 旧轮发送／后处理期间仍立即接收新消息。它们不加入旧轮已选定的闭合批次，但可以继续加入当前开放的新批次。回合通过 `inputMessageIds / batchIds` 引用原记录；已入轮、已看和批次等待是不同状态，未看消息不会因批次已处理而删除。重启使用保存的截止时间，不重新等待完整 15 秒。
 
@@ -250,11 +277,11 @@ Koishi 入口只接收绑定机器人与用户之间的私聊，解析并拼接 
 
 ## 5. 主叙事输出
 
-普通任务使用 `NarrativeResult`；共同任务使用扩展的 `SharedNarrativeResult`，包含 `publicNarration / progress / nextStepAt`。共同任务输入已有 `shared.lastPublicNode / progress / nextStepAt` 及可见场景消息，普通任务没有本轮新私聊正文。
+普通NarrativeResult不变；共同SharedNarrativeResult新增必填outline及simulatedUserActions，保留publicNarration/progress，删除模型可写nextStepAt。工厂narrativeTask及runNarrative原参数后追加sharedMeta，再追加previousOutline（wrapper在options后）；共同必传meta，普通兼容。
 
-程序校验：经历 `happenedAt` 落在本轮 `from..at` 区间；`relatedEventIds` 引用已知事件；当前活动开始不得晚于 at，预计结束不得早于开始；非空共同 `nextStepAt` 必须晚于 at。允许空经历列表和 null 活动／下一节点时间。
+保留经历时间、环境引用、当前活动时间校验。权限false清单必须空；清单每个非空文本必须原文在公开旁白中。wrap_up且previousOutline非null时，每个openThreads都必须属于旧字符串集合；首节点null可建立走向。final必须openThreads=[]及非空公开旁白，个人sharedChange=end。goal/endingCondition不做字符串等值假语义审核，提示词及真实多轮验收约束漂移。
 
-`publicNarration` 为裸公开正文，展示时统一加 `【】`；没有新公开节点时可以为 null。程序只把 currentScene 的 description/activity 合入工作区，保留模式；共同进度合入 shared，非空公开正文更新 lastPublicNode，title 沿用既有活动。私人摘要不公开、主叙事不替角色决定主观意愿或用户关键动作等要求由提示词约束。
+候选更新progress/outline及非空lastPublicNode；nextStepAt仅由sharedDeadline计算，并投影到唯一scene:activityId。公开正文裸字符串，发送统一【】；真实用户【动作：…】原样传入，角色自愿选择仍由个人决定。静默代写公开共享模拟经历不推成真实用户固定属性。
 
 ## 6. 个人导演输出
 
@@ -277,7 +304,7 @@ Koishi 入口只接收绑定机器人与用户之间的私聊，解析并拼接 
 
 `sleepPreference` 的 reason 不被算法解析。已有区间时，仅 reason 和 null 时间不会改变作息；具体 sleepAt/wakeAt 可调整对应值。尚无区间或起床安排下一晚时，按习惯及体力抽取区间；次日早间预约减去准备时间可提前 wakeAt。两个偏好时间都有值时合同检查先后关系，最终安排还要求 wakeAt 晚于 sleepAt。不能将“只说想早睡就自动改变时间”视作已实现能力。
 
-自主周期是否更新取决于触发来源，不取决于所选合同。包含 autonomous 触发时，即使用聊天或共同合同，也冻结下一间隔并在提交时以 completedAt 安排；睡眠开始清周期，起床重新安排。
+每个实际角色叙事前台轮冻结一次自主间隔，首次freeze同时保存TurnRecord.autonomousIntervalMinutes，未尝试稿重生成也复用。段B从completedAt重排，普通睡眠清空；环境／无叙事控制轮为null。个人shared工厂及wrapper在原参数末尾（wrapper在options后）仅追加sharedMeta，final要求end；所有个人合同禁止create/update/cancel scene_step。
 
 ## 7. 到期任务与变更
 
@@ -321,7 +348,7 @@ Sticker 保存路径、描述、向量、模型，可保留 aliases、embeddingI
 
 ## 10. SQLite 存储
 
-当前使用Node内置node:sqlite单个DatabaseSync连接，Node>=22.13。state为key/data，原十一张业务表为id/data，JSON TEXT保存对象；另有六张记忆辅助表，形状见记忆落地。同步事务保存故事，不通过Koishi数据库适配器，也没有第二份JSON故事状态。
+当前使用Node内置node:sqlite单个DatabaseSync连接，Node>=22.13。state为key/data，十二张业务表（含control_requests）为id/data，JSON TEXT保存对象；另有六张记忆辅助表，形状见记忆落地。同步事务保存故事，不通过Koishi数据库适配器，也没有第二份JSON故事状态。
 
 | 表 | 实际内容 |
 | --- | --- |
@@ -339,6 +366,8 @@ Sticker 保存路径、描述、向量、模型，可保留 aliases、embeddingI
 | stickers | 素材文件路径、描述／别名、向量输入、向量及兼容元数据 |
 
 作息、模型与其他部署配置从配置文件加载，不保存在 state 的“日常节奏配置”中。state.background 是初次初始化快照，当前模型实际使用本次加载的 settings.background；它不是重启后唯一的背景来源。初始状态、已知细节和事件只在库中尚无 character 时初始化，不迁移旧聊天记忆。
+
+shared.ts同步接口：hasValidSharedScene、sharedRoutingActivity、sharedDeadline、refreshSharedStep、selectSharedMeta、recordSharedOutput、finishSharedTurn。写函数由调用方既有短事务包裹；不嵌套事务或调用模型。只读旧库检查与升级位于deployment/shared-upgrade.ts，CLI为shared:migrate。
 
 ### 恢复记录接口
 

@@ -31,6 +31,8 @@
     "16:00"
   ],
   "historyBudget": null,
+  "sharedIdleSeconds": 60,
+  "sharedMaxSteps": 20,
   "stickersEnabled": false,
   "models": {
     "narrative": {
