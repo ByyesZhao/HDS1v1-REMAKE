@@ -16,6 +16,7 @@ import { runWorld } from './directors/world';
 import { runSchool } from './directors/school';
 import { nextDaily, due } from './time';
 import { phaseOptions } from './web/phases';
+import { hasValidSharedScene } from './host/shared';
 
 export interface Dependencies { storage: Storage; clock: Clock; random: Random; models: ModelRunner; config: AppConfig; sender: Sender; wait(ms: number): Promise<void>; web?:import('./web/service').WebSearchService; memoryStore?:import('./memory/store').MemoryStore; memoryLifecycle?:import('./memory/lifecycle').MemoryLifecycle; retrieval?:MemoryRetrieval; maintenance?:import('./memory/maintenance').MemoryMaintenance; stickers?: { findSticker(query: string): Promise<string> }; getSelfWebReadSources?(turnId:string):import('./memory/types').SelfWebReadSource[] }
 export class HdsiApp {
@@ -50,7 +51,7 @@ export class HdsiApp {
     try {
       let turn = initialTurn;
       if (!turn.frozenResult) {
-        const generated = await generateTurn(d, { inputMessageIds: turn.inputMessageIds, taskIds: turn.triggerTaskIds, triggerKinds: turn.triggerKinds, batchIds: turn.batchIds, environmentKind: turn.environmentKind, sharedMeta: turn.sharedMeta }, turn.id, turn.at);
+        const generated = await generateTurn(d, { inputMessageIds: turn.inputMessageIds, taskIds: turn.triggerTaskIds, triggerKinds: turn.triggerKinds, batchIds: turn.batchIds, environmentKind: turn.environmentKind, sharedMeta: turn.sharedMeta }, turn.id, turn.at, turn.autonomousIntervalMinutes);
         turn = freezeTurn(d, turn, generated.candidate, generated.items);
       }
       if (!turn.outputComplete) await sendFrozen(d, turn);
@@ -64,10 +65,10 @@ export class HdsiApp {
     } finally { this.busy = false; }
   }
 }
-export async function generateTurn(d: Dependencies, request: TurnRequest, turnId: string, at = d.clock.now()): Promise<{ candidate: TurnCandidate; items: OutboxItem[] }> {
+export async function generateTurn(d: Dependencies, request: TurnRequest, turnId: string, at = d.clock.now(), retainedInterval?: number | null): Promise<{ candidate: TurnCandidate; items: OutboxItem[] }> {
   const state = structuredClone(d.storage.character());
   const entryMode = state.scene.mode;
-  const shared = entryMode !== 'chat';
+  const shared = hasValidSharedScene(state);
   const runtime = d.storage.runtime();
   if (request.environmentKind) {
     const kind = request.environmentKind;
@@ -98,7 +99,7 @@ export async function generateTurn(d: Dependencies, request: TurnRequest, turnId
   const narrativeRequest=makeRetrievalRequest(narrativeQuery,at,shared?'narrative_shared':'narrative',d.config.historyBudget,shared?messages.map(m=>m.id):[]);
   const narrativeHistory = await contextBuilder.build(narrativeRequest);
   const recent = narrativeHistory.recent;
-  const waking = request.triggerKinds.includes('sleep') || !!state.sleep && due(state.sleep.wakeAt, at);
+  const waking = !shared && (request.triggerKinds.includes('sleep') || !!state.sleep && due(state.sleep.wakeAt, at));
   if (waking) state.sleep = null;
   const narrativeInput = { from: state.narratedUntil, at, background: d.config.background, state, waking, events, dueTasks: tasks, recent, history: narrativeHistory,
     ...(shared ? { visibleMessages: messages, sharedMeta: request.sharedMeta, remainingSteps: request.sharedMeta ? request.sharedMeta.maxSteps - request.sharedMeta.stepNumber : null } : {}) };
@@ -143,7 +144,7 @@ export async function generateTurn(d: Dependencies, request: TurnRequest, turnId
     experiences: narrative.experiences.map(e => ({ ...e, id: randomUUID() })), nextState: state,
     taskChanges: (personal?.taskChanges ?? []).map(c => c.action === 'create' ? { ...c, id: randomUUID() } : c), completedTaskIds: tasks.filter(t => t.kind !== 'check_messages' || canRead(state, at)).map(t => t.id),
     probability: { contactMisses, stickerMisses: runtime.stickerMisses },
-    autonomousIntervalMinutes: request.triggerKinds.includes('autonomous') || waking ? autonomousMinutes(d.random) : null, environmentChanges: [],
+    autonomousIntervalMinutes: retainedInterval === undefined ? autonomousMinutes(d.random) : retainedInterval, environmentChanges: [],
   };
   const oldUnread = allTasks.find(t => t.kind === 'check_messages' && t.checkReason === 'unread');
   const remainingUnread = messages.filter(m => !candidate.visibleMessageIds.includes(m.id));
@@ -159,21 +160,17 @@ export async function generateTurn(d: Dependencies, request: TurnRequest, turnId
     const reply = personal.reply;
     maintainTask(candidate.taskChanges, deferred[0], { kind: 'check_messages', at: reply.reconsiderAt, description: reply.intention, checkReason: 'deferred_reply', messageIds: [...new Set([...visible, ...reconsider].map(m => m.id))] });
   }
-  const nodeTask = allTasks.find(t => t.kind === 'scene_step');
   if (change?.action === 'start') {
     state.scene.mode = change.mode;
     state.scene.shared = { activityId: randomUUID(), title: change.title, progress: '已确认开始，待首个公开节点', lastPublicNode: '', nextStepAt: at,
       completedSteps: 0, maxSteps: d.config.sharedMaxSteps, idleSeconds: d.config.sharedIdleSeconds, outline: null };
-    maintainTask(candidate.taskChanges, nodeTask, { kind: 'scene_step', at, description: change.title });
   } else if (change?.action === 'end') {
     state.scene.mode = 'chat'; state.scene.shared = null;
-    for (const task of allTasks.filter(t => t.kind === 'scene_step')) maintainTask(candidate.taskChanges, task, null);
-  } else if (state.scene.shared) {
-    const next = state.scene.shared.nextStepAt;
-    maintainTask(candidate.taskChanges, nodeTask, next ? { kind: 'scene_step', at: next, description: state.scene.shared.title } : null);
   }
   const changesMorningAppointment = candidate.taskChanges.some(c => c.action === 'create' ? c.task.kind === 'appointment' : c.action === 'update' && allTasks.some(t => t.id === c.id && t.kind === 'appointment'));
-  if (waking || personal?.sleepPreference || changesMorningAppointment) {
+  const expiredSharedSleep = shared && change?.action === 'end' && !!state.sleep && due(state.sleep.wakeAt, at);
+  if (expiredSharedSleep) state.sleep = null;
+  if (waking || personal?.sleepPreference || changesMorningAppointment || (!shared && !state.sleep)) {
     // Apply task changes in the workspace before considering next-morning appointments.
     const plannedTasks = allTasks.filter(t => !candidate.completedTaskIds.includes(t.id)).map(t => structuredClone(t));
     for (const c of candidate.taskChanges) {

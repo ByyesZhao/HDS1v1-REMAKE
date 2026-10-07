@@ -51,7 +51,7 @@ it('stashes inaccessible input without models and rechecks the actual end', asyn
   d.clock.time = '2026-10-07T10:30:00+08:00';
   d.models.outputs.narrative = { ...narrative, currentScene: { description: '还没结束', activity: { ...activity, expectedEndAt: null } } };
   await new HdsiApp(d).runTurn((await s.collectReady(d.clock.now()))!);
-  expect(await s.nextDeadline(d.clock.now())).toBeNull();
+  expect(Date.parse((await s.nextDeadline(d.clock.now()))!)).toBe(Date.parse(d.clock.now()) + 180 * 60_000);
   d.storage.close();
 });
 

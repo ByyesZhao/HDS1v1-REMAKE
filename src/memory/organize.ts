@@ -27,7 +27,11 @@ export async function organizeMemory(d: Dependencies, turn: TurnRecord): Promise
   includeLookupIds(options.web?.snapshot().checkpoint?.privateLookupResult);
   return d.models.runModel(memoryTask(sourceIds,longIds,shortIds,selfWebReadSources.map(s=>s.id)), {
     at: turn.at, background: d.config.background, experiences: c.experiences, visibleMessages, reconsiderMessages, outgoing,
-    arrangementsAndIntent: { plan: c.nextState.plan, tasks: c.taskChanges },
+    arrangementsAndIntent: { plan: c.nextState.plan, tasks: c.taskChanges, outline: c.narrative && 'outline' in c.narrative ? c.narrative.outline : null },
+    ...(c.narrative && 'simulatedUserActions' in c.narrative ? { sharedPublicExperience: {
+      publicNarration: c.narrative.publicNarration, simulatedUserActions: c.narrative.simulatedUserActions,
+      rule: '仅成功公开内容是共享模拟经历；不推断现实用户稳定属性。不增加独立来源ID，引用实际outgoing或合法本轮经历／输入。未公开代写不能成为事实，outline只在意图区。',
+    } } : {}),
     details: context.details, retrieved: memories,
     selfWebReadSources,
     selfWebReadMaterials:selfWebReadSources.map(source=>({sourceId:source.id,material:d.web?.store.snapshot(source.runId).materials.find(m=>m.id===source.materialId)})),

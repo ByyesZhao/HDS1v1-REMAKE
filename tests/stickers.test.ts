@@ -23,7 +23,9 @@ it('requests the configured dimension so imported vectors and queries use the sa
 it('samples every text, inserts each hit immediately, and freezes the final cross-turn counter', async () => {
   const d = setup(); saveInput(d.storage, 'a', '你好'); d.config.stickersEnabled = true;
   d.storage.set('runtime', { ...d.storage.runtime(), stickerMisses: 2, contactMisses: 7 });
-  d.random = new SequenceRandom([0.999, 0, 0.999]);
+  d.storage.set('character', { ...d.storage.character(), sleep: { sleepAt: '2026-10-07T23:30:00+08:00', wakeAt: '2026-10-08T08:30:00+08:00' } });
+  // Foreground idle interval, followed by the three unchanged sticker opportunities.
+  d.random = new SequenceRandom([0.5, 0.999, 0, 0.999]);
   d.models.outputs.personal_chat = { emotions: [], reply: { decision: 'now', intention: '回答', draft: '严肃内容' }, taskChanges: [] };
   d.models.outputs.expression = { parts: [{ kind: 'text', content: '一' }, { kind: 'action', content: '笑' }, { kind: 'text', content: '二' }, { kind: 'text', content: '三' }] };
   let lookups = 0; const stickers = { findSticker: async () => { lookups++; return 's'; } };
@@ -31,7 +33,7 @@ it('samples every text, inserts each hit immediately, and freezes the final cros
   expect(result.items.map(i => i.kind)).toEqual(['text', 'action', 'text', 'sticker', 'text']);
   expect(lookups).toBe(1); expect(result.candidate.probability.stickerMisses).toBe(1);
   expect(result.candidate.probability.contactMisses).toBe(7); expect(d.storage.runtime().stickerMisses).toBe(2);
-  d.random = new SequenceRandom([0.999, 0, 0.999]);
+  d.random = new SequenceRandom([0.5, 0.999, 0, 0.999]);
   await new HdsiApp({ ...d, stickers }).runTurn({ inputMessageIds: ['a'], taskIds: [], triggerKinds: ['input'] });
   expect(d.storage.runtime().stickerMisses).toBe(1);
   d.storage.close();

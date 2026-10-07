@@ -19,7 +19,7 @@
 | 2 输入控制 | 完成 | 8/8目标测试，209/209全套，typecheck通过 |
 | 3 调度 | 完成 | 新7项及维护／调度测试通过，216/216全套 |
 | 4 合同 | 完成 | 13/13目标测试，221/221全套，typecheck通过 |
-| 5 流水线与恢复 | 待执行 | |
+| 5 流水线与恢复 | 完成 | 42/42目标测试，244/244全套，typecheck通过 |
 | 6 升级 | 待执行 | |
 | 7 回归与交付 | 待执行 | |
 
@@ -53,3 +53,13 @@ Task 3: complete（从6e108c5开始，提交`feat: schedule shared turns with fo
 RED：`npm test -- tests/shared-v3-contracts.test.ts tests/model-call-context.test.ts tests/shared-scene.test.ts` 新5项失败、旧8项通过。
 GREEN：同组13/13通过；全套46文件／221测试通过；typecheck退出0。共同夹具补合法身份／meta和新outline／simulatedUserActions；旧“个人可创建scene_step”断言改为允许预约，独占节点由新合同测试覆盖。
 Task 4: complete（从1fb3a8f开始，提交`feat: constrain shared narration and final closure`）。严格拒绝模型nextStepAt，wrap_up原字符串集合包含和final空线索／公开结束约束已落实；共享meta固定在轮记录并透传两个模型。提示词词项测试只确认任务指令存在，不声称文学／语义验收通过。
+
+## 任务5证据
+
+RED：`npm test -- tests/shared-v3-recovery.test.ts tests/shared-v3-flow.test.ts tests/turn.test.ts tests/recovery.test.ts tests/shared-scene.test.ts tests/tasks.test.ts` 新21项失败、旧20项通过；非法final暂停项已有任务4合同，原先即通过。
+GREEN：补普通睡眠控制门禁后同组42/42通过；全套48文件／244测试通过；typecheck退出0。临时文件恢复覆盖partial/post/committed，不重发确认项、不重复计数和消费；普通／共同未尝试稿均留存一次180分钟抽样。
+开始／结束时真实send回调建立／关闭clock；移除任务3临时start选轮clock填充，仅直接活动夹具保留。末表情确认22:31:30→截止22:32:30，post到22:31:45不挪可见截止；后续输入仍可延后。静默20轮假故事，17收束、20公开结束，无21；不是文学验收。
+Ruling: 普通待看查询按“活动关联且batchId=null”排除，共同结束后保留出处但按普通批次交付。— 细化§4.2明确不能因旧关联永久排除。— 若改错将漏交付活动末尾输入，已用真实结束／晚到输入测试覆盖。
+Ruling: 既有表情概率夹具新增一个前台间隔抽样并预设作息；概率公式、三次文字机会和跨轮计数断言不变。旧无限期不可读检查的null截止改为成功narrative后180分钟自主截止。— 本次统一前台周期明确替代旧行为。— 随机抽样顺序变动时须保持业务机会测试明确。
+一条新记忆测试曾误写成不应存在模拟摘要；MemoryLifecycle确实合并eventSummary，纠正为肯定断言，并保留合法outgoing来源及outline意图区检查。
+Task 5: complete（从2a4127e开始，提交`feat: commit and recover bounded shared activities`）。正式服务未启动，正式库未写入；所有Sender／模型为离线替身。

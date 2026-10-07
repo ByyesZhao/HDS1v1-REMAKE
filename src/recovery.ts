@@ -4,9 +4,11 @@ import { displayText, nextItemDelay } from './output/qq';
 import { addMs, milliseconds, nextDaily } from './time';
 import { applyMemory, applyTasks, organizeMemory, currentSelfWebReads } from './memory/organize';
 import { isSleeping } from './host/state';
+import { recordSharedOutput, finishSharedTurn } from './host/shared';
 
 export function freezeTurn(d: Dependencies, turn: TurnRecord, candidate: TurnCandidate, items: OutboxItem[]): TurnRecord {
-  const updated = { ...turn, frozenResult: candidate, outputComplete: items.length === 0 };
+  const updated = { ...turn, frozenResult: candidate, outputComplete: items.length === 0,
+    autonomousIntervalMinutes: turn.autonomousIntervalMinutes === undefined ? candidate.autonomousIntervalMinutes : turn.autonomousIntervalMinutes };
   d.storage.transaction(() => {
     d.storage.save('turns', turn.id, updated);
     items.forEach((item, index) => d.storage.saveOutbox({ ...item, notBefore: index === 0 ? d.clock.now() : null }));
@@ -36,7 +38,9 @@ export async function sendFrozen(d: Dependencies, turn: TurnRecord): Promise<voi
       d.storage.save('messages', id, {
         id, content: item.kind === 'sticker' ? `[表情素材:${item.payload}]` : displayText(item), receivedAt: confirmedAt, platformMessageIds: ids,
         direction: 'outgoing', seenTurnId: null, batchId: null, turnId: turn.id, outboxSeq: item.seq,
+        sharedActivityId: turn.sharedMeta?.activityId ?? turn.frozenResult!.nextState.scene.shared?.activityId ?? null,
       });
+      recordSharedOutput(d.storage, turn, item, confirmedAt);
       if (index + 1 < items.length) {
         const next = d.storage.outbox(turn.id)[index + 1];
         d.storage.saveOutbox({ ...next, notBefore: addMs(confirmedAt, nextItemDelay(items, index + 1)) });
@@ -65,14 +69,19 @@ export async function finishPostprocessing(d: Dependencies, turn: TurnRecord): P
     const completedAt = d.clock.now();
     if (!turn.environmentKind) applyMemory(d, turn.id, memoryResult, turn.at);
     c.experiences.forEach(e => d.storage.save('experiences', e.id, e));
-    if (isSleeping(c.nextState, completedAt)) c.nextState.nextAutonomousAt = null;
-    else if (c.autonomousIntervalMinutes !== null) c.nextState.nextAutonomousAt = addMs(completedAt, c.autonomousIntervalMinutes * 60_000);
     if (!turn.environmentKind) d.storage.set('character', c.nextState);
     applyTasks(d, c);
     c.visibleMessageIds.forEach(id => {
       const m = d.storage.read('messages', id)!;
       d.storage.save('messages', id, { ...m, seenTurnId: m.seenTurnId ?? turn.id });
     });
+    if (!turn.environmentKind) {
+      finishSharedTurn(d.storage, current, completedAt);
+      const state = d.storage.character();
+      if (isSleeping(state, completedAt)) state.nextAutonomousAt = null;
+      else if (c.autonomousIntervalMinutes !== null) state.nextAutonomousAt = addMs(completedAt, c.autonomousIntervalMinutes * 60_000);
+      d.storage.set('character', state);
+    }
     const runtime = d.storage.runtime();
     runtime.pendingBatchIds = runtime.pendingBatchIds.filter(id => !turn.batchIds.includes(id));
     runtime.contactMisses = c.probability.contactMisses; runtime.stickerMisses = c.probability.stickerMisses;

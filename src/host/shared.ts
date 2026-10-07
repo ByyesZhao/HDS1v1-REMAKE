@@ -1,4 +1,5 @@
-import type { CharacterState, Scene, SharedClock, SharedTurnMeta } from '../types';
+import type { CharacterState, Scene, SharedClock, SharedTurnMeta, TurnRecord, OutboxItem } from '../types';
+import { randomUUID } from 'node:crypto';
 import { Storage } from '../storage';
 import { addMs, milliseconds } from '../time';
 
@@ -51,4 +52,64 @@ export function refreshSharedStep(storage: Storage, _now: string): void {
       sharedActivityId: s.activityId, status: 'pending' });
   }
   storage.set('character', state);
+}
+
+/** Called only after a real send confirmation, within its transaction. */
+export function recordSharedOutput(storage: Storage, turn: TurnRecord, item: OutboxItem, confirmedAt: string): void {
+  const candidate = turn.frozenResult!, change = candidate.personal?.sharedChange;
+  const runtime = storage.runtime();
+  const starting = change?.action === 'start' && item.seq === 0 && item.kind === 'narration';
+  const activityId = starting ? candidate.nextState.scene.shared!.activityId : turn.sharedMeta?.activityId;
+  if (!activityId) return;
+  if (starting) runtime.sharedClock = { activityId, mode: candidate.nextState.scene.mode as SharedClock['mode'], status: 'active',
+    startedAt: confirmedAt, lastInputAt: null, lastOutputAt: null, lastSilentCompletedAt: null };
+  const clock = runtime.sharedClock;
+  if (!clock || clock.activityId !== activityId) return;
+  clock.lastOutputAt = confirmedAt;
+  if (change?.action === 'end' && item.kind === 'narration' && item.seq === storage.outbox(turn.id).length - 1) clock.status = 'ended';
+  storage.set('runtime', runtime);
+  refreshSharedStep(storage, confirmedAt);
+}
+
+/** Applies only activity-owned data; caller already saved the candidate and marked visible inputs. */
+export function finishSharedTurn(storage: Storage, turn: TurnRecord, completedAt: string): void {
+  const candidate = turn.frozenResult!, change = candidate.personal?.sharedChange, meta = turn.sharedMeta;
+  if (!meta && change?.action !== 'start') return;
+  const state = storage.character(), runtime = storage.runtime();
+  const activityId = meta?.activityId ?? state.scene.shared!.activityId;
+  if (meta) {
+    if (state.scene.shared?.activityId === activityId) state.scene.shared.completedSteps = meta.stepNumber;
+    for (const id of meta.controlRequestIds) {
+      const c = storage.read('control_requests', id);
+      if (c?.activityId === activityId && c.status === 'pending') storage.save('control_requests', id, { ...c, status: 'consumed', consumedTurnId: turn.id });
+    }
+    if (!storage.outbox(turn.id).length && runtime.sharedClock?.activityId === activityId) runtime.sharedClock.lastSilentCompletedAt = completedAt;
+  }
+  if (change?.action === 'start') {
+    const transferred = storage.messages().filter(m => m.direction === 'incoming' && m.seenTurnId === null && m.batchId !== null);
+    const batches = new Set(transferred.map(m => m.batchId!));
+    transferred.forEach(m => storage.save('messages', m.id, { ...m, sharedActivityId: activityId, batchId: null }));
+    runtime.pendingBatchIds = runtime.pendingBatchIds.filter(id => !batches.has(id));
+    if (runtime.openBatch && batches.has(runtime.openBatch.id)) runtime.openBatch = null;
+    const clock = runtime.sharedClock;
+    if (clock?.activityId === activityId && transferred.length) {
+      const anchors = [...transferred.map(m => m.receivedAt), ...(clock.lastInputAt ? [clock.lastInputAt] : [])];
+      clock.lastInputAt = anchors.sort((a, b) => milliseconds(b) - milliseconds(a))[0];
+    }
+  }
+  if (change?.action === 'end') {
+    for (const t of storage.all('tasks').filter(t => t.kind === 'scene_step' && (t.id === `scene:${activityId}` || t.sharedActivityId === activityId))) storage.save('tasks', t.id, { ...t, status: 'cancelled' });
+    for (const c of storage.all('control_requests').filter(c => c.activityId === activityId && c.status === 'pending')) storage.save('control_requests', c.id, { ...c, status: 'cancelled' });
+    const transferred = storage.messages().filter(m => m.direction === 'incoming' && m.seenTurnId === null && m.sharedActivityId === activityId && m.batchId === null);
+    if (transferred.length) {
+      const batchId = runtime.openBatch?.id ?? randomUUID();
+      const anchor = Math.max(milliseconds(completedAt), ...transferred.map(m => milliseconds(m.receivedAt)), runtime.openBatch ? milliseconds(runtime.openBatch.readyAt) - 15_000 : 0);
+      transferred.forEach(m => storage.save('messages', m.id, { ...m, batchId }));
+      runtime.openBatch = { id: batchId, readyAt: addMs(new Date(anchor).toISOString(), 15_000) };
+    }
+    if (runtime.sharedClock?.activityId === activityId) runtime.sharedClock = null;
+    if (state.sleep && milliseconds(state.sleep.wakeAt) <= milliseconds(completedAt)) state.sleep = null;
+  }
+  storage.set('character', state); storage.set('runtime', runtime);
+  if (change?.action !== 'end') refreshSharedStep(storage, completedAt);
 }
