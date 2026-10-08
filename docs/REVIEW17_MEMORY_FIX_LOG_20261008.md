@@ -1,4 +1,4 @@
-# REVIEW17 记忆修复实施记录
+# REVIEW17 记忆修复实施记录（含 REVIEW18 澄清）
 
 基线：bc05801。依据：已获用户批准的 `DSH-review/CODEX_REBUTTAL_MEMORY_CAPACITY_IDLE_DELIVERY_20261008.md` §5，以及 REVIEW18 补充确认。无需新的产品裁定。
 
@@ -38,6 +38,8 @@
 Important：SQL元数据只识别4种ASCII空白，与JS String.trim不同。全角空格等空摘要会失去引用保护，空详情会让nextDeadline=now却无可执行修复。作者新增12项回归，全部先失败；SQL trim改为完整ECMAScript空白集合的绑定参数，与正文判定一致。摘要与升级27项通过，完整83文件469项通过（37秒），typecheck、build和新隔离混合验收再次通过。新的报告为runtime/memory-capacity-acceptance-20261008/review17-fixed-final/isolated.sqlite.report.json。离线格式修补验证两次合成响应，双空白首次失败、第二次合法结果接纳，不联网。
 
 Minor延期：只读inspectMemoryCapacity把删除保护集合也用于活跃容量退出预测，因此到期short关联空long时，dry-run预测的退出对象可能与normalize不同。实际运行的归一和删除规则正确，本次未扩大修正范围；后续可将退出预测用includeRetainedShorts=false、物理删除用true，并补同条件回归。
+
+后续状态：该Minor已在REVIEW19核对后按用户指令修复，详见[REVIEW19修复记录](REVIEW19_DRY_RUN_FIX_LOG_20261008.md)。下文“延期”保留为当时交付状态。
 
 Ruling：不新增旧合同冻结ready结果的全面重新校验／迁移框架——本次不是旧库导入，正式库只读确认未初始化角色、owner数0，无未完成故事；本轮改变已有晋升应用门禁和修复登记版本，其他冻结恢复沿既有机制。代价：未来导入含旧冻结结果的库，仍须单独执行升级检查并处理不兼容结果。
 

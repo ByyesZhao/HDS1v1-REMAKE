@@ -1,6 +1,6 @@
 # 记忆容量与空闲整理 V0.4 实施细化
 
-最新交付：REVIEW17／18修复及整体复核修正已集成，83文件469项测试通过。原任务1～8的435项为历史基线；最新过程见REVIEW17_MEMORY_FIX_LOG_20261008.md。
+最新修正：REVIEW19 的只读容量退出预测待办已修，83文件473项测试、类型检查及构建通过。REVIEW17／18的469项、原任务1～8的435项保留为历史基线；本次过程见[REVIEW19修复记录](REVIEW19_DRY_RUN_FIX_LOG_20261008.md)。
 
 日期：2026-10-08。状态：任务1～8及最终复核修正已实现，435项测试、类型检查、构建和隔离离线／有限在线验收通过；最终代码复核另见交付记录。实际实施基线`9e24b0d`。正式空库仅只读检查，未升级或清理，服务保持停止。
 
@@ -324,6 +324,8 @@ Host每次选择顺序：旧未完成故事→现有可执行前台（含环境�
 新库按当前Clock初始化idle和版本1；旧库必须先用升级前版本恢复／完成旧非环境故事，停止服务后显式迁移，不能指望已被新装配门禁拒绝的版本替旧库续轮。结构升级兼容JSON字段，保留schema3；learnt历史可确认事件引用归一到evidenceMemoryIds，已知short ID沿linkedLongId解析到canonical long，保留原始sourceIds，不能猜陌生ID是事件。新promote同源解析短期证据，合同readSet包含该canonical长期版本，应用与合同使用同一个真实事件身份。
 
 脚本默认`--dry-run`：用内置SQLite只读连接，不经会写DDL的Storage／MemoryStore构造器，输出数量、拟转层／清理ID及原因、保护／缺失引用、待办差额；不打印正文／密钥。`--apply --stopped`写结构／标记和持久化待办，初次大批归一仍由Host逐单元推进；迁移前备份、记录检查结果，重复apply不重置日期／grants／idle或已经生效配置。
+
+退出活跃池与物理删除分别使用对应运行阶段的保护集合：`longCapacityExits`使用`protectedCanonicalIds(rows, at, false)`；归档`protected`、`archiveCapacityDeletes`和到龄归档清理使用`true`。受阻或仍保留的短期详情可阻止关联长期正文被删除，但不额外赋予其活跃层资格。各列表是检查时刻现有快照的分阶段候选，未模拟后续短期退出、预览激活、临时保护、新输入与逐单元清理；不能称为“至少这些会退出／删除”的下界或整个调度过程的最终清单。
 
 脚本`--config <json>`默认指向项目config.local.json；只解码memory容量及空闲部分，不用会读取key.txt／backgroundFile的loadSettings。报告列出配置来源及有效容量；检查与apply使用同一配置，不能用默认500估算另一套已显式修改的容量。
 

@@ -8,11 +8,47 @@ import {Storage} from '../src/storage';
 import {MemoryStore} from '../src/memory/store';
 import {MemoryCapacity} from '../src/memory/capacity';
 import {defaultMemoryCapacity} from '../src/memory/types';
+import type {MemoryCandidate} from '../src/memory/types';
 import {MemoryCleanup} from '../src/memory/cleanup';
 import {inspectMemoryCapacity,upgradeMemoryCapacity} from '../src/deployment/memory-capacity-upgrade';
 import {at,days} from './memory-capacity-fixture';
 const dirs:string[]=[];afterEach(()=>dirs.splice(0).forEach(d=>rmSync(d,{recursive:true,force:true})));
 function file(){const dir=mkdtempSync(join(tmpdir(),'hdsi-cap-upgrade-'));dirs.push(dir);const path=join(dir,'old.sqlite'),s=new Storage(path),store=new MemoryStore(s);store.migrate(at);for(const [id,data] of [['expired',{expiresAt:days(-10)}],['anchored',{archiveEnteredAt:days(-20),expiresAt:days(200)}],['live',{expiresAt:days(90)}]] as const)store.saveOwner(store.makeOwner({ownerType:'long',ownerId:id},{content:'私密旧正文',retainedFrom:days(-100),...data},days(-100)));s.prepare('DROP TABLE memory_dirty_owners').run();s.prepare('DROP TABLE memory_audit_reports').run();s.close();return {dir,path};}
+function exitFile(shortData:Partial<MemoryCandidate>,summary:string){
+ const dir=mkdtempSync(join(tmpdir(),'hdsi-cap-exit-'));dirs.push(dir);const path=join(dir,'snapshot.sqlite'),s=new Storage(path),store=new MemoryStore(s);
+ try{
+  store.migrate(at);
+  store.saveOwner(store.makeOwner({ownerType:'long',ownerId:'l'},{content:summary,importance:'normal',retainedFrom:at,expiresAt:days(90),sourceIds:['event-l']},at));
+  store.saveOwner(store.makeOwner({ownerType:'long',ownerId:'other'},{content:'另一段重要经历',importance:'high',retainedFrom:at,expiresAt:days(90),sourceIds:['event-other']},at));
+  store.saveOwner(store.makeOwner({ownerType:'short',ownerId:'s'},{content:'尚未清理的私密详情',linkedLongId:'l',sourceIds:['event-l'],...shortData},days(-8)));
+ }finally{s.close();}
+ return path;
+}
+it.each([
+ {name:'expired short with missing summary',short:{shortExpiresAt:days(-1)},summary:''},
+ {name:'capacity-exited short before expiry',short:{shortExpiresAt:days(1),capacityExitedAt:days(-1),capacityExitReason:'short_capacity' as const},summary:'简要经历'},
+])('dry-run permits long active exit but retains deletion protection: $name',({short,summary})=>{
+ const path=exitFile(short,summary),config={...defaultMemoryCapacity,longActiveLimit:1,longArchiveLimit:0},before=readFileSync(path);
+ const report=inspectMemoryCapacity(path,at,config);expect(readFileSync(path)).toEqual(before);expect(JSON.stringify(report)).not.toContain('尚未清理的私密详情');
+ const s=new Storage(path),store=new MemoryStore(s);
+ try{
+  const exits=new MemoryCapacity(store,config).normalize(at).changedOwners.filter(r=>r.ownerType==='long').map(r=>r.ownerId);
+  expect(exits).toEqual(['l']);expect(store.canonical('l')).toMatchObject({capacityExitReason:'long_capacity',archiveEnteredAt:at});
+  expect(report.longCapacityExits.map(r=>r.id)).toEqual(['l']);expect(report.longCapacityExits.map(r=>r.id)).toEqual(exits);
+ }finally{s.close();}
+ const archived=inspectMemoryCapacity(path,at,config);
+ expect(archived.counts.archiveOverflow).toBe(1);expect(archived.archive).toEqual([{id:'l',archiveStart:at,deleteAt:days(90),protected:true}]);expect(archived.archiveCapacityDeletes).toEqual([]);
+});
+it.each(['active short','stable understanding'] as const)('dry-run and normalization preserve active-exit protection from %s',source=>{
+ const path=exitFile({shortExpiresAt:source==='active short'?days(1):days(-1)},'简要经历'),config={...defaultMemoryCapacity,longActiveLimit:1};
+ if(source==='stable understanding'){
+  const s=new Storage(path),store=new MemoryStore(s);try{store.saveOwner(store.makeOwner({ownerType:'learned',ownerId:'understanding'},{content:'稳定认识',canonicalMemoryId:'l',evidenceMemoryIds:['l'],learnedKind:'stable_understanding'},at));}finally{s.close();}
+ }
+ const report=inspectMemoryCapacity(path,at,config);expect(report.longCapacityExits.map(r=>r.id)).toEqual(['other']);
+ const s=new Storage(path),store=new MemoryStore(s);try{
+  expect(new MemoryCapacity(store,config).normalize(at).changedOwners.filter(r=>r.ownerType==='long').map(r=>r.ownerId)).toEqual(['other']);expect(store.canonical('l')?.archiveEnteredAt).toBeNull();
+ }finally{s.close();}
+});
 it('dry_run_readonly_no_ddl and inspection_matches_runtime_archive_count',()=>{
  const {path}=file(),before=readFileSync(path);const report=inspectMemoryCapacity(path,at,defaultMemoryCapacity);expect(report.counts).toMatchObject({longArchive:2,longOccupied:1});expect(report.archive.map(r=>r.id).sort()).toEqual(['anchored','expired']);expect(JSON.stringify(report)).not.toContain('私密旧正文');expect(readFileSync(path)).toEqual(before);
  const s=new Storage(path),store=new MemoryStore(s);expect(new MemoryCapacity(store,defaultMemoryCapacity).counts(at)).toEqual(report.counts);s.close();
