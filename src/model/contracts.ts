@@ -62,7 +62,14 @@ export function narrativeTask(shared: boolean, from: string, at: string, eventId
       if (sharedMeta!.stepNumber === 1) requireControl(!!result.publicNarration?.trim(), 'publicNarration', 'first shared node requires a public opening');
       requireControl(sharedMeta!.allowSimulatedUserActions || result.simulatedUserActions.length === 0, 'simulatedUserActions', 'not allowed with new user input');
       requireControl(result.simulatedUserActions.every(action => !!result.publicNarration?.includes(action)), 'publicNarration', 'every simulatedUserActions entry must appear verbatim');
-      if (sharedMeta!.phase === 'wrap_up' && previousOutline) requireControl(result.outline.openThreads.every(thread => previousOutline.openThreads.includes(thread)), 'outline.openThreads', 'wrap_up may only retain or remove original strings');
+      if (sharedMeta!.phase === 'wrap_up' && previousOutline) {
+        const normalize = (thread: string) => thread.trim().replace(/\s+/g, ' ');
+        result.outline.openThreads = result.outline.openThreads.map(thread => {
+          const original = previousOutline.openThreads.find(old => normalize(old) === normalize(thread));
+          requireControl(original !== undefined, 'outline.openThreads', 'wrap_up may only retain or remove original strings (whitespace differences allowed)');
+          return original!;
+        });
+      }
       if (sharedMeta!.phase === 'final') {
         requireControl(result.outline.openThreads.length === 0, 'outline.openThreads', 'final must leave no open threads');
         requireControl(!!result.publicNarration?.trim(), 'publicNarration', 'final requires a public closing node');

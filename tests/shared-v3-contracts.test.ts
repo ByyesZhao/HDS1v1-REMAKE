@@ -11,6 +11,13 @@ function meta(phase: SharedTurnMeta['phase'] = 'ongoing', allowed = true): Share
   return { ...m, phase, allowSimulatedUserActions: allowed };
 }
 const task = (m = meta(), previous: SharedOutline | null = old) => narrativeTask(true, NOW, NOW, [], m, previous);
+it('wrap whitespace compatibility keeps stored originals, without semantic matching or resurrecting removed threads', () => {
+  const previous = { ...old, openThreads: ['  结账\n 后收拾  ', '取餐'] };
+  const parsed = task(meta('wrap_up'), previous).parse({ ...result, outline: { ...old, openThreads: ['结账  后收拾'] } });
+  expect((parsed as typeof result).outline.openThreads).toEqual(['  结账\n 后收拾  ']);
+  for (const threads of [['付钱后整理'], ['取餐', '逛新店']]) expect(() => task(meta('wrap_up'), previous).parse({ ...result, outline: { ...old, openThreads: threads } })).toThrow(/openThreads/);
+  expect(() => task(meta('wrap_up'), { ...old, openThreads: ['结账'] }).parse({ ...result, outline: { ...old, openThreads: ['取餐'] } })).toThrow(/openThreads/);
+});
 it('shared_result_has_no_model_deadline: requires meta and new fields, rejects writable nextStepAt', () => {
   expect(task().parse(result)).toEqual(result);
   expect(() => task().parse({ ...result, nextStepAt: null })).toThrow();

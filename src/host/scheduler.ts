@@ -87,7 +87,8 @@ export class Scheduler {
     }
     if (!isSleeping(state, now)) {
       if (state.nextAutonomousAt && this.autonomousEligible(now)) candidates.push(state.nextAutonomousAt);
-      if (shared && state.scene.shared!.completedSteps < state.scene.shared!.maxSteps && runtime.sharedClock?.status === 'active') candidates.push(sharedDeadline(state.scene.shared!, runtime.sharedClock));
+      if (shared && state.scene.shared!.completedSteps < state.scene.shared!.maxSteps && runtime.sharedClock?.status === 'active'
+        && runtime.sharedClock.activityId === state.scene.shared!.activityId) candidates.push(sharedDeadline(state.scene.shared!, runtime.sharedClock));
       for (const task of this.storage.all('tasks').filter(t => t.status === 'pending')) {
         if (shared && task.kind !== 'appointment') continue;
         if (task.kind !== 'check_messages' || canRead(state, now)) candidates.push(task.at);

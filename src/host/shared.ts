@@ -18,6 +18,7 @@ export function selectSharedMeta(storage: Storage, now: string, inputMessageIds:
 }
 
 export function hasValidSharedScene(state: CharacterState): boolean {
+  // Field-shape gate only; deployment assembly checks the persisted version.
   const s = state.scene.shared;
   return state.scene.mode !== 'chat' && !!s?.activityId && Number.isInteger(s.completedSteps)
     && s.completedSteps >= 0 && s.maxSteps >= 1 && s.maxSteps <= 20 && s.idleSeconds > 0;
@@ -40,6 +41,7 @@ export function sharedDeadline(shared: NonNullable<Scene['shared']>, clock: Shar
 
 /** The caller owns the surrounding SQLite transaction. */
 export function refreshSharedStep(storage: Storage, _now: string): void {
+  // Projection is anchored to confirmed events, never to a status/scheduler read.
   const state = storage.character(); const s = state.scene.shared; const clock = storage.runtime().sharedClock;
   if (!hasValidSharedScene(state) || !s || !clock || clock.status !== 'active' || clock.activityId !== s.activityId) return;
   const id = `scene:${s.activityId}`;

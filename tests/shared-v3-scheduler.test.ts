@@ -7,6 +7,14 @@ import { setup, saveInput, NOW } from './helpers';
 import { makeSharedFixture } from './shared-v3-fixture';
 
 const after = (ms: number) => new Date(Date.parse(NOW) + ms).toISOString();
+it('shared deadlines require the same activity identity while preserving future deadlines', async () => {
+  const d = setup(); makeSharedFixture(d); const scheduler = new Scheduler(d.storage);
+  expect(Date.parse((await scheduler.nextDeadline(NOW))!)).toBe(Date.parse(after(60_000)));
+  d.storage.set('runtime', { ...d.storage.runtime(), sharedClock: { ...d.storage.runtime().sharedClock!, activityId: 'old-activity' } });
+  expect(await scheduler.nextDeadline(after(61_000))).toBe(d.storage.runtime().nextWorldAt);
+  expect(await scheduler.collectReady(after(61_000))).toBeNull();
+  d.storage.close();
+});
 it('manual_and_due_share_one_selection: freezes all current controls and inputs', async () => {
   const d = setup(); makeSharedFixture(d); const input = new InputBuffer(d.storage); const scheduler = new Scheduler(d.storage);
   for (const id of ['c1', 'c2']) await input.acceptInput({ id, content: '【推进】', receivedAt: NOW });

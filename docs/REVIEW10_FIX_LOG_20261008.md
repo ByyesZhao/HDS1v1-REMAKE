@@ -24,3 +24,15 @@ Ruling: 首／末约束替代旧“只有标志即可结束”夹具；同步20�
 ## 任务2过程
 
 同步text拼接全文、活动外wake、普通开始门禁与转交、准备轮锚点范围、冻结权限和status投影口径；个人合同追加publicNarration，首节点/提前end约束以现实现为准。历史审核不改；正式部署与在线验收尚未执行，不提前写成通过。
+
+## 任务3过程
+
+新增两项业务测试先失败：wrap空白差异拒绝；不匹配clock仍返回旧活动截止。实现仅trim/连续空白折叠匹配，返回旧原文，不做语义匹配、不恢复已删项；nextDeadline加入活动身份条件。第一次GREEN检查发现测试误写了“没有任何截止”，而夹具有合法未来world截止；更正为保留该环境截止，未改环境逻辑。提示词用明确shared参数组装，不再按字面replace；场景资格与投影仅补说明。
+
+全量50文件/261项通过；typecheck、build、demo、runtime check/smoke退出0。新增validate-shared-story.ts为显式在线验收工具，独立随机目录数据库、记录Sender、虚拟时钟，从已确认活动种子开始，不验证真实开始确认/QQ/墙钟调度；只保存输出与场景种子，报告在ignored runtime/data内，不提交密钥或背景。类型检查通过。
+
+## 任务4过程（待真实验收）
+
+正式库只读check：version=null、mode=null、无旧活动/未完成共同轮，canInitialize=true、requiresUserDecision=false。尚未apply。
+
+首次在线启动被自动审批拒绝，未执行模型调用：现有授权未明确涵盖向DeepSeek发送角色背景等上下文。已询问具体数据范围，继续独立本地复核/部署；不绕过拒绝。

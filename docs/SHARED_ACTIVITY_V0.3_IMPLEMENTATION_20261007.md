@@ -150,7 +150,7 @@ nextWorldAt/nextSchoolAt 持续参与 nextDeadline，不被共同等待排除。
 | --- | --- | --- |
 | 首节点旧outline=null | 建立走向；若首节点已是final则列表为空 | 不对空旧走向做包含校验，兼容较小maxSteps。 |
 | opening/ongoing且已有outline | 可保留、解决或建立必要线索 | 围绕已确认活动，不每轮更换目标。 |
-| wrap_up且已有outline | 仅保留或删除旧条目，不新增；保留项使用原文本 | 程序校验新列表每项都属于旧字符串集合，不增加线索ID系统；进展写progress/publicNarration。 |
+| wrap_up且已有outline | 仅保留或删除旧条目，不新增；保留项使用原文本 | 程序以trim及连续空白折叠作匹配，匹配后保存旧原文；新列表每项仍须属于旧字符串集合，不作语义匹配、不恢复已删条目，不增加线索ID系统；进展写progress/publicNarration。 |
 | final | 返回必填outline，但openThreads为空，不新增走向项 | 程序校验空列表；goal/endingCondition保留为活动说明，公开收尾与个人导演end仍必需。 |
 
 goal/endingCondition建立后原则上沿用。确需因真实新输入或明确场景变化调整时要有叙事依据，不能凭静默代写持续改变活动目标；这项语义边界由提示词与真实多轮验收落实，不使用字符串相等冒充含义审核。晚到的新要求可协调留到之后，不绕过轮数上限。
