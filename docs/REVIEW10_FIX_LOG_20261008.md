@@ -36,3 +36,13 @@ Ruling: 首／末约束替代旧“只有标志即可结束”夹具；同步20�
 正式库只读check：version=null、mode=null、无旧活动/未完成共同轮，canInitialize=true、requiresUserDecision=false。尚未apply。
 
 首次在线启动被自动审批拒绝，未执行模型调用：现有授权未明确涵盖向DeepSeek发送角色背景等上下文。已询问具体数据范围，继续独立本地复核/部署；不绕过拒绝。
+
+用户随后明确同意“允许使用角色背景和测试剧情验收”，原命令重新获得审批并开始执行。报告目录runtime/data/shared-acceptance-bcf2c61c-66e7-44ad-81f0-0c00cdb4c1a7。已核对当前三个相关node进程均为validate-shared-story隔离工具，正式HDSI/SnowLuma仍停；迁移前再核对。
+
+## 最终独立复核
+
+一次独立只读整分支复核3df5cbf..0bb3b7d：没有Critical/Important。首节点小上限、个人修补不回调、旧原文保存和clock未来截止均符合设计。
+
+Final: minor (deferred): 验收工具合法提前结束仍可退出0，未自动将欠缺wrap/final/第4轮纠正/第6轮提前结束覆盖标为失败；本次人工按真实phases和输入逐项判定，缺失场景补跑，不以退出0代完整验收。工具将来可自动提示覆盖缺项。
+
+Final: Ruling: reviewer未裁定正式停止/升级、真实模型语义及QQ交付 — 前两项由后续实际本地检查与逐轮阅读判定，QQ本次未授权启动且不声称验收 — 若证据不足仍须标待办，不能以静态复核代现场结论。
