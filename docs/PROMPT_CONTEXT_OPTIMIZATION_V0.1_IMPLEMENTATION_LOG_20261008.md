@@ -163,3 +163,9 @@ Ruling: 保留旧迁移API不传参数时的版本1兼容；所有新CLI及最�
 先用真实HdsiApp＋SerialHost补四项回归：开场后角色未提交时接收输入、后处理失败resume、发送失败重开文件库、后处理失败重开文件库。final-opening-red.log记录4失败／3通过，均指向活动身份冲突；修复只认可“在途冻结start候选同活动＋首条公开开场outbox confirmed＋消息实收身份一致”的证明，不笼统忽略冲突。另补未确认或缺公开消息凭证仍阻挡。定向5文件32项、typecheck/build通过，全量105文件588项通过（final-opening-green.log、final-opening-suite.log），未新联网、未重跑第二次独立审核。
 
 本批裁定全部保留：①默认版本2及正式门禁统一在任务19读写／保护接齐后启用，中间提交不可作为版本2部署；②旧迁移API未传参数仍默认目标1／idle15，新CLI及正式入口显式传目标2与实际配置，新调用者需显式选2。无搁置Minor、无遗漏审查项。服务仍停止，主目录交付结果另记。
+
+## 主目录本地交付（2026-10-09）
+
+909b53d本地fast-forward合入main，主目录再次typecheck/build与105文件588项全量回归通过；离线demo和start-hdsi.cmd --check／start-snowluma.cmd --check均返回0，不启动服务。正式库只读确认版本2、idle15、canApply=true、无歧义／历史告警、完整性ok，学校历史步骤4仍保留，消息／在途0；项目服务进程0。
+
+逐任务brief／账本、红绿回归、单次复核摘要、在线隔离报告和迁移报告保存在runtime/data/prompt-activity-context-process-20261009。worktree过程55份已复制到主目录，逐文件SHA256比对差异0；主目录main-final-suite.log、main-formal-*、main-demo.log、main-*-check.log另存于同目录。用户原有未跟踪review文件未改动或纳入提交。只做本地Git提交，不推送远程或建PR。工作树将通过Codex归档工具清理，过程材料已保留。

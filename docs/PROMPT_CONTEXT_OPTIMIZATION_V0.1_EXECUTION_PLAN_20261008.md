@@ -1,6 +1,6 @@
 # 提示词与上下文优化 V0.1 执行计划
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. 若用户明确选择子代理执行，再使用 superpowers:subagent-driven-development。任务1～12为原交付历史；本次执行任务13～20已实施并完成离线／在线验收与正式库升级，最终独立代码复核／主目录交付在收尾中，不启动正式服务。
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. 若用户明确选择子代理执行，再使用 superpowers:subagent-driven-development。任务1～12为原交付历史；任务13～20已实施并完成离线／在线验收、正式库升级及独立复核修复，2026-10-09已本地合入主目录并复验，不启动正式服务。证据见实施日志与交付审阅记录。
 
 **Goal:** 在原提示／资料池交付基础上修复已确认缺口，把4段窗口改成独立普通聊天窗口；活动中提供完整本场原文、结束后统一记忆召回。
 
