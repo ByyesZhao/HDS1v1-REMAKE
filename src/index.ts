@@ -3,6 +3,8 @@ import { readFileSync, existsSync } from 'node:fs';
 import { resolve, extname } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { Storage } from './storage';
+import { EnvironmentStore } from './environment/store';
+import { SchoolStore } from './school/store';
 import { HdsiApp } from './app';
 import { SerialHost } from './host/runtime';
 import { arrangeSleep, autonomousMinutes } from './host/state';
@@ -82,7 +84,7 @@ export function apply(ctx: Context, config: Config): void {
     async sendError(message) { await bot().sendPrivateMessage(config.userId, message); },
   };
   const app = new HdsiApp({
-    storage, clock, random, models, config: options, sender, stickers,web,memoryStore:memory.store,memoryLifecycle:memory.lifecycle,retrieval:memory.retrieval,maintenance:memory.maintenance,
+    environmentStore:new EnvironmentStore(storage),schoolStore:new SchoolStore(storage),storage, clock, random, models, config: options, sender, stickers,web,memoryStore:memory.store,memoryLifecycle:memory.lifecycle,retrieval:memory.retrieval,maintenance:memory.maintenance,
     wait: ms => new Promise(resolve => setTimeout(resolve, ms)),
   });
   const logger = ctx.logger(name);

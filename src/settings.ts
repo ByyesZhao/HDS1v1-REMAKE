@@ -6,7 +6,17 @@ import { defaultConfig } from './config';
 import type { Scene, CharacterState, EnvironmentEvent, Detail } from './types';
 import { loadLocalCredentials } from './deployment/credentials';
 
-export const modelRoles = ['narrative', 'narrative_shared', 'personal_chat', 'personal_life', 'personal_shared', 'expression', 'memory', 'memory_consolidation', 'world', 'school'] as const;
+export const modelRoles = ['narrative', 'narrative_shared', 'personal_chat', 'personal_life', 'personal_shared', 'expression', 'memory', 'memory_consolidation', 'world', 'school_campus','school_group','school_week'] as const;
+export function normalizeSchoolModels(raw:unknown):unknown {
+  if(!raw || typeof raw!=='object' || Array.isArray(raw)) return raw;
+  const input=structuredClone(raw) as Record<string,any>;
+  if(input.models && typeof input.models==='object') {
+    for(const role of ['school_campus','school_group','school_week']) {
+      if(!(role in input.models) && input.models.school!==undefined) input.models[role]=structuredClone(input.models.school);
+    }
+  }
+  return input;
+}
 const connection = z.object({
   baseUrl: z.url().default('https://api.deepseek.com'), apiKeyEnv: z.string().default('DEEPSEEK_API_KEY'),
   model: z.enum(['deepseek-flash', 'deepseek-v4-flash', 'deepseek-v4-pro']),
@@ -32,6 +42,7 @@ const settingsSchema = z.object({
   initialEvents: z.array(z.object({ id: z.string(), kind: z.enum(['world', 'school']), startsAt: time, endsAt: time.nullable(), description: z.string(), basis: z.literal('fiction'), sourceUrls: z.array(z.string()).length(0), status: z.literal('active') })).default([]),
   sleepHabits: z.object({ sleepStart: clockTime, sleepEnd: clockTime, wakeStart: clockTime, wakeEnd: clockTime, preparationMinutes: z.number().nonnegative() }).default(defaultConfig.sleepHabits),
   worldTimes: z.array(clockTime).min(1).default(defaultConfig.worldTimes), schoolTimes: z.array(clockTime).min(1).default(defaultConfig.schoolTimes),
+  environmentDailyAt:clockTime.default('06:00'),environmentRetryMs:z.number().positive().default(300000),
   historyBudget: nullableLimit, stickersEnabled: z.boolean().default(false),memory:memorySettings,memoryEmbedding:embedding.prefault({}),
   sharedIdleSeconds: z.number().int().positive().default(60), sharedMaxSteps: z.number().int().min(1).max(20).default(20),
   models: z.object(Object.fromEntries(modelRoles.map(role => [role, connection])) as Record<typeof modelRoles[number], typeof connection>),
@@ -44,7 +55,7 @@ export type StorySettings = z.infer<typeof settingsSchema>;
 export function loadSettings(path: string, environment: Record<string, string | undefined> = process.env): StorySettings {
   const input = JSON.parse(readFileSync(path, 'utf8'));
   if (input.backgroundFile) input.background = readFileSync(resolve(dirname(path), input.backgroundFile), 'utf8');
-  const settings = settingsSchema.parse(input);
+  const settings = settingsSchema.parse(normalizeSchoolModels(input));
   if(settings.memory.calibrationFile)settings.memory.calibrationFile=resolve(dirname(path),settings.memory.calibrationFile);
   new Intl.DateTimeFormat('zh-CN', { timeZone: settings.timezone });
   if (settings.initialSleep && Date.parse(settings.initialSleep.wakeAt) <= Date.parse(settings.initialSleep.sleepAt)) throw new Error('initialSleep.wakeAt must follow sleepAt');

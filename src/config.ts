@@ -9,6 +9,7 @@ export interface SleepHabits { sleepStart: string; sleepEnd: string; wakeStart: 
 export interface AppConfig {
   timezone: string; background: string; chatExamples: string; worldSetting: string; schoolSetting: string;
   sleepHabits: SleepHabits; worldTimes: string[]; schoolTimes: string[];
+  environmentDailyAt:string; environmentRetryMs:number;
   historyBudget: number|null; stickersEnabled: boolean;
   sharedIdleSeconds: number; sharedMaxSteps: number;
 }
@@ -17,6 +18,7 @@ export const defaultConfig: AppConfig = {
   sleepHabits: { sleepStart: '23:30', sleepEnd: '00:30', wakeStart: '08:00', wakeEnd: '09:00', preparationMinutes: 60 },
   worldTimes: ['06:00'], schoolTimes: ['06:10', '16:00'], historyBudget: null, stickersEnabled: false,
   sharedIdleSeconds: 60, sharedMaxSteps: 20,
+  environmentDailyAt:'06:00', environmentRetryMs:300000,
 };
 export function initialCharacter(now: string): CharacterState {
   return {

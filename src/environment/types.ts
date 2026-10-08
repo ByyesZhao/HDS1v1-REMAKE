@@ -1,0 +1,12 @@
+import type { EnvironmentChange, ISOTime } from '../types';
+import type { SchoolPlanChange, SchoolItemChange, SchoolInstanceCandidate, SchoolNoticeCandidate, SchoolWeekCandidate, SchoolPlan, SchoolPlanItem, SchoolInstance, SchoolNotice, SchoolWeek } from '../school/types';
+export const environmentStages = ['world','school_campus','school_group','school_week'] as const;
+export type EnvironmentStage = typeof environmentStages[number];
+export type EnvironmentBatchStatus = 'active'|'committed'|'superseded';
+export type EnvironmentStepStatus = 'pending'|'running'|'ready'|'committed'|'superseded';
+export interface EnvironmentBatch {id:string;localDate:string;timezone:string;scheduledAt:ISOTime;createdAt:ISOTime;reason:'daily'|'bootstrap'|'upgrade';status:EnvironmentBatchStatus;closedAt:ISOTime|null}
+export interface EnvironmentStepInput {stage:EnvironmentStage;batchId:string;at:ISOTime;context:unknown}
+export type EnvironmentModelResult = {stage:'world';changes:EnvironmentChange[]}|{stage:'school_campus'|'school_group';planChanges:SchoolPlanChange[];itemChanges:SchoolItemChange[]}|{stage:'school_week';instanceChanges:SchoolInstanceCandidate[];noticeCandidates:SchoolNoticeCandidate[];weekChanges:SchoolWeekCandidate[]};
+export type EnvironmentChangeSet = {stage:'world';changes:EnvironmentChange[]}|{stage:'school_campus'|'school_group';plans:SchoolPlan[];items:SchoolPlanItem[]}|{stage:'school_week';instances:SchoolInstance[];notices:SchoolNotice[];weeks:SchoolWeek[]};
+export interface EnvironmentStep {id:string;batchId:string;stage:EnvironmentStage;status:EnvironmentStepStatus;attempt:number;startedAt:ISOTime|null;completedAt:ISOTime|null;retryAt:ISOTime|null;lastError:string|null;inputSnapshot:EnvironmentStepInput|null;frozenResult:EnvironmentChangeSet|null}
+export type EnvironmentGenerator = (input:EnvironmentStepInput)=>Promise<EnvironmentModelResult>;

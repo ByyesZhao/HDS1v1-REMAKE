@@ -2,6 +2,8 @@ import { DatabaseSync } from 'node:sqlite';
 import { mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
 import { nextDaily } from './time';
+import type { EnvironmentBatch,EnvironmentStep } from './environment/types';
+import type { SchoolPlan,SchoolPlanItem,SchoolInstance,SchoolNotice,SchoolKnowledge,SchoolProgress,SchoolWeek } from './school/types';
 import type { CharacterState, ControlRequest, Detail, DetailHistory, EnvironmentEvent, Experience, Memory, Message, OutboxItem, PostJob, Runtime, ScheduledTask, Sticker, TurnRecord } from './types';
 
 interface Tables {
@@ -9,8 +11,12 @@ interface Tables {
   tasks: ScheduledTask; details: Detail; detail_history: DetailHistory; memories: Memory;
   events: EnvironmentEvent; experiences: Experience; stickers: Sticker;
   control_requests: ControlRequest;
+  environment_batches:EnvironmentBatch;environment_steps:EnvironmentStep;
+  school_plans:SchoolPlan;school_plan_items:SchoolPlanItem;school_instances:SchoolInstance;school_notices:SchoolNotice;school_knowledge:SchoolKnowledge;school_progress:SchoolProgress;school_weeks:SchoolWeek;
 }
 const tables: Array<keyof Tables> = ['messages', 'turns', 'outbox', 'post_jobs', 'tasks', 'details', 'detail_history', 'memories', 'events', 'experiences', 'stickers', 'control_requests'];
+export const environmentTables = ['environment_batches','environment_steps','school_plans','school_plan_items','school_instances','school_notices','school_knowledge','school_progress','school_weeks'] as const;
+tables.push(...environmentTables);
 export class Storage {
   private readonly db: DatabaseSync;
   constructor(path: string) {
@@ -32,6 +38,7 @@ export class Storage {
       openBatch: null, pendingBatchIds: [], paused: false, contactMisses: 0, stickerMisses: 0,
       nextWorldAt: null, nextSchoolAt: null, nextMaintenanceAt: nextDaily(new Date().toISOString(), ['04:30'], 'Asia/Shanghai'), lastError: null,
       sharedActivityVersion: 1, sharedClock: null,
+      environmentPlanningVersion:1,nextEnvironmentAt:null,
     } satisfies Runtime);
   }
   close(): void { this.db.close(); }
@@ -62,14 +69,14 @@ export class Storage {
     this.db.prepare(`INSERT INTO ${table}(id, data) VALUES (?, ?) ON CONFLICT(id) DO UPDATE SET data = excluded.data`).run(id, JSON.stringify(value));
   }
   remove<K extends keyof Tables>(table: K, id: string): void { this.db.prepare(`DELETE FROM ${table} WHERE id = ?`).run(id); }
-  runtime(): Runtime { const r = this.get<Runtime>('runtime')!; return { ...r, sharedActivityVersion: r.sharedActivityVersion ?? null, sharedClock: r.sharedClock ?? null }; }
+  runtime(): Runtime { const r = this.get<Runtime>('runtime')!; return { ...r, sharedActivityVersion: r.sharedActivityVersion ?? null, sharedClock: r.sharedClock ?? null,environmentPlanningVersion:r.environmentPlanningVersion??null,nextEnvironmentAt:r.nextEnvironmentAt??null }; }
   character(): CharacterState { return this.get<CharacterState>('character')!; }
   messages(): Message[] { return this.all('messages').sort((a, b) => Date.parse(a.receivedAt) - Date.parse(b.receivedAt)); }
   unreadMessages(): Message[] {
     const open = this.runtime().openBatch?.id;
     return this.messages().filter(m => m.direction === 'incoming' && m.seenTurnId === null && !(m.sharedActivityId && m.batchId === null) && m.batchId !== open);
   }
-  unfinishedTurn(): TurnRecord | null { return this.all('turns').find(t => !t.done) ?? null; }
+  unfinishedTurn(): TurnRecord | null { return this.all('turns').find(t => !t.done && t.legacyDisposition!=='superseded') ?? null; }
   outbox(turnId: string): OutboxItem[] { return this.all('outbox').filter(i => i.turnId === turnId).sort((a, b) => a.seq - b.seq); }
   saveOutbox(item: OutboxItem): void { this.save('outbox', `${item.turnId}:${item.seq}`, item); }
 }

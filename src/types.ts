@@ -49,6 +49,7 @@ export interface Runtime {
   lastError: string | null;
   nextMaintenanceAt: string | null;
   sharedActivityVersion: 1 | null; sharedClock: SharedClock | null;
+  environmentPlanningVersion:1|null; nextEnvironmentAt:ISOTime|null;
 }
 export interface Experience { id: string; happenedAt: ISOTime; description: string; relatedEventIds: string[] }
 export interface NarrativeResult {
@@ -88,6 +89,7 @@ export interface TurnRecord {
   at: ISOTime; completedAt: ISOTime | null; frozenResult: TurnCandidate | null; outputComplete: boolean; done: boolean;
   batchIds: string[]; entryMode: Mode; environmentKind?: 'world' | 'school';
   sharedMeta?: SharedTurnMeta | null; autonomousIntervalMinutes?: number | null;
+  legacyDisposition?:'superseded';closedAt?:ISOTime;replacementBatchId?:string;
 }
 export interface TurnCandidate {
   visibleMessageIds: string[]; reconsiderMessageIds: string[];

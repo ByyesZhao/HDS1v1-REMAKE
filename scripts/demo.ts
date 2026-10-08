@@ -1,3 +1,5 @@
+import { EnvironmentStore } from '../src/environment/store';
+import { SchoolStore } from '../src/school/store';
 import { Storage } from '../src/storage';
 import { HdsiApp } from '../src/app';
 import { InputBuffer } from '../src/host/input';
@@ -30,7 +32,7 @@ async function main() {
       return task.parse(output);
     },
   };
-  const app = new HdsiApp({ storage, clock, random: { next: () => 0.5 }, models, config: { ...defaultConfig, background: '开发样例', chatExamples: '嗯嗯', sharedMaxSteps: 3 },
+  const app = new HdsiApp({ environmentStore:new EnvironmentStore(storage),schoolStore:new SchoolStore(storage),storage, clock, random: { next: () => 0.5 }, models, config: { ...defaultConfig, background: '开发样例', chatExamples: '嗯嗯', sharedMaxSteps: 3 },
     sender: { async sendItem(item) { console.log(`[模拟 QQ ${clock.now()}] ${displayText(item)}`); return { platformMessageIds: [`demo-${item.seq}`] }; }, async sendError(message) { console.log(message); } },
     wait: async ms => { now = new Date(Date.parse(now) + ms).toISOString(); },
   });

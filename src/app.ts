@@ -1,5 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { Storage } from './storage';
+import type { EnvironmentStore } from './environment/store';
+import type { SchoolStore } from './school/store';
 import type { AppConfig } from './config';
 import type { Clock, Random, ModelRunner, Sender, TurnRequest, TurnCandidate, OutboxItem, PersonalResult, UtteranceIntent } from './types';
 import { canRead, isSleeping, arrangeSleep, autonomousMinutes, maintainTask } from './host/state';
@@ -18,7 +20,7 @@ import { nextDaily, due } from './time';
 import { phaseOptions } from './web/phases';
 import { hasValidSharedScene } from './host/shared';
 
-export interface Dependencies { storage: Storage; clock: Clock; random: Random; models: ModelRunner; config: AppConfig; sender: Sender; wait(ms: number): Promise<void>; web?:import('./web/service').WebSearchService; memoryStore?:import('./memory/store').MemoryStore; memoryLifecycle?:import('./memory/lifecycle').MemoryLifecycle; retrieval?:MemoryRetrieval; maintenance?:import('./memory/maintenance').MemoryMaintenance; stickers?: { findSticker(query: string): Promise<string> }; getSelfWebReadSources?(turnId:string):import('./memory/types').SelfWebReadSource[] }
+export interface Dependencies { environmentStore:EnvironmentStore;schoolStore:SchoolStore; storage: Storage; clock: Clock; random: Random; models: ModelRunner; config: AppConfig; sender: Sender; wait(ms: number): Promise<void>; web?:import('./web/service').WebSearchService; memoryStore?:import('./memory/store').MemoryStore; memoryLifecycle?:import('./memory/lifecycle').MemoryLifecycle; retrieval?:MemoryRetrieval; maintenance?:import('./memory/maintenance').MemoryMaintenance; stickers?: { findSticker(query: string): Promise<string> }; getSelfWebReadSources?(turnId:string):import('./memory/types').SelfWebReadSource[] }
 export class HdsiApp {
   private busy = false;
   constructor(public readonly dependencies: Dependencies) {}

@@ -1,3 +1,5 @@
+import { EnvironmentStore } from '../src/environment/store';
+import { SchoolStore } from '../src/school/store';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { randomUUID } from 'node:crypto';
@@ -55,7 +57,7 @@ async function main() {
     for (const detail of settings.initialDetails) {
       memoryStore.saveOwner(memoryStore.makeOwner({ ownerType: 'detail', ownerId: detail.key }, { ...detail, content: detail.value }, now));
     }
-    const app = new HdsiApp({ storage, clock, models, config: cfg, memoryStore, random: { next: () => 0.5 },
+    const app = new HdsiApp({ environmentStore:new EnvironmentStore(storage),schoolStore:new SchoolStore(storage),storage, clock, models, config: cfg, memoryStore, random: { next: () => 0.5 },
       sender: { async sendItem(item) { sent.push(structuredClone(item)); return { platformMessageIds: [`acceptance-${randomUUID()}`] }; }, async sendError() {} },
       wait: async ms => advance(ms) });
     const input = new InputBuffer(storage), scheduler = new Scheduler(storage);

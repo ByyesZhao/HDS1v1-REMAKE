@@ -30,6 +30,33 @@ function captureTransport(settings: StorySettings, responses: string[] = ['{"ok"
   return { requests, transport: new ChatCompletionsTransport(name => connectionFor(settings, name, { DEEPSEEK_API_KEY: 'fixture-only' }), fetcher) };
 }
 
+it('copies legacy school into three independent roles', async () => {
+  await withSettings(sample => { sample.models.school = {model:'deepseek-flash',reasoningEffort:'low'}; }, async settings => {
+    const models:any = settings.models;
+    expect(models.school_campus).toMatchObject({model:'deepseek-flash',reasoningEffort:'low'});
+    expect(models.school_group).toEqual(models.school_campus);
+    expect(models.school_week).toEqual(models.school_campus);
+    expect(models.school_group).not.toBe(models.school_campus);
+  });
+});
+it('explicit new school roles take priority over legacy', async () => {
+  await withSettings(sample => { sample.models.school_group={model:'deepseek-v4-pro',reasoningEffort:'high'}; }, async settings => {
+    expect((settings.models as any).school_group.model).toBe('deepseek-v4-pro');
+    expect((settings.models as any).school_week.model).toBe('deepseek-flash');
+  });
+});
+it('complete new school roles need no legacy role', async () => {
+  await withSettings(sample => { for(const k of ['school_campus','school_group','school_week']) sample.models[k]=sample.models.school; delete sample.models.school; }, async settings => {
+    expect((settings.models as any).school_week).toBeDefined();
+  });
+});
+it('invalid explicit school role does not fall back', async () => {
+  await expect(withSettings(sample => {sample.models.school_week={model:'invalid'};}, async()=>{})).rejects.toThrow();
+});
+it('missing legacy and new school role is a named error', async () => {
+  await expect(withSettings(sample => {delete sample.models.school;}, async()=>{})).rejects.toThrow(/school_campus/);
+});
+
 it.each([['narrative', 'low'], ['memory', 'high'], ['sticker_description', 'high']])('sends the configured model and effort for %s through the HTTP transport', async (name, effort) => {
   await withSettings(sample => {
     const c = name === 'sticker_description' ? sample.stickerDescriptionModel : sample.models[name];

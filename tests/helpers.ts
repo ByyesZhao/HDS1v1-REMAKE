@@ -1,4 +1,6 @@
 import { Storage } from '../src/storage';
+import { EnvironmentStore } from '../src/environment/store';
+import { SchoolStore } from '../src/school/store';
 import { defaultConfig, initialCharacter } from '../src/config';
 import { MemoryStore } from '../src/memory/store';
 import type { Clock, ModelRunner, ModelTask, Random, Sender, OutboxItem } from '../src/types';
@@ -41,7 +43,7 @@ export function setup() {
   const config = { ...defaultConfig, background: '开发样例', chatExamples: '嗯嗯' };
   const sender = new RecordingSender(clock);
   const wait = async (ms: number) => { clock.advance(ms); };
-  return { storage, clock, random, models, config, sender, wait };
+  return { environmentStore:new EnvironmentStore(storage),schoolStore:new SchoolStore(storage),storage, clock, random, models, config, sender, wait };
 }
 export function saveInput(storage: Storage, id: string, content: string) {
   storage.save('messages', id, { id, content, receivedAt: NOW, platformMessageIds: [], direction: 'incoming', batchId: `batch-${id}`, seenTurnId: null, turnId: null, outboxSeq: null });
