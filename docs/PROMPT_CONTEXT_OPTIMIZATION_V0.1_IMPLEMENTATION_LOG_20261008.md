@@ -86,4 +86,4 @@ HTTP每次使用一个resources池，业务输入与补查返回使用引用，w
 
 最终独立审核按executing-plans/requesting-code-review调用一次全新只读reviewer（未沿用过去审核代理），发现2项Important及1项Minor：迟读已关闭段的合法空binding被误阻挡恢复；补查顶层短期／长期／learned绕过正文池；历史安全警告未落运行日志。全部在新增失败回归后修复，保留旧段／消息身份、不同owner版本ref和Host完整校验。没有再开一轮审核；主代理负责修复后回归。夹具补充时少传sharedMeta及错误advanceReason造成验收／类型检查失败，已改为合法冻结元数据，没有掩盖失败记录。
 
-最终工作区类型检查、构建通过；98文件536项通过。合入当前项目后再验证实际构建及两个启动文件的--check路径，并保持服务关闭。逐任务提交和Python／PowerShell账本保存在Git及交付记录；不会把私有背景、密钥、在线完整报告提交到Git。
+最终工作区类型检查、构建通过；98文件536项通过。dc68d4d已fast-forward合入main；主目录typecheck/build及98文件536项全套再次通过，离线demo通过。两个启动文件--check均返回0：HDSI插件／配置／67表情可加载，SnowLuma启动文件及Node版本正确；没有网络请求或启动服务。随后Get-CimInstance确认服务进程0，正式库只读check version=1、消息／段／活动／在途0，canApply=true。54份逐任务简报／日志／账本已复制至runtime/data/prompt-context-process-20261008/worktree-process并逐文件哈希核验；主目录全套输出在该目录main-suite.log。逐任务提交和Python／PowerShell账本保存在Git及交付记录；不会把私有背景、密钥、在线完整报告提交到Git。

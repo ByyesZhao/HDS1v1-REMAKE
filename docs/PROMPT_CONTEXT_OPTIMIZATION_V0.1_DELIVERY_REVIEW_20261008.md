@@ -61,6 +61,6 @@
 
 正式库迁移前消息／活动／在途均0；停服确认后备份并升级dialogueContextVersion=1。备份位于runtime/prompt-context-backups/dialogue-20261008150036587-87c15b07-a6d2-415a-a967-b41592359cd3。旧消息、来源和记忆不删除。config.local.json使用4段／15分钟及已批准background-views.local.json；风格及各用途映射可修改，下次启动读取，原作者文件和现有details保留。
 
-基线83文件473项；本次最终98文件536项，typecheck/build通过。本地合入main后另验证构建、全套回归、Start-HDSI.cmd --check与Start-SnowLuma.cmd --check，不启动服务。无远程push或PR。任务1～11提交依次f352dc9、bf0eb2d、f4f463a、3a338fc、604623b、59735b4、a9f570c、67d4fc9、6e98876、d2df815、e7f6894；任务12及本地合入记录见Git。
+基线83文件473项；本次最终98文件536项，typecheck/build通过。dc68d4d已本地fast-forward合入main；主目录typecheck/build及98文件536项再次通过，离线demo通过。Start-HDSI.cmd --check与Start-SnowLuma.cmd --check均返回0，服务进程核对为0；正式库只读检查version=1且canApply=true。无远程push或PR。任务1～11提交依次f352dc9、bf0eb2d、f4f463a、3a338fc、604623b、59735b4、a9f570c、67d4fc9、6e98876、d2df815、e7f6894；任务12提交dc68d4d；本地合入记录见Git。
 
-执行账本的全部裁定：中文“任务”标题不匹配技能bash提取器，采用Python／PowerShell等价提取、逐任务简报和日志，并人工逐项核对源计划；没有降低需求或略过测试。逐任务账本存本地runtime/data/prompt-context-process-20261008，本文与实施日志为可提交的复盘入口。DSH审阅建议看两份权威文档＋实施日志＋本文＋BACKGROUND_VIEW_MAPPING_20261008.md；历史方案／rebuttal按需追溯。
+执行账本的全部裁定：中文“任务”标题不匹配技能bash提取器，采用Python／PowerShell等价提取、逐任务简报和日志，并人工逐项核对源计划；没有降低需求或略过测试。逐任务账本存本地runtime/data/prompt-context-process-20261008/worktree-process（54文件哈希核对一致），主目录最终全套输出在上级main-suite.log，本文与实施日志为可提交的复盘入口。DSH审阅建议看两份权威文档＋实施日志＋本文＋BACKGROUND_VIEW_MAPPING_20261008.md；历史方案／rebuttal按需追溯。
