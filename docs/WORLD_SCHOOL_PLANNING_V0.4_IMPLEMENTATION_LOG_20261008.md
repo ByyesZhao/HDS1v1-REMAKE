@@ -18,7 +18,7 @@ Ruling：技能task-start只匹配英文Task标题，本计划使用中文“任
 
 ## 任务1：配置兼容及存储
 
-进行中。依赖通过npm ci按锁文件安装，未新增依赖。
+已完成。依赖通过npm ci按锁文件安装，未新增依赖。
 
 RED：新增7项失败，原268项通过。首次完整回归：276通过、1失败（旧模型数断言11，应为13）。任务专项15项通过，typecheck退出0；先前登记全绿是记录错误，已更正。新增JSON表与两类Store复用同一Storage；旧runtime字段只在读取时缺省null，未写回。兼容加载在Schema前执行，复制独立对象，显式错误不回退。工具demo／已有共同验收因必需依赖提前装配Store，其行为未改。任务1完成；调度尚未启用。
 
@@ -76,3 +76,29 @@ Ruling（Declined to judge，逐项）：科研自由文字细节漂移及共同
 Ruling：初建active持续计划与零课程并存的已实现规则补入细化§5；终审身份／退出规则补入§3、§5及执行任务4。更正细化中遗留“本次仅文档”“全部尚未实施”措辞，历史review／rebuttal原文不改。
 
 Ruling（本地集成）：用户已授权在D:/HDSI-remake落实完整功能并由cmd运行，开发分支隔离只为实施，不作为另行交付位置；在主目录main仍为690a5ed且无跟踪文件变更时执行--ff-only，再在主目录验证并构建供既有插件Junction使用。该必要、可逆本地集成按用户授权直接完成，不新增发布／推送／服务启动；仓库无remote，不运行git pull。主目录现有未跟踪审查文件保留。
+
+## 主目录交付与提交索引
+
+2026-10-08，D:/HDSI-remake/main已从690a5ed快速前移到3ac2b1b。主目录重新执行npm test：61文件336项通过，23.06s、退出0；npm run typecheck、npm run build、node runtime/plugin-smoke.cjs退出0。正式运行依赖的runtime/node_modules/koishi-plugin-hdsi-remake仍为指向D:/HDSI-remake的Junction，lib已在主目录重新构建，不需要从隔离目录运行。
+
+合并后npm run migrate:environment -- --check：version=1，legacySchoolEventCount=0，legacyEnvironmentTurns=[]，unexpectedEnvironmentOutbox=[]，unfinishedForegroundTurnIds=[]，paused=false；canUpgrade=false表示无需重复升级，不是迁移失败。正式配置经新lib/settings加载并逐角色连接字段检查通过，三个school_*均为deepseek-flash／low，environmentDailyAt=06:00、environmentRetryMs=300000。配置检查没有发送网络请求或输出密钥／背景。
+
+终场进程核对：HDSI／SnowLuma相关node/python进程0。start-hdsi.cmd和start-snowluma.cmd仍位于主目录，由用户双击运行；本次没有启动正式服务。世界→校园→课题组→周计划每天06:00串行开始，07:00仍为期望而非承诺；首次实际启动时正式库当天upgrade批次会按正常门禁进入建档，没有提前在线写正式学校计划。
+
+| 提交 | 内容 |
+| --- | --- |
+| c0b0bca／7f0f10c | 任务1配置／表／类型、旧模型数量断言及测试记录更正 |
+| 8993511 | 任务2独立环境批次、重试及让位 |
+| cc32892 | 任务3学校角色、合同及网页会话 |
+| 6ff59d7 | 任务4日历／通知 |
+| 9093d39 | 任务5角色知识／研究经历与段B |
+| b62b666 | 任务6升级／启动门禁 |
+| a88fb45 | 任务7集成与实际说明 |
+| 57912ae | 任务8真实模型验收工具／报告 |
+| 3ac2b1b | 终审三项日历修复与6个回归变体 |
+
+供后续DSH检查的入口：[本日志](WORLD_SCHOOL_PLANNING_V0.4_IMPLEMENTATION_LOG_20261008.md)、[真实模型报告](WORLD_SCHOOL_PLANNING_V0.4_REAL_STORY_ACCEPTANCE_20261008.md)、[实施细化](WORLD_SCHOOL_PLANNING_V0.4_IMPLEMENTATION_20261008.md)、[执行计划](WORLD_SCHOOL_PLANNING_V0.4_EXECUTION_PLAN_20261008.md)，以及690a5ed..3ac2b1b源码差异。日志最终交付补记为独立文档提交，不改变已验证代码。
+
+临时执行账本、逐任务RED/GREEN输出、终审前diff及临时升级fixture共35个文件已复制到主目录runtime/environment-upgrade-backups/development-audit-world-school/；执行目录及fixture逐文件SHA256与原件一致。真实验收原产物早已位于主目录runtime/data/world-school-acceptance/。这些审计产物及正式库／配置备份不入Git，但不依赖隔离工作树留存。
+
+原隔离工作树已通过Codex原生archive_worktree归档，list_artifacts确认archived_worktree；未手动强删Git目录或用户文件。已集成提交和可恢复快照保留，主目录是运行／后续审核入口。交付结束只留下原有5份未跟踪DSH审查文档，源码及本轮文档均已提交。
