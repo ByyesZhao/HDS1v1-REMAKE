@@ -238,11 +238,11 @@
 
 **Interfaces:** `DialogueUpgradeParameters={idleMinutes:number,targetVersion:1|2}`；`inspectDialogueUpgrade(path:string,parameters:DialogueUpgradeParameters):DialogueUpgradeReport`与`upgradeDialogue(path:string,now:string,options:DialogueUpgradeParameters & {stopped:boolean,backupDirectory:string}):DialogueUpgradeReport`共享计划参数。报告增加targetVersion、idleMinutes、配置来源及普通／活动统计。chat-upgrade生成纯目标2计划供原入口分派；`ensureDialogueVersion`目标2，并保留旧在途兼容核对入口。CLI默认目标2，读取公开配置，不加载密钥。
 
-- [ ] 写`nondefault_idle_same_check_and_apply`：30分钟配置下20分钟间隔同普通段；check与apply统计／归属一致，不能从state默认15读取。明确参数覆盖及配置来源进入报告。
-- [ ] 写`v1_mixed_history_rebuilds_pure_chat`、`activity_does_not_bridge_old_chat_gap`、`old_ordinary_reply_hold_maps_but_shared_hold_does_not`、`missing_active_activity_evidence_blocks_apply`、`closed_old_chat_not_forced_out`。
-- [ ] 写`check_no_business_writes`、`apply_backup_then_transaction`、`reapply_v2_idempotent`、`failed_plan_rolls_back`、`parameter_change_not_silent_rebuild`；证明消息ID／正文／时间／已读／记忆／确认outbox及旧混合索引未改，仅新增明确索引与归属。
-- [ ] 跑`npm test -- tests/chat-upgrade.test.ts tests/dialogue-upgrade.test.ts`确认红灯；实现check/apply同计划、目标版本分派及旧在途映射，未知当前归属不按【】猜测。
-- [ ] 同组及类型检查通过，日志保存隔离报告与备份演练证据，提交任务15。正式库检查／apply留到任务20，不因之前空库假定学校步骤为空。
+- [x] 写`nondefault_idle_same_check_and_apply`：30分钟配置下20分钟间隔同普通段；check与apply统计／归属一致，不能从state默认15读取。明确参数覆盖及配置来源进入报告。
+- [x] 写`v1_mixed_history_rebuilds_pure_chat`、`activity_does_not_bridge_old_chat_gap`、`old_ordinary_reply_hold_maps_but_shared_hold_does_not`、`missing_active_activity_evidence_blocks_apply`、`closed_old_chat_not_forced_out`。
+- [x] 写`check_no_business_writes`、`apply_backup_then_transaction`、`reapply_v2_idempotent`、`failed_plan_rolls_back`、`parameter_change_not_silent_rebuild`；证明消息ID／正文／时间／已读／记忆／确认outbox及旧混合索引未改，仅新增明确索引与归属。
+- [x] 跑`npm test -- tests/chat-upgrade.test.ts tests/dialogue-upgrade.test.ts`确认红灯；实现check/apply同计划、目标版本分派及旧在途映射，未知当前归属不按【】猜测。
+- [x] 同组及类型检查通过，日志保存隔离报告与备份演练证据，提交任务15。正式库检查／apply留到任务20，不因之前空库假定学校步骤为空。
 
 ### 任务16：输入、起止、确认发送和恢复接普通索引
 

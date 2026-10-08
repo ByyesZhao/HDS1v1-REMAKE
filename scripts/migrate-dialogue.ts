@@ -1,7 +1,13 @@
 import { resolve } from 'node:path';
+import {existsSync,readFileSync} from 'node:fs';
 import { inspectDialogueUpgrade,upgradeDialogue } from '../src/deployment/dialogue-upgrade';
 const args=process.argv.slice(2),value=(key:string)=>{const i=args.indexOf(key);return i<0?undefined:args[i+1];};
 const path=resolve(value('--database')??'runtime/data/hdsi-remake.sqlite');
 if(args.includes('--check')&&args.includes('--apply'))throw new Error('Choose --check or --apply.');
 const backup=value('--backup-dir');if(args.includes('--apply')&&!backup)throw new Error('--apply requires --backup-dir.');
-console.log(JSON.stringify(args.includes('--apply')?upgradeDialogue(path,new Date().toISOString(),{stopped:args.includes('--stopped'),backupDirectory:resolve(backup!)}):inspectDialogueUpgrade(path),null,2));
+const configPath=value('--config')?resolve(value('--config')!):existsSync('config.local.json')?resolve('config.local.json'):null;
+const configured=configPath?(JSON.parse(readFileSync(configPath,'utf8')) as {memory?:{contextLimits?:{dialogueIdleMinutes?:number}}}).memory?.contextLimits?.dialogueIdleMinutes:undefined;
+const idleMinutes=value('--idle-minutes')!==undefined?Number(value('--idle-minutes')):configured??15;
+const target=Number(value('--target-version')??2);if(target!==1&&target!==2)throw new Error('--target-version must be 1 or 2');
+const parameters={idleMinutes,targetVersion:target as 1|2,configSource:value('--idle-minutes')!==undefined?'--idle-minutes':configPath??'default:15'};
+console.log(JSON.stringify(args.includes('--apply')?upgradeDialogue(path,new Date().toISOString(),{...parameters,stopped:args.includes('--stopped'),backupDirectory:resolve(backup!)}):inspectDialogueUpgrade(path,parameters),null,2));
