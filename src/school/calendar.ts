@@ -93,7 +93,7 @@ export function schoolExpansionInput(storage:Storage,now:string,timezone:string)
  for(let i=0;i<allOccurrences.length;i++)for(const b of allOccurrences.slice(i+1)){const a=allOccurrences[i];if(milliseconds(a.startsAt)<milliseconds(b.endsAt??b.startsAt)&&milliseconds(b.startsAt)<milliseconds(a.endsAt??a.startsAt))conflicts.push(`${a.occurrenceKey} 与 ${b.occurrenceKey} 时间冲突；角色自行选择`);}
  return {weekStarts,sourceItems,existingInstances,existingNotices,knownSnapshots,coveredVersions,requiredOccurrences,requiredNoticeKeys,conflicts};
 }
-export function validateWeekCoverage(result:Extract<EnvironmentModelResult,{stage:'school_week'}>,input:SchoolExpansionInput):void {
+export function validateWeekCoverage(result:import('../environment/types').LegacySchoolWeekResult,input:SchoolExpansionInput):void {
  for(const o of input.requiredOccurrences){
   const candidate=result.instanceChanges.find(c=>c.occurrenceKey===o.occurrenceKey&&c.sourceItemId===o.sourceItemId);
   if(!candidate)throw new ModelFormatError(`required occurrence missing: ${o.occurrenceKey}`);
@@ -111,7 +111,7 @@ export function validateWeekCoverage(result:Extract<EnvironmentModelResult,{stag
  if(new Set(result.weekChanges.map(w=>w.weekStart)).size!==result.weekChanges.length)throw new ModelFormatError('duplicate week metadata');
  for(const w of result.weekChanges){if(!input.weekStarts.includes(w.weekStart)||Object.entries(w.sourceVersions).some(([id,v])=>input.sourceItems.find(i=>i.id===id)?.revision!==v))throw new ModelFormatError('wrong week coverage version');}
 }
-export function resolveSchoolWeek(storage:Storage,result:Extract<EnvironmentModelResult,{stage:'school_week'}>,input:SchoolExpansionInput,now:string):EnvironmentChangeSet {
+export function resolveSchoolWeek(storage:Storage,result:import('../environment/types').LegacySchoolWeekResult,input:SchoolExpansionInput,now:string):EnvironmentChangeSet {
  validateWeekCoverage(result,input);
  const instances:SchoolInstance[]=result.instanceChanges.map(c=>{
   const o=input.requiredOccurrences.find(o=>o.occurrenceKey===c.occurrenceKey)!,item=input.sourceItems.find(i=>i.id===c.sourceItemId)!,old=input.existingInstances.find(i=>i.occurrenceKey===c.occurrenceKey);
@@ -158,4 +158,33 @@ export function normalizeSchoolWeekChanges(storage:Storage,changes:Extract<Envir
   return [{...notice,id,instanceId,payload:{...notice.payload,snapshots}}];
  });
  return {...changes,instances,notices};
+}
+
+function weekInstanceCandidates(input:SchoolExpansionInput):import('../school/types').SchoolInstanceCandidate[]{return input.requiredOccurrences.map(o=>({occurrenceKey:o.occurrenceKey,sourceItemId:o.sourceItemId,expectedRevision:input.sourceItems.find(i=>i.id===o.sourceItemId)!.revision}));}
+export function schoolWeekTextInput(input:SchoolExpansionInput,timezone:string){
+ const notices=input.requiredNoticeKeys.map(n=>{
+  const item=input.sourceItems.find(i=>i.id===n.sourceItemId);
+  const required=n.occurrenceKey?input.requiredOccurrences.find(o=>o.occurrenceKey===n.occurrenceKey):undefined;
+  const existing=n.occurrenceKey?input.existingInstances.find(i=>i.occurrenceKey===n.occurrenceKey):undefined;
+  if(n.occurrenceKey&&!required&&!existing)throw new ModelFormatError('notice occurrence missing from frozen context');
+  const occurrence=required?{instanceId:existing?.id??stableId('school-instance',required.occurrenceKey),startsAt:required.startsAt,endsAt:required.endsAt,status:required.status,title:item?.title,location:item?.location}:existing?{instanceId:existing.id,startsAt:existing.startsAt,endsAt:existing.endsAt,status:existing.status,title:existing.sourceSnapshot.title,location:existing.sourceSnapshot.location}:null;
+  const entityRefs=[...n.entityIds.map(entityId=>({entityKind:'plan_item' as const,entityId})),...(n.occurrenceKey?[{entityKind:'instance' as const,entityId:n.occurrenceKey}]:[])];
+  return {key:n.id,sourceItemId:n.sourceItemId,occurrenceKey:n.occurrenceKey,kind:n.kind,publishAt:n.publishAt,channel:n.channel,weekStart:n.weekStart,title:item?.title??'本周安排',location:item?.location??'',declaredEntities:entityRefs,occurrence};
+ });
+ const ids=new Set(input.requiredNoticeKeys.flatMap(n=>n.entityIds));
+ return {timezone,weekStarts:input.weekStarts,notices,sourceItems:input.sourceItems.filter(i=>ids.has(i.id)),conflicts:input.conflicts};
+}
+export function validateWeekText(result:import('../environment/types').SchoolWeekTextResult,input:SchoolExpansionInput):void {
+ if(!Array.isArray(result.noticeTexts)||!Array.isArray(result.weekNotes))throw new ModelFormatError('version1 requires noticeTexts/weekNotes');
+ if(new Set(result.noticeTexts.map(n=>n.key)).size!==result.noticeTexts.length)throw new ModelFormatError('duplicate notice key');
+ for(const n of input.requiredNoticeKeys)if(!result.noticeTexts.some(t=>t.key===n.id&&t.text.trim()))throw new ModelFormatError('required notice missing: '+n.id);
+ for(const n of result.noticeTexts)if(!input.requiredNoticeKeys.some(r=>r.id===n.key))throw new ModelFormatError('unknown notice key');
+ if(new Set(result.weekNotes.map(w=>w.weekStart)).size!==result.weekNotes.length)throw new ModelFormatError('duplicate week notes');
+ for(const w of result.weekNotes)if(!input.weekStarts.includes(w.weekStart))throw new ModelFormatError('unknown week notes');
+}
+export function resolveSchoolWeekText(storage:Storage,result:import('../environment/types').SchoolWeekTextResult,input:SchoolExpansionInput,now:string):EnvironmentChangeSet {
+ validateWeekText(result,input);
+ const descriptors=schoolWeekTextInput(input,'descriptor identity only').notices;
+ const candidate:import('../environment/types').LegacySchoolWeekResult={stage:'school_week',instanceChanges:weekInstanceCandidates(input),noticeCandidates:result.noticeTexts.map(n=>({key:n.key,text:n.text,entityRefs:descriptors.find(d=>d.key===n.key)!.declaredEntities})),weekChanges:input.weekStarts.map(weekStart=>({weekStart,sourceVersions:Object.fromEntries(input.sourceItems.map(i=>[i.id,i.revision])),conflictNotes:[...new Set([...input.conflicts,...result.weekNotes.find(w=>w.weekStart===weekStart)?.conflictNotes??[]])]}))};
+ return resolveSchoolWeek(storage,candidate,input,now);
 }

@@ -70,3 +70,9 @@ HTTP每次使用一个resources池，业务输入与补查返回使用引用，w
 背景／环境4项新测试（含已有事实不覆盖）及指定14项通过，旧环境夹具改按真实新DTO读取。全量96文件521项通过，类型检查通过。world只取活跃世界事件；campus/group各自plans/items，group保留研究taskId对应全部35条过程测试和campusTiming，无固定裁剪。Host仍保留原冻结快照和验证对象。
 
 2026-10-08用户批准具体36段映射，前提是风格可修改；该配置是本地JSON，可修改后下次启动读取，满足前提。批准文件runtime/data/background-views.local.json；候选runtime/data/background-views-candidate.json保持pending原记录，原梁思璃设定.txt保留。此次core仍全文，style取8/9/32，world取25/26/28/31，campus取2/5/25/26/27/30/34，group取2/5/27/30/33/34（0起始）。facts为空，不擅自移动导师／培养阶段身份或覆盖运行details。程序支持经审阅的事实来源／key映射，只初始化缺失事实。正式config启用在最终集成后同步。
+
+## 任务11：周计划机械展开与合同版本
+
+新增机械通知／恢复7项测试，首轮红灯后实现；旧调度fixture先纠正未来environment时间，重新确认缺少version1才是行为红灯。新结果只含noticeTexts/weekNotes；程序生成候选、固定声明实体及实际instanceId，文本不可改机械字段。必需通知逐key非空且唯一，无通知即使有冲突也不调用模型，仍提交coverage/checkedAt/冲突。模型weekNotes与程序冲突取并集。描述区分publishAt与活动startsAt，冻结目标课次精确映射；跨开课时刻历史重定向同时更新提醒与快照。
+
+新冻结modelContractVersion=1；旧缺失／0的running/pending沿旧候选和checkpoint，旧ready直接提交解析后的变更集。原review14跨开课／提醒回归显式标version0，另加version1历史重定向用例。指定29项、后续11项及调度16项通过；全套98文件528项通过，类型检查通过。两处旧“周必调用”预期更新为三上游模型，周覆盖提交仍被新用例验证。

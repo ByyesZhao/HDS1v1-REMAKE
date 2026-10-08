@@ -41,5 +41,5 @@ it('environment_0600_first_not_idle_reset',async()=>{
  d.generateEnvironment=async input=>{d.models.calls.push({name:input.stage,input});return input.stage==='world'?{stage:'world',changes:[]}:input.stage==='school_week'?{stage:'school_week',instanceChanges:[],noticeCandidates:[],weekChanges:[]}:{stage:input.stage,planChanges:[],itemChanges:[]};};
  d.models.outputs.memory_consolidation={units:[{unitKey:'r',action:'retain',ids:['dirty'],readOwners:['dirty'],sourceIds:[]}]};
  const h=new SerialHost(new HdsiApp(d),{timers:false});hosts.push(h);await h.start();
- expect(d.models.calls.slice(0,4).map(c=>c.name)).toEqual(['world','school_campus','school_group','school_week']);expect(d.storage.runtime().memoryIdle).toEqual(anchor);
+ expect(d.models.calls.slice(0,3).map(c=>c.name)).toEqual(['world','school_campus','school_group']);expect(d.storage.runtime().memoryIdle).toEqual(anchor);
 });

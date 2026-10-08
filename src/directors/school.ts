@@ -3,7 +3,7 @@ import type { Dependencies } from '../app';
 import { runEnvironment } from './world';
 export const runSchool = (d: Dependencies, at: string,turnId?:string) => runEnvironment(d, 'school', at,turnId);
 import type {EnvironmentStepInput,EnvironmentModelResult} from '../environment/types';
-import {schoolCampusTask,schoolGroupTask,schoolWeekTask} from '../school/contracts';
+import {schoolCampusTask,schoolGroupTask,schoolWeekTask,schoolWeekTextTask} from '../school/contracts';
 import {phaseOptions} from '../web/phases';
 import {ContextBuilder} from '../memory/context';
 import {makeRetrievalRequest} from '../memory/retrieval';
@@ -15,7 +15,7 @@ function optionsFor(d:Dependencies,input:EnvironmentStepInput){
 }
 async function school(d:Dependencies,input:EnvironmentStepInput):Promise<EnvironmentModelResult>{
  const options=optionsFor(d,input),urls=()=>options.runRef?d.web!.providedUrls(options.runRef.runId):[];
- const task=input.stage==='school_campus'?schoolCampusTask(d,urls):input.stage==='school_group'?schoolGroupTask(d,urls):schoolWeekTask((input.context as Partial<SchoolExpansionInput>).requiredOccurrences?input.context as SchoolExpansionInput:undefined);
+ const task=input.stage==='school_campus'?schoolCampusTask(d,urls):input.stage==='school_group'?schoolGroupTask(d,urls):input.modelContractVersion===1?schoolWeekTextTask(input.context as SchoolExpansionInput):schoolWeekTask((input.context as Partial<SchoolExpansionInput>).requiredOccurrences?input.context as SchoolExpansionInput:undefined);
  return d.models.runModel(task,buildEnvironmentView(input),options);
 }
 export const runSchoolCampus=(d:Dependencies,input:EnvironmentStepInput)=>school(d,input);

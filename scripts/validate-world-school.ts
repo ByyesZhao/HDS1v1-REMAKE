@@ -14,7 +14,7 @@ import {InputBuffer} from '../src/host/input';
 import {ModelClient,ChatCompletionsTransport} from '../src/model/client';
 import {loadSettings,appConfig,initialState,connectionFor,modelRoles} from '../src/settings';
 import {generateEnvironmentStep} from '../src/directors/school';
-import {resolveSchoolWeek,schoolExpansionInput} from '../src/school/calendar';
+import {resolveSchoolWeek,schoolExpansionInput,resolveSchoolWeekText} from '../src/school/calendar';
 import {applySchoolChanges,resolveSchoolUpstream} from '../src/school/changes';
 import {releaseSchoolNotices} from '../src/school/notices';
 import {personalSchoolContext} from '../src/school/context';
@@ -81,7 +81,7 @@ async function main(){
  const week=async(name:string)=>{
   label=name;const input:EnvironmentStepInput={stage:'school_week',batchId:`acceptance-${name}`,at:now,context:{...schoolExpansionInput(storage,now,cfg.timezone),timezone:cfg.timezone,appointments:[]}};
   const result=await generateEnvironmentStep(app.dependencies,input);assert(result.stage==='school_week');
-  storage.transaction(()=>applySchoolChanges(storage,resolveSchoolWeek(storage,result,input.context as any,now),now));dump(name);
+  storage.transaction(()=>applySchoolChanges(storage,input.modelContractVersion===1?resolveSchoolWeekText(storage,result as import('../src/environment/types').SchoolWeekTextResult,input.context as any,now):resolveSchoolWeek(storage,result as import('../src/environment/types').LegacySchoolWeekResult,input.context as any,now),now));dump(name);
  };
  const story=async(name:string,advanceMinutes:number,message?:string)=>{
   label=name;now=new Date(Date.parse(now)+advanceMinutes*60000).toISOString();

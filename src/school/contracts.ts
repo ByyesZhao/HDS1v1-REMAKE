@@ -3,7 +3,7 @@ import type {Dependencies} from '../app';
 import type {ModelTask} from '../types';
 import type {EnvironmentModelResult} from '../environment/types';
 import {prompts} from '../model/prompts';
-import {validateWeekCoverage} from './calendar';
+import {validateWeekCoverage,validateWeekText} from './calendar';
 import type {SchoolExpansionInput} from './types';
 const time=z.iso.datetime({offset:true}),date=z.iso.date(),clock=z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/);
 export const timingSchema=z.discriminatedUnion('kind',[
@@ -46,4 +46,9 @@ function upstreamTask(d:Dependencies,owner:'campus'|'group',providedUrls:()=>str
 export const schoolCampusTask=(d:Dependencies,urls:()=>string[]=()=>[])=>upstreamTask(d,'campus',urls);
 export const schoolGroupTask=(d:Dependencies,urls:()=>string[]=()=>[])=>upstreamTask(d,'group',urls);
 export const schoolWeekSchema=z.object({stage:z.literal('school_week'),instanceChanges:z.array(z.object({occurrenceKey:z.string(),sourceItemId:z.string(),expectedRevision:z.number().int().positive()})),noticeCandidates:z.array(z.object({key:z.string(),text:z.string().min(1),entityRefs:z.array(z.object({entityKind:z.enum(['plan_item','instance']),entityId:z.string()}))})),weekChanges:z.array(z.object({weekStart:date,sourceVersions:z.record(z.string(),z.number().int().positive()),conflictNotes:z.array(z.string())}))}).strict();
-export function schoolWeekTask(input?:SchoolExpansionInput):ModelTask<EnvironmentModelResult>{return {name:'school_week',prompt:prompts.school_week+'\ninstanceChanges.expectedRevision必须取context.sourceItems中sourceItemId对应条目的当前revision；requiredOccurrences不携带版本，existingInstances.sourceRevision及其旧快照只用于对照，改期时不能复制旧版本。修补时逐项改为报错指出的当前版本。requiredOccurrences中status=cancelled也是必需候选，表示删除时段或缩短范围后退役旧未来课次，仍按给定key引用最新上游版本；状态由程序保存。带after的key是已发生历史之后的新安排，逐字复制，不能重新引用历史key覆盖旧课次。',schema:z.toJSONSchema(schoolWeekSchema),parse:raw=>{const result=schoolWeekSchema.parse(raw);if(input)validateWeekCoverage(result,input);return result;}};}
+export function schoolWeekTask(input?:SchoolExpansionInput):ModelTask<import('../environment/types').LegacySchoolWeekResult>{return {name:'school_week',prompt:prompts.school_week+'\ninstanceChanges.expectedRevision必须取context.sourceItems中sourceItemId对应条目的当前revision；requiredOccurrences不携带版本，existingInstances.sourceRevision及其旧快照只用于对照，改期时不能复制旧版本。修补时逐项改为报错指出的当前版本。requiredOccurrences中status=cancelled也是必需候选，表示删除时段或缩短范围后退役旧未来课次，仍按给定key引用最新上游版本；状态由程序保存。带after的key是已发生历史之后的新安排，逐字复制，不能重新引用历史key覆盖旧课次。',schema:z.toJSONSchema(schoolWeekSchema),parse:raw=>{const result=schoolWeekSchema.parse(raw);if(input)validateWeekCoverage(result,input);return result;}};}
+
+export function schoolWeekTextTask(input:SchoolExpansionInput):ModelTask<import('../environment/types').SchoolWeekTextResult>{
+ const schema=z.object({stage:z.literal('school_week'),noticeTexts:z.array(z.object({key:z.string(),text:z.string().trim().min(1)}).strict()),weekNotes:z.array(z.object({weekStart:date,conflictNotes:z.array(z.string())}).strict())}).strict();
+ return {name:'school_week',prompt:'你是学校周计划通知撰写者。程序已展开课次及确定通知对象，你仅为每个notices.key写一次非空自然通知正文，可附合法周的补充说明。不能修改时间、地点、身份或自行添加安排。publishAt是通知发布时间，occurrence.startsAt才是活动开始时间；时间按timezone解释。同课程不同occurrenceKey是不同课次，精确使用对应日期、星期、时间和地点，不用下一次课替代。条目级通知参照sourceItems给定安排，week_digest只介绍声明实体。冲突记录由程序保留；角色是否参加、请假或协调由个人导演决定，不能把计划写成已获准请假。只返回stage/noticeTexts/weekNotes JSON，不返回机械候选字段。',schema:z.toJSONSchema(schema),parse(raw){const result=schema.parse(raw);validateWeekText(result,input);return result;}};
+}
