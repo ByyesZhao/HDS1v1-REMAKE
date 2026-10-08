@@ -114,7 +114,6 @@ export function resolveSchoolWeek(storage:Storage,result:Extract<EnvironmentMode
  validateWeekCoverage(result,input);
  const instances:SchoolInstance[]=result.instanceChanges.map(c=>{
   const o=input.requiredOccurrences.find(o=>o.occurrenceKey===c.occurrenceKey)!,item=input.sourceItems.find(i=>i.id===c.sourceItemId)!,old=input.existingInstances.find(i=>i.occurrenceKey===c.occurrenceKey);
-  if(old&&milliseconds(old.startsAt)<=milliseconds(now))throw new ModelFormatError('already-started instance cannot be overwritten');
   return {id:old?.id??stableId('school-instance',c.occurrenceKey),sourceItemId:item.id,sourceRevision:item.revision,deliveryRevision:item.deliveryRevision,occurrenceKey:c.occurrenceKey,baseOccurrenceKey:o.baseOccurrenceKey??o.occurrenceKey,weekStart:o.weekStart,startsAt:o.startsAt,endsAt:o.endsAt,sourceSnapshot:item,status:o.status,needsExpansion:false,legacyEventId:old?.legacyEventId??null};
  });
  const notices:SchoolNotice[]=result.noticeCandidates.map(c=>{
@@ -126,5 +125,33 @@ export function resolveSchoolWeek(storage:Storage,result:Extract<EnvironmentMode
   return {id:n.id,sourceItemId:n.sourceItemId,instanceId:instance?.id??null,weekStart:n.weekStart,deliveryRevision:n.deliveryRevision,kind:n.kind,reminderKey:n.reminderKey,channel:n.channel,publishAt:n.publishAt,releasedAt:null,payload:{text:c.text,snapshots},status:'scheduled',nextWakeAt:n.publishAt,readAt:null,readTurnId:null};
  });
  const weeks:SchoolWeek[]=result.weekChanges.map(w=>({id:stableId('school-week',w.weekStart),...w,checkedAt:now,digestRevision:Math.max(0,...[...notices,...input.existingNotices].filter(n=>n.weekStart===w.weekStart&&n.kind==='week_digest').map(n=>n.deliveryRevision))}));
- return {stage:'school_week',instances,notices,weeks};
+ return normalizeSchoolWeekChanges(storage,{stage:'school_week',instances,notices,weeks},now);
+}
+
+// Candidate validation belongs to the frozen input. Historical protection belongs
+// to the actual application time, including ready results restored after restart.
+export function normalizeSchoolWeekChanges(storage:Storage,changes:Extract<EnvironmentChangeSet,{stage:'school_week'}>,now:string):Extract<EnvironmentChangeSet,{stage:'school_week'}> {
+ const aliases=new Map<string,SchoolInstance|null>();
+ const instances=changes.instances.flatMap(value=>{
+  const old=storage.read('school_instances',value.id);
+  if(!old||milliseconds(old.startsAt)>milliseconds(now)||JSON.stringify(old)===JSON.stringify(value))return [value];
+  if(value.status==='cancelled'){aliases.set(value.id,null);return [];}
+  const base=value.baseOccurrenceKey??old.baseOccurrenceKey??value.occurrenceKey,occurrenceKey=JSON.stringify([base,'after',old.id]);
+  const next={...value,id:stableId('school-instance',occurrenceKey),occurrenceKey,baseOccurrenceKey:base,legacyEventId:null};
+  aliases.set(value.id,next);return [next];
+ });
+ const notices=changes.notices.flatMap(notice=>{
+  const replacement=notice.instanceId?aliases.get(notice.instanceId):undefined;
+  if(replacement===null&&notice.kind==='reminder')return [];
+  const instance=replacement??(notice.instanceId?instances.find(i=>i.id===notice.instanceId)??storage.read('school_instances',notice.instanceId):null);
+  if(notice.kind==='reminder'&&instance&&milliseconds(instance.startsAt)<milliseconds(now))return [];
+  const snapshots=notice.payload.snapshots.flatMap(snapshot=>{
+   if(snapshot.entityKind!=='instance'||!aliases.has(snapshot.entityId))return [snapshot];
+   const next=aliases.get(snapshot.entityId);return next?[{entityKind:'instance' as const,entityId:next.id,revision:next.sourceRevision,value:next}]:[];
+  });
+  const instanceId=replacement===null?null:replacement?.id??notice.instanceId;
+  const id=replacement?stableId('school-notice',[notice.sourceItemId,replacement.occurrenceKey,notice.weekStart,notice.kind,notice.reminderKey,notice.deliveryRevision]):notice.id;
+  return [{...notice,id,instanceId,payload:{...notice.payload,snapshots}}];
+ });
+ return {...changes,instances,notices};
 }

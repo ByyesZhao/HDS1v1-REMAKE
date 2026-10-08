@@ -9,7 +9,7 @@ export function ensureEnvironmentBatch(storage:Storage,config:AppConfig,now:stri
  const r=storage.runtime();if(r.environmentPlanningVersion!==1)return null;
  const date=localDate(now,config.timezone),id=batchIdentity(date,config.timezone);
  const existing=storage.read('environment_batches',id);
- const stale=storage.all('environment_batches').filter(b=>b.status==='active'&&b.localDate!==date);
+ const stale=storage.all('environment_batches').filter(b=>b.status==='active'&&(b.timezone!==config.timezone||b.localDate!==localDate(now,b.timezone)));
  if(existing && !stale.length)return existing;
  if(!existing&&!stale.length&&r.nextEnvironmentAt&&!due(r.nextEnvironmentAt,now))return null;
  return storage.transaction(()=>{

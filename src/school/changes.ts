@@ -4,6 +4,7 @@ import type {EnvironmentModelResult,EnvironmentChangeSet} from '../environment/t
 import type {SchoolPlan,SchoolPlanItem} from './types';
 import {milliseconds} from '../time';
 import {ModelFormatError} from '../model/client';
+import {normalizeSchoolWeekChanges} from './calendar';
 const same=(a:unknown,b:unknown)=>JSON.stringify(a)===JSON.stringify(b);
 function publicValue(item:SchoolPlanItem){const {id,revision,deliveryRevision,stageInfo,...value}=item;return value;}
 export function resolveSchoolUpstream(storage:Storage,result:Extract<EnvironmentModelResult,{planChanges:unknown}>,now:string):EnvironmentChangeSet {
@@ -23,7 +24,13 @@ export function resolveSchoolUpstream(storage:Storage,result:Extract<Environment
 export function applySchoolChanges(storage:Storage,changes:EnvironmentChangeSet,now:string):void {
  if(changes.stage==='world')throw Error('world is not a school change');
  if(changes.stage==='school_week'){
-  changes.instances.forEach(v=>storage.save('school_instances',v.id,v));changes.notices.forEach(v=>storage.save('school_notices',v.id,v));changes.weeks.forEach(v=>storage.save('school_weeks',v.id,v));return;
+  const normalized=normalizeSchoolWeekChanges(storage,changes,now);
+  normalized.instances.forEach(v=>storage.save('school_instances',v.id,v));
+  for(const notice of normalized.notices){
+   if(notice.kind==='week_digest')for(const old of storage.all('school_notices').filter(n=>n.kind==='week_digest'&&n.weekStart===notice.weekStart&&n.deliveryRevision<notice.deliveryRevision&&(n.status==='scheduled'||n.status==='available')))storage.save('school_notices',old.id,{...old,status:'invalidated'});
+   const existing=storage.read('school_notices',notice.id);if(!existing||existing.status==='invalidated')storage.save('school_notices',notice.id,notice);
+  }
+  normalized.weeks.forEach(v=>storage.save('school_weeks',v.id,v));return;
  }
  changes.plans.forEach(v=>storage.save('school_plans',v.id,v));
  for(const item of changes.items){const old=storage.read('school_plan_items',item.id);
