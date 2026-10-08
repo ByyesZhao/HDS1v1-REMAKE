@@ -98,7 +98,7 @@
       "detailItemsLimit": null,
       "shortItemsLimit": null,
       "longItemsLimit": null,
-      "recentMessagesLimit": 30
+      "recentDialogueSegments": 4, "dialogueIdleMinutes": 15
     },
     "batchItems": 20,
     "batchCharacters": null,

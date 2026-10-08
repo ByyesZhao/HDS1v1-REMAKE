@@ -13,6 +13,7 @@ import { MemoryStore } from './memory/store';
 import { assembleMemory } from './deployment/memory-runtime';
 import {inspectMemoryCapacity} from './deployment/memory-capacity-upgrade';
 import { assembleWeb } from './deployment/web-runtime';
+import { ensureDialogueVersion } from './deployment/dialogue-upgrade';
 import { inspectSharedUpgrade, ensureSharedActivityVersion } from './deployment/shared-upgrade';
 import { ModelClient, ChatCompletionsTransport } from './model/client';
 import { StickerLibrary, HttpEmbeddingProvider } from './output/stickers';
@@ -41,7 +42,7 @@ export function apply(ctx: Context, config: Config): void {
   if(existsSync(databasePath)&&inspectEnvironmentUpgrade(databasePath).version!==1)throw new Error('Stop HDSI and run npm run migrate:environment -- --database <path> --check, then --apply --stopped --backup-dir <path> before starting this existing database.');
   if(existsSync(databasePath)){const capacity=inspectMemoryCapacity(databasePath,systemClock.now(),settings.memory.capacity);if(capacity.hasCharacter&&capacity.version!==1)throw new Error('Stop HDSI; finish old stories with the previous build; run npm run memory:capacity -- <db> --config <json> --dry-run, then --apply --stopped before starting.');}
   const storage = new Storage(databasePath);
-  try { ensureSharedActivityVersion(storage); } catch (error) { storage.close(); throw error; }
+  try { ensureDialogueVersion(storage);ensureSharedActivityVersion(storage); } catch (error) { storage.close(); throw error; }
   const memoryStore=new MemoryStore(storage),fresh=!storage.get('character');
   if(!fresh&&memoryStore.schemaVersion()!==3){storage.close();throw new Error('Stop HDSI and run npm run memory:migrate -- --stopped before starting this existing database');}
   const random = { next: () => Math.random() }, clock = systemClock, options = appConfig(settings);

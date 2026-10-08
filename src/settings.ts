@@ -17,6 +17,13 @@ export function normalizeSchoolModels(raw:unknown):unknown {
   }
   return input;
 }
+export function normalizeDialogueSettings(raw:unknown):unknown {
+ if(!raw||typeof raw!=='object'||Array.isArray(raw))return raw;
+ const input=structuredClone(raw) as Record<string,any>;
+ const limits=input.memory?.contextLimits;
+ if(limits&&'recentMessagesLimit' in limits){delete limits.recentMessagesLimit;console.info('HDSI: recentMessagesLimit 已替换为完整对话段窗口，缺省4段／15分钟。');}
+ return input;
+}
 const connection = z.object({
   baseUrl: z.url().default('https://api.deepseek.com'), apiKeyEnv: z.string().default('DEEPSEEK_API_KEY'),
   model: z.enum(['deepseek-flash', 'deepseek-v4-flash', 'deepseek-v4-pro']),
@@ -31,7 +38,7 @@ const embedding=z.object({baseUrl:z.url().default('https://dashscope.aliyuncs.co
 const memorySettings=z.object({
   capacity:z.object({shortActiveLimit:z.number().int().positive().nullable().default(100),longActiveLimit:z.number().int().positive().nullable().default(1000),longArchiveLimit:z.number().int().positive().nullable().default(500),archiveRetentionDays:z.number().int().positive().nullable().default(90)}).prefault({}),
   idleMaintenanceMinutes:z.number().positive().default(15),maintenanceDuringSleep:z.boolean().default(true),
-  contextLimits:z.object({alwaysIncludeCharactersLimit:nullableLimit,candidateItemsPerRoute:nullableLimit,detailItemsLimit:nullableLimit,shortItemsLimit:nullableLimit,longItemsLimit:nullableLimit,recentMessagesLimit:z.number().int().positive().default(30)}).default({alwaysIncludeCharactersLimit:null,candidateItemsPerRoute:null,detailItemsLimit:null,shortItemsLimit:null,longItemsLimit:null,recentMessagesLimit:30}),
+  contextLimits:z.object({alwaysIncludeCharactersLimit:nullableLimit,candidateItemsPerRoute:nullableLimit,detailItemsLimit:nullableLimit,shortItemsLimit:nullableLimit,longItemsLimit:nullableLimit,recentDialogueSegments:z.number().int().positive().default(4),dialogueIdleMinutes:z.number().positive().default(15)}).default({alwaysIncludeCharactersLimit:null,candidateItemsPerRoute:null,detailItemsLimit:null,shortItemsLimit:null,longItemsLimit:null,recentDialogueSegments:4,dialogueIdleMinutes:15}),
   batchItems:z.number().int().positive().default(20),batchCharacters:nullableLimit,
   queryTimeoutMs:z.number().positive().default(1500),backgroundTimeoutMs:z.number().positive().default(120000),retryDelayMs:z.number().positive().default(300000),cacheSize:z.number().int().positive().default(256),cacheTtlMs:z.number().positive().default(600000),calibrationFile:z.string().optional(),
 }).prefault({});
@@ -58,7 +65,7 @@ export type StorySettings = z.infer<typeof settingsSchema>;
 export function loadSettings(path: string, environment: Record<string, string | undefined> = process.env): StorySettings {
   const input = JSON.parse(readFileSync(path, 'utf8'));
   if (input.backgroundFile) input.background = readFileSync(resolve(dirname(path), input.backgroundFile), 'utf8');
-  const settings = settingsSchema.parse(normalizeSchoolModels(input));
+  const settings = settingsSchema.parse(normalizeDialogueSettings(normalizeSchoolModels(input)));
   if(settings.memory.calibrationFile)settings.memory.calibrationFile=resolve(dirname(path),settings.memory.calibrationFile);
   new Intl.DateTimeFormat('zh-CN', { timeZone: settings.timezone });
   if (settings.initialSleep && Date.parse(settings.initialSleep.wakeAt) <= Date.parse(settings.initialSleep.sleepAt)) throw new Error('initialSleep.wakeAt must follow sleepAt');

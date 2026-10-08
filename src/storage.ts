@@ -7,6 +7,7 @@ import type { SchoolPlan,SchoolPlanItem,SchoolInstance,SchoolNotice,SchoolKnowle
 import type { CharacterState, ControlRequest, Detail, DetailHistory, EnvironmentEvent, Experience, Memory, Message, OutboxItem, PostJob, Runtime, ScheduledTask, Sticker, TurnRecord } from './types';
 
 interface Tables {
+  dialogue_episodes:import('./dialogue/types').DialogueEpisode;dialogue_activity_links:import('./dialogue/types').DialogueActivityLink;
   messages: Message; turns: TurnRecord; outbox: OutboxItem; post_jobs: PostJob;
   tasks: ScheduledTask; details: Detail; detail_history: DetailHistory; memories: Memory;
   events: EnvironmentEvent; experiences: Experience; stickers: Sticker;
@@ -17,7 +18,7 @@ interface Tables {
 const tables: Array<keyof Tables> = ['messages', 'turns', 'outbox', 'post_jobs', 'tasks', 'details', 'detail_history', 'memories', 'events', 'experiences', 'stickers', 'control_requests'];
 export const isUnfinishedTurn=(t:TurnRecord)=>!t.done&&t.legacyDisposition!=='superseded';
 export const environmentTables = ['environment_batches','environment_steps','school_plans','school_plan_items','school_instances','school_notices','school_knowledge','school_progress','school_weeks'] as const;
-tables.push(...environmentTables);
+tables.push(...environmentTables,'dialogue_episodes','dialogue_activity_links');
 export class Storage {
   private readonly db: DatabaseSync;
   constructor(path: string) {
@@ -38,6 +39,7 @@ export class Storage {
     if (!this.get('runtime')) this.set('runtime', {
       openBatch: null, pendingBatchIds: [], paused: false, contactMisses: 0, stickerMisses: 0,
       nextWorldAt: null, nextSchoolAt: null, nextMaintenanceAt: nextDaily(new Date().toISOString(), ['04:30'], 'Asia/Shanghai'), lastError: null,
+      dialogueContextVersion:1,activeDialogueEpisodeId:null,
       sharedActivityVersion: 1, sharedClock: null,
       environmentPlanningVersion:1,nextEnvironmentAt:null,
     } satisfies Runtime);
@@ -70,7 +72,7 @@ export class Storage {
     this.db.prepare(`INSERT INTO ${table}(id, data) VALUES (?, ?) ON CONFLICT(id) DO UPDATE SET data = excluded.data`).run(id, JSON.stringify(value));
   }
   remove<K extends keyof Tables>(table: K, id: string): void { this.db.prepare(`DELETE FROM ${table} WHERE id = ?`).run(id); }
-  runtime(): Runtime { const r = this.get<Runtime>('runtime')!; return { ...r, sharedActivityVersion: r.sharedActivityVersion ?? null, sharedClock: r.sharedClock ?? null,environmentPlanningVersion:r.environmentPlanningVersion??null,nextEnvironmentAt:r.nextEnvironmentAt??null,memoryCapacityVersion:r.memoryCapacityVersion??null,memoryIdle:r.memoryIdle??null }; }
+  runtime(): Runtime { const r = this.get<Runtime>('runtime')!; return { ...r, dialogueContextVersion:r.dialogueContextVersion??null,activeDialogueEpisodeId:r.activeDialogueEpisodeId??null, sharedActivityVersion: r.sharedActivityVersion ?? null, sharedClock: r.sharedClock ?? null,environmentPlanningVersion:r.environmentPlanningVersion??null,nextEnvironmentAt:r.nextEnvironmentAt??null,memoryCapacityVersion:r.memoryCapacityVersion??null,memoryIdle:r.memoryIdle??null }; }
   character(): CharacterState { return this.get<CharacterState>('character')!; }
   messages(): Message[] { return this.all('messages').sort((a, b) => Date.parse(a.receivedAt) - Date.parse(b.receivedAt)); }
   unreadMessages(): Message[] {
