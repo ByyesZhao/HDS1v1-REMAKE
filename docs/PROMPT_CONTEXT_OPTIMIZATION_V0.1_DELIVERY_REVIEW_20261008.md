@@ -66,3 +66,13 @@
 执行账本的全部裁定：中文“任务”标题不匹配技能bash提取器，采用Python／PowerShell等价提取、逐任务简报和日志，并人工逐项核对源计划；第二项裁定是将reviewer标Minor的历史告警日志按细化§4.3已有要求纳入交付；若判断过严，成本仅为可选日志回调，不改消息／来源／段行为。没有降低需求或略过测试。逐任务账本存本地runtime/data/prompt-context-process-20261008/worktree-process（54文件哈希核对一致），主目录最终全套输出在上级main-suite.log，本文与实施日志为可提交的复盘入口。DSH审阅建议看两份权威文档＋实施日志＋本文＋BACKGROUND_VIEW_MAPPING_20261008.md；历史方案／rebuttal按需追溯。
 
 本次开发worktree已由Codex工具归档，Git提交和54份过程材料均保留；主目录没有未提交的本次tracked变更。用户原有未跟踪review文件未改动或纳入提交。
+
+## 2026-10-09：任务13～20增量验收
+
+本批参考细化§13～14与执行计划任务13～20。普通窗口独立chat索引版本2；共同活动所有消息／动作／公开项均不占四段且不刷新普通锚点，当前活动完整授权原文固定选择，末轮表达／记忆保留，下个普通轮通过统一记忆检索。旧混合索引和旧轮权限恢复保留。lookup相同school／detailHistory按确定深相等去重，不同版本保留，v0周输入单层和程序冲突并集合并；未增语义删减。
+
+实际证据：105文件583项通过，typecheck/build通过。完整Host离线短场3轮、6条活动短期，最终提交中断恢复后追问召回；版本2文件关闭重开验证选中消息集合及确认项不重发。详见实施日志任务13～20；task20-red、check-red等保存真实失败，夹具错误不称作生产红灯。通知安全映射prompt-context-errors，保护与参数check映射chat-consistency/chat-upgrade；旧合同与来源没有自动放宽。
+
+真实隔离报告均在runtime/data/prompt-activity-context-process-20261009：task20-online.json：21 HTTP（活动15、质量6）、3次活动修补，2轮提前结束，次轮和普通追问更新原短期，追问shortRefs=1。task20-online-recovery.json：14 HTTP、2次修补，2轮提前end后提交中断恢复成功，2条活动短期＋3条普通追问短期，总5，下一普通shortRefs=2，无活动全文。总35 HTTP／embedding0，不读取正式聊天／图片，不连QQ。首次工具没触发自然提前end中断，修正工具后补验；不写成首次覆盖。模型正常语义仅两场样例，未证明长期叙事稳定或semantic-only标定。
+
+正式库停服备份并升级2（idle15），消息与在途0、学校历史步骤4且running/ready0，完整性ok、无阻挡／告警。备份路径、回退代码与过程细节见实施日志。服务没有启动。独立全分支复核与主目录最终结果后续追加在此。

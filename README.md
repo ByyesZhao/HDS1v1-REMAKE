@@ -1,6 +1,6 @@
 # HDSI 重制版 V0.2
 
-提示词／上下文V0.1现状：原文默认最近4个完整对话段，双方实际消息后空闲15分钟关闭；当前段计入，共同活动期间连续，无30条二次裁剪。模型资料按身份合池和阶段职责投影；无新来源免记忆整理，明确超限报错暂停且不自动裁剪。历史测试数字只描述原交付。本期入口：[实施细化](docs/PROMPT_CONTEXT_OPTIMIZATION_V0.1_IMPLEMENTATION_20261008.md)、[实施日志](docs/PROMPT_CONTEXT_OPTIMIZATION_V0.1_IMPLEMENTATION_LOG_20261008.md)。
+提示词／上下文V0.1现状：普通聊天默认最近4个完整普通段，普通双方实际消息后空闲15分钟关闭，当前计入；共同活动整体不占4段、不刷新普通锚点。活动工作阶段使用本场完整授权原文；结束后由逐轮短期记忆统一检索召回，跨结束未读输入仍直接可见。关闭普通段仍可在4段窗口内，无30条二次裁剪。模型资料按身份合池和阶段职责投影；无新来源免记忆整理，明确超限报错暂停且不自动裁剪。历史测试数字只描述原交付。本期入口：[实施细化](docs/PROMPT_CONTEXT_OPTIMIZATION_V0.1_IMPLEMENTATION_20261008.md)、[实施日志](docs/PROMPT_CONTEXT_OPTIMIZATION_V0.1_IMPLEMENTATION_LOG_20261008.md)。
 
 
 记忆容量／空闲整理V0.4：基础提取仍每轮执行；深度整理、固定信息审核等待最后输入／确认输出／故事完成／活动变化后15分钟，共同活动整个期间等待。默认活跃短期100、普通长期1000（含预备摘要）、普通归档500且最长90天；容量超出或归档到期均可真实清除普通记忆及派生副本。原始消息／剧情／经历、作者背景、details与有效常驻证据保留，不代表整个数据库大小封顶。相关配置独立可改或设null；上下文人为预算仍默认不限。
@@ -177,3 +177,7 @@ SQLite 使用内置 `node:sqlite`，WAL + `synchronous=FULL`；事务、普通�
 第十轮修正：首节点要求公开开场；提前结束须有本轮公开正文，允许无角色台词；空正文的个人修补可暂缓结束。修正／部署及真实模型验收的最新状态以[记录](docs/REVIEW10_FIX_LOG_20261008.md)为准，以上原始交付状态保留历史。
 
 隔离在线验收工具 `scripts/validate-shared-story.ts` 默认单请求等待300秒，既有调用方取消信号仍有效；正式模型调用不因此新增超时。工具的quiet场景明确约定20关，用于覆盖硬上限，不代表普通活动都需20轮。约10轮是叙事节奏建议，实际平均轮数尚未统计。
+
+普通原文窗口版本2：已有库停止HDSI和SnowLuma后，运行 `npm run dialogue:migrate -- --database runtime/data/hdsi-remake.sqlite --config config.local.json --check`；无阻挡时使用相同参数加 `--apply --stopped --backup-dir runtime/data/backups`，先备份DB及已有WAL/SHM。保留旧混合索引和版本1在途恢复，新轮使用独立chat索引。没有强制关段／自动裁剪／人工脱困命令。
+
+隔离活动上下文验收：`npm run validate:prompt-context -- --activity-flow --report runtime/data/activity-flow.json`，默认离线；显式加 `--online --config config.local.json` 使用本地认证及背景，不读正式聊天、不连接QQ、embedding为0，单请求默认300秒。三节点是覆盖开场／沉默／收尾的短验收场景，不改变正式默认20轮硬上限与约10轮软目标。

@@ -1,5 +1,7 @@
 import {it,expect} from 'vitest';
 import {validatePromptContext} from '../src/deployment/prompt-context-acceptance';
+import {validateActivityFlow} from '../src/deployment/prompt-context-acceptance';
+it('ordinary_four_then_full_activity_silent_simulation_end_recovery_and_normal_recall',async()=>{const r=await validateActivityFlow();expect(r.failure).toBeNull();expect(r.rounds).toBe(3);expect(r.recoveryInjected).toBe(true);expect(r.shortMemories).toBe(6);expect(r.embeddingRequests).toBe(0);expect(r.networkRequests).toBe(0);expect(r.nextNormalHasActivityFulltext).toBe(false);expect(r.nextNormalShortRecall).toBeGreaterThan(0);expect(r.calls.every(c=>c.uniqueMessageIds)).toBe(true);expect(r.calls.find(c=>c.task==='narrative_shared')!.activityMessages).toBeGreaterThan(30);expect(r.calls.filter(c=>c.task==='memory')).toHaveLength(4);});
 it('normal_shared_life_and_empty_memory_full_flow; four_episodes_preserve_source_roles',async()=>{
  const report=await validatePromptContext();expect(report.scenarios.map(s=>s.name)).toEqual(['normal','shared','life','empty']);
  expect(report.embeddingRequests).toBe(0);expect(report.networkRequests).toBe(0);

@@ -22,9 +22,10 @@ export const environmentTables = ['environment_batches','environment_steps','sch
 tables.push(...environmentTables,'dialogue_episodes','dialogue_activity_links','chat_episodes','chat_index_metadata');
 export class Storage {
   private readonly db: DatabaseSync;
-  constructor(path: string) {
-    if (path !== ':memory:') mkdirSync(dirname(path), { recursive: true });
-    this.db = new DatabaseSync(path);
+  constructor(path: string,options:{readOnly?:boolean}={}) {
+    if (!options.readOnly&&path !== ':memory:') mkdirSync(dirname(path), { recursive: true });
+    this.db = new DatabaseSync(path,{readOnly:options.readOnly??false});
+    if(options.readOnly)return;
     this.db.exec('PRAGMA journal_mode = WAL; PRAGMA synchronous = FULL;');
     this.db.exec('CREATE TABLE IF NOT EXISTS state (key TEXT PRIMARY KEY, data TEXT NOT NULL)');
     for (const table of tables) this.db.exec(`CREATE TABLE IF NOT EXISTS ${table} (id TEXT PRIMARY KEY, data TEXT NOT NULL)`);

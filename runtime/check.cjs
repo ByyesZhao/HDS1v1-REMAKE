@@ -19,7 +19,7 @@ if (existsSync(settingsPath)) {
   if(!process.env[settings.memoryEmbedding.apiKeyEnv])throw new Error('memory embedding local key is missing');
   const {Storage:MemoryStorage}=require('../lib/storage'),{MemoryStore}=require('../lib/memory/store');
   const formalPath=resolve(__dirname,'data/hdsi-remake.sqlite');
-  if(existsSync(formalPath)){const {inspectSharedUpgrade}=require('../lib/deployment/shared-upgrade');if(inspectSharedUpgrade(formalPath).version!==1)throw new Error('Stop HDSI and run shared:migrate -- --database runtime/data/hdsi-remake.sqlite --check before startup');const db=new MemoryStorage(formalPath);try{if(new MemoryStore(db).schemaVersion()!==3)throw new Error('Stop HDSI and run memory:migrate -- --stopped before startup');}finally{db.close();}}
+  if(existsSync(formalPath)){const {inspectSharedUpgrade}=require('../lib/deployment/shared-upgrade');if(inspectSharedUpgrade(formalPath).version!==1)throw new Error('Stop HDSI and run shared:migrate -- --database runtime/data/hdsi-remake.sqlite --check before startup');const {inspectDialogueUpgrade}=require('../lib/deployment/dialogue-upgrade');const windowCheck=inspectDialogueUpgrade(formalPath,{targetVersion:2,idleMinutes:settings.memory.contextLimits.dialogueIdleMinutes,recentSegments:settings.memory.contextLimits.recentDialogueSegments});if(windowCheck.version!==2||!windowCheck.canApply)throw new Error('Stop HDSI and run dialogue:migrate -- --database runtime/data/hdsi-remake.sqlite --config config.local.json --check before startup');const db=new MemoryStorage(formalPath,{readOnly:true});try{if(new MemoryStore(db).schemaVersion()!==3)throw new Error('Stop HDSI and run memory:migrate -- --stopped before startup');}finally{db.close();}}
   if (settings.stickersEnabled) {
     const { Storage } = require('../lib/storage');
     const { StickerLibrary, HttpEmbeddingProvider } = require('../lib/output/stickers');
@@ -27,7 +27,7 @@ if (existsSync(settingsPath)) {
     if (!e || !process.env[e.apiKeyEnv]) throw new Error('embedding configuration or local key is missing');
     const databasePath = resolve(__dirname, 'data/hdsi-remake.sqlite');
     if (!existsSync(databasePath)) throw new Error('import the sticker catalog before startup');
-    const storage = new Storage(databasePath);
+    const storage = new Storage(databasePath,{readOnly:true});
     try {
       new StickerLibrary(storage, new HttpEmbeddingProvider(e.model, e.baseUrl, process.env[e.apiKeyEnv], fetch, e.dimensions)).checkReady();
       console.log(`Formal configuration and local credentials verified; ${storage.all('stickers').length} stickers ready. No network requests made.`);

@@ -1,3 +1,4 @@
+import {checkWindowConsistency} from '../dialogue/window-consistency';
 import { DatabaseSync } from 'node:sqlite';
 import {chatUpgradePlan} from './chat-upgrade';
 import { copyFileSync,existsSync,mkdirSync } from 'node:fs';
@@ -6,8 +7,8 @@ import { randomUUID } from 'node:crypto';
 import { Storage,isUnfinishedTurn } from '../storage';
 import type { Message,Runtime,TurnRecord } from '../types';
 import type { DialogueEpisode,DialogueActivityLink,DialogueTurnBinding } from '../dialogue/types';
-export interface DialogueUpgradeParameters {idleMinutes:number;targetVersion:1|2;configSource?:string}
-export interface DialogueUpgradeReport {targetVersion?:1|2;idleMinutes?:number;configSource?:string;chatEpisodeCount?:number;ordinaryMessageCount?:number;activityMessageCount?:number;version:number|null;messageCount:number;episodeCount:number;activityCount:number;ambiguousBoundaries:string[];inflightBindings:Array<{turnId:string;binding:DialogueTurnBinding|null}>;canApply:boolean;backupPath:string|null}
+export interface DialogueUpgradeParameters {idleMinutes:number;targetVersion:1|2;configSource?:string;recentSegments?:number}
+export interface DialogueUpgradeReport {historicalWarnings?:string[];targetVersion?:1|2;idleMinutes?:number;configSource?:string;chatEpisodeCount?:number;ordinaryMessageCount?:number;activityMessageCount?:number;version:number|null;messageCount:number;episodeCount:number;activityCount:number;ambiguousBoundaries:string[];inflightBindings:Array<{turnId:string;binding:DialogueTurnBinding|null}>;canApply:boolean;backupPath:string|null}
 export interface MigrationPlan {chatEpisodes?:import('../dialogue/types').ChatEpisode[];report:DialogueUpgradeReport;messages:Message[];episodes:DialogueEpisode[];links:DialogueActivityLink[];turns:TurnRecord[];runtime:Runtime|null}
 function legacyPlan(db:DatabaseSync,now?:string,idleMinutes=15):MigrationPlan {
  const tables=new Set(db.prepare("SELECT name FROM sqlite_master WHERE type='table'").all().map(r=>String(r.name)));
@@ -46,10 +47,10 @@ function plan(db:DatabaseSync,now:string|undefined,parameters:DialogueUpgradePar
  if(parameters.targetVersion===1&&result.report.version===2){result.report.canApply=false;result.report.ambiguousBoundaries=['version2 cannot downgrade'];}
  return result;
 }
-export function inspectDialogueUpgrade(path:string,parameters:DialogueUpgradeParameters={idleMinutes:15,targetVersion:1}):DialogueUpgradeReport {const db=new DatabaseSync(path,{readOnly:true});try{return plan(db,undefined,parameters).report;}finally{db.close();}}
-export function upgradeDialogue(path:string,now:string,options:{stopped:boolean;backupDirectory:string;idleMinutes?:number;targetVersion?:1|2;configSource?:string}):DialogueUpgradeReport {
+export function inspectDialogueUpgrade(path:string,parameters:DialogueUpgradeParameters={idleMinutes:15,targetVersion:1}):DialogueUpgradeReport {const db=new DatabaseSync(path,{readOnly:true});try{const report=plan(db,undefined,parameters).report;if(report.version===2&&parameters.targetVersion===2){const storage=new Storage(path,{readOnly:true});try{const check=checkWindowConsistency(storage,{idleMinutes:parameters.idleMinutes,recentSegments:parameters.recentSegments??4});report.canApply=report.canApply&&check.blockingIssues.length===0;report.ambiguousBoundaries=[...new Set([...report.ambiguousBoundaries,...check.blockingIssues])];report.historicalWarnings=check.historicalWarnings;}finally{storage.close();}}return report;}finally{db.close();}}
+export function upgradeDialogue(path:string,now:string,options:{stopped:boolean;backupDirectory:string;idleMinutes?:number;targetVersion?:1|2;configSource?:string;recentSegments?:number}):DialogueUpgradeReport {
  if(!options.stopped)throw new Error('Stop HDSI and SnowLuma before --apply; supply --stopped.');
- const parameters:DialogueUpgradeParameters={idleMinutes:options.idleMinutes??15,targetVersion:options.targetVersion??1,configSource:options.configSource};
+ const parameters:DialogueUpgradeParameters={idleMinutes:options.idleMinutes??15,targetVersion:options.targetVersion??1,configSource:options.configSource,recentSegments:options.recentSegments};
  const before=inspectDialogueUpgrade(path,parameters);if(!before.canApply)throw new Error(`dialogue binding 关联不明确: ${before.ambiguousBoundaries.join('; ')}`);
  if(before.version===parameters.targetVersion)return before;
  const backupPath=join(options.backupDirectory,`dialogue-${now.replace(/[^\d]/g,'')}-${randomUUID()}`);mkdirSync(backupPath,{recursive:true});for(const suffix of ['','-wal','-shm'])if(existsSync(path+suffix))copyFileSync(path+suffix,join(backupPath,basename(path)+suffix));

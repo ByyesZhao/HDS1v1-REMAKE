@@ -1,6 +1,6 @@
 # 提示词与上下文优化 V0.1 执行计划
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. 若用户明确选择子代理执行，再使用 superpowers:subagent-driven-development。任务1～12为原交付历史；本次执行任务13～20，当前全部待实施，不启动正式服务。
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. 若用户明确选择子代理执行，再使用 superpowers:subagent-driven-development。任务1～12为原交付历史；本次执行任务13～20已实施并完成离线／在线验收与正式库升级，最终独立代码复核／主目录交付在收尾中，不启动正式服务。
 
 **Goal:** 在原提示／资料池交付基础上修复已确认缺口，把4段窗口改成独立普通聊天窗口；活动中提供完整本场原文、结束后统一记忆召回。
 
@@ -298,16 +298,16 @@
 
 **Interfaces:** 验收仍单请求默认300秒、隔离库、同一Host夹具；报告uniqueMessageIds与真正envelope副本断言分别列。正式检查含故事与学校步骤／checkpoint，不启动服务。实施起点重查Git和适用AGENTS，用户未要求新聊天或子代理时按既有内联方式执行。
 
-- [ ] 扩集成用例覆盖普通4段→活动含题外话／动作→无台词公开代写→提前收尾→收尾记忆恢复→普通追问检索；明确活动全文只在活动工作阶段、角色输入／来源权限完整、可生成多条短期。
-- [ ] 新增集成用例先确认红灯，再装配；通过`npm test -- tests/prompt-context-integration.test.ts`。将`notification_contains_stage_no_body_or_key`等约定名称映射到真实文件／用例／断言，缺失项目不能用历史勾选代替。
-- [ ] 跑`npm run typecheck`、`npm run build`、`npm test`并记录本次实际数量；逐文件复核同ID引用、未读门禁、v0/v1学校、版本1在途与版本2恢复。已正确policy链只验证，不追加冻结层。
-- [ ] 在已有授权范围内进行隔离真实多轮质量验收：授权背景／测试剧情，无正式聊天或图片、不连QQ；检查活动完整连续、结束后相关召回、多条记忆事件／感受、学校通知及角色已知冲突自由处理。报告实际HTTP／embedding数及失败，不把Schema通过或一场一次成功当稳定语义保证。
-- [ ] 服务停止情况下只读检查正式库与学校running/ready；确认索引、参数、在途映射明确后备份并显式升级目标2；如存在阻挡则保留报告，不强制清库／丢轮。check不改业务数据，不能承诺SQLite旁文件绝无变化。
-- [ ] 核对根目录REMAKE、记忆／共同活动／部署现状说明：当前普通4段与活动完整／结束记忆合同一致；历史review／日志数字不改成当前证据。记录备份、回退所需代码版本及已知限制，不在正式记录写密钥／完整私聊。
-- [ ] 更新任务13～20状态，形成增量验收记录并提交；由用户双击现有cmd运行，开发验收不自动启动HDSI／SnowLuma。
+- [x] 扩集成用例覆盖普通4段→活动含题外话／动作→无台词公开代写→提前收尾→收尾记忆恢复→普通追问检索；明确活动全文只在活动工作阶段、角色输入／来源权限完整、可生成多条短期。
+- [x] 新增集成用例先确认红灯，再装配；通过`npm test -- tests/prompt-context-integration.test.ts`。将`notification_contains_stage_no_body_or_key`等约定名称映射到真实文件／用例／断言，缺失项目不能用历史勾选代替。
+- [x] 跑`npm run typecheck`、`npm run build`、`npm test`并记录本次实际数量；逐文件复核同ID引用、未读门禁、v0/v1学校、版本1在途与版本2恢复。已正确policy链只验证，不追加冻结层。
+- [x] 在已有授权范围内进行隔离真实多轮质量验收：授权背景／测试剧情，无正式聊天或图片、不连QQ；检查活动完整连续、结束后相关召回、多条记忆事件／感受、学校通知及角色已知冲突自由处理。报告实际HTTP／embedding数及失败，不把Schema通过或一场一次成功当稳定语义保证。
+- [x] 服务停止情况下只读检查正式库与学校running/ready；确认索引、参数、在途映射明确后备份并显式升级目标2；如存在阻挡则保留报告，不强制清库／丢轮。check不改业务数据，不能承诺SQLite旁文件绝无变化。
+- [x] 核对根目录REMAKE、记忆／共同活动／部署现状说明：当前普通4段与活动完整／结束记忆合同一致；历史review／日志数字不改成当前证据。记录备份、回退所需代码版本及已知限制，不在正式记录写密钥／完整私聊。
+- [x] 更新任务13～20状态，形成增量验收记录并提交；由用户双击现有cmd运行，开发验收不自动启动HDSI／SnowLuma。
 
 ## 本次完成标准与计划自检
 
-实施参考只有[实施细化§13～14](PROMPT_CONTEXT_OPTIMIZATION_V0.1_IMPLEMENTATION_20261008.md)与本文任务13～20；历史任务及review/rebuttal只供追溯。准备阶段尚未修改代码、运行模型／测试或升级正式库。
+实施参考只有[实施细化§13～14](PROMPT_CONTEXT_OPTIMIZATION_V0.1_IMPLEMENTATION_20261008.md)与本文任务13～20；历史任务及review/rebuttal只供追溯。准备阶段历史事实不变；本批实施、测试与停服升级证据续见日志／验收记录。
 
 计划已对照源码和REVIEW23自检：独立普通锚点／新索引，阶段可见排序，活动全场授权原文，结束保留本轮处理，未读直接输入不丢，多记忆不扩大来源，lookup新版本不误删，旧学校合同／ready兼容，实际参数升级，保护范围和失败恢复均有明确任务／验证入口。没有新的待用户决定项；实施完成才可把本批checkbox勾选并写“通过”。
