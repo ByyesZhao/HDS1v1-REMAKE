@@ -1,3 +1,4 @@
+import {ensureEnvironmentBatch,selectEnvironmentStep} from '../src/environment/scheduler';
 import { it, expect, vi } from 'vitest';
 import { HdsiApp } from '../src/app';
 import { InputBuffer } from '../src/host/input';
@@ -91,9 +92,10 @@ it('environment_commit_preserves_shared_clock: world changes only its own event 
   const d = setup(); makeSharedFixture(d); configureSharedModels(d);
   d.storage.set('character', { ...d.storage.character(), nextAutonomousAt: plus(NOW, 180*60000) });
   d.models.outputs.world = { changes: [] }; const before = d.storage.character(), clock = d.storage.runtime().sharedClock;
-  await new HdsiApp(d).runTurn({ inputMessageIds: [], taskIds: [], triggerKinds: ['environment'], environmentKind: 'world' });
+  d.storage.set('runtime',{...d.storage.runtime(),nextEnvironmentAt:null}); ensureEnvironmentBatch(d.storage,d.config,NOW); d.generateEnvironment=async()=>({stage:'world',changes:[]});
+  await new HdsiApp(d).runTurn({inputMessageIds:[],taskIds:[],triggerKinds:['environment'],environmentStepId:selectEnvironmentStep(d.storage,NOW)!.id});
   expect(d.storage.character()).toEqual(before); expect(d.storage.runtime().sharedClock).toEqual(clock);
-  expect(d.storage.all('turns')[0].autonomousIntervalMinutes).toBeNull(); d.storage.close();
+  expect(d.storage.all('turns')).toEqual([]); d.storage.close();
 });
 it('silent_20_steps_natural_close: quiet nodes count and the twentieth closes without a twenty-first', async () => {
   const d = setup(); makeSharedFixture(d, { completedSteps: 0 }); configureSharedModels(d); const scheduler = new Scheduler(d.storage), app = new HdsiApp(d);

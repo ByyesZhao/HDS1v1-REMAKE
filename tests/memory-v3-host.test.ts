@@ -32,7 +32,7 @@ it('yields after one ready unit, accepts actual input and delays the second unti
   d.clock.advance(15000);await host.wake();expect(d.sender.sent).toHaveLength(1);expect(d.storage.read('messages','input')!.seenTurnId).not.toBeNull();expect(store.owner({ownerType:'long',ownerId:'b'})!.content).toBe('手机refined1');
 });
 it('uses real setImmediate to give an already queued input I/O callback priority over the next unit',async()=>{
-  const {d,store,host}=create();ready(store);response(d);const arrived=new Promise<void>(resolve=>setImmediate(()=>{void host.acceptInput({id:'real-io',receivedAt:d.clock.now(),content:'你好',platformMessageIds:[]}).then(()=>resolve());}));await host.start();await arrived;
+  const {d,store,host,app}=create();ready(store);response(d);const arrived=new Promise<void>(resolve=>setImmediate(()=>{void host.acceptInput({id:'real-io',receivedAt:d.clock.now(),content:'你好',platformMessageIds:[]}).then(()=>resolve());}));await host.start();await arrived;
   expect(d.storage.read('messages','real-io')).not.toBeNull();expect(store.owner({ownerType:'long',ownerId:'b'})!.content).toBe('手机preview');d.clock.advance(15000);await host.wake();expect(d.storage.read('messages','real-io')!.seenTurnId).toBeTruthy();
   expect(store.owner({ownerType:'long',ownerId:'a'})!.content).toBe('手机refined0');
 });
@@ -45,10 +45,10 @@ it('stop aborts backend before waiting for a running foreground turn and suppres
   resolve({units:[{unitKey:'u',action:'retain',readOwners:['a','a:long'],ids:['a','a:long'],sourceIds:['s'],reason:'保留'}]});await yieldImmediate();expect(store.jobs<any>('memory_maintenance_jobs')[0].status).not.toBe('ready');
 });
 it('recovers an old story before due world, school, input story and ready maintenance',async()=>{
-  const {d,store,host}=create();ready(store);response(d);d.models.outputs.world={changes:[]};d.models.outputs.school={changes:[]};
+  const {d,store,host,app}=create();ready(store);response(d);d.models.outputs.world={changes:[]};d.models.outputs.school={changes:[]};d.generateEnvironment=async input=>{d.models.calls.push({name:input.stage,input});return input.stage==='world'?{stage:'world',changes:[]}:input.stage==='school_week'?{stage:'school_week',instanceChanges:[],noticeCandidates:[],weekChanges:[]}:{stage:input.stage,planChanges:[],itemChanges:[]};};
   d.storage.save('turns','old',{id:'old',at:NOW,inputMessageIds:[],triggerTaskIds:[],triggerKinds:['autonomous'],batchIds:[],entryMode:'chat',completedAt:null,frozenResult:null,outputComplete:false,done:false});
-  d.storage.set('runtime',{...d.storage.runtime(),nextWorldAt:NOW,nextSchoolAt:NOW});await host.acceptInput({id:'input',receivedAt:NOW,content:'你好',platformMessageIds:[]});d.clock.advance(15000);await host.start();
-  const calls=d.models.calls.map(c=>c.name);expect(calls.slice(0,3)).toEqual(['narrative','personal_life','memory']);expect(calls.slice(3,7)).toEqual(['narrative','personal_chat','expression','memory']);expect(calls.slice(7)).toEqual(['world','school']);expect(store.job<any>('memory_maintenance_jobs','ready').appliedUnitKeys).toEqual(['u0','u1']);
+  app.dependencies.generateEnvironment=d.generateEnvironment;d.storage.set('runtime',{...d.storage.runtime(),nextEnvironmentAt:null});await host.acceptInput({id:'input',receivedAt:NOW,content:'你好',platformMessageIds:[]});d.clock.advance(15000);await host.start();
+  const calls=d.models.calls.map(c=>c.name);expect(calls.slice(0,3)).toEqual(['narrative','personal_life','memory']);expect(calls.slice(3,7)).toEqual(['narrative','personal_chat','expression','memory']);expect(calls.slice(7)).toEqual(['world','school_campus','school_group','school_week']);expect(store.job<any>('memory_maintenance_jobs','ready').appliedUnitKeys).toEqual(['u0','u1']);
 });
 it('an in-flight request does not arm a zero-delay maintenance wake loop; pause can persist ready until resume',async()=>{
   vi.useFakeTimers();const {d,store,host,resolve,calls}=create({timers:true});expired(store);d.storage.set('runtime',{...d.storage.runtime(),nextMaintenanceAt:NOW});await host.start();const wake=vi.spyOn(host,'wake');d.clock.advance(1000);await vi.advanceTimersByTimeAsync(1000);expect(wake).not.toHaveBeenCalled();await host.pause();resolve({units:[{unitKey:'u',action:'refine',readOwners:['a','a:long'],ids:['a','a:long'],content:'手机refined',sourceIds:['s']}]});for(let i=0;i<15;i++)await Promise.resolve();expect(calls).toHaveLength(1);expect(store.jobs<any>('memory_maintenance_jobs')[0].status).toBe('ready');expect(store.owner({ownerType:'long',ownerId:'a:long'})!.content).toBe('手机preview');

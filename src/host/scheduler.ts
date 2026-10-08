@@ -1,3 +1,5 @@
+import { defaultConfig,type AppConfig } from '../config';
+import {ensureEnvironmentBatch,selectEnvironmentStep,environmentDeadline} from '../environment/scheduler';
 import { randomUUID } from 'node:crypto';
 import { Storage } from '../storage';
 import { InputBuffer } from './input';
@@ -7,7 +9,7 @@ import { hasValidSharedScene, refreshSharedStep, selectSharedMeta, sharedDeadlin
 import type { TurnRequest, TriggerKind } from '../types';
 
 export class Scheduler {
-  constructor(private storage: Storage) {}
+  constructor(private storage: Storage,private config:AppConfig=defaultConfig) {}
   async collectReady(now: string): Promise<TurnRequest | null> {
     new InputBuffer(this.storage).closeReady(now);
     if (this.storage.runtime().paused || this.storage.unfinishedTurn()) return null;
@@ -22,8 +24,11 @@ export class Scheduler {
     const front = this.foreground(now);
     if (front) return front;
     if (!hasValidSharedScene(state) && !isSleeping(state, now) && runtime.pendingBatchIds.length && !canRead(state, now)) this.stashPending(now);
-    const environmentKind = due(runtime.nextWorldAt, now) ? 'world' : due(runtime.nextSchoolAt, now) ? 'school' : undefined;
-    if (environmentKind) return { inputMessageIds: [], taskIds: [], triggerKinds: ['environment'], batchIds: [], environmentKind, sharedMeta: null };
+    if(!runtime.openBatch){
+      ensureEnvironmentBatch(this.storage,this.config,now);
+      const step=selectEnvironmentStep(this.storage,now);
+      if(step)return {inputMessageIds:[],taskIds:[],triggerKinds:['environment'],batchIds:[],environmentStepId:step.id,sharedMeta:null};
+    }
     if (this.autonomousEligible(now) && due(state.nextAutonomousAt, now)) return {
       inputMessageIds: this.storage.unreadMessages().map(m => m.id), taskIds: [], triggerKinds: ['autonomous'], batchIds: [], sharedMeta: null };
     return null;
@@ -95,8 +100,8 @@ export class Scheduler {
         else if (state.scene.activity?.expectedEndAt) candidates.push(new Date(Math.max(milliseconds(task.at), milliseconds(state.scene.activity.expectedEndAt))).toISOString());
       }
     }
-    if (runtime.nextWorldAt) candidates.push(runtime.nextWorldAt);
-    if (runtime.nextSchoolAt) candidates.push(runtime.nextSchoolAt);
+    if(!runtime.openBatch){const env=environmentDeadline(this.storage,now);if(env)candidates.push(env);}
+
     return candidates.sort((a, b) => milliseconds(a) - milliseconds(b))[0] ?? null;
   }
 }

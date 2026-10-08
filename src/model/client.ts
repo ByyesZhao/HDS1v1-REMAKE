@@ -8,6 +8,7 @@ import type { WebMaterial,WebModelCheckpoint,WebSearchResponse } from '../web/ty
 export interface CompletionRequest { task: ModelTask<unknown>; input: unknown; repair?: { original: unknown; errors: string }; lookupResult?: unknown;tools?:{web:boolean;lookup:boolean};webMaterials?:WebMaterial[];webStatus?:{counters:{successReads:number;failures:number};stopReason:'quota'|null};webResults?:WebSearchResponse[] }
 export interface Transport { complete(request: CompletionRequest, options?: {signal?:AbortSignal}): Promise<unknown> }
 export class ModelFormatError extends Error {}
+export class ModelRequestError extends Error {}
 export class ModelClient implements ModelRunner {
   constructor(private transport: Transport, private lookupDetails?: (query: string) => unknown, private repairLimit = 2) {}
   async runModel<T>(task: ModelTask<T>, input: unknown, options: ModelRunOptions = {}): Promise<T> {
@@ -72,14 +73,15 @@ export class ChatCompletionsTransport implements Transport {
     const responseFormat = format === 'prompt' ? undefined : format === 'json_schema'
       ? { type: 'json_schema', json_schema: { name: request.task.name, strict: false, schema } }
       : { type: 'json_object' };
-    const response = await this.fetcher(`${c.baseUrl.replace(/\/$/, '')}/chat/completions`, {
+    let response:Response;
+    try {response = await this.fetcher(`${c.baseUrl.replace(/\/$/, '')}/chat/completions`, {
       signal: options.signal, method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${c.apiKey}` },
       body: JSON.stringify({ model: c.model, reasoning_effort: c.reasoningEffort, stream: false, messages, response_format: responseFormat }),
-    });
-    if (!response.ok) {let code='';try{const body=await response.json() as {error?:{code?:string;message?:string}};code=[body.error?.code,body.error?.message].filter(Boolean).join(': ');}catch{}throw new Error(`${request.task.name}: model HTTP ${response.status}${code?`: ${code}`:''}`);}
-    const body = await response.json() as { choices: Array<{ message: { content: string | null } }> };
-    const content = body.choices[0]?.message.content;
-    return content ?? '';
+    });}catch(error){if(options.signal?.aborted)throw error;throw new ModelRequestError(`${request.task.name}: ${error instanceof Error?error.message:String(error)}`);}
+    if (!response.ok) {let code='';try{const body=await response.json() as {error?:{code?:string;message?:string}};code=[body.error?.code,body.error?.message].filter(Boolean).join(': ');}catch{}throw new ModelRequestError(`${request.task.name}: model HTTP ${response.status}${code?`: ${code}`:''}`);}
+    try {const body = await response.json() as { choices: Array<{ message: { content: string | null } }> };
+      const content = body.choices?.[0]?.message?.content;if(typeof content!=='string')throw Error('missing response content');return content;
+    }catch(error){throw new ModelRequestError(`${request.task.name}: invalid response envelope`);}
   }
 }
 const lookupRequestSchema=z.union([z.string(),z.object({query:z.string(),scope:z.enum(['current','archive']),includeDetailHistory:z.boolean()})]);

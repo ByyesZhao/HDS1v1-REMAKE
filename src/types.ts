@@ -83,7 +83,7 @@ export type EnvironmentChange = { action: 'create'; event: Omit<EnvironmentEvent
 export interface EnvironmentResult { changes: EnvironmentChange[] }
 export interface Sticker { id: string; path: string; description: string; aliases?: string[]; embeddingInput?: string; embedding: number[]; embeddingModel: string; embeddingBaseUrl?: string; legacyFingerprint?: string }
 export type TriggerKind = 'input' | 'autonomous' | 'sleep' | 'activity' | 'appointment' | 'check_messages' | 'scene_step' | 'environment';
-export interface TurnRequest { inputMessageIds: string[]; taskIds: string[]; triggerKinds: TriggerKind[]; batchIds?: string[]; environmentKind?: 'world' | 'school'; sharedMeta?: SharedTurnMeta | null }
+export interface TurnRequest { environmentStepId?:string; inputMessageIds: string[]; taskIds: string[]; triggerKinds: TriggerKind[]; batchIds?: string[]; environmentKind?: 'world' | 'school'; sharedMeta?: SharedTurnMeta | null }
 export interface TurnRecord {
   id: string; inputMessageIds: string[]; triggerTaskIds: string[]; triggerKinds: TriggerKind[];
   at: ISOTime; completedAt: ISOTime | null; frozenResult: TurnCandidate | null; outputComplete: boolean; done: boolean;

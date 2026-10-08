@@ -1,3 +1,5 @@
+import { runEnvironmentStep } from './environment/runtime';
+import type {EnvironmentGenerator} from './environment/types';
 import { randomUUID } from 'node:crypto';
 import { Storage } from './storage';
 import type { EnvironmentStore } from './environment/store';
@@ -14,19 +16,25 @@ import { ContextBuilder } from './memory/context';
 import { makeRetrievalRequest } from './memory/retrieval';
 import type { MemoryRetrieval } from './memory/retrieval';
 import { sampleOpportunity, stickerCurve, contactCurve } from './host/probability';
-import { runWorld } from './directors/world';
-import { runSchool } from './directors/school';
 import { nextDaily, due } from './time';
 import { phaseOptions } from './web/phases';
 import { hasValidSharedScene } from './host/shared';
 
-export interface Dependencies { environmentStore:EnvironmentStore;schoolStore:SchoolStore; storage: Storage; clock: Clock; random: Random; models: ModelRunner; config: AppConfig; sender: Sender; wait(ms: number): Promise<void>; web?:import('./web/service').WebSearchService; memoryStore?:import('./memory/store').MemoryStore; memoryLifecycle?:import('./memory/lifecycle').MemoryLifecycle; retrieval?:MemoryRetrieval; maintenance?:import('./memory/maintenance').MemoryMaintenance; stickers?: { findSticker(query: string): Promise<string> }; getSelfWebReadSources?(turnId:string):import('./memory/types').SelfWebReadSource[] }
+export interface Dependencies { generateEnvironment?:EnvironmentGenerator; environmentStore:EnvironmentStore;schoolStore:SchoolStore; storage: Storage; clock: Clock; random: Random; models: ModelRunner; config: AppConfig; sender: Sender; wait(ms: number): Promise<void>; web?:import('./web/service').WebSearchService; memoryStore?:import('./memory/store').MemoryStore; memoryLifecycle?:import('./memory/lifecycle').MemoryLifecycle; retrieval?:MemoryRetrieval; maintenance?:import('./memory/maintenance').MemoryMaintenance; stickers?: { findSticker(query: string): Promise<string> }; getSelfWebReadSources?(turnId:string):import('./memory/types').SelfWebReadSource[] }
 export class HdsiApp {
   private busy = false;
   constructor(public readonly dependencies: Dependencies) {}
   async runTurn(request: TurnRequest): Promise<void> {
     if (this.busy || this.dependencies.storage.unfinishedTurn()) throw new Error('finish the previous turn first');
     const d = this.dependencies;
+    if(request.environmentKind)throw new Error('legacy environment turn requires explicit upgrade');
+    if(request.environmentStepId){
+      if(!d.generateEnvironment)throw new Error('environment generator not assembled');
+      this.busy=true;
+      try{await runEnvironmentStep(d,request.environmentStepId,d.generateEnvironment);}
+      catch(error){d.storage.set('runtime',{...d.storage.runtime(),paused:true,lastError:error instanceof Error?error.message:String(error)});throw error;}
+      finally{this.busy=false;}return;
+    }
     const turn: TurnRecord = {
       id: randomUUID(), at: d.clock.now(), inputMessageIds: request.inputMessageIds, triggerTaskIds: request.taskIds,
       triggerKinds: request.triggerKinds, batchIds: request.batchIds ?? [], entryMode: d.storage.character().scene.mode,
@@ -49,7 +57,8 @@ export class HdsiApp {
     await this.execute(turn);
   }
   private async execute(initialTurn: TurnRecord): Promise<void> {
-    const d = this.dependencies; this.busy = true;
+    const d = this.dependencies;
+    this.busy = true;
     try {
       let turn = initialTurn;
       if (!turn.frozenResult) {
@@ -72,17 +81,6 @@ export async function generateTurn(d: Dependencies, request: TurnRequest, turnId
   const entryMode = state.scene.mode;
   const shared = hasValidSharedScene(state);
   const runtime = d.storage.runtime();
-  if (request.environmentKind) {
-    const kind = request.environmentKind;
-    const result = await (kind === 'world' ? runWorld(d, at,turnId) : runSchool(d, at,turnId));
-    return { items: [], candidate: {
-      visibleMessageIds: [], reconsiderMessageIds: [], narrative: null, personal: null, expression: null,
-      experiences: [], nextState: state, taskChanges: [], completedTaskIds: [],
-      probability: { contactMisses: runtime.contactMisses, stickerMisses: runtime.stickerMisses }, autonomousIntervalMinutes: null,
-      environmentChanges: result.changes.map(c => c.action === 'create' ? { ...c, id: randomUUID() } : c),
-      nextEnvironmentAt: nextDaily(at, kind === 'world' ? d.config.worldTimes : d.config.schoolTimes, d.config.timezone),
-    } };
-  }
   if (isSleeping(state, at)) {
     state.nextAutonomousAt = null;
     return { items: [], candidate: {

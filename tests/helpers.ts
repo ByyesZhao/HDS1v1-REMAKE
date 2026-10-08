@@ -39,11 +39,12 @@ export function setup() {
   const storage = new Storage(':memory:');
   const clock = new TestClock(); const random = new SequenceRandom();
   storage.set('character', initialCharacter(NOW));
+  storage.set('runtime',{...storage.runtime(),nextEnvironmentAt:'2026-10-08T06:00:00+08:00'});
   const models = new ScriptedModels({ narrative, personal_chat: silent, personal_life: { emotions: [], innerThought: '休息', contact: { willing: false } }, memory: emptyMemory });
   const config = { ...defaultConfig, background: '开发样例', chatExamples: '嗯嗯' };
   const sender = new RecordingSender(clock);
   const wait = async (ms: number) => { clock.advance(ms); };
-  return { environmentStore:new EnvironmentStore(storage),schoolStore:new SchoolStore(storage),storage, clock, random, models, config, sender, wait };
+  return { generateEnvironment:undefined as import('../src/environment/types').EnvironmentGenerator|undefined,environmentStore:new EnvironmentStore(storage),schoolStore:new SchoolStore(storage),storage, clock, random, models, config, sender, wait };
 }
 export function saveInput(storage: Storage, id: string, content: string) {
   storage.save('messages', id, { id, content, receivedAt: NOW, platformMessageIds: [], direction: 'incoming', batchId: `batch-${id}`, seenTurnId: null, turnId: null, outboxSeq: null });

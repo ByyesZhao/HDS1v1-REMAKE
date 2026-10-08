@@ -1,3 +1,4 @@
+import {runEnvironment} from '../src/directors/world';
 import {afterEach,expect,it,vi} from 'vitest';
 import {setup,saveInput,narrative,emptyMemory,NOW} from './helpers';
 import {HdsiApp} from '../src/app';
@@ -21,7 +22,7 @@ it('runs narrative, life, expression and memory in independent sessions; memory 
 });
 it.each(['world','school'] as const)('validates %s sources from actual provided material at final parse, not initial empty URLs',async kind=>{
  const d=fixture(),result={changes:[{action:'create',event:{kind,startsAt:NOW,endsAt:null,description:'公开通知',basis:'web_reference',sourceUrls:['https://example.test/new']}}]},requests:any[]=[];let n=0;
- const models=new ModelClient({complete:async r=>{requests.push(r);return ++n===1?{webRead:{url:'https://example.test/new'}}:result;}});await new HdsiApp({...d,models}).runTurn({inputMessageIds:[],taskIds:[],triggerKinds:['environment'],environmentKind:kind});expect(d.storage.all('events')[0].sourceUrls).toEqual(['https://example.test/new']);expect(requests[0].webMaterials).toEqual([]);
+ const models=new ModelClient({complete:async r=>{requests.push(r);return ++n===1?{webRead:{url:'https://example.test/new'}}:result;}});const generated=await runEnvironment({...d,models},kind,NOW,'test-environment');expect((generated.changes[0] as any).event.sourceUrls).toEqual(['https://example.test/new']);expect(requests[0].webMaterials).toEqual([]);
  const ref=d.web.store.openStage('turn','other','environment',kind);expect(()=>environmentTask(kind,[],()=>d.web.providedUrls(ref.runId)).parse(result)).toThrow('URL was not supplied');
 });
 it('keeps unseen private messages out of ordinary narrative search input; chat gets its own identity',async()=>{

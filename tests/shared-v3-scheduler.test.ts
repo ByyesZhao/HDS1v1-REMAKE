@@ -44,21 +44,22 @@ it('phase_and_quiet_permission: selects bounded phases without treating reconsid
 });
 it('foreground_before_environment_and_autonomous: only eligible idle work includes autonomous', async () => {
   const d = setup(); const scheduler = new Scheduler(d.storage); saveInput(d.storage, 'a', '你好');
-  d.storage.set('runtime', { ...d.storage.runtime(), pendingBatchIds: ['batch-a'], nextWorldAt: NOW, nextSchoolAt: NOW });
+  d.storage.set('runtime', { ...d.storage.runtime(), pendingBatchIds: ['batch-a'], nextEnvironmentAt: NOW });
   d.storage.set('character', { ...d.storage.character(), nextAutonomousAt: NOW });
   expect((await scheduler.collectReady(NOW))!.triggerKinds).toEqual(['input']);
   d.storage.save('messages', 'a', { ...d.storage.read('messages', 'a')!, seenTurnId: 'done' });
   d.storage.set('runtime', { ...d.storage.runtime(), pendingBatchIds: [] });
-  expect((await scheduler.collectReady(NOW))!.environmentKind).toBe('world');
+  expect((await scheduler.collectReady(NOW))!.environmentStepId).toBeDefined();
+  for(const step of d.environmentStore.steps())d.environmentStore.saveStep({...step,status:'committed'});for(const batch of d.environmentStore.batches())d.environmentStore.saveBatch({...batch,status:'committed'});
   d.storage.set('runtime', { ...d.storage.runtime(), nextWorldAt: null, nextSchoolAt: null });
   d.storage.save('tasks', 'future', { id: 'future', kind: 'appointment', at: after(3_600_000), description: '稍后见', status: 'pending' });
   expect((await scheduler.collectReady(NOW))!.triggerKinds).toEqual(['autonomous']); d.storage.close();
 });
 it('environment_deadline_remains_in_shared_wait: environment runs in available window', async () => {
   const d = setup(); makeSharedFixture(d); const scheduler = new Scheduler(d.storage);
-  d.storage.set('runtime', { ...d.storage.runtime(), nextWorldAt: after(10_000) });
+  d.storage.set('runtime', { ...d.storage.runtime(), nextEnvironmentAt: after(10_000) });
   expect(Date.parse((await scheduler.nextDeadline(after(5_000)))!)).toBe(Date.parse(after(10_000)));
-  const env = (await scheduler.collectReady(after(10_000)))!; expect(env.environmentKind).toBe('world'); expect(env.sharedMeta ?? null).toBeNull();
+  const env = (await scheduler.collectReady(after(10_000)))!; expect(env.environmentStepId).toBeDefined(); expect(env.sharedMeta ?? null).toBeNull();
   await new InputBuffer(d.storage).acceptInput({ id: 'c', content: '【推进】', receivedAt: after(11_000) });
   expect((await scheduler.collectReady(after(11_000)))!.sharedMeta!.advanceReason).toBe('manual'); d.storage.close();
 });

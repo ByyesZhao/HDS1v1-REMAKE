@@ -14,7 +14,7 @@ export class SerialHost {
   private readonly input: InputBuffer;
   private readonly scheduler: Scheduler;
   constructor(private app: HdsiApp, private options: { timers?: boolean; onError?: (error: unknown) => void; yieldToEvents?:()=>Promise<void> } = {}) {
-    this.input = new InputBuffer(app.dependencies.storage); this.scheduler = new Scheduler(app.dependencies.storage);
+    this.input = new InputBuffer(app.dependencies.storage); this.scheduler = new Scheduler(app.dependencies.storage,app.dependencies.config);
   }
   start(): Promise<void> { this.recover = true; return this.wake(); }
   async acceptInput(message: IncomingMessage): Promise<InputAcceptance> {
@@ -48,7 +48,7 @@ export class SerialHost {
       }
       this.recover = false;
       const ready = await this.scheduler.collectReady(d.clock.now());
-      if (ready) {await this.app.runTurn(ready);continue;}
+      if (ready) {await this.app.runTurn(ready);if(ready.environmentStepId)await (this.options.yieldToEvents??setImmediate)();continue;}
       if(this.stopped||d.storage.runtime().paused||d.storage.runtime().openBatch)break;
       const applied=d.maintenance?.applyOneReady(d.clock.now())??'none';
       if(applied!=='none'){await (this.options.yieldToEvents??setImmediate)();continue;}

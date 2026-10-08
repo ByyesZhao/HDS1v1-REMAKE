@@ -1,6 +1,6 @@
 import type { SelfWebReadSource } from '../memory/types';
 export type { SelfWebReadSource };
-export interface ModelRunRef {runId:string;ownerType:'turn'|'maintenance'|'asset';ownerId:string;stageKey:string;taskName:string;ordinal:number}
+export interface ModelRunRef {runId:string;ownerType:'turn'|'maintenance'|'asset'|'environment';ownerId:string;stageKey:string;taskName:string;ordinal:number}
 export interface WebSearchRequest {query:string;requestedPages?:number}
 export interface WebMaterial {id:string;url:string;title:string;body:string;readAt:string;bodyCharacters:number;selectionMode:'full_body'|'relevant_passages';sourceKind:'external_reference'}
 export interface WebSearchCounters {successReads:number;failures:number}
