@@ -154,4 +154,12 @@ Ruling: 保留旧迁移API不传参数时的版本1兼容；所有新CLI及最�
 
 正式库只读check：原version1，消息／普通段／活动／在途0；学校历史步骤4，running/ready/candidate/checkpoint0，integrity ok，实际idle15。Get-CimInstance项目服务进程0后，备份DB及已有WAL/SHM至runtime/data/backups/dialogue-20261008172422653-a2359163-dd55-4f43-8188-ea99cc48f516，显式升级2；后检canApply=true、无blocking/warning、paused=false、完整性ok，学校历史步骤保持4。回退须停止服务、配套前批代码99e5041与该备份整套DB/WAL/SHM，不在升级后运行旧默认1代码。没有正式新消息需合并。服务保持停止，现有cmd由用户自己启动。
 
-同步主细化／计划、README、REMAKE及记忆／交接现状；历史方案与日志数字原样保留。本批代码初次全量581项通过后加损坏check／实际重开库两项，最终583项；未用前批536项冒充本批。最终独立复核与主目录合入结果将在本节后追加。
+同步主细化／计划、README、REMAKE及记忆／交接现状；历史方案与日志数字原样保留。本批代码初次全量581项通过后加损坏check／实际重开库两项，首轮最终583项；未用前批536项冒充本批。
+
+## 最终独立复核与修复（2026-10-09）
+
+按执行计划技能使用一次全新上下文、只读复核99e5041..6c96b62；Critical 0、Important 1、Minor 0、无法判断项0。确认普通／活动分离、冻结权限、旧轮恢复及确定去重；发现公开开场确认先写sharedClock，而character.nextState稍后提交，一致性检查错误拒绝合法中间状态，影响此时输入及失败恢复。
+
+先用真实HdsiApp＋SerialHost补四项回归：开场后角色未提交时接收输入、后处理失败resume、发送失败重开文件库、后处理失败重开文件库。final-opening-red.log记录4失败／3通过，均指向活动身份冲突；修复只认可“在途冻结start候选同活动＋首条公开开场outbox confirmed＋消息实收身份一致”的证明，不笼统忽略冲突。另补未确认或缺公开消息凭证仍阻挡。定向5文件32项、typecheck/build通过，全量105文件588项通过（final-opening-green.log、final-opening-suite.log），未新联网、未重跑第二次独立审核。
+
+本批裁定全部保留：①默认版本2及正式门禁统一在任务19读写／保护接齐后启用，中间提交不可作为版本2部署；②旧迁移API未传参数仍默认目标1／idle15，新CLI及正式入口显式传目标2与实际配置，新调用者需显式选2。无搁置Minor、无遗漏审查项。服务仍停止，主目录交付结果另记。

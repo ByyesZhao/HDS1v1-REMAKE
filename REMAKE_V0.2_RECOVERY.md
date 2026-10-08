@@ -1,5 +1,7 @@
 # HDSI V0.2：阶段回退与中断恢复
 
+2026-10-09普通窗口／活动上下文：独立普通chat索引版本2，最近4个完整普通段，普通实际交互空闲15分钟关闭；活动整体不计入4段、不延长普通锚点。活动工作阶段保留完整授权原文，结束后的普通任务只经统一记忆检索召回，迟读活动输入仍直接提供。见[提示词上下文实施细化](docs/PROMPT_CONTEXT_OPTIMIZATION_V0.1_IMPLEMENTATION_20261008.md)与[本批验收](docs/PROMPT_CONTEXT_OPTIMIZATION_V0.1_DELIVERY_REVIEW_20261008.md)。
+
 状态：2026-10-07已更新记忆V0.3恢复规则，最新验收见记忆实施记录；真实QQ与完整故事路径待联调。本文不将普通事务测试视为物理断电或真实平台发送验收。
 
 返回 [总架构](REMAKE_V0.2.md)；配套 [实施细化与开发记录](REMAKE_V0.2_IMPLEMENTATION.md)、[实施记录](docs/IMPLEMENTATION_LOG.md)。记录字段见[接口、存储与代码组织](REMAKE_V0.2_INTERFACES.md)，输入合批与发送间隔见[生活方案](REMAKE_V0.2_LIFE.md)。

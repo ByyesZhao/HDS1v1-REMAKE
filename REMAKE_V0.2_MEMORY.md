@@ -29,7 +29,7 @@ ContextBuilder异步调用MemoryRetrieval。SQL先筛有效期限／状态，派
 
 记忆独立memoryEmbedding，初始qwen3.7-text-embedding／1024维，与表情配置独立。双侧归一化float32 BLOB；查询只缓存向量，LRU256／十分钟，签名含端点、模型、维度、模板、原查询。查询超时1500ms或失败走词法，不暂停故事。
 
-historyBudget、alwaysIncludeCharactersLimit、candidateItemsPerRoute、detailItemsLimit、shortItemsLimit、longItemsLimit默认null，不设800／8000或24／12／12／8配额。选中记录完整提供，近期已看输入／已发输出按最近4个完整对话段提供（当前段计入，空闲15分钟划段）。显式longItemsLimit对按需longTerm＋learned统一裁一次，alwaysInclude独立；用户主动设字符预算才移除低相关完整历史项，当前来源和状态不裁。不新增max_tokens／max_completion_tokens。真实容量错误不自动删内容再请求。
+historyBudget、alwaysIncludeCharactersLimit、candidateItemsPerRoute、detailItemsLimit、shortItemsLimit、longItemsLimit默认null，不设800／8000或24／12／12／8配额。选中记录完整提供，近期已看输入／已发输出按最近4个完整普通聊天段提供（当前计入，普通交互空闲15分钟划段）；活动全文独立供当前活动工作阶段，结束后统一记忆召回。显式longItemsLimit对按需longTerm＋learned统一裁一次，alwaysInclude独立；用户主动设字符预算才移除低相关完整历史项，当前来源和状态不裁。不新增max_tokens／max_completion_tokens。真实容量错误不自动删内容再请求。
 
 ## 4. 后台与正式应用
 

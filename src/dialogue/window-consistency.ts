@@ -28,7 +28,10 @@ export function checkWindowConsistency(storage:Storage,options:{idleMinutes:numb
    if(t.activityContext){if(b?.episodeId||b?.holdReply){report.activityErrors.push(t.id);block(`turn ${t.id}: activity holds ordinary chat`);}for(const id of t.activityContext.messageIds)if(storage.read('messages',id)?.sharedActivityId!==t.activityContext.activityId){report.activityErrors.push(id);block(`activity message ${id}: invalid frozen identity`);}}
   }
  }
- const state=storage.get<import('../types').CharacterState>('character');if(r.sharedClock?.status==='active'&&state?.scene.shared?.activityId!==r.sharedClock.activityId){report.activityErrors.push(r.sharedClock.activityId);block('active shared activity identity conflict');}
+ const state=storage.get<import('../types').CharacterState>('character');
+ // Opening confirmation precedes committing the candidate character state.
+ const confirmedOpening=inflight.some(t=>t.frozenResult?.personal?.sharedChange?.action==='start'&&t.frozenResult.nextState.scene.shared?.activityId===r.sharedClock?.activityId&&storage.outbox(t.id).some(o=>o.seq===0&&o.kind==='narration'&&o.status==='confirmed')&&storage.read('messages',`${t.id}:out:0`)?.sharedActivityId===r.sharedClock?.activityId);
+ if(r.sharedClock?.status==='active'&&state?.scene.shared?.activityId!==r.sharedClock.activityId&&!confirmedOpening){report.activityErrors.push(r.sharedClock.activityId);block('active shared activity identity conflict');}
  const modern=(m:Message)=>[m.turnId,m.seenTurnId].some(id=>id&&storage.read('turns',id)?.dialogueWindowVersion===2);
  const safelyOutside=(m:Message)=>!protectedIds.has(m.id)&&!modern(m)&&m.chatEpisodeId===undefined&&!!m.dialogueEpisodeId&&legacyIds.has(m.dialogueEpisodeId)&&!!(m.direction==='incoming'?m.seenTurnId&&storage.read('turns',m.seenTurnId)?.done:m.turnId&&storage.read('turns',m.turnId)?.done)&&windows.every(w=>w.episodeIds.length>=options.recentSegments&&w.episodeIds.every(id=>Date.parse(store.chatEpisode(id)!.openedAt)>Date.parse(m.receivedAt)));
  for(const m of messages){
