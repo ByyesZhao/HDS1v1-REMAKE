@@ -1,5 +1,8 @@
 # HDSI 记忆 V0.3 实施细化
 
+提示词／上下文V0.1现状：原文默认最近4个完整对话段，双方实际消息后空闲15分钟关闭；当前段计入，共同活动期间连续，无30条二次裁剪。模型资料按身份合池和阶段职责投影；无新来源免记忆整理，明确超限报错暂停且不自动裁剪。历史测试数字只描述原交付。本期入口：[实施细化](PROMPT_CONTEXT_OPTIMIZATION_V0.1_IMPLEMENTATION_20261008.md)、[实施日志](PROMPT_CONTEXT_OPTIMIZATION_V0.1_IMPLEMENTATION_LOG_20261008.md)。
+
+
 日期：2026-10-07。状态：记忆V0.3已编码并离线验收；实际迁移、背景候选及真实阈值状态见实施记录。依据：[方案草案](MEMORY_V0.3_PROPOSAL_20261007.md)、[DSH 审查回应](../DSH-review/CODEX_REBUTTAL_MEMORY_V0.3_20261007.md)。执行拆分见 [执行计划](MEMORY_V0.3_EXECUTION_PLAN_20261007.md)。
 
 本轮修订：已并入 [第四轮审查接受的澄清](../DSH-review/CODEX_REBUTTAL_MEMORY_V0.3_PLAN_20261007.md)。用户随后选择“取消人为预算，默认不限”，因此原800字符合计上限、8000历史预算及固定检索配额不再是实施要求。本次代码已按这些规则升级；离线验证不代表真实QQ或供应商验收。
@@ -186,7 +189,7 @@ RetrievalScope 为 current／archive，includeDetailHistory 独立。程序依�
 
 新增查询向量等待上限初始1500ms，超时／失败走词法检索，不把故事暂停。后台索引与压缩远程请求单次上限120秒，失败记待办，最早5分钟后重试；后台错误与 runtime.lastError 分开。
 
-确定 key／明确别名优先。其余词法与向量候选使用排名融合，初始RRF常数60；每路候选、最终细节／短期／长期的条数上限均改为可选配置，默认null（不设上限），不再先按24／12／12／8截掉有效相关记录。近期原文窗口保留最近30条已看输入／已发输出，其余历史由分层记忆及合法归档检索提供。
+确定 key／明确别名优先。其余词法与向量候选使用排名融合，初始RRF常数60；每路候选、最终细节／短期／长期的条数上限均改为可选配置，默认null（不设上限），不再先按24／12／12／8截掉有效相关记录。近期原文窗口保留最近4个完整对话段内已看输入／已发输出，其余历史由分层记忆及合法归档检索提供。
 
 相关性先于RRF：key／明确别名精确匹配是独立入口；其他词法候选沿用中文二元组／英文词／数字拆词，先去除通用叙事词弱命中，再按有效查询词的命中覆盖度判断相关，不能继续用score>0直接放行。有效词为空时词法路返回空，不回退成全库；短查询的明确姓名／事实key不机械要求多个命中词。有效词表、词法覆盖度规则及事实／经历阈值随标注报告保存，使用正反例验证；阈值是相关性判据，不是条数预算。RRF60只融合两路已合格候选，未标定的semantic-only仍不开启，不以排序代替相关性筛选。
 
@@ -204,7 +207,7 @@ historyBudget改为number|null，默认null，不再沿用V0.2默认8000或3000�
 | alwaysIncludeCharactersLimit | null | 可选的本次alwaysInclude稳定认识合计字符上限，无单条限制 |
 | candidateItemsPerRoute | null | 可选词法／向量各路候选条数上限 |
 | detailItemsLimit／shortItemsLimit／longItemsLimit | 均null | 可选最终相关记录条数上限，long包含按需常驻经历 |
-| recentMessagesLimit | 30 | 近期原文窗口，保留现有范围，不代表其他历史被删除 |
+| recentDialogueSegments / dialogueIdleMinutes | 4 / 15 | 当前段计入4段，空闲15分钟关闭；无30条二次裁剪 |
 
 网页参数不属于ContextLimits，撤去原拟议webMaterialCharactersLimit，不另保留单篇字符截断开关。搜索配置使用独立WebSearchConfig的maxSuccessReads=20、maxFailures=40，每逻辑任务独立；同任务续调用／修补／恢复沿用计数，缓存首次取得按任务计成功，重放计0。详细计数、来源及验收以搜索设计§3／§7为准；网页正文不按12000字符或token预算截断。
 
@@ -345,7 +348,7 @@ selectCandidates 的 SQL 仅筛有效 owner 与就绪版本；尚无向量的词
 
 ## 10. 配置、验收与文档
 
-初始参数：shortDays=7、longDays=90、renewAfter=3、durableAfter=30、每日最多一次；maintenanceTime=04:30、batchItems=20、batchCharacters=null、backgroundConcurrency=1；queryTimeoutMs=1500、backgroundTimeoutMs=120000、retryDelayMs=300000；缓存256／600000ms。长度／候选配置按§6.3默认关闭，近期原文窗口30。这些是正常业务实施参数，不扩展成新的失败处理框架。
+初始参数：shortDays=7、longDays=90、renewAfter=3、durableAfter=30、每日最多一次；maintenanceTime=04:30、batchItems=20、batchCharacters=null、backgroundConcurrency=1；queryTimeoutMs=1500、backgroundTimeoutMs=120000、retryDelayMs=300000；缓存256／600000ms。长度／候选配置按§6.3默认关闭，近期原文窗口4个完整对话段／15分钟。这些是正常业务实施参数，不扩展成新的失败处理框架。
 
 memory_consolidation 单独配置 DeepSeek Flash／high，原 memory 仍 Flash／high，其他任务原配置保留。模型配置总数为11项：modelRoles十项加独立stickerDescriptionModel一项，不得偷偷使用统一模型设置。
 
@@ -362,7 +365,7 @@ memory_consolidation 单独配置 DeepSeek Flash／high，原 memory 仍 Flash�
 
 9. alwaysInclude总量超过800、历史超过8000、细节／短期／长期超过旧12／12／8和每路24时，所有符合当前权限／相关性且在技术容量内的选中内容完整提供；只在用户显式设置可选上限时启用裁剪，不新增模型输出token限制。联网资料超过12000字符默认不截掉后半段。
 
-10. 100条合格相关候选和无关负例同库时，默认完整返回100条且排除无关项、保留正文尾部与来源；31条已看输入／已发输出只取最新30条。100是验收样本，不是新上限。
+10. 100条合格相关候选和无关负例同库时，默认完整返回100条且排除无关项、保留正文尾部与来源；31条已看输入／已发输出只取最新30条。100是验收样本，不是新上限。（历史验收口径，已由提示词／上下文V0.1的完整4段窗口替代，见新实施日志。）
 11. 显式longItemsLimit对按需longTerm＋learned只裁一次；preview已建向量不提前可见；新库及旧库迁移的nextMaintenanceAt均正确。
 12. 模拟真实模型容量错误，前台暂停／保留未完成轮，后台保留待办而不暂停；没有缩小输入的第二次请求，原记忆不变。网页查阅来源按§2.3／§4.1验收，搜索闭环按独立执行计划验收。
 

@@ -1,5 +1,8 @@
 # HDSI 记忆与角色状态：V0.3落地记录
 
+提示词／上下文V0.1现状：原文默认最近4个完整对话段，双方实际消息后空闲15分钟关闭；当前段计入，共同活动期间连续，无30条二次裁剪。模型资料按身份合池和阶段职责投影；无新来源免记忆整理，明确超限报错暂停且不自动裁剪。历史测试数字只描述原交付。本期入口：[实施细化](docs/PROMPT_CONTEXT_OPTIMIZATION_V0.1_IMPLEMENTATION_20261008.md)、[实施日志](docs/PROMPT_CONTEXT_OPTIMIZATION_V0.1_IMPLEMENTATION_LOG_20261008.md)。
+
+
 2026-10-07更新。文件名保留，记忆规则已由V0.2更新到V0.3。直接依据是[记忆细化](docs/MEMORY_V0.3_IMPLEMENTATION_20261007.md)与[执行计划](docs/MEMORY_V0.3_EXECUTION_PLAN_20261007.md)，实际证据见[实施记录](docs/MEMORY_V0.3_IMPLEMENTATION_LOG_20261007.md)。搜索接入仍按其独立计划继续。
 
 ## 1. 各层归属

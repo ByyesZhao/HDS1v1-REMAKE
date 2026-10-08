@@ -1,5 +1,8 @@
 # HDSI 记忆 V0.3 执行计划
 
+提示词／上下文V0.1现状：原文默认最近4个完整对话段，双方实际消息后空闲15分钟关闭；当前段计入，共同活动期间连续，无30条二次裁剪。模型资料按身份合池和阶段职责投影；无新来源免记忆整理，明确超限报错暂停且不自动裁剪。历史测试数字只描述原交付。本期入口：[实施细化](PROMPT_CONTEXT_OPTIMIZATION_V0.1_IMPLEMENTATION_20261008.md)、[实施日志](PROMPT_CONTEXT_OPTIMIZATION_V0.1_IMPLEMENTATION_LOG_20261008.md)。
+
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** 将七天详细短期、九十天可续期长期、固定细节与常驻记忆接入独立向量检索，同时确保后台维护让位于正常聊天。
@@ -23,7 +26,7 @@
 - queryTimeoutMs=1500、backgroundTimeoutMs=120000、retryDelayMs=300000；查询向量缓存最多256条、TTL600000ms，只缓存向量。
 - 向量默认 qwen3.7-text-embedding、1024维，查询／文档双侧归一化，配置与表情向量独立。
 - memory_consolidation 单独 Flash/high，memory 保留 Flash/high，其余原模型及强度保留；所有任务后续允许选择 Pro。
-- 近期原文窗口30条；historyBudget、alwaysIncludeCharactersLimit、candidateItemsPerRoute、detailItemsLimit、shortItemsLimit、longItemsLimit均默认null，取消800／8000字符、分块配额、24／12／12／8固定配额。可选配置仅在用户显式设置非空值时生效，当前必需来源及状态不裁。撤去拟议webMaterialCharactersLimit，网页20／40及无字符截断由独立WebSearchConfig／搜索计划负责。
+- 近期原文窗口最近4个完整对话段（当前段计入，双方实际交互后空闲15分钟划段）；historyBudget、alwaysIncludeCharactersLimit、candidateItemsPerRoute、detailItemsLimit、shortItemsLimit、longItemsLimit均默认null，取消800／8000字符、分块配额、24／12／12／8固定配额。可选配置仅在用户显式设置非空值时生效，当前必需来源及状态不裁。撤去拟议webMaterialCharactersLimit，网页20／40及无字符截断由独立WebSearchConfig／搜索计划负责。
 - 选中且符合权限／期限／相关性的正文完整提供，默认不新增模型输出max_tokens／max_completion_tokens或文本Zod字数上限；实际技术容量按所选接口，不把字符预算当token容量。
 - 任何事务不包含网络 await；维护失败不暂停故事；迁移／重建索引不制造唤醒或任意续期。
 - 保留 sourceIds 非空、当前来源白名单、输入可见性和单次合法补查限制。只处理正常业务所需规则，不扩展极端情况防御框架。
@@ -51,7 +54,7 @@
 | MemoryOwnerRef | ownerType: 'short'\|'long'\|'detail'\|'learned'；ownerId: string |
 | OwnerVersion | MemoryOwnerRef + revision: number + stateVersion: number |
 | Runtime扩展（src/types.ts） | nextMaintenanceAt: string\|null；周期cutoff／处理进度保存在维护状态／jobs，不变成故事请求 |
-| ContextLimits | historyBudget、alwaysIncludeCharactersLimit、candidateItemsPerRoute、detailItemsLimit、shortItemsLimit、longItemsLimit均number\|null，默认null；recentMessagesLimit:number，默认30 |
+| ContextLimits | historyBudget、alwaysIncludeCharactersLimit、candidateItemsPerRoute、detailItemsLimit、shortItemsLimit、longItemsLimit均number\|null，默认null；recentDialogueSegments:number，默认4；dialogueIdleMinutes:number，默认15 |
 | RetrievalStats | queries、cacheHits、remoteRequests、timeouts、failures、lexicalFallbacks均number，进程内累计，startedAt:string |
 | RetrievalPermissions | allowArchive: boolean；allowDetailHistory: boolean；visibleSourceIds: string[] |
 | RetrievalRequest | query: string；at: string；phase: string；scope: 'current'\|'archive'；includeDetailHistory: boolean；permissions: RetrievalPermissions；budget: number\|null（默认null） |
@@ -141,8 +144,8 @@
 
 - [x] 写隐藏输入测试：未看私聊的回忆字样不能开启普通主叙事档案；共同场景／可见个人导演允许实际明确回忆，普通当前手机查询不能混入旧手机历史。
 - [x] 写到期测试：把后台与向量都阻住，七天边界短期全文退出、preview 仍按词法命中；90天边界退出 current，合法 archive 仍可检索；merged 和旧索引两路都不泄漏。
-- [x] 写默认不限测试：相关细节>12、短期>12、长期>8、每路>24、alwaysInclude合计>800、历史>8000时均完整提供；近期原文窗口仍为30，key／别名优先及RRF60顺序正确，缺省／null不触发裁剪。
-- [x] 写完整性与弱命中测试：100条合格相关候选全部返回、无关负例剔除且尾部／来源完整；31条已看输入／已发输出只取最新30条。通用词弱命中、空有效词不误召；短姓名／事实key可召回；RRF不能将不合格词法候选救回。preview向量就绪但retainedFrom未到仍不返回。
+- [x] 写默认不限测试：相关细节>12、短期>12、长期>8、每路>24、alwaysInclude合计>800、历史>8000时均完整提供；近期原文窗口仍为30，key／别名优先及RRF60顺序正确，缺省／null不触发裁剪。（历史验收口径，已由提示词／上下文V0.1的完整4段窗口替代，见新实施日志。）
+- [x] 写完整性与弱命中测试：100条合格相关候选全部返回、无关负例剔除且尾部／来源完整；31条已看输入／已发输出只取最新30条。通用词弱命中、空有效词不误召；短姓名／事实key可召回；RRF不能将不合格词法候选救回。preview向量就绪但retainedFrom未到仍不返回。（历史验收口径，已由提示词／上下文V0.1的完整4段窗口替代，见新实施日志。）
 - [x] 写显式可选上限测试：用户主动设置条数／字符上限才按低相关完整条目裁剪，当前来源／状态不裁且正文不截半条；整理只对实际details/retrieved等所用字段计算，默认不采用旧8000。
 - [x] 写longItemsLimit统一测试：按需longTerm和learned混合候选只共享一次显式上限，不分别各裁一遍；alwaysInclude稳定认识完整独立，null返回全部合格项。
 - [x] 写turn.test.ts间接回归：叙事／个人的async上下文不改变模型调用顺序及未看输入门禁；正文>8000、摘要>120字不会因新增Zod／输出token上限被拒绝。标注负例检查通用叙事词误召。

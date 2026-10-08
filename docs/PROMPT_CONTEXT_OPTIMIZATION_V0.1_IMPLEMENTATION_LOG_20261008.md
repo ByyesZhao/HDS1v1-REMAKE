@@ -54,3 +54,9 @@ HTTP每次使用一个resources池，业务输入与补查返回使用引用，w
 新增4项回归先全部失败，随后通过；指定恢复／后台回归26项通过，全套92文件514项通过，类型检查通过。ModelRequestError记录taskName/status/providerCode/kind，Runtime记录安全摘要和generation/sending/postprocessing。通知不带接口正文；后台环境重试与维护仍独立。旧轮、已确认输出及显式resume保留；等待和新输入不能绕过失败轮，resume不自动减载。
 
 容量分类仅认明确context_length_exceeded码或明确context length exceeded／maximum context length is N tokens措辞。错误形态用隔离模拟Response验证，未刻意向真实接口发送超大负载；不能声称已实测DeepSeek超限回包。官方[错误码说明](https://api-docs.deepseek.com/quick_start/error_codes/)表明400也可能是格式错误，因此不能仅按HTTP状态判断容量。
+
+## 任务8：第一批集成与停服升级
+
+新增隔离集成工具（内存库、模拟消息、记录发送器），默认离线且单请求上限300秒，普通／共同／生活／无新来源路径分别4／3／2／2次模型请求，HTTP网络及embedding均0。40条当前段原文保留，个人阶段包含完整4段；普通叙事无未读输入，池内身份不重复。指标仅含task、身份、数量、字符数与请求数，不落私有正文。构建、类型检查及指定集成通过。第一批515项通过；任务9红灯测试在同一次全套运行被纳入导致额外2项失败，随后已实现并重跑，不能把这次红灯记作全量通过。
+
+正式库迁移前SHA256 BC65898A1BACDD87798554AA3C14CE2EE683E052C76F2358F90D23A8BEDF3BBD；只读报告version=null、messageCount=0、活动0、在途0、canApply=true。Get-CimInstance提高只读执行权限后确认无HDSI／Koishi／SnowLuma进程；初次受限查询的“拒绝访问”不是服务已停的证据。2026-10-08 23:00执行停服apply，先备份到runtime/prompt-context-backups/dialogue-20261008150036587-87c15b07-a6d2-415a-a967-b41592359cd3，再事务置version=1，仍无消息／活动／在途。没有启动服务。旧30条当前规则同步至记忆细化、接口、手册；历史验收保留原数并标本期替代。config.local.json在最终集成后同步。

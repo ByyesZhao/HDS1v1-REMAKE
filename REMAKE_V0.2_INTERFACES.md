@@ -1,5 +1,8 @@
 # HDSI V0.2：接口、存储与代码组织
 
+提示词／上下文V0.1现状：原文默认最近4个完整对话段，双方实际消息后空闲15分钟关闭；当前段计入，共同活动期间连续，无30条二次裁剪。模型资料按身份合池和阶段职责投影；无新来源免记忆整理，明确超限报错暂停且不自动裁剪。历史测试数字只描述原交付。本期入口：[实施细化](docs/PROMPT_CONTEXT_OPTIMIZATION_V0.1_IMPLEMENTATION_20261008.md)、[实施日志](docs/PROMPT_CONTEXT_OPTIMIZATION_V0.1_IMPLEMENTATION_LOG_20261008.md)。
+
+
 状态：2026-10-07 已按实现核对。V0.2基线及记忆V0.3代码已完成；最新检查见记忆实施记录；真实 QQ 与完整故事路径待联调。本文记录当前接口与行为，不把模型提示要求写成已经实现的语义保证。
 
 返回 [总架构](REMAKE_V0.2.md)；配套 [实施细化与开发记录](REMAKE_V0.2_IMPLEMENTATION.md)、[实施记录](docs/IMPLEMENTATION_LOG.md)。回合冻结、发送和提交边界见[恢复专题](REMAKE_V0.2_RECOVERY.md)。
@@ -149,9 +152,9 @@ export interface MemoryCandidate extends OwnerVersion {
 }
 export interface ContextLimits {
   historyBudget: number|null; alwaysIncludeCharactersLimit: number|null; candidateItemsPerRoute: number|null;
-  detailItemsLimit: number|null; shortItemsLimit: number|null; longItemsLimit: number|null; recentMessagesLimit: number;
+  detailItemsLimit: number|null; shortItemsLimit: number|null; longItemsLimit: number|null; recentDialogueSegments: number; dialogueIdleMinutes: number;
 }
-export const defaultContextLimits: ContextLimits = {historyBudget:null,alwaysIncludeCharactersLimit:null,candidateItemsPerRoute:null,detailItemsLimit:null,shortItemsLimit:null,longItemsLimit:null,recentMessagesLimit:30};
+export const defaultContextLimits: ContextLimits = {historyBudget:null,alwaysIncludeCharactersLimit:null,candidateItemsPerRoute:null,detailItemsLimit:null,shortItemsLimit:null,longItemsLimit:null,recentDialogueSegments:4,dialogueIdleMinutes:15};
 export interface RetrievalStats { queries:number; cacheHits:number; remoteRequests:number; timeouts:number; failures:number; lexicalFallbacks:number; startedAt:string }
 export interface RetrievalPermissions { allowArchive:boolean; allowDetailHistory:boolean; visibleSourceIds:string[] }
 export interface RetrievalRequest { query:string; at:string; phase:string; scope:'current'|'archive'; includeDetailHistory:boolean; permissions:RetrievalPermissions; budget:number|null }
@@ -214,9 +217,9 @@ export interface MemoryCandidate extends OwnerVersion {
 }
 export interface ContextLimits {
   historyBudget: number|null; alwaysIncludeCharactersLimit: number|null; candidateItemsPerRoute: number|null;
-  detailItemsLimit: number|null; shortItemsLimit: number|null; longItemsLimit: number|null; recentMessagesLimit: number;
+  detailItemsLimit: number|null; shortItemsLimit: number|null; longItemsLimit: number|null; recentDialogueSegments: number; dialogueIdleMinutes: number;
 }
-export const defaultContextLimits: ContextLimits = {historyBudget:null,alwaysIncludeCharactersLimit:null,candidateItemsPerRoute:null,detailItemsLimit:null,shortItemsLimit:null,longItemsLimit:null,recentMessagesLimit:30};
+export const defaultContextLimits: ContextLimits = {historyBudget:null,alwaysIncludeCharactersLimit:null,candidateItemsPerRoute:null,detailItemsLimit:null,shortItemsLimit:null,longItemsLimit:null,recentDialogueSegments:4,dialogueIdleMinutes:15};
 export interface RetrievalStats { queries:number; cacheHits:number; remoteRequests:number; timeouts:number; failures:number; lexicalFallbacks:number; startedAt:string }
 export interface RetrievalPermissions { allowArchive:boolean; allowDetailHistory:boolean; visibleSourceIds:string[] }
 export interface RetrievalRequest { query:string; at:string; phase:string; scope:'current'|'archive'; includeDetailHistory:boolean; permissions:RetrievalPermissions; budget:number|null }
