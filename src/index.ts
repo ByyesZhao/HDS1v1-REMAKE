@@ -12,6 +12,7 @@ import { SerialHost } from './host/runtime';
 import { arrangeSleep, autonomousMinutes } from './host/state';
 import { MemoryStore } from './memory/store';
 import { assembleMemory } from './deployment/memory-runtime';
+import {inspectMemoryCapacity} from './deployment/memory-capacity-upgrade';
 import { assembleWeb } from './deployment/web-runtime';
 import { inspectSharedUpgrade, ensureSharedActivityVersion } from './deployment/shared-upgrade';
 import { ModelClient, ChatCompletionsTransport } from './model/client';
@@ -39,6 +40,7 @@ export function apply(ctx: Context, config: Config): void {
   const databasePath = resolve(ctx.baseDir, config.databasePath);
   if (existsSync(databasePath) && inspectSharedUpgrade(databasePath).version !== 1) throw new Error('Stop HDSI and run npm run shared:migrate -- --database <path> --check before enabling this existing database.');
   if(existsSync(databasePath)&&inspectEnvironmentUpgrade(databasePath).version!==1)throw new Error('Stop HDSI and run npm run migrate:environment -- --database <path> --check, then --apply --stopped --backup-dir <path> before starting this existing database.');
+  if(existsSync(databasePath)){const capacity=inspectMemoryCapacity(databasePath,systemClock.now(),settings.memory.capacity);if(capacity.hasCharacter&&capacity.version!==1)throw new Error('Stop HDSI; finish old stories with the previous build; run npm run memory:capacity -- <db> --config <json> --dry-run, then --apply --stopped before starting.');}
   const storage = new Storage(databasePath);
   try { ensureSharedActivityVersion(storage); } catch (error) { storage.close(); throw error; }
   const memoryStore=new MemoryStore(storage),fresh=!storage.get('character');
@@ -57,6 +59,7 @@ export function apply(ctx: Context, config: Config): void {
     });
   }
   if(fresh)memoryStore.migrate(clock.now());
+  if(fresh)memoryStore.migrateCapacity(clock.now());
   let stickers: StickerLibrary | undefined;
   if (options.stickersEnabled) {
     const e = settings.embedding;
@@ -88,7 +91,7 @@ export function apply(ctx: Context, config: Config): void {
     async sendError(message) { await bot().sendPrivateMessage(config.userId, message); },
   };
   const app = new HdsiApp({
-    environmentStore:new EnvironmentStore(storage),schoolStore:new SchoolStore(storage),storage, clock, random, models, config: options, sender, stickers,web,memoryStore:memory.store,memoryLifecycle:memory.lifecycle,retrieval:memory.retrieval,maintenance:memory.maintenance,
+    environmentStore:new EnvironmentStore(storage),schoolStore:new SchoolStore(storage),storage, clock, random, models, config: options, sender, stickers,web,memoryStore:memory.store,memoryLifecycle:memory.lifecycle,memoryCapacity:memory.capacity,memoryIdle:memory.idle,memoryCleanup:memory.cleanup,retrieval:memory.retrieval,maintenance:memory.maintenance,
     wait: ms => new Promise(resolve => setTimeout(resolve, ms)),
   });
   app.dependencies.generateEnvironment=input=>generateEnvironmentStep(app.dependencies,input);

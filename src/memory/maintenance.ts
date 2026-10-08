@@ -23,6 +23,9 @@ export class MemoryMaintenance {
   private eligible(work:Work,now:string){return work.table==='memory_index_jobs'||!this.options.idle||this.options.idle.eligibility(now).allowed;}
   private blocked(){const r=this.store.storage.runtime();return r.paused||!!r.openBatch||!!this.store.storage.unfinishedTurn();}
   private work():Work[]{return [...this.store.jobs<IndexJob>('memory_index_jobs',['pending','computing','ready']).map(job=>({table:'memory_index_jobs' as const,job})),...this.store.jobs<MaintenanceJob>('memory_maintenance_jobs',['pending','computing','ready']).map(job=>({table:'memory_maintenance_jobs' as const,job}))].sort((a,b)=>milliseconds(a.job.createdAt)-milliseconds(b.job.createdAt)||a.job.id.localeCompare(b.job.id));}
+  private metadataWork():Work[]{
+    return (['memory_index_jobs','memory_maintenance_jobs'] as const).flatMap(table=>this.store.storage.prepare(`SELECT json_object('id',id,'status',json_extract(data,'$.status'),'createdAt',json_extract(data,'$.createdAt'),'retryAt',json_extract(data,'$.retryAt'),'lastError',json_extract(data,'$.lastError'),'configSignature',json_extract(data,'$.configSignature'),'readSet',json(COALESCE(json_extract(data,'$.readSet'),'[]'))) AS metadata FROM ${table} WHERE json_extract(data,'$.status') IN ('pending','computing','ready')`).all().map(r=>({table,job:JSON.parse(String(r.metadata))} as Work))).sort((a,b)=>milliseconds(a.job.createdAt)-milliseconds(b.job.createdAt)||a.job.id.localeCompare(b.job.id));
+  }
   private makeJob(rows:MemoryCandidate[],cutoff:string,now:string):MaintenanceJob {
     const snapshot=rows.map(row=>row.linkedLongId?{...row,linkedLongId:this.store.canonical(row.linkedLongId)?.id??row.linkedLongId}:row);
     for(const row of snapshot.slice())if(row.linkedLongId){const long=this.store.canonical(row.linkedLongId);if(long&&!snapshot.some(r=>r.id===long.id))snapshot.push(long);}
@@ -157,7 +160,7 @@ export class MemoryMaintenance {
     const changed=content!==row.content||feelingSummary!==row.feelingSummary;const updated={...row,content,eventSummary,feelingSummary,summaryQuality:'refined' as const,sourceIds:[...new Set([...row.sourceIds,...unit.sourceIds])],revision:row.revision+(changed?1:0),stateVersion:row.stateVersion+1};this.store.saveOwner(updated);if(changed)this.store.queueIndex(updated,now);this.lifecycle.synchronizeProjections(updated,now);
   }
   nextDeadline(now:string):string|null {
-    if(this.stopped||this.active||this.blocked())return null;const works=this.work();
+    if(this.stopped||this.active||this.blocked())return null;const works=this.metadataWork();
     const deadlines:string[]=[];
     for(const work of works.filter(w=>w.job.status==='pending'||w.job.status==='ready')){
       const retry=work.job.retryAt??now;
@@ -171,6 +174,6 @@ export class MemoryMaintenance {
     if(!this.store.storage.get('memory_maintenance_cycle')&&this.store.storage.runtime().nextMaintenanceAt)deadlines.push(this.store.storage.runtime().nextMaintenanceAt!);
     return deadlines.sort((a,b)=>milliseconds(a)-milliseconds(b))[0]??null;
   }
-  status(){const jobs=this.work();return {pending:jobs.filter(w=>w.job.status==='pending').length,ready:jobs.filter(w=>w.job.status==='ready').length,inFlight:this.inFlight,retries:jobs.filter(w=>w.job.retryAt).length,backendRequests:this.backendRequests,lastError:[...jobs].reverse().find(w=>w.job.lastError)?.job.lastError??null,retrieval:this.index.stats};}
+  status(){const jobs=this.metadataWork();return {pending:jobs.filter(w=>w.job.status==='pending').length,ready:jobs.filter(w=>w.job.status==='ready').length,inFlight:this.inFlight,retries:jobs.filter(w=>w.job.retryAt).length,backendRequests:this.backendRequests,lastError:[...jobs].reverse().find(w=>w.job.lastError)?.job.lastError??null,retrieval:this.index.stats};}
   async stop():Promise<void>{this.stopped=true;this.controller?.abort(new Error('backend stopped'));await this.active;}
 }

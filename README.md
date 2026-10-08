@@ -1,5 +1,16 @@
 # HDSI 重制版 V0.2
 
+记忆容量／空闲整理V0.4：基础提取仍每轮执行；深度整理、固定信息审核等待最后输入／确认输出／故事完成／活动变化后15分钟，共同活动整个期间等待。默认活跃短期100、普通长期1000（含预备摘要）、普通归档500且最长90天；容量超出或归档到期均可真实清除普通记忆及派生副本。原始消息／剧情／经历、作者背景、details与有效常驻证据保留，不代表整个数据库大小封顶。相关配置独立可改或设null；上下文人为预算仍默认不限。
+
+旧库先在旧版本完成未结束故事，停止HDSI，再执行：
+
+```powershell
+npm run memory:capacity -- runtime/data/hdsi-remake.sqlite --config config.local.json --dry-run
+npm run memory:capacity -- runtime/data/hdsi-remake.sqlite --config config.local.json --apply --stopped --backup-dir runtime/memory-capacity-backups
+```
+
+检查是真只读，不读key.txt或角色文件；apply先备份，登记结构与待办，保留schema3，不批量删除正式记忆。后续由Host逐单元归一／清理并让位聊天。新库自动初始化memoryCapacityVersion=1；旧库缺标记会明确报升级命令。服务仍由用户双击cmd手动启动。实际进度、正式库是否升级及验收见[本次实施日志](docs/MEMORY_CAPACITY_IDLE_V0.4_IMPLEMENTATION_LOG_20261008.md)。
+
 独立 Koishi 插件，基线记录于六份 `REMAKE_V0.2*.md`，记忆及搜索按docs/四份细化／计划实施。单角色、单用户、单进程；SQLite保存一份故事，串行前台回合与一个后台准备槽。新 Koishi 安装于 `D:\HDSI-remake\runtime`，旧工程保留。
 
 ## 当前状态

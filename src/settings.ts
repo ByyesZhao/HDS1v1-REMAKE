@@ -35,6 +35,7 @@ const memorySettings=z.object({
   batchItems:z.number().int().positive().default(20),batchCharacters:nullableLimit,
   queryTimeoutMs:z.number().positive().default(1500),backgroundTimeoutMs:z.number().positive().default(120000),retryDelayMs:z.number().positive().default(300000),cacheSize:z.number().int().positive().default(256),cacheTtlMs:z.number().positive().default(600000),calibrationFile:z.string().optional(),
 }).prefault({});
+export const memoryMaintenanceSettings=memorySettings;
 const settingsSchema = z.object({
   background: z.string().min(1), backgroundFile: z.string().optional(), chatExamples: z.string().min(1), worldSetting: z.string(), schoolSetting: z.string(),
   timezone: z.string().default('Asia/Shanghai'), initialScene, initialPlan: z.string(),

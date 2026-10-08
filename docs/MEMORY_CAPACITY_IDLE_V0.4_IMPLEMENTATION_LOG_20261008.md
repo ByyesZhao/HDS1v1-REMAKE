@@ -43,3 +43,13 @@ refine只改长期摘要；审核targetId、decision和对象kind硬校验，固
 增量每owner最新版本、每批20；04:30只补到期漏办，不重扫全部长期。已满足空闲的连续批次不再额外等15分钟；无待办零调用。暂停／未知活动／在途不安排0ms后台轮询；清理自己的未来截止进入唯一Host计时器。晨间环境链优先且不刷新idle。
 
 裁定：新输入后全队列deadline可能为now（合法索引），测试分别验证索引即时和deep新窗口，不能把全队列等15分钟当产品要求。旧无idle开发fixture保持兼容；新真实Host用例覆盖正式启用后的完整15分钟门禁。
+
+## 任务7：升级工具、正式装配与观测（完成）
+
+缺失升级接口／旧库门禁先红灯；只读升级、部署、检索／公平相关21项通过，新增CLI无背景／无key文件场景后升级／装配7项通过，typecheck通过。dry-run以readOnly SQLite连接投影元数据，不经Storage构造、不写DDL；检查与运行时同源归档集合／锚点。apply要求stopped及旧轮完成，先备份、保留schema3，版本1，重复不重置时钟／grants；只登记待办，Host再逐单元归一。
+
+正式装配启用capacity／idle／cleanup，启动前只读检查旧库标记；状态及deadline投影元数据、不加载记忆正文或维护输入。工具仅解码config.memory，不读key.txt和角色文件。中途一项测试错误地假定旧marker字段未出现，但既有V0.3迁移已保存规范化null；改为校验升级前后相同，数据库句柄改finally关闭。
+
+### 正式库只读检查
+
+2026-10-08 18:39（上海）：未发现命令行包含HDSI-remake／SnowLuma的node、python、cmd运行进程。runtime/data/hdsi-remake.sqlite schema3，character尚未初始化，容量标记null；短期／长期／归档均0，无旧轮、清理候选或缺失引用。仅dry-run，未升级／清理该库，未启动服务。该空库应由用户下一次启动后按新库路径正式初始化，避免在角色尚未初始化时另立迁移时钟。

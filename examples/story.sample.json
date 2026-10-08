@@ -89,6 +89,9 @@
     "dimensions": 1024
   },
   "memory": {
+    "capacity":{"shortActiveLimit":100,"longActiveLimit":1000,"longArchiveLimit":500,"archiveRetentionDays":90},
+    "idleMaintenanceMinutes":15,
+    "maintenanceDuringSleep":true,
     "contextLimits": {
       "alwaysIncludeCharactersLimit": null,
       "candidateItemsPerRoute": null,

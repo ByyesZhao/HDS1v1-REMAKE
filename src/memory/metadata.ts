@@ -1,0 +1,18 @@
+import type {Storage} from '../storage';
+import {memoryOwnerData,type MemoryCandidate} from './types';
+// Counts, scheduling and inspection must not hydrate memory text or historical model inputs.
+export function memoryMetadata(db:Pick<Storage,'prepare'>):MemoryCandidate[] {
+  const tables=new Set(db.prepare("SELECT name FROM sqlite_master WHERE type='table'").all().map(r=>String(r.name)));
+  const fields=['status','mergedInto','importance','createdAt','happenedAt','lastEventUpdateAt','shortExpiresAt','linkedLongId','retainedFrom','expiresAt','capacityExitedAt','capacityExitReason','archiveEnteredAt','canonicalMemoryId','totalAwakenings','revision','stateVersion','consolidatedRevision','evaluatedEvidenceVersion','learnedKind'];
+  return ['memories','details','learned_background'].filter(t=>tables.has(t)).flatMap(table=>{
+    const defaultKind=table==='details'?'detail':table==='learned_background'?'learned':'long';
+    const columns=fields.map(f=>`json_extract(data,'$.${f}') AS ${f}`).join(',');
+    return db.prepare(`SELECT id,COALESCE(json_extract(data,'$.kind'),'${defaultKind}') AS kind,COALESCE(json_extract(data,'$.ownerType'),'${defaultKind}') AS ownerType,${columns},json_extract(data,'$.evidenceMemoryIds') AS evidenceMemoryIds,CASE WHEN length(trim(COALESCE(json_extract(data,'$.content'),json_extract(data,'$.value'),'')))>0 THEN 1 ELSE 0 END AS hasContent FROM ${table} ORDER BY id`).all().map(raw=>memoryOwnerData({...raw,id:String(raw.id),ownerId:String(raw.id),content:raw.hasContent?'present':'',sourceIds:[],topics:[],eventSummary:'',feelingSummary:'',evidenceMemoryIds:raw.evidenceMemoryIds?JSON.parse(String(raw.evidenceMemoryIds)):[]} as unknown as MemoryCandidate));
+  });
+}
+export function metadataCanonical(rows:MemoryCandidate[],id:string):MemoryCandidate|null {
+  const byId=new Map(rows.map(r=>[r.id,r]));let row=byId.get(id);
+  if(row?.canonicalMemoryId)row=byId.get(row.canonicalMemoryId);
+  while(row?.mergedInto)row=byId.get(row.mergedInto);
+  return row?.kind==='long'?row:null;
+}

@@ -2,6 +2,7 @@ import { Storage } from '../storage';
 import { addMs, milliseconds, nextDaily } from '../time';
 import type { Awakening, IndexJob, MemoryCandidate, MemoryOwnerRef, OwnerVersion, RetentionGrant, RetrievalRequest,MemoryDirtyOwner,MemoryAuditReport,MaintenanceJob,MaintenanceUnit } from './types';
 import {memoryOwnerData} from './types';
+import {archiveStart} from './capacity';
 
 const day=86400_000;
 // Keep this expression equivalent to capacity.archiveStart, including natural expiry without a persisted anchor.
@@ -80,6 +81,30 @@ export class MemoryStore {
     if(row?.canonicalMemoryId)row=this.owner({ownerType:'long',ownerId:row.canonicalMemoryId});
     while(row?.mergedInto)row=this.owner({ownerType:'long',ownerId:row.mergedInto});
     return row?.kind==='long'?row:null;
+  }
+  migrateCapacity(at:string):void {
+    if(this.storage.runtime().memoryCapacityVersion===1)return;
+    if(this.schemaVersion()!==3)throw Error('memory schema 3 required: run memory:migrate first');
+    if(this.storage.unfinishedTurn())throw Error('unfinished old story: finish it with the previous build before memory capacity upgrade');
+    this.storage.transaction(()=>{
+      for(const old of this.allOwners()){
+        let row=memoryOwnerData(old);const anchor=archiveStart(row,at);
+        if(anchor&&!row.archiveEnteredAt)row={...row,archiveEnteredAt:anchor,stateVersion:row.stateVersion+1};
+        if(row.kind==='learned')row={...row,evidenceMemoryIds:[...new Set([row.canonicalMemoryId,...row.evidenceMemoryIds??[],...row.sourceIds].flatMap(id=>{if(!id)return [];const canonical=this.canonical(id);return canonical?[canonical.id]:[];}))]};
+        this.saveOwner(row);if(row.status==='active'||row.status==='durable')this.queueDirty(row,row.kind==='detail'?'detail':row.kind==='learned'?'learned':'event',at);
+      }
+      for(const table of ['memory_index_jobs','memory_maintenance_jobs'] as const)for(const job of this.jobs<IndexJob|MaintenanceJob>(table))this.saveJob(table,{...job,status:job.status==='computing'?'pending':job.status});
+      this.compactCompletedPayloads();
+      const latest=(values:Array<string|null|undefined>)=>values.filter((v):v is string=>!!v).sort((a,b)=>milliseconds(b)-milliseconds(a))[0]??null;
+      const messages=this.storage.prepare("SELECT json_extract(data,'$.direction') direction,json_extract(data,'$.receivedAt') at FROM messages").all();
+      const input=latest([...messages.filter(r=>r.direction==='incoming').map(r=>String(r.at)),...this.storage.prepare("SELECT json_extract(data,'$.receivedAt') at FROM control_requests").all().map(r=>String(r.at))]);
+      const output=latest(this.storage.prepare("SELECT json_extract(data,'$.confirmedAt') at FROM outbox WHERE json_extract(data,'$.status')='confirmed'").all().map(r=>r.at?String(r.at):null));
+      const story=latest(this.storage.prepare("SELECT json_extract(data,'$.completedAt') at FROM turns WHERE json_extract(data,'$.done')=1 AND json_extract(data,'$.environmentKind') IS NULL AND NOT EXISTS(SELECT 1 FROM json_each(data,'$.triggerKinds') WHERE value='environment')").all().map(r=>r.at?String(r.at):null));
+      const state=this.storage.character(),runtime=this.storage.runtime();
+      const activity=latest([state?.scene.activity?.startsAt,runtime.sharedClock?.startedAt].filter(t=>!!t&&milliseconds(t)<=milliseconds(at)));
+      const idle=runtime.memoryIdle??{lastInputAt:input,lastOutputAt:output,lastStoryCompletedAt:story??(!input&&!output&&!activity?at:null),lastActivityChangedAt:activity};
+      this.storage.set('runtime',{...runtime,memoryCapacityVersion:1,memoryIdle:idle});
+    });
   }
   allOwners():MemoryCandidate[]{return ['memories','details','learned_background'].flatMap(table=>this.storage.prepare(`SELECT data FROM ${table} ORDER BY id`).all().map(r=>memoryOwnerData(JSON.parse(String(r.data)))));}
   archivedLongs(now:string):MemoryCandidate[]{return this.storage.prepare(`SELECT data FROM memories WHERE (${archiveStartSql()}) IS NOT NULL ORDER BY id`).all(now).map(r=>memoryOwnerData(JSON.parse(String(r.data))));}
@@ -165,9 +190,9 @@ export class MemoryStore {
   maintenanceCandidates(cutoff:string):MemoryCandidate[]{
     return this.storage.prepare("SELECT data FROM memories WHERE json_extract(data,'$.status')='active' AND ((json_extract(data,'$.kind')='short' AND julianday(json_extract(data,'$.shortExpiresAt'))<=julianday(?) AND (json_extract(data,'$.consolidatedRevision') IS NULL OR json_extract(data,'$.consolidatedRevision')!=json_extract(data,'$.revision'))) OR (json_extract(data,'$.kind')='long' AND julianday(json_extract(data,'$.createdAt'))<=julianday(?) AND json_extract(data,'$.totalAwakenings')>=30 AND (json_extract(data,'$.evaluatedEvidenceVersion') IS NULL OR json_extract(data,'$.evaluatedEvidenceVersion')<json_extract(data,'$.stateVersion')))) ORDER BY julianday(json_extract(data,'$.createdAt')),id").all(cutoff,cutoff).map(r=>memoryOwnerData(JSON.parse(String(r.data))));
   }
-  job<T>(table:JobTable,id:string):T|null {return parse<T>(this.storage.prepare(`SELECT data FROM ${table} WHERE id=?`).get(id));}
+  job<T>(table:JobTable,id:string):T|null {const row=parse<T>(this.storage.prepare(`SELECT data FROM ${table} WHERE id=?`).get(id));return row&&table==='memory_maintenance_jobs'?{kind:'consolidation',prunedOwnerKeys:[],...row}:row;}
   jobs<T>(table:JobTable,statuses?:Array<'pending'|'computing'|'ready'|'done'>):T[]{
     const where=statuses?` WHERE json_extract(data,'$.status') IN (${statuses.map(()=>'?').join(',')})`:'';
-    return this.storage.prepare(`SELECT data FROM ${table}${where} ORDER BY julianday(json_extract(data,'$.createdAt')),id`).all(...statuses??[]).map(r=>JSON.parse(String(r.data)));
+    return this.storage.prepare(`SELECT data FROM ${table}${where} ORDER BY julianday(json_extract(data,'$.createdAt')),id`).all(...statuses??[]).map(r=>table==='memory_maintenance_jobs'?{kind:'consolidation',prunedOwnerKeys:[],...JSON.parse(String(r.data))}:JSON.parse(String(r.data)));
   }
 }
