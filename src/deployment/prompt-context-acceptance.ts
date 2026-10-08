@@ -11,7 +11,7 @@ import type {CompletionRequest} from '../model/client';
 import {buildCompletionEnvelope} from '../model/resource-pool';
 import {isStageModelInput} from '../model/context-types';
 import {Scheduler} from '../host/scheduler';
-export interface RequestMeasure {task:string;inputCharacters:number;messages:number;recentMessages:number;owners:number;materials:number;uniqueMessageBodies:boolean;unreadExposed:boolean;allowSimulatedUserActions?:boolean;repair:boolean;ids:string[]}
+export interface RequestMeasure {task:string;inputCharacters:number;messages:number;recentMessages:number;owners:number;materials:number;uniqueMessageIds:boolean;unreadExposed:boolean;allowSimulatedUserActions?:boolean;repair:boolean;ids:string[]}
 function fixture(request:CompletionRequest):unknown {
  const input=isStageModelInput(request.input)?request.input.context:{};
  const narrative={experiences:[],currentScene:{description:'隔离验收：宿舍',activity:null},energy:{level:'正常',reason:'休息后'}};
@@ -41,7 +41,7 @@ export async function validatePromptContext(options:{config?:AppConfig;connectio
    const transport=options.connectionFor?new ChatCompletionsTransport(options.connectionFor):null;
    const client=new ModelClient({complete:async(request,runOptions)=>{
     const envelope=buildCompletionEnvelope(request),view=isStageModelInput(request.input)?request.input:undefined;
-    const m=envelope.resources.messages;calls.push({task:request.task.name,inputCharacters:JSON.stringify(envelope).length,messages:m.length,recentMessages:view?.roles.recentIds?.length??0,owners:envelope.resources.owners.length,materials:envelope.resources.materials.length,uniqueMessageBodies:new Set(m.map(r=>r.id)).size===m.length,unreadExposed:request.task.name==='narrative'&&m.some(r=>r.id==='current'),allowSimulatedUserActions:request.task.promptPolicy?.facts.sharedMeta?.allowSimulatedUserActions,repair:!!request.repair,ids:m.map(r=>r.id)});
+    const m=envelope.resources.messages;calls.push({task:request.task.name,inputCharacters:JSON.stringify(envelope).length,messages:m.length,recentMessages:view?.roles.recentIds?.length??0,owners:envelope.resources.owners.length,materials:envelope.resources.materials.length,uniqueMessageIds:new Set(m.map(r=>r.id)).size===m.length,unreadExposed:request.task.name==='narrative'&&m.some(r=>r.id==='current'),allowSimulatedUserActions:request.task.promptPolicy?.facts.sharedMeta?.allowSimulatedUserActions,repair:!!request.repair,ids:m.map(r=>r.id)});
     if(!transport)return fixture(request);
     networkRequests++;const timeout=AbortSignal.timeout(options.timeoutMs??300000);return transport.complete(request,{signal:runOptions?.signal?AbortSignal.any([timeout,runOptions.signal]):timeout});
    }});

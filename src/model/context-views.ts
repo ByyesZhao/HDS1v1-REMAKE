@@ -60,7 +60,7 @@ export function buildExpressionView(snapshot:Extract<StageInputSnapshot,{stage:'
 }
 
 export function buildEnvironmentView(input:import('../environment/types').EnvironmentStepInput):StageModelInput {
- if(input.stage==='school_week')return input.modelContractVersion===1?stageInput(input.stage,{stage:input.stage,batchId:input.batchId,at:input.at,modelContractVersion:1,...schoolWeekTextInput(input.context as import('../school/types').SchoolExpansionInput,(input.context as {timezone?:string}).timezone??'Asia/Shanghai')}):stageInput(input.stage,input);
+ if(input.stage==='school_week')return input.modelContractVersion===1?stageInput(input.stage,{stage:input.stage,batchId:input.batchId,at:input.at,modelContractVersion:1,...schoolWeekTextInput(input.context as import('../school/types').SchoolExpansionInput,(input.context as {timezone?:string}).timezone??'Asia/Shanghai')}):stageInput(input.stage,{...(input.context as Record<string,unknown>),stage:input.stage,batchId:input.batchId,at:input.at,modelContractVersion:0});
  const c=input.context as {background:string;backgroundViews?:import('./background-views').BackgroundViews;timezone:string;worldSetting:string;schoolSetting:string;events:import('../types').EnvironmentEvent[];plans:import('../school/types').SchoolPlan[];items:import('../school/types').SchoolPlanItem[];progress?:import('../school/types').SchoolProgress[];campusTiming?:unknown};
  const common={stage:input.stage,batchId:input.batchId,at:input.at,timezone:c.timezone,background:backgroundFor(c,input.stage)};
  if(input.stage==='world')return stageInput(input.stage,{...common,worldSetting:c.worldSetting,events:c.events?.filter(e=>e.kind==='world')??[]});

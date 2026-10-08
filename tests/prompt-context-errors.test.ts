@@ -4,8 +4,11 @@ import {HdsiApp} from '../src/app';
 import {SerialHost} from '../src/host/runtime';
 import {setup,saveInput,NOW} from './helpers';
 import {narrativeTask} from '../src/model/contracts';
+import {ensureEnvironmentBatch} from '../src/environment/scheduler';
+import {runEnvironmentStep} from '../src/environment/runtime';
 const secret='private-input-and-key';
 const connection={baseUrl:'https://example.invalid',apiKey:secret,model:'flash',reasoningEffort:'low' as const};
+it('environment_errors_not_front_failure',async()=>{const d=setup();try{d.storage.set('runtime',{...d.storage.runtime(),nextEnvironmentAt:null});const batch=ensureEnvironmentBatch(d.storage,d.config,NOW)!;const step=d.environmentStore.steps(batch.id)[0];await runEnvironmentStep(d,step.id,async()=>{throw new ModelRequestError('offline retry');});expect(d.environmentStore.step(step.id)?.status).toBe('pending');expect(d.storage.runtime().lastFailure??null).toBeNull();expect(d.storage.runtime().paused).toBe(false);}finally{d.storage.close();}});
 async function requestError(code:string,message:string,status=400){
  const transport=new ChatCompletionsTransport(()=>connection,async()=>new Response(JSON.stringify({error:{code,message}}),{status}) as never);
  try{await transport.complete({task:narrativeTask(false,NOW,NOW),input:{private:secret}});}catch(error){return error as ModelRequestError;}

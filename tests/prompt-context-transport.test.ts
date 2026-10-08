@@ -3,9 +3,25 @@ import { ChatCompletionsTransport } from '../src/model/client';
 import { stageInput } from '../src/model/context-views';
 import { modelTask } from '../src/model/contracts';
 import { z } from 'zod';
+import { buildCompletionEnvelope } from '../src/model/resource-pool';
 import type { WebMaterial } from '../src/web/types';
 const material:WebMaterial={id:'page',url:'https://example.test',title:'标题',body:'唯一网页长正文完整尾部',readAt:'2026-10-08T00:00:00Z',bodyCharacters:11,selectionMode:'full_body',sourceKind:'external_reference'};
 function fixture(mode:'json_object'|'json_schema'='json_object'){const bodies:any[]=[];const t=new ChatCompletionsTransport(()=>({model:'deepseek-flash',apiKey:'offline',baseUrl:'https://example.test',outputMode:mode}),(async(_u,o)=>{bodies.push(JSON.parse(String(o?.body)));return new Response(JSON.stringify({choices:[{message:{content:'{}'}}]}));}) as typeof fetch);return {t,bodies};}
+it('lookup_identical_school_once; different_message_ids_same_text_preserved',()=>{
+ const school={knownSnapshots:[{id:'school-one',revision:1,text:'唯一学校正文标记'}]},input=stageInput('personal_chat',{school,visibleMessages:[{id:'a',direction:'incoming',content:'same',receivedAt:'now'},{id:'b',direction:'incoming',content:'same',receivedAt:'now'}] as any});
+ const lookup={details:[],school:structuredClone(school)},before=JSON.stringify({input,lookup});
+ const envelope=buildCompletionEnvelope({task:modelTask('personal_chat',z.object({})),input,lookupResult:lookup});
+ expect(JSON.stringify(envelope).split('唯一学校正文标记')).toHaveLength(2);
+ expect(envelope.lookupResult).toMatchObject({contextRefs:{school:'input.context.school'}});
+ expect(envelope.resources.messages.map(m=>m.id)).toEqual(['a','b']);expect(JSON.stringify({input,lookup})).toBe(before);
+});
+it('lookup_new_school_version_kept; lookup_different_detail_history_kept',()=>{
+ const input=stageInput('personal_chat',{school:{knownSnapshots:[{id:'s',revision:1,text:'old'}]},detailHistory:[{id:'d1',value:'old'}] as any});
+ const lookup={details:[],school:{knownSnapshots:[{id:'s',revision:2,text:'new'}]},detailHistory:[{id:'d2',value:'new'}]};
+ const envelope=buildCompletionEnvelope({task:modelTask('personal_chat',z.object({})),input,lookupResult:lookup});
+ expect(envelope.lookupResult).toMatchObject({context:{school:lookup.school,detailHistory:lookup.detailHistory}});
+ expect(envelope.lookupResult).not.toHaveProperty('contextRefs');
+});
 it('web_body_once_across_input_results_lookup and each continuation has complete available bodies',async()=>{
  const {t,bodies}=fixture(),input=stageInput('memory',{selfWebReadMaterials:[{sourceId:'s',material}]});const result={materials:[material],counters:{successReads:1,failures:0},stopReason:'satisfied' as const};const request={task:modelTask('memory',z.object({})),input,webMaterials:[material],webResults:[result,result],lookupResult:{materials:[material]},tools:{web:false,lookup:false}};const before=JSON.stringify(request);
  await t.complete(request);const body=JSON.parse(bodies[0].messages[1].content);expect(JSON.stringify(body).split(material.body)).toHaveLength(2);expect(body.resources.materials).toHaveLength(1);expect(body.webResults[0].materialIds).toEqual(['page']);expect(body.webResults[0]).not.toHaveProperty('materials');expect(JSON.stringify(request)).toBe(before);

@@ -126,7 +126,7 @@ export function resolveSchoolWeek(storage:Storage,result:import('../environment/
   return {id:n.id,sourceItemId:n.sourceItemId,instanceId:instance?.id??null,weekStart:n.weekStart,deliveryRevision:n.deliveryRevision,kind:n.kind,reminderKey:n.reminderKey,channel:n.channel,publishAt:n.publishAt,releasedAt:null,payload:{text:c.text,snapshots},status:'scheduled',nextWakeAt:n.publishAt,readAt:null,readTurnId:null};
  });
  const sourceVersions=Object.fromEntries(input.sourceItems.map(item=>[item.id,item.revision]));
- const weeks:SchoolWeek[]=input.weekStarts.map(weekStart=>({id:stableId('school-week',weekStart),weekStart,sourceVersions,conflictNotes:result.weekChanges.find(w=>w.weekStart===weekStart)?.conflictNotes??input.conflicts,checkedAt:now,digestRevision:Math.max(0,...[...notices,...input.existingNotices].filter(n=>n.weekStart===weekStart&&n.kind==='week_digest').map(n=>n.deliveryRevision))}));
+ const weeks:SchoolWeek[]=input.weekStarts.map(weekStart=>({id:stableId('school-week',weekStart),weekStart,sourceVersions,conflictNotes:[...new Set([...input.conflicts,...result.weekChanges.find(w=>w.weekStart===weekStart)?.conflictNotes??[]])],checkedAt:now,digestRevision:Math.max(0,...[...notices,...input.existingNotices].filter(n=>n.weekStart===weekStart&&n.kind==='week_digest').map(n=>n.deliveryRevision))}));
  return normalizeSchoolWeekChanges(storage,{stage:'school_week',instances,notices,weeks},now);
 }
 

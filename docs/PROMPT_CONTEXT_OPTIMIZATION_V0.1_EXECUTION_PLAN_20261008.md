@@ -214,11 +214,11 @@
 
 **Interfaces:** `buildCompletionEnvelope`沿原签名，在lookupResult新增contextRefs；仅对白名单school/detailHistory确定相等块引用`input.context.<key>`。`buildEnvironmentView`仍返回StageModelInput版本1；school v0投影单层，Host冻结inputSnapshot不变。`resolveSchoolWeek`仍返回原EnvironmentChangeSet。
 
-- [ ] 写`lookup_identical_school_once`、`lookup_new_school_version_kept`、`lookup_different_detail_history_kept`、`different_message_ids_same_text_preserved`；用受控标记检查整份envelope，断言原lookup/input深相等未修改。
-- [ ] 写`v0_school_context_flat_and_contract_unchanged`、`v0_repair_continuation_uses_flat_input`、`v0_empty_notes_keep_program_conflicts`、`old_ready_no_reparse`；新增`v1_cancel_timezone_historical_reminders_preserved`组合夹具，取消及after投影仍保留已发布历史通知／提醒。
-- [ ] 为维护、环境各写`background_errors_not_front_failure`，确证后台错误不设置前台lastFailure；把已存在的通知安全断言记入名称映射，不为改名字重复造测试。
-- [ ] 跑`npm test -- tests/prompt-context-transport.test.ts tests/environment-context-view.test.ts tests/school-week-contract-recovery.test.ts tests/school-week-text-contract.test.ts tests/prompt-context-errors.test.ts`，记录新增用例的实际失败；只修上述确定问题。
-- [ ] 重跑同组及`npm run typecheck`；统计名称改为uniqueMessageIds，记录每条意见→实际用例／断言；续写实施日志并提交任务13。无必需通知时仍不调用周模型，不改已正确的policy冻结链。
+- [x] 写`lookup_identical_school_once`、`lookup_new_school_version_kept`、`lookup_different_detail_history_kept`、`different_message_ids_same_text_preserved`；用受控标记检查整份envelope，断言原lookup/input深相等未修改。
+- [x] 写`v0_school_context_flat_and_contract_unchanged`、`v0_repair_continuation_uses_flat_input`、`v0_empty_notes_keep_program_conflicts`、`old_ready_no_reparse`；新增`v1_cancel_timezone_historical_reminders_preserved`组合夹具，取消及after投影仍保留已发布历史通知／提醒。
+- [x] 为维护、环境各写`background_errors_not_front_failure`，确证后台错误不设置前台lastFailure；把已存在的通知安全断言记入名称映射，不为改名字重复造测试。
+- [x] 跑`npm test -- tests/prompt-context-transport.test.ts tests/environment-context-view.test.ts tests/school-week-contract-recovery.test.ts tests/school-week-text-contract.test.ts tests/prompt-context-errors.test.ts`，记录新增用例的实际失败；只修上述确定问题。
+- [x] 重跑同组及`npm run typecheck`；统计名称改为uniqueMessageIds，记录每条意见→实际用例／断言；续写实施日志并提交任务13。无必需通知时仍不调用周模型，不改已正确的policy冻结链。
 
 ### 任务14：普通聊天独立索引与状态机
 
