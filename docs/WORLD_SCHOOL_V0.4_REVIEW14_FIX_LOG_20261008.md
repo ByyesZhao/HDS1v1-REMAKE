@@ -35,3 +35,5 @@
 初始化：npm ci按锁文件安装，未新增依赖。基线输出保存于本次独立执行目录；后续RED／GREEN、提交、终审与交付在此追加。
 
 Task 1：基线61文件336项通过。新增6项业务回归全部先RED；修后专项6项GREEN、typecheck退出0，全量63文件342项通过。归一化在resolve与实际apply都执行：跨开始的更新形成后继客观版本，历史不覆盖，通知实例引用／提醒身份一起转换，过期提醒不补发；取消候选跨开始时不再覆盖历史行。新摘要同事务失效旧未读，重复应用不把read重置scheduled；时区身份及本批自身日期统一退出旧步。原始baseline/task1-red/task1-green/task1-suite日志保留。
+
+Task 2：新增4项，其中3项规则先RED，bootstrap／upgrade例外已有行为直接GREEN；cancelledAt为程序写入可选元数据，原起止／sourceSnapshot不改，跨区间客观投影截短，取消后的onsite拒绝，旧SchoolKnowledge保留。又补一条同轮早期获知的断言，先RED抓到截短结束时间提前暴露；修后onsite保存原安排并去除后来的cancelledAt。全量64文件346项通过，typecheck退出0。原跨日测试更新为午夜终结、06:00建新批；旧日结果审计仍保留。没有写正式库／更新正式角色状态。

@@ -5,9 +5,9 @@ import {knownSchoolSnapshots} from './calendar';
 import {milliseconds} from '../time';
 import {queryTerms} from '../memory/lexical';
 export function narrativeSchoolContext(storage:Storage,from:string,at:string,scene:Scene):NarrativeSchoolContext {
- const objectiveInstances=storage.all('school_instances').filter(i=>!i.needsExpansion&&i.status!=='cancelled'&&(
+ const objectiveInstances=storage.all('school_instances').filter(i=>!i.needsExpansion&&i.status!=='cancelled'&&(!i.cancelledAt||milliseconds(from)<milliseconds(i.cancelledAt)&&milliseconds(i.startsAt)<milliseconds(i.cancelledAt))&&(
   milliseconds(i.startsAt)<=milliseconds(at)&&milliseconds(i.endsAt??i.startsAt)>=milliseconds(from)
-  ||!!i.sourceSnapshot.location&&scene.description.includes(i.sourceSnapshot.location)));
+  ||!!i.sourceSnapshot.location&&scene.description.includes(i.sourceSnapshot.location))).map(i=>i.cancelledAt&&milliseconds(i.cancelledAt)<milliseconds(i.endsAt??i.startsAt)?{...i,endsAt:i.cancelledAt}:i);
  const noticeSnapshots=storage.all('school_notices').filter(n=>n.status==='available'&&n.releasedAt!==null&&milliseconds(n.releasedAt)<=milliseconds(at));
  return {objectiveInstances,noticeSnapshots,knownSnapshots:knownSchoolSnapshots(storage),eventIds:[...new Set([...objectiveInstances.flatMap(i=>[i.id,...(i.legacyEventId?[i.legacyEventId]:[])]),...noticeSnapshots.flatMap(n=>n.payload.snapshots.map(s=>s.entityId))])]};
 }

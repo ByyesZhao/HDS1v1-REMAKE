@@ -24,8 +24,11 @@ export function prepareSchoolCommits(storage:Storage,turn:TurnRecord,narrative:N
    if(!readable(state,narrative,e.happenedAt,turn.at))throw Error('school notice not readable at experience time');snapshots=notice.payload.snapshots;
   }else{
    const instance=context.objectiveInstances.find(i=>i.id===draft.sourceId||i.legacyEventId===draft.sourceId);
-   if(!instance||milliseconds(instance.startsAt)>milliseconds(e.happenedAt)||!e.relatedEventIds.some(id=>id===instance.id||id===instance.legacyEventId)||isSleeping(state,e.happenedAt))throw Error('onsite observation requires perceptible actual instance experience');
-   snapshots=[{entityKind:'instance',entityId:instance.id,revision:instance.sourceRevision,value:instance},{entityKind:'plan_item',entityId:instance.sourceItemId,revision:instance.sourceSnapshot.revision,value:instance.sourceSnapshot}];
+   if(!instance||milliseconds(instance.startsAt)>milliseconds(e.happenedAt)||instance.cancelledAt&&milliseconds(e.happenedAt)>=milliseconds(instance.cancelledAt)||!e.relatedEventIds.some(id=>id===instance.id||id===instance.legacyEventId)||isSleeping(state,e.happenedAt))throw Error('onsite observation requires perceptible actual instance experience');
+   // The objective interval may end at a later cancellation. Earlier onsite
+   // knowledge keeps the original schedule, without learning that future cutoff.
+   const {cancelledAt,...knownInstance}=storage.read('school_instances',instance.id)!;
+   snapshots=[{entityKind:'instance',entityId:instance.id,revision:instance.sourceRevision,value:knownInstance},{entityKind:'plan_item',entityId:instance.sourceItemId,revision:instance.sourceSnapshot.revision,value:instance.sourceSnapshot}];
   }
   observations.push({via:draft.via,sourceId:draft.sourceId,snapshots,happenedAt:e.happenedAt,experienceId:e.id});
  }

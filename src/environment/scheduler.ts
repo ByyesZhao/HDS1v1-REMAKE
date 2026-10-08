@@ -10,13 +10,17 @@ export function ensureEnvironmentBatch(storage:Storage,config:AppConfig,now:stri
  const date=localDate(now,config.timezone),id=batchIdentity(date,config.timezone);
  const existing=storage.read('environment_batches',id);
  const stale=storage.all('environment_batches').filter(b=>b.status==='active'&&(b.timezone!==config.timezone||b.localDate!==localDate(now,b.timezone)));
- if(existing && !stale.length)return existing;
- if(!existing&&!stale.length&&r.nextEnvironmentAt&&!due(r.nextEnvironmentAt,now))return null;
  return storage.transaction(()=>{
   for(const old of stale){storage.save('environment_batches',old.id,{...old,status:'superseded',closedAt:now});for(const step of storage.all('environment_steps').filter(s=>s.batchId===old.id&&s.status!=='committed'))storage.save('environment_steps',step.id,{...step,status:'superseded',completedAt:now});}
   if(existing)return existing;
   const p=localParts(now,config.timezone),[h,m]=config.environmentDailyAt.split(':').map(Number);
-  const batch:EnvironmentBatch={id,localDate:date,timezone:config.timezone,scheduledAt:localTime(p.year,p.month,p.day,h*60+m,config.timezone),createdAt:now,reason:r.nextEnvironmentAt?'daily':'bootstrap',status:'active',closedAt:null};
+  const scheduledAt=localTime(p.year,p.month,p.day,h*60+m,config.timezone),changedTimezone=stale.some(b=>b.timezone!==config.timezone);
+  if(r.nextEnvironmentAt){
+   const entryDue=changedTimezone||due(r.nextEnvironmentAt,now);
+   if(entryDue&&!due(scheduledAt,now)){storage.set('runtime',{...r,nextEnvironmentAt:scheduledAt});return null;}
+   if(!entryDue)return null;
+  }
+  const batch:EnvironmentBatch={id,localDate:date,timezone:config.timezone,scheduledAt,createdAt:now,reason:r.nextEnvironmentAt?'daily':'bootstrap',status:'active',closedAt:null};
   storage.save('environment_batches',id,batch);
   for(const stage of environmentStages){const step:EnvironmentStep={id:JSON.stringify([id,stage]),batchId:id,stage,status:'pending',attempt:0,startedAt:null,completedAt:null,retryAt:null,lastError:null,inputSnapshot:null,frozenResult:null};storage.save('environment_steps',step.id,step);}
   storage.set('runtime',{...r,nextEnvironmentAt:nextEnvironmentDate(now,config.timezone,config.environmentDailyAt)});return batch;

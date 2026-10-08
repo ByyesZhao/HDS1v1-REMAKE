@@ -38,6 +38,7 @@ export function applySchoolChanges(storage:Storage,changes:EnvironmentChangeSet,
   if(old&&old.deliveryRevision!==item.deliveryRevision){
    for(const notice of storage.all('school_notices').filter(n=>(n.sourceItemId===item.id||n.payload.snapshots.some(s=>s.entityKind==='plan_item'?s.entityId===item.id:s.value.sourceItemId===item.id))&&(n.status==='scheduled'||n.status==='available')))storage.save('school_notices',notice.id,{...notice,status:'invalidated'});
    for(const instance of storage.all('school_instances').filter(i=>i.sourceItemId===item.id&&milliseconds(i.startsAt)>milliseconds(now)))storage.save('school_instances',instance.id,{...instance,needsExpansion:true});
+   if(item.status==='cancelled')for(const instance of storage.all('school_instances').filter(i=>i.sourceItemId===item.id&&i.status==='active'&&milliseconds(i.endsAt??i.startsAt)>milliseconds(now)))storage.save('school_instances',instance.id,{...instance,cancelledAt:instance.cancelledAt??now});
   }
  }
 }

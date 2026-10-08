@@ -37,7 +37,7 @@ it('cross_date_supersedes_only_uncommitted_including_running_response',async()=>
  const d=setup();ensureEnvironmentBatch(d.storage,d.config,NOW);const old=selectEnvironmentStep(d.storage,NOW)!;
  await runEnvironmentStep(d,old.id,async input=>{d.clock.time='2026-10-08T00:01:00+08:00';return {stage:'world',changes:[{action:'create',event:{kind:'world',startsAt:NOW,endsAt:null,description:'旧日结果',basis:'fiction',sourceUrls:[]}}]};});
  expect(d.environmentStore.step(old.id)?.status).toBe('superseded');expect(d.environmentStore.step(old.id)?.frozenResult).not.toBeNull();expect(d.storage.all('events')).toEqual([]);
- expect(d.environmentStore.batches()).toHaveLength(2);d.storage.close();
+ expect(d.environmentStore.batches()).toHaveLength(1);expect(selectEnvironmentStep(d.storage,d.clock.now())).toBeNull();d.clock.time='2026-10-08T06:00:00+08:00';ensureEnvironmentBatch(d.storage,d.config,d.clock.now());expect(d.environmentStore.batches()).toHaveLength(2);d.storage.close();
 });
 it('open_batch_yields_before_new_step_and_no_hot_deadline',async()=>{
  const d=setup();ensureEnvironmentBatch(d.storage,d.config,NOW);const at='2026-10-07T10:00:15+08:00';d.storage.set('runtime',{...d.storage.runtime(),openBatch:{id:'b',readyAt:at}});

@@ -14,7 +14,7 @@ export interface SchoolPlanItem {
  revision:number;deliveryRevision:number;status:'open'|'cancelled'|'closed';basis:'fiction'|'web_reference';sourceUrls:string[];
  responsible?:string;deliverable?:string;stageInfo?:string;
 }
-export interface SchoolInstance {id:string;sourceItemId:string;sourceRevision:number;deliveryRevision:number;occurrenceKey:string;baseOccurrenceKey?:string;weekStart:string|null;startsAt:ISOTime;endsAt:ISOTime|null;sourceSnapshot:SchoolPlanItem;status:'active'|'cancelled'|'archived';needsExpansion:boolean;legacyEventId:string|null}
+export interface SchoolInstance {id:string;sourceItemId:string;sourceRevision:number;deliveryRevision:number;occurrenceKey:string;baseOccurrenceKey?:string;cancelledAt?:ISOTime;weekStart:string|null;startsAt:ISOTime;endsAt:ISOTime|null;sourceSnapshot:SchoolPlanItem;status:'active'|'cancelled'|'archived';needsExpansion:boolean;legacyEventId:string|null}
 export type SchoolEntitySnapshot = {entityKind:'plan_item';entityId:string;revision:number;value:SchoolPlanItem}|{entityKind:'instance';entityId:string;revision:number;value:SchoolInstance};
 export interface SchoolNotice {id:string;sourceItemId:string|null;instanceId:string|null;weekStart:string|null;deliveryRevision:number;kind:'issue'|'change'|'cancel'|'reminder'|'week_digest';reminderKey:string;channel:'institution'|'personal_reminder';publishAt:ISOTime;releasedAt:ISOTime|null;payload:{text:string;snapshots:SchoolEntitySnapshot[]};status:'scheduled'|'available'|'read'|'invalidated';nextWakeAt:ISOTime|null;readAt:ISOTime|null;readTurnId:string|null}
 export interface SchoolNoticeRef {noticeId:string;deliveryRevision:number}
