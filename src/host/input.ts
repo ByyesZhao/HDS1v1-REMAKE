@@ -3,15 +3,19 @@ import type { IncomingMessage, InputAcceptance } from '../types';
 import { Storage } from '../storage';
 import { addMs, due } from '../time';
 import { sharedRoutingActivity, refreshSharedStep } from './shared';
+import type {MemoryIdle} from '../memory/idle';
 
 export function isTargetSession(session: { isDirect?: boolean; selfId?: string; userId?: string }, config: { botId: string; userId: string }): boolean {
   return session.isDirect === true && session.selfId === config.botId && session.userId === config.userId;
 }
 
 export class InputBuffer {
-  constructor(private readonly storage: Storage) {}
+  constructor(private readonly storage: Storage,private readonly idle?:MemoryIdle) {}
   async acceptInput(message: IncomingMessage): Promise<InputAcceptance> {
     return this.storage.transaction(() => {
+      const existing=this.storage.read('messages',message.id),control=this.storage.read('control_requests',message.id);
+      if(existing||control)return {kind:control?'advance':'message',systemReply:null};
+      this.idle?.record('input',message.receivedAt);
       const activity = sharedRoutingActivity(this.storage);
       if (message.content.trim() === '【推进】') {
         this.storage.save('control_requests', message.id, { id: message.id, receivedAt: message.receivedAt,

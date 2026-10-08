@@ -6,6 +6,7 @@ import { applyMemory, applyTasks, organizeMemory, currentSelfWebReads } from './
 import { isSleeping } from './host/state';
 import { recordSharedOutput, finishSharedTurn } from './host/shared';
 import {applySchoolCommits} from './school/progress';
+import {activityChanged} from './memory/idle';
 
 export function freezeTurn(d: Dependencies, turn: TurnRecord, candidate: TurnCandidate, items: OutboxItem[]): TurnRecord {
   const updated = { ...turn, frozenResult: candidate, outputComplete: items.length === 0,
@@ -42,6 +43,9 @@ export async function sendFrozen(d: Dependencies, turn: TurnRecord): Promise<voi
         sharedActivityId: turn.sharedMeta?.activityId ?? turn.frozenResult!.nextState.scene.shared?.activityId ?? null,
       });
       recordSharedOutput(d.storage, turn, item, confirmedAt);
+      d.memoryIdle?.record('output',confirmedAt);
+      const change=turn.frozenResult!.personal?.sharedChange;
+      if(change?.action==='start'&&item.seq===0||change?.action==='end'&&item.seq===items.length-1)d.memoryIdle?.record('activity',confirmedAt);
       if (index + 1 < items.length) {
         const next = d.storage.outbox(turn.id)[index + 1];
         d.storage.saveOutbox({ ...next, notBefore: addMs(confirmedAt, nextItemDelay(items, index + 1)) });
@@ -68,6 +72,7 @@ export async function finishPostprocessing(d: Dependencies, turn: TurnRecord): P
     if (current.done) return;
     const c = current.frozenResult!;
     const completedAt = d.clock.now();
+    const beforeState=d.storage.character();
     if (!turn.environmentKind) applyMemory(d, turn.id, memoryResult, turn.at);
     c.experiences.forEach(e => d.storage.save('experiences', e.id, e));
     applySchoolCommits(d.storage,c,turn.id);
@@ -95,6 +100,7 @@ export async function finishPostprocessing(d: Dependencies, turn: TurnRecord): P
       }
     }
     d.storage.set('runtime', runtime);
+    if(!turn.environmentKind){d.memoryIdle?.record('story',completedAt);if(activityChanged(beforeState,d.storage.character()))d.memoryIdle?.record('activity',completedAt);}
     d.storage.save('turns', turn.id, { ...current, done: true, completedAt, frozenResult: null });
     const completedPost=d.storage.read('post_jobs',turn.id)!;d.storage.save('post_jobs',turn.id,{...completedPost,result:null});
     d.web?.compactOwnerCheckpoint('turn',turn.id);
