@@ -12,23 +12,29 @@ function meta(phase: SharedTurnMeta['phase'] = 'ongoing', allowed = true): Share
   return { ...m, phase, allowSimulatedUserActions: allowed };
 }
 const task = (m = meta(), previous: SharedOutline | null = old) => narrativeTask(true, NOW, NOW, [], m, previous);
-it.each([true, false])('frozen shared permission selects one system prompt and preserves it across repair: %s', async allowed => {
+it.each([true, false])('frozen shared permission selects one system prompt across detail lookup and repair: %s', async allowed => {
   const requests: any[] = [];
   const transport = new ChatCompletionsTransport(() => ({ baseUrl: 'https://test.invalid', apiKey: 'test', model: 'test', reasoningEffort: 'low' }), async (_url, init) => {
     requests.push(JSON.parse(String(init?.body)));
-    return new Response(JSON.stringify({ choices: [{ message: { content: JSON.stringify(requests.length === 1 ? {} : result) } }] }));
+    const output = requests.length === 1 ? { lookupDetails: '活动地点' } : requests.length === 2 ? {} : result;
+    return new Response(JSON.stringify({ choices: [{ message: { content: JSON.stringify(output) } }] }));
   });
   const m = meta('ongoing', allowed), selected = task(m);
-  await new ModelClient(transport).runModel(selected, { sharedMeta: m });
-  expect(requests).toHaveLength(2);
+  await new ModelClient(transport, () => ({ place: '门口' })).runModel(selected, { sharedMeta: m });
+  expect(requests).toHaveLength(3);
   const system = requests[0].messages[0].content;
   expect(system).toContain(allowed ? '允许代写双方' : '禁止新增用户动作');
   expect(system).not.toContain(allowed ? '禁止新增用户动作' : '允许代写双方');
   expect(system).not.toContain('仅sharedMeta.allowSimulatedUserActions=true时');
   expect(system).toContain('goal'); expect(system).toContain('final');
-  expect(requests[1].messages[0].content).toBe(system);
-  expect(JSON.parse(requests[1].messages[1].content).repair).toBeDefined();
-  expect(JSON.parse(requests[1].messages[1].content).input.sharedMeta.allowSimulatedUserActions).toBe(allowed);
+  for (const request of requests.slice(1)) {
+    // JSON Schema gains/loses the one-use lookup tool; business prompt stays identical.
+    expect(request.messages[0].content.split('\nJSON Schema:')[0]).toBe(system.split('\nJSON Schema:')[0]);
+    const body = JSON.parse(request.messages[1].content);
+    expect(body.lookupResult).toEqual({ place: '门口' });
+    expect(body.input.sharedMeta.allowSimulatedUserActions).toBe(allowed);
+  }
+  expect(JSON.parse(requests[2].messages[1].content).repair).toBeDefined();
 });
 it('wrap whitespace compatibility keeps stored originals, without semantic matching or resurrecting removed threads', () => {
   const previous = { ...old, openThreads: ['  结账\n 后收拾  ', '取餐'] };
