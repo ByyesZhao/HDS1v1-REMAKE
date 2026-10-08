@@ -1,5 +1,5 @@
 import { afterEach, expect, it } from 'vitest';
-import { DialogueEpisodes } from '../src/dialogue/episodes';
+import { ChatEpisodes as DialogueEpisodes } from '../src/dialogue/chat-episodes';
 import { DialogueStore } from '../src/dialogue/store';
 import { Storage } from '../src/storage';
 import { MemoryStore } from '../src/memory/store';

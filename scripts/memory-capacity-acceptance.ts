@@ -1,5 +1,5 @@
 import { isStageModelInput } from '../src/model/context-types';
-import { DialogueEpisodes } from '../src/dialogue/episodes';
+import { ChatEpisodes as DialogueEpisodes } from '../src/dialogue/chat-episodes';
 import { DialogueStore } from '../src/dialogue/store';
 import assert from 'node:assert/strict';
 import {Storage} from '../src/storage';

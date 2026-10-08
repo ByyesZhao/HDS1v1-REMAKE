@@ -11,7 +11,7 @@ import {inspectDialogueUpgrade,upgradeDialogue} from '../src/deployment/dialogue
 import type {Message,TurnRecord} from '../src/types';
 const at=(min:number)=>new Date(Date.UTC(2026,9,8,0,min)).toISOString();
 const msg=(id:string,min:number,activity?:string):Message=>({id,direction:'incoming',content:id,receivedAt:at(min),platformMessageIds:[],batchId:null,seenTurnId:'seen',turnId:null,outboxSeq:null,sharedActivityId:activity??null});
-function fixture(rows:Message[]){const root=mkdtempSync(join(tmpdir(),'hdsi-chat-upgrade-')),path=join(root,'db.sqlite'),s=new Storage(path),legacy=new DialogueEpisodes(new DialogueStore(s));for(const m of rows)legacy.acceptMessage(m);s.close();return {path,root,clean:()=>rmSync(root,{recursive:true,force:true})};}
+function fixture(rows:Message[]){const root=mkdtempSync(join(tmpdir(),'hdsi-chat-upgrade-')),path=join(root,'db.sqlite'),s=new Storage(path),legacy=new DialogueEpisodes(new DialogueStore(s));s.set('runtime',{...s.runtime(),dialogueContextVersion:1});for(const m of rows)legacy.acceptMessage(m);s.close();return {path,root,clean:()=>rmSync(root,{recursive:true,force:true})};}
 const parameters={idleMinutes:15,targetVersion:2 as const};
 function rows<T>(path:string,table:string):T[]{const db=new DatabaseSync(path,{readOnly:true});try{return db.prepare(`SELECT data FROM ${table}`).all().map(r=>JSON.parse(String(r.data)));}finally{db.close();}}
 it('nondefault_idle_same_check_and_apply; check_no_business_writes; reapply_v2_idempotent',()=>{

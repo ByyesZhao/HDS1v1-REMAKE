@@ -37,13 +37,14 @@ export class Storage {
       CREATE UNIQUE INDEX IF NOT EXISTS outbox_sequence ON outbox(json_extract(data, '$.turnId'), json_extract(data, '$.seq'));
       CREATE UNIQUE INDEX IF NOT EXISTS post_turn ON post_jobs(json_extract(data, '$.turnId'));
     `);
-    if (!this.get('runtime')) this.set('runtime', {
+    if (!this.get('runtime')) {this.save('chat_index_metadata','chat-index',{id:'chat-index',idleMinutes:15});this.set('runtime', {
       openBatch: null, pendingBatchIds: [], paused: false, contactMisses: 0, stickerMisses: 0,
       nextWorldAt: null, nextSchoolAt: null, nextMaintenanceAt: nextDaily(new Date().toISOString(), ['04:30'], 'Asia/Shanghai'), lastError: null,
-      dialogueContextVersion:1,activeDialogueEpisodeId:null,
+      dialogueContextVersion:2,activeDialogueEpisodeId:null,activeChatEpisodeId:null,
       sharedActivityVersion: 1, sharedClock: null,
       environmentPlanningVersion:1,nextEnvironmentAt:null,
-    } satisfies Runtime);
+    } satisfies Runtime);}
+
   }
   close(): void { this.db.close(); }
   prepare(sql: string) { return this.db.prepare(sql); }
@@ -73,7 +74,7 @@ export class Storage {
     this.db.prepare(`INSERT INTO ${table}(id, data) VALUES (?, ?) ON CONFLICT(id) DO UPDATE SET data = excluded.data`).run(id, JSON.stringify(value));
   }
   remove<K extends keyof Tables>(table: K, id: string): void { this.db.prepare(`DELETE FROM ${table} WHERE id = ?`).run(id); }
-  runtime(): Runtime { const r = this.get<Runtime>('runtime')!; return { ...r, dialogueContextVersion:r.dialogueContextVersion??null,activeDialogueEpisodeId:r.activeDialogueEpisodeId??null, sharedActivityVersion: r.sharedActivityVersion ?? null, sharedClock: r.sharedClock ?? null,environmentPlanningVersion:r.environmentPlanningVersion??null,nextEnvironmentAt:r.nextEnvironmentAt??null,memoryCapacityVersion:r.memoryCapacityVersion??null,memoryIdle:r.memoryIdle??null }; }
+  runtime(): Runtime { const r = this.get<Runtime>('runtime')!; return { ...r, dialogueContextVersion:r.dialogueContextVersion??null,activeDialogueEpisodeId:r.activeDialogueEpisodeId??null,activeChatEpisodeId:r.activeChatEpisodeId??null, sharedActivityVersion: r.sharedActivityVersion ?? null, sharedClock: r.sharedClock ?? null,environmentPlanningVersion:r.environmentPlanningVersion??null,nextEnvironmentAt:r.nextEnvironmentAt??null,memoryCapacityVersion:r.memoryCapacityVersion??null,memoryIdle:r.memoryIdle??null }; }
   character(): CharacterState { return this.get<CharacterState>('character')!; }
   messages(): Message[] { return this.all('messages').sort((a, b) => Date.parse(a.receivedAt) - Date.parse(b.receivedAt)); }
   unreadMessages(): Message[] {

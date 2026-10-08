@@ -1,3 +1,4 @@
+import {checkWindowConsistency} from '../dialogue/window-consistency';
 import type { IncomingMessage, InputAcceptance } from '../types';
 import { HdsiApp } from '../app';
 import { InputBuffer } from './input';
@@ -18,12 +19,12 @@ export class SerialHost {
   }
   private checkDialogue():void {
     const d=this.app.dependencies;
-    // Full version2 protection-range checking is assembled in task19 before enabling production defaults.
-    if(d.storage.runtime().dialogueContextVersion===2){const id=d.storage.runtime().activeChatEpisodeId;if(id&&d.chat?.store.chatEpisode(id)?.status!=='open')throw Error('chat 对话段索引不一致');return;}
+    if(d.storage.runtime().dialogueContextVersion===2){const report=checkWindowConsistency(d.storage,{idleMinutes:d.retrieval?.limits.dialogueIdleMinutes??d.chat?.idleMinutes??15,recentSegments:d.retrieval?.limits.recentDialogueSegments??4});if(report.blockingIssues.length)throw Error(`chat 对话段索引不一致: ${report.blockingIssues.join('; ')}`);for(const warning of report.historicalWarnings)this.options.onWarning?.(warning);return;}
     const report=d.dialogue?.checkConsistency();if(report?.blockingIssues.length)throw new Error(`dialogue 对话段索引不一致: ${report.blockingIssues.join('; ')}`);for(const warning of report?.historicalWarnings??[])this.options.onWarning?.(warning);
   }
   async start(): Promise<void> {this.checkDialogue();this.recover=true;await this.wake();}
   async acceptInput(message: IncomingMessage): Promise<InputAcceptance> {
+    this.checkDialogue();
     const accepted = await this.input.acceptInput(message);
     void this.wake();
     return accepted;

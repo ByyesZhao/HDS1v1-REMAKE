@@ -286,11 +286,11 @@
 
 **Interfaces:** 实现细化checkWindowConsistency及WindowConsistencyReport；消费任务14实际阶段ChatRecent、任务17当前活动选择及原未读／复议／在途／来源集合。Host在输入／恢复前核对，版本1旧在途另按兼容合同，不把版本2活动null关联误当孤立普通消息。
 
-- [ ] 写`phase_visible_older_episode_protected_against_global_cutoff`：五段只有最旧可见，附近缺归属已看消息必须blocking；不拿全库最新4段判断。
-- [ ] 写`missing_association_not_filtered_to_prove_safe`、`closed_visible_episode_protected`、`current_activity_and_unread_reconsider_sources_protected`、`modern_missing_chat_association_blocks`、`proven_irrelevant_old_history_warning_only`；段数设2／4证明使用实际配置。
-- [ ] 写`legacy_inflight_and_modern_activity_null_are_distinguished`；未知影响始终阻挡，真正窗外无引用历史只警告、不删不并。
-- [ ] 跑`npm test -- tests/chat-consistency.test.ts`确认红灯；实现保护证明与Host门禁，不引入固定天数豁免或自动历史修复。
-- [ ] 同组及`npm test -- tests/chat-recovery.test.ts tests/dialogue-recovery.test.ts tests/recovery.test.ts`、类型检查通过；日志列每种warning／blocking依据，提交任务19。
+- [x] 写`phase_visible_older_episode_protected_against_global_cutoff`：五段只有最旧可见，附近缺归属已看消息必须blocking；不拿全库最新4段判断。
+- [x] 写`missing_association_not_filtered_to_prove_safe`、`closed_visible_episode_protected`、`current_activity_and_unread_reconsider_sources_protected`、`modern_missing_chat_association_blocks`、`proven_irrelevant_old_history_warning_only`；段数设2／4证明使用实际配置。
+- [x] 写`legacy_inflight_and_modern_activity_null_are_distinguished`；未知影响始终阻挡，真正窗外无引用历史只警告、不删不并。
+- [x] 跑`npm test -- tests/chat-consistency.test.ts`确认红灯；实现保护证明与Host门禁，不引入固定天数豁免或自动历史修复。
+- [x] 同组及`npm test -- tests/chat-recovery.test.ts tests/dialogue-recovery.test.ts tests/recovery.test.ts`、类型检查通过；日志列每种warning／blocking依据，提交任务19。
 
 ### 任务20：集成、实际库检查与增量交付
 

@@ -1,4 +1,5 @@
 import { isStageModelInput } from '../src/model/context-types';
+import {ChatEpisodes} from '../src/dialogue/chat-episodes';
 import { DialogueEpisodes } from '../src/dialogue/episodes';
 import { DialogueStore } from '../src/dialogue/store';
 import { Storage } from '../src/storage';
@@ -48,7 +49,7 @@ export function setup() {
   const storage = new Storage(':memory:');
   const clock = new TestClock(); const random = new SequenceRandom();
   storage.set('character', initialCharacter(NOW));
-  storage.set('runtime',{...storage.runtime(),nextEnvironmentAt:'2026-10-08T06:00:00+08:00'});
+  storage.set('runtime',{...storage.runtime(),dialogueContextVersion:1,nextEnvironmentAt:'2026-10-08T06:00:00+08:00'});
   const models = new ScriptedModels({ narrative, personal_chat: silent, personal_life: { emotions: [], innerThought: '休息', contact: { willing: false } }, memory: emptyMemory });
   const config = { ...defaultConfig, background: '开发样例', chatExamples: '嗯嗯' };
   const sender = new RecordingSender(clock);
@@ -56,5 +57,5 @@ export function setup() {
   return { generateEnvironment:undefined as import('../src/environment/types').EnvironmentGenerator|undefined,environmentStore:new EnvironmentStore(storage),schoolStore:new SchoolStore(storage),storage, clock, random, models, config, sender, wait };
 }
 export function saveInput(storage: Storage, id: string, content: string) {
-  new DialogueEpisodes(new DialogueStore(storage)).acceptMessage({ id, content, receivedAt: NOW, platformMessageIds: [], direction: 'incoming', batchId: `batch-${id}`, seenTurnId: null, turnId: null, outboxSeq: null });
+  new (storage.runtime().dialogueContextVersion===2?ChatEpisodes:DialogueEpisodes)(new DialogueStore(storage)).acceptMessage({ id, content, receivedAt: NOW, platformMessageIds: [], direction: 'incoming', batchId: `batch-${id}`, seenTurnId: null, turnId: null, outboxSeq: null });
 }

@@ -60,4 +60,4 @@ export function upgradeDialogue(path:string,now:string,options:{stopped:boolean;
  db.prepare("UPDATE state SET data=? WHERE key='runtime'").run(JSON.stringify({...p.runtime,dialogueContextVersion:parameters.targetVersion}));db.exec('COMMIT');}catch(e){db.exec('ROLLBACK');throw e;}}finally{db.close();}
  return {...inspectDialogueUpgrade(path,parameters),backupPath};
 }
-export function ensureDialogueVersion(storage:Storage):void {if(storage.runtime().dialogueContextVersion!==1)throw new Error('Stop HDSI; run npm run dialogue:migrate -- --database <path> --check, then --apply --stopped --backup-dir <path>.');}
+export function ensureDialogueVersion(storage:Storage):void {if(storage.runtime().dialogueContextVersion!==2)throw new Error('Stop HDSI; run npm run dialogue:migrate -- --database <path> --check, then --apply --stopped --backup-dir <path>.');}

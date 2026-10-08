@@ -1,6 +1,6 @@
 import {Storage} from '../storage';
 import {HdsiApp} from '../app';
-import {DialogueEpisodes} from '../dialogue/episodes';
+import {ChatEpisodes as DialogueEpisodes} from '../dialogue/chat-episodes';
 import {DialogueStore} from '../dialogue/store';
 import {EnvironmentStore} from '../environment/store';
 import {SchoolStore} from '../school/store';
@@ -46,7 +46,7 @@ export async function validatePromptContext(options:{config?:AppConfig;connectio
     networkRequests++;const timeout=AbortSignal.timeout(options.timeoutMs??300000);return transport.complete(request,{signal:runOptions?.signal?AbortSignal.any([timeout,runOptions.signal]):timeout});
    }});
    const models:import('../types').ModelRunner={async runModel(task,input,opts){const result=await client.runModel(task,input,opts);if(options.recordResults)outputs.push({task:task.name,result});return result;}};
-   const app=new HdsiApp({storage,dialogue,clock:{now:()=>at},config,models,environmentStore:new EnvironmentStore(storage),schoolStore:new SchoolStore(storage),random:{next:()=>0.5},wait:async ms=>{at=new Date(Date.parse(at)+ms).toISOString();},sender:{sendError:async()=>{},sendItem:async item=>{sent.push(item.payload);return {platformMessageIds:[`isolated-${sent.length}`]};}}});
+   const app=new HdsiApp({storage,chat:dialogue,clock:{now:()=>at},config,models,environmentStore:new EnvironmentStore(storage),schoolStore:new SchoolStore(storage),random:{next:()=>0.5},wait:async ms=>{at=new Date(Date.parse(at)+ms).toISOString();},sender:{sendError:async()=>{},sendItem:async item=>{sent.push(item.payload);return {platformMessageIds:[`isolated-${sent.length}`]};}}});
    if(name==='normal'){storage.transaction(()=>dialogue.acceptMessage({id:'current',content:'明天十点联系吧，今天先不出门。',receivedAt:at,platformMessageIds:[],direction:'incoming',seenTurnId:null,turnId:null,outboxSeq:null,batchId:null}));await app.runTurn({inputMessageIds:['current'],taskIds:[],triggerKinds:['input']});}
    else if(name==='shared'){
     const state=storage.character();state.scene.mode='shared_offline';state.scene.shared={activityId:'isolated-walk',title:'散步',progress:'开始',lastPublicNode:'',completedSteps:0,maxSteps:20,idleSeconds:60,outline:null,nextStepAt:null};storage.set('character',state);storage.set('runtime',{...storage.runtime(),sharedClock:{activityId:'isolated-walk',mode:'shared_offline',status:'active',startedAt:at,lastInputAt:null,lastOutputAt:null,lastSilentCompletedAt:null}});

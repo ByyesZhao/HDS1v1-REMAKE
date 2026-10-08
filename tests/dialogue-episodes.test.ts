@@ -6,7 +6,7 @@ import type { Message,TurnRecord } from '../src/types';
 const at=(min:number)=>new Date(Date.UTC(2026,9,8,0,min)).toISOString();
 const msg=(id:string,min:number,seen:string|null='seen',direction:'incoming'|'outgoing'='incoming'):Message=>({id,content:id,receivedAt:at(min),seenTurnId:seen,direction,platformMessageIds:[],batchId:null,turnId:null,outboxSeq:null});
 const turn=(id:string,inputs:string[]):TurnRecord=>({id,inputMessageIds:inputs,triggerTaskIds:[],triggerKinds:['input'],at:at(0),completedAt:null,frozenResult:null,outputComplete:false,done:false,batchIds:[],entryMode:'chat'});
-function setup(){const s=new Storage(':memory:'),store=new DialogueStore(s),d=new DialogueEpisodes(store);return {s,store,d};}
+function setup(){const s=new Storage(':memory:'),store=new DialogueStore(s),d=new DialogueEpisodes(store);s.set('runtime',{...s.runtime(),dialogueContextVersion:1});return {s,store,d};}
 it('four_total_with_or_without_current without a second thirty-message cut',()=>{
  const {s,store,d}=setup();try{for(const [i,id] of ['A','B','C','D','E'].entries()){store.saveEpisode({id,openedAt:at(i*30),lastInteractionAt:at(i*30+1),status:id==='E'?'open':'closed',closedAt:id==='E'?null:at(i*30+16),closeReason:id==='E'?null:'idle'});const count=id==='E'?40:1;for(let j=0;j<count;j++){const m={...msg(`${id}${j}`,i*30),dialogueEpisodeId:id};s.save('messages',m.id,m);}}
  s.set('runtime',{...s.runtime(),activeDialogueEpisodeId:'E'});expect(d.recent('personal',at(125),4).episodeIds).toEqual(['B','C','D','E']);expect(d.recent('personal',at(125),4).messages.filter(m=>m.dialogueEpisodeId==='E')).toHaveLength(40);

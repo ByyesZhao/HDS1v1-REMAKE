@@ -53,7 +53,7 @@ it.each([false, true])('first_freeze_retains_interval_once: %s unattempted recov
 });
 it.each(['partial', 'post', 'committed'] as const)('recover_exact_same_step: file reopen at %s keeps output/count/control exactly once', async stage => {
   const dir = mkdtempSync(join(tmpdir(), 'shared-recovery-')), path = join(dir, 'state.sqlite');
-  const d = setup(); d.storage.close(); d.storage = new Storage(path); d.storage.set('character', initialCharacter(NOW));
+  const d = setup(); d.storage.close(); d.storage = new Storage(path); d.storage.set('runtime',{...d.storage.runtime(),dialogueContextVersion:1}); d.storage.set('character', initialCharacter(NOW));
   try {
     makeSharedFixture(d, { completedSteps: 0 }); configureSharedModels(d); speech(d, true); d.random.next = vi.fn(() => 0.5);
     await new InputBuffer(d.storage).acceptInput({ id: 'control', content: '【推进】', receivedAt: NOW });
