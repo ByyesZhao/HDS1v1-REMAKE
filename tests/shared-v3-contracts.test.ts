@@ -19,9 +19,7 @@ it.each([true, false])('frozen shared permission selects one system prompt and p
     return new Response(JSON.stringify({ choices: [{ message: { content: JSON.stringify(requests.length === 1 ? {} : result) } }] }));
   });
   const m = meta('ongoing', allowed), selected = task(m);
-  // Later input changes cannot change an already constructed task or its repair branch.
-  m.allowSimulatedUserActions = !allowed;
-  await new ModelClient(transport).runModel(selected, { sharedMeta: { ...m, allowSimulatedUserActions: allowed } });
+  await new ModelClient(transport).runModel(selected, { sharedMeta: m });
   expect(requests).toHaveLength(2);
   const system = requests[0].messages[0].content;
   expect(system).toContain(allowed ? '允许代写双方' : '禁止新增用户动作');
@@ -30,6 +28,7 @@ it.each([true, false])('frozen shared permission selects one system prompt and p
   expect(system).toContain('goal'); expect(system).toContain('final');
   expect(requests[1].messages[0].content).toBe(system);
   expect(JSON.parse(requests[1].messages[1].content).repair).toBeDefined();
+  expect(JSON.parse(requests[1].messages[1].content).input.sharedMeta.allowSimulatedUserActions).toBe(allowed);
 });
 it('wrap whitespace compatibility keeps stored originals, without semantic matching or resurrecting removed threads', () => {
   const previous = { ...old, openThreads: ['  结账\n 后收拾  ', '取餐'] };

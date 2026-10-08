@@ -37,6 +37,7 @@ it.each([false, true])('first_freeze_retains_interval_once: %s unattempted recov
   d.clock.advance(60_000); const discarded = discardUnattempted(d, frozen);
   expect(discarded.autonomousIntervalMinutes).toBe(180); expect(discarded.sharedMeta).toEqual(request.sharedMeta);
   await new InputBuffer(d.storage).acceptInput({ id: 'late', content: shared ? '【推进】' : '新输入', receivedAt: d.clock.now() });
+  if (shared) await new InputBuffer(d.storage).acceptInput({ id: 'late-speech', content: '我还在门外，别继续走。', receivedAt: d.clock.now() });
   await new HdsiApp(d).resumeUnfinishedTurn();
   const done = d.storage.read('turns', turn.id)!; expect(done.autonomousIntervalMinutes).toBe(180); expect(done.sharedMeta).toEqual(request.sharedMeta); expect(done.done).toBe(true);
   expect(d.random.next).toHaveBeenCalledTimes(1); expect(done.inputMessageIds).toEqual(request.inputMessageIds);
@@ -44,6 +45,7 @@ it.each([false, true])('first_freeze_retains_interval_once: %s unattempted recov
     expect(d.storage.read('control_requests', 'late')!.status).toBe('pending'); expect(d.storage.character().scene.shared!.completedSteps).toBe(1);
     expect(narrativePrompts).toHaveLength(2); expect(narrativePrompts[0]).toContain('允许代写双方');
     expect(narrativePrompts[1]).toBe(narrativePrompts[0]);
+    expect(d.storage.read('messages', 'late-speech')!.seenTurnId).toBeNull();
   }
   await finishPostprocessing(d, done); expect(d.storage.read('turns', turn.id)!.autonomousIntervalMinutes).toBe(180); d.storage.close();
 });
