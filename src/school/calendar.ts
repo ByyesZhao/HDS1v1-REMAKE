@@ -20,14 +20,25 @@ function occurrences(item:SchoolPlanItem,weeks:string[],now:string,timezone:stri
  if(t.kind==='once'||t.kind==='deadline'){
   const start=t.kind==='once'?t.startsAt:t.at;if(!start)return [];const end=t.kind==='once'?t.endsAt:null;
   if(milliseconds(end??start)<milliseconds(now))return [];
-  return [{occurrenceKey:JSON.stringify([item.id,t.kind==='once'?'once':'deadline']),sourceItemId:item.id,weekStart:null,startsAt:start,endsAt:end}];
+  return [{occurrenceKey:JSON.stringify([item.id,t.kind==='once'?'once':'deadline']),sourceItemId:item.id,weekStart:null,startsAt:start,endsAt:end,status:'active'}];
  }
  return weeks.flatMap(week=>t.slots.flatMap(slot=>{
   const date=day(week,slot.weekday-1);if(date<t.startsOn||t.endsOn&&date>t.endsOn)return [];
   const startsAt=dateClock(date,slot.start,timezone),endsAt=dateClock(day(date,slot.end<=slot.start?1:0),slot.end,timezone);
   if(milliseconds(endsAt)<milliseconds(now))return [];
-  return [{occurrenceKey:JSON.stringify([item.id,slot.slotKey,week]),sourceItemId:item.id,weekStart:week,startsAt,endsAt}];
+  return [{occurrenceKey:JSON.stringify([item.id,slot.slotKey,week]),sourceItemId:item.id,weekStart:week,startsAt,endsAt,status:'active' as const}];
  }));
+}
+function anchorOccurrence(o:RequiredOccurrence,existing:SchoolInstance[],now:string):RequiredOccurrence|null {
+ const base=o.occurrenceKey,family=existing.filter(i=>(i.baseOccurrenceKey??i.occurrenceKey)===base);
+ const future=family.find(i=>i.status==='active'&&milliseconds(i.startsAt)>milliseconds(now));
+ if(future)return {...o,baseOccurrenceKey:base,occurrenceKey:future.occurrenceKey};
+ const history=family.filter(i=>milliseconds(i.startsAt)<=milliseconds(now)).sort((a,b)=>milliseconds(b.startsAt)-milliseconds(a.startsAt));
+ if(!history.length)return {...o,baseOccurrenceKey:base};
+ // A new future arrangement can follow an already-started session, but its ID
+ // cannot replace the historical session. Further moves keep the successor ID.
+ if(milliseconds(o.startsAt)<=milliseconds(now))return null;
+ return {...o,baseOccurrenceKey:base,occurrenceKey:JSON.stringify([base,'after',history[0].id])};
 }
 export function schoolExpansionInput(storage:Storage,now:string,timezone:string):SchoolExpansionInput {
  const current=weekStart(now,timezone),date=localDate(now,timezone),weekday=new Date(date+'T12:00:00Z').getUTCDay()||7;
@@ -50,10 +61,15 @@ export function schoolExpansionInput(storage:Storage,now:string,timezone:string)
   const should=kind==='issue'?item.status==='open'&&policy.announceOnIssue:policy.announceOnChange&&windowOpen;
   if(should&&(item.status!=='closed'||previousPublic))addNotice({sourceItemId:item.id,occurrenceKey:null,weekStart:null,deliveryRevision:item.deliveryRevision,kind,reminderKey:kind,channel:'institution',publishAt:windowOpen?now:item.issuedAt});
   if(item.status!=='open'){
-   for(const old of existingInstances.filter(i=>i.sourceItemId===item.id&&i.status==='active'&&milliseconds(i.startsAt)>milliseconds(now)))requiredOccurrences.push({occurrenceKey:old.occurrenceKey,sourceItemId:item.id,weekStart:old.weekStart,startsAt:old.startsAt,endsAt:old.endsAt});
+   for(const old of existingInstances.filter(i=>i.sourceItemId===item.id&&i.status==='active'&&milliseconds(i.startsAt)>milliseconds(now)))requiredOccurrences.push({occurrenceKey:old.occurrenceKey,baseOccurrenceKey:old.baseOccurrenceKey??old.occurrenceKey,sourceItemId:item.id,weekStart:old.weekStart,startsAt:old.startsAt,endsAt:old.endsAt,status:'cancelled'});
    continue;
   }
-  const expanded=occurrences(item,weekStarts,now,timezone);allOccurrences.push(...expanded);
+  const expanded=occurrences(item,weekStarts,now,timezone).map(o=>anchorOccurrence(o,existingInstances,now)).filter((o):o is RequiredOccurrence=>o!==null);allOccurrences.push(...expanded);
+  for(const old of existingInstances.filter(i=>i.sourceItemId===item.id&&i.status==='active'&&milliseconds(i.startsAt)>milliseconds(now))){
+   const base=old.baseOccurrenceKey??old.occurrenceKey;
+   const supported=occurrences(item,old.weekStart?[old.weekStart]:[],now,timezone).some(o=>o.occurrenceKey===base);
+   if(!supported)requiredOccurrences.push({occurrenceKey:old.occurrenceKey,baseOccurrenceKey:base,sourceItemId:item.id,weekStart:old.weekStart,startsAt:old.startsAt,endsAt:old.endsAt,status:'cancelled'});
+  }
   for(const occurrence of expanded){
    const old=existingInstances.find(i=>i.occurrenceKey===occurrence.occurrenceKey);
    if(!old||old.needsExpansion||old.deliveryRevision!==item.deliveryRevision||milliseconds(old.startsAt)!==milliseconds(occurrence.startsAt)||old.endsAt!==occurrence.endsAt)requiredOccurrences.push(occurrence);
@@ -98,7 +114,8 @@ export function resolveSchoolWeek(storage:Storage,result:Extract<EnvironmentMode
  validateWeekCoverage(result,input);
  const instances:SchoolInstance[]=result.instanceChanges.map(c=>{
   const o=input.requiredOccurrences.find(o=>o.occurrenceKey===c.occurrenceKey)!,item=input.sourceItems.find(i=>i.id===c.sourceItemId)!,old=input.existingInstances.find(i=>i.occurrenceKey===c.occurrenceKey);
-  return {id:old?.id??stableId('school-instance',c.occurrenceKey),sourceItemId:item.id,sourceRevision:item.revision,deliveryRevision:item.deliveryRevision,occurrenceKey:c.occurrenceKey,weekStart:o.weekStart,startsAt:o.startsAt,endsAt:o.endsAt,sourceSnapshot:item,status:item.status==='open'?'active':'cancelled',needsExpansion:false,legacyEventId:old?.legacyEventId??null};
+  if(old&&milliseconds(old.startsAt)<=milliseconds(now))throw new ModelFormatError('already-started instance cannot be overwritten');
+  return {id:old?.id??stableId('school-instance',c.occurrenceKey),sourceItemId:item.id,sourceRevision:item.revision,deliveryRevision:item.deliveryRevision,occurrenceKey:c.occurrenceKey,baseOccurrenceKey:o.baseOccurrenceKey??o.occurrenceKey,weekStart:o.weekStart,startsAt:o.startsAt,endsAt:o.endsAt,sourceSnapshot:item,status:o.status,needsExpansion:false,legacyEventId:old?.legacyEventId??null};
  });
  const notices:SchoolNotice[]=result.noticeCandidates.map(c=>{
   const n=input.requiredNoticeKeys.find(n=>n.id===c.key)!,snapshots:SchoolEntitySnapshot[]=c.entityRefs.map(ref=>{

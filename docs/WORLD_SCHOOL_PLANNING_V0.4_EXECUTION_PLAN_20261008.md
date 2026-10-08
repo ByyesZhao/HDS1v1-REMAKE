@@ -10,7 +10,7 @@
 
 **Spec:** [实施细化](WORLD_SCHOOL_PLANNING_V0.4_IMPLEMENTATION_20261008.md)是字段／时序依据，本计划是任务／验收依据，[方案](WORLD_SCHOOL_PLANNING_V0.4_PROPOSAL_20261008.md)是产品背景。第十一轮回应、第十二轮[计划审查回应](../DSH-review/CODEX_REBUTTAL_WORLD_SCHOOL_V0.4_PLAN_20261008.md)及[第十三轮补充](../DSH-review/DSH_REVIEW13_WORLD_SCHOOL_V0.4_PLAN_SUPPLEMENT_20261008.md)已合并，实施不再拼接审核文件。已有记忆、网页搜索和共同活动文档用于相关接口查询，不重复执行已完成计划；完整阅读口径见细化§11。
 
-日期：2026-10-08。状态：任务1～8实现及场景验收完成，整分支最终复核待完成。实际起点`690a5ed`；[实施日志](WORLD_SCHOOL_PLANNING_V0.4_IMPLEMENTATION_LOG_20261008.md)记录命令、裁定、迁移、提交，[真实验收](WORLD_SCHOOL_PLANNING_V0.4_REAL_STORY_ACCEPTANCE_20261008.md)保留模型的合法选择及失败。设计基线`7da4ace`供追溯。任务中的具名行为部分合并为同一业务测试，以实际文件与报告为准。
+日期：2026-10-08。状态：任务1～8实现、场景验收及整分支最终复核完成；终审三项日历修复通过全量336项回归。实际起点`690a5ed`；[实施日志](WORLD_SCHOOL_PLANNING_V0.4_IMPLEMENTATION_LOG_20261008.md)记录命令、裁定、迁移、提交及主目录交付，[真实验收](WORLD_SCHOOL_PLANNING_V0.4_REAL_STORY_ACCEPTANCE_20261008.md)保留模型的合法选择及失败。设计基线`7da4ace`供追溯。任务中的具名行为部分合并为同一业务测试，以实际文件与报告为准。
 
 ## Global Constraints
 
@@ -96,6 +96,7 @@
 - [x] 写 `due_notice_released_before_selection`、`notice_deadline_reaches_host_timer`、`publication_waits_for_publish_at`、`future_effective_event_can_be_notified_now`：刚到publishAt当次collectReady先发布后冻结refs；未来publishAt仍scheduled且唯一定时器取该时刻；未来才生效的事项可提前通知，不新增validFrom检查。暂停／unfinished门禁不发布，恢复后才扫描；程序发布审计不作已读证明。
 - [x] RED：`npm test -- tests/world-school-calendar.test.ts tests/world-school-notices.test.ts`。
 - [x] 实现稳定occurrence／notice元组身份、日历输入及已知快照、周模型唯一候选与双覆盖判据；上游提交即失效旧未读，不等school_week；保留旧已读及releasedAt历史。依据细化§5.1推导窗口、必需change／cancel和未来最新候选，不能只查invalidated列表或只写SchoolWeek.sourceVersions。公开措辞来自周任务，程序补真实身份／引用／快照，不另起文案模型。
+- [x] 终审补验：删除时段／缩短范围／改暂定后旧未来课次取消；已开始课次保持历史，后继未来实例另建ID且再次改期保持该ID；等待重展开时旧客观安排及onsite来源退出，角色已知旧快照保留。requiredOccurrences.status由程序决定；兼容历史缺baseOccurrenceKey，不再提升数据库版本。6个回归变体先RED再GREEN，见日志。
 - [x] 在Scheduler.collectReady的closeReady及paused／unfinishedTurn门禁后接入release短事务，再读取／选择；schoolNoticeDeadline并入Scheduler.nextDeadline，由Host现有armTimer处理，不新增发布入口／计时器。已不可读／拒看不反复贡献now。模板使用前1本地日／120分钟、常规60分钟，允许上游策略调整；远期当前issue／change／cancel必处理，未来通知到publishAt才发布。
 - [x] GREEN：同一命令及 `npm run typecheck`；精确检查定时器下一截止为未来或null，不仅检查一次collectReady返回null。
 - [x] 日志记身份样例及周无变化前后行数。提交：`feat: schedule versioned school notices and weekly instances`。

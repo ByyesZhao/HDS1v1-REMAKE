@@ -56,3 +56,24 @@ it('reschedule_format_repair_uses_current_source_revision_not_old_instance',asyn
  const result=await client.runModel(schoolWeekTask(input),input);
  expect(calls).toBe(2);expect((result as any).instanceChanges[0].expectedRevision).toBe(2);d.storage.close();
 });
+
+it.each(['remove_slot','shorten_range','tentative'])('retire_removed_future_occurrence_%s_without_ghost_class',change=>{
+ const d=setup(),item=schoolItem({kind:'course',timing:{kind:'weekly',startsOn:'2026-10-01',endsOn:null,slots:[{slotKey:'thu',weekday:4,start:'09:00',end:'10:00'},{slotKey:'fri',weekday:5,start:'09:00',end:'10:00'}]}});
+ d.storage.save('school_plan_items',item.id,item);expand(d);const old=d.schoolStore.instances().find(i=>i.startsAt.includes('2026-10-08'))!;
+ const timing:typeof item.timing=change==='tentative'?{kind:'tentative',startsOn:'2026-10-07',endsOn:null,note:'暂不确定'}:change==='shorten_range'?{...item.timing as any,endsOn:'2026-10-07'}:{...item.timing as any,slots:[{slotKey:'fri',weekday:5,start:'09:00',end:'10:00'}]};
+ d.storage.transaction(()=>applySchoolChanges(d.storage,{stage:'school_campus',plans:[],items:[{...item,timing,revision:2,deliveryRevision:2}]},NOW));expand(d);
+ expect(d.storage.read('school_instances',old.id)).toMatchObject({status:'cancelled',needsExpansion:false});
+ d.storage.close();
+});
+
+it('started_occurrence_remains_historical_and_successor_future_move_keeps_new_id',()=>{
+ const d=setup(),item=schoolItem({kind:'course',timing:{kind:'weekly',startsOn:'2026-10-01',endsOn:null,slots:[{slotKey:'session',weekday:2,start:'09:00',end:'10:00'}]}});
+ d.storage.save('school_plan_items',item.id,item);expand(d,'2026-10-05T06:00:00+08:00');const historical=d.schoolStore.instances()[0];
+ const updated={...item,revision:2,deliveryRevision:2,timing:{...item.timing as any,slots:[{slotKey:'session',weekday:4,start:'09:00',end:'10:00'}]}};
+ d.storage.transaction(()=>applySchoolChanges(d.storage,{stage:'school_campus',plans:[],items:[updated]},NOW));expand(d);
+ expect(d.storage.read('school_instances',historical.id)).toEqual(historical);
+ const future=d.schoolStore.instances().find(i=>i.id!==historical.id)!;expect(future.startsAt).toContain('2026-10-08');expect(future.id).not.toBe(historical.id);
+ expand(d);expect(d.schoolStore.instances()).toHaveLength(2);
+ d.storage.transaction(()=>applySchoolChanges(d.storage,{stage:'school_campus',plans:[],items:[{...updated,revision:3,deliveryRevision:3,timing:{...updated.timing,slots:[{slotKey:'session',weekday:5,start:'09:00',end:'10:00'}]}}]},NOW));expand(d);
+ expect(d.storage.read('school_instances',historical.id)).toEqual(historical);expect(d.storage.read('school_instances',future.id)?.startsAt).toContain('2026-10-09');expect(d.schoolStore.instances()).toHaveLength(2);d.storage.close();
+});

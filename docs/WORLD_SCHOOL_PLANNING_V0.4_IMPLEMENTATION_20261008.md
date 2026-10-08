@@ -1,6 +1,6 @@
 # 世界与学校规划 V0.4 实施细化
 
-日期：2026-10-08。状态：任务1～8实现与场景验收完成，整分支最终复核待完成。源码起点`690a5ed`，实际迁移／测试见[实施日志](WORLD_SCHOOL_PLANNING_V0.4_IMPLEMENTATION_LOG_20261008.md)，实际模型选择见[真实验收](WORLD_SCHOOL_PLANNING_V0.4_REAL_STORY_ACCEPTANCE_20261008.md)。设计基线为本地提交 `7da4ace`，审查合并前文档基线为 `ef88904`，保留用于追溯。
+日期：2026-10-08。状态：任务1～8实现、场景验收及整分支最终复核完成；终审三项日历修复已通过全量回归。源码起点`690a5ed`，实际迁移／测试及主目录交付见[实施日志](WORLD_SCHOOL_PLANNING_V0.4_IMPLEMENTATION_LOG_20261008.md)，实际模型选择见[真实验收](WORLD_SCHOOL_PLANNING_V0.4_REAL_STORY_ACCEPTANCE_20261008.md)。设计基线为本地提交 `7da4ace`，审查合并前文档基线为 `ef88904`，保留用于追溯。
 
 实施以本文的字段／时序和[执行计划](WORLD_SCHOOL_PLANNING_V0.4_EXECUTION_PLAN_20261008.md)的任务顺序为准。[方案](WORLD_SCHOOL_PLANNING_V0.4_PROPOSAL_20261008.md)说明产品意图；第十一轮[已接受回应](../DSH-review/CODEX_REBUTTAL_WORLD_SCHOOL_V0.4_20261008.md)、第十二轮[计划审查回应](../DSH-review/CODEX_REBUTTAL_WORLD_SCHOOL_V0.4_PLAN_20261008.md)及[第十三轮补充](../DSH-review/DSH_REVIEW13_WORLD_SCHOOL_V0.4_PLAN_SUPPLEMENT_20261008.md)已并入这两份执行依据。审查文件仅供追溯，不再作为需要另行拼接的实施规则；本次合并的时间语义见§5.1、§7。
 
@@ -68,7 +68,7 @@ Runtime新增 `environmentPlanningVersion: 1|null`、`nextEnvironmentAt: ISOTime
 | `SchoolPlanItem`／`school_plan_items` | `id, planId, owner, kind: course\|exam\|meeting\|event\|research\|invitation\|holiday\|milestone\|legacy, title, description, location, requirement: required\|optional, issuedAt, timing, noticePolicy, revision, deliveryRevision, status: open\|cancelled\|closed, basis: fiction\|web_reference, sourceUrls`。research另有负责人、交付说明与阶段说明，均属模拟要求。 |
 | `SchoolTiming` | 区分once（明确起止时刻）、weekly（生效日期范围及稳定slotKey、weekday 1～7、当地起止HH:mm）、tentative（日期范围／说明）、deadline（明确截止或暂定日期）。weekly只用于重复课程／组会等；research可引用独立里程碑条目。 |
 | `SchoolNoticePolicy` | `announceOnIssue=true, announceOnChange=true, reminders[]`；可显式调整。reminder为 `local_days_before` 或 `minutes_before`＋非负offset＋来源 `institution\|personal_reminder`。未知时刻不能展开小时提醒；关闭reminders不等于关闭更正。 |
-| `SchoolInstance`／`school_instances` | `id, sourceItemId, sourceRevision, deliveryRevision, occurrenceKey, weekStart: string\|null, startsAt, endsAt, sourceSnapshot, status: active\|cancelled\|archived, needsExpansion, legacyEventId: string\|null`。sourceSnapshot保存实际该版地点／要求／描述，不只指向最新源条目。 |
+| `SchoolInstance`／`school_instances` | `id, sourceItemId, sourceRevision, deliveryRevision, occurrenceKey, baseOccurrenceKey?: string, weekStart: string\|null, startsAt, endsAt, sourceSnapshot, status: active\|cancelled\|archived, needsExpansion, legacyEventId: string\|null`。sourceSnapshot保存实际该版地点／要求／描述，不只指向最新源条目。baseOccurrenceKey记录同一时段／周的基础身份；历史行缺项时沿用occurrenceKey，无需再次升级数据库。 |
 | `SchoolNotice`／`school_notices` | `id, sourceItemId: string\|null, instanceId: string\|null, weekStart: string\|null, deliveryRevision, kind: issue\|change\|cancel\|reminder\|week_digest, reminderKey, channel: institution\|personal_reminder, publishAt, releasedAt: ISOTime\|null, payload, status: scheduled\|available\|read\|invalidated, nextWakeAt: ISOTime\|null, readAt: ISOTime\|null, readTurnId: string\|null`。公开措辞由school_week产出，程序解析真实实体引用并冻结版本快照；周摘要可含多条实体。releasedAt记录首次scheduled→available操作，失效后仍保留，用于区分曾发布与仅预排；不证明角色已读。 |
 | `SchoolKnowledge`／`school_knowledge` | `id, entityKind: plan_item\|instance, entityId, revision, snapshot, acquiredAt, experienceId, turnId, via: notice\|onsite`。逐次获知保留；查询选该实体最近已获知版本，不直接解引用客观最新值。 |
 | `SchoolProgress`／`school_progress` | `id, taskId, kind: progress\|completed\|feedback, experienceId, turnId, happenedAt, summary`。实际已提交经历是必要来源；一次经历／任务／kind幂等。 |
@@ -78,7 +78,7 @@ school_week是实例及通知候选唯一模型写入者；校园／课题组只
 
 时间字段各有用途：SchoolPlanItem.issuedAt为制度安排的首次下发时刻，可预排未来；SchoolTiming／instance.startsAt、endsAt表示活动或要求生效时间；SchoolNotice.publishAt表示该份通知可交付时刻；releasedAt是程序实际发布操作审计，readAt／SchoolKnowledge.acquiredAt是角色实际获知。已下发条目的改期不能通过把issuedAt挪到未来重新隐藏；未下发草案可调整下发时刻。本版不新增validFrom或独立“下发窗口”配置，不用活动开始时间拦住提前通知。
 
-同一重复课次的 `occurrenceKey = (sourceItemId, slotKey, localWeekStart)`；同一一次性事项用 `(sourceItemId, 'once')`，截止用 `(sourceItemId, 'deadline')`。这些元组无歧义编码，不拼接描述猜身份。同一周课次改期保留身份，跨周新实例；已发生历史不被改期覆盖。原“条目＋本地日期”在此固定为稳定周起点＋时段键，避免日期一改就复制一节课。
+同一重复课次的基础身份为 `(sourceItemId, slotKey, localWeekStart)`；同一一次性事项用 `(sourceItemId, 'once')`，截止用 `(sourceItemId, 'deadline')`。这些元组用JSON无歧义编码，不拼接描述猜身份。正常课次的occurrenceKey等于基础身份，开始前同一周课次改期保留ID，跨周新实例。已开始实例（startsAt ≤ 本次展开时刻）不覆盖；同一基础时段改为新的未来安排时，程序另建 `JSON.stringify([baseOccurrenceKey, 'after', 最近已开始实例ID])` 的后继实例，并保存baseOccurrenceKey。后继实例开始前再次改期仍保留其ID。原“条目＋本地日期”在此固定为稳定周起点＋时段键，避免日期一改就复制一节课，同时保留已发生历史。
 
 通知ID由 `(source/instance/week identity, kind, reminderKey, deliveryRevision)`确定；相同候选重复提交同一行。weekly摘要以weekStart及digestRevision为身份。不同提醒时距有不同reminderKey，不因同日两次检查再生成新ID。
 
@@ -126,6 +126,8 @@ Host每完成一个环境步骤让出事件循环并重新选择。选择规则�
 
 三个合同在 `src/school/contracts.ts`：`schoolCampusTask`、`schoolGroupTask`、`schoolWeekTask`。create用clientRef，update/cancel引用已有同归属ID与版本；空变更合法。必需结构字段及真实引用校验，研究成果与角色参加不在此输出合同。学期持续沿用，在读研究生可以没有常规课程，不为了课表编满每天。
 
+实际初建合同补充：所属校园／课题组尚无active持续计划时，本次至少建立一个active计划；已有计划后的日常检查可以空变更。计划框架不要求课程条目，也不强制每天新增事件。见实施日志任务7的初建空结果复现。
+
 `src/school/calendar.ts`导出 `schoolExpansionInput(storage: Storage, now: ISOTime, timezone: string): SchoolExpansionInput`：给出本周范围、周五起纳入下周、既存下周需延续的范围、上游确定时段推导出的稳定occurrenceKey，以及远期当前下发／改期／取消项。它是周模型输入，不直接保存候选，不成为第二个通知写入者。
 
 ### 5.1 必需展开集合与下发窗口
@@ -152,8 +154,9 @@ school_week校验后由 `applySchoolChanges(storage, changes, now)`统一事务�
 
 - 常规只展开本周及已到生成时间的下周；周五生成下周、周一确认。首次周五以前仅本周，但明确预约／直接请求的远期相关事项可以读取。没有变化不重造课程或通知。
 - 远期科研任务今天下发，今天的issue通知必须展开；明确远期一次性节点可保留必要实例／定时提醒。不能因本周窗口推迟当前下发通知，也不必因此展开全学期课次。
-- 上游更改提交时立即使相关旧scheduled／available通知invalidated、标实例needsExpansion；周步骤之后填新实例与更正通知。已读旧快照不删、不换最新值；期间既知旧时间仍可能影响选择。
+- 上游更改提交时立即使相关旧scheduled／available通知invalidated、标未来实例needsExpansion；周步骤之后填新实例与更正通知。等待重展开期间，needsExpansion实例不进入主叙事客观投影，也不能成为onsite获知来源；已读旧快照不删、不换最新值，角色旧认识仍可能影响选择，不能将其当作仍有效的客观安排。
 - 只有影响公开时间、取消、要求或通知内容的更改提升deliveryRevision；无变化／内部说明不重发。旧实例曾实际发生则保留历史，新未来安排另建相关实例。
+- 删除weekly时段、缩短生效范围或改成tentative等导致旧未来课次不再存在时，程序仍将其加入requiredOccurrences，status固定为cancelled；模型必须提交覆盖候选，程序保留旧ID并置cancelled、needsExpansion=false。每个已存未来课次按其自身weekStart核对，不因不在本次常规展开周窗口就遗留“幽灵课次”。RequiredOccurrence的status和基础／后继身份由程序推导，模型不能另选。
 - 多个事项时间冲突合法；周任务标冲突、保留客观时间，个人导演决定去哪个。周建议科研空档不是已经研究完成或已经选择执行。
 
 通知默认：once前1本地日＋前120分钟；weekly前60分钟及一次周摘要；research下发及临近明确期限；取消／改期及时更正。策略允许关闭或调整，不强制每项两次。不明确时刻只通知暂定安排，不猜小时。新建时已经错过多个提醒只保留一条当前有意义通知，不补发一串历史提醒；已经结束的事项不新造“你早已知道”。
@@ -265,7 +268,7 @@ prepare在个人输入前验证，apply只在已有段B事务内使用。重复�
 
 Storage.unfinishedTurn、Host恢复、启动诊断及统计都使用§3.1终态谓词；superseded统计为终结未成功，不统计为成功或待恢复。旧post job不能被独立worker再次应用；实际现有执行入口逐一核对。web缓存占用可释放但历史checkpoint保留。完整新学校配置＋旧库也必须通过版本门禁，旧配置能解析不等于数据库已升级。
 
-正式库先只读检查；临时旧格式fixture验证通过后再按检查结果备份应用，保存升级前后报告。正式过程仅升级／检查，服务仍由用户cmd手动运行；本次文档编写不进行这些动作。
+正式库先只读检查；临时旧格式fixture验证通过后再按检查结果备份应用，保存升级前后报告。本次实施已完成正式库升级／检查，实际路径和报告见实施日志；服务仍由用户cmd手动运行。
 
 ## 10. 验收与交付
 
@@ -286,7 +289,7 @@ Storage.unfinishedTurn、Host恢复、启动诊断及统计都使用§3.1终态�
 | 第十三轮2.1 | §5.1以issuedAt／实际发布／已知界定下发窗口。已下发的远期事项立即适用更正；未下发未知草案更新未来候选，预排不等于发布。 |
 | 第十三轮2.2 | §3.2及§7区分活动生效、通知publishAt、发布审计、实际获知；未到publishAt保持scheduled。该建议采用本项目实际字段，不引入审查中未定义的validFrom，不要求更正晚于旧值失效；客观改变、发布、获知依旧分开。 |
 
-本次增加releasedAt只是保存曾发布证据，避免通知invalidated后失去历史发布事实；它不构成新的下发窗口、角色知识或上下文预算。所有合并仍停留在文档，原审查／回应保留当时“尚未回填”的历史描述，不改写成已实施。
+本次增加releasedAt只是保存曾发布证据，避免通知invalidated后失去历史发布事实；它不构成新的下发窗口、角色知识或上下文预算。审查意见已并入文档并完成实施；原审查／回应保留当时“尚未回填”的历史描述，不改写历史记录。
 
 正式实施直接使用以下两份：
 

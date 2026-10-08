@@ -4,6 +4,7 @@ import {schoolItem,expand} from './world-school-fixture';
 import {personalSchoolContext,narrativeSchoolContext} from '../src/school/context';
 import {prepareSchoolCommits,applySchoolCommits} from '../src/school/progress';
 import {releaseSchoolNotices} from '../src/school/notices';
+import {applySchoolChanges} from '../src/school/changes';
 it('personal_keeps_old_known_revision_related_id_not_read_proof_and_explicit_future_known_query',()=>{
  const d=setup(),item=schoolItem();d.storage.save('school_plan_items',item.id,item);expand(d);
  expect(personalSchoolContext(d.storage,[],'meeting')).toEqual({knownSnapshots:[]});
@@ -32,4 +33,16 @@ it('end_of_turn_awake_does_not_allow_reading_while_previously_sleeping',()=>{
  d.storage.set('character',{...d.storage.character(),narratedUntil:earlier,sleep:{sleepAt:'2026-10-07T09:30:00+08:00',wakeAt:NOW}});
  const e={id:'e',happenedAt:'2026-10-07T09:50:00+08:00',description:'声称睡着时读到通知',relatedEventIds:[]};
  expect(()=>prepareSchoolCommits(d.storage,{id:'t',at:NOW,schoolNoticeRefs:[{noticeId:n.id,deliveryRevision:1}]} as any,{...narrative,experiences:[e],schoolObservations:[{via:'notice',sourceId:n.id,experienceIndex:0}]},[e])).toThrow(/readable/);d.storage.close();
+});
+
+it.each(['cancel','reschedule'])('upstream_%s_invalidates_objective_before_week_step_but_keeps_old_known',change=>{
+ const d=setup(),before='2026-10-07T08:30:00+08:00',item=schoolItem({issuedAt:before,timing:{kind:'once',startsAt:'2026-10-07T09:00:00+08:00',endsAt:'2026-10-07T11:00:00+08:00'}});
+ d.storage.save('school_plan_items',item.id,item);expand(d,before);const instance=d.schoolStore.instances()[0];
+ d.storage.save('school_knowledge','old',{id:'old',entityKind:'instance',entityId:instance.id,revision:1,snapshot:{entityKind:'instance',entityId:instance.id,revision:1,value:instance},acquiredAt:before,experienceId:'old-e',turnId:'old',via:'notice'});
+ d.storage.transaction(()=>applySchoolChanges(d.storage,{stage:'school_campus',plans:[],items:[{...item,revision:2,deliveryRevision:2,...(change==='cancel'?{status:'cancelled' as const}:{timing:{kind:'once' as const,startsAt:'2026-10-07T14:00:00+08:00',endsAt:null}})}]},before));
+ d.storage.set('character',{...d.storage.character(),narratedUntil:before});
+ expect(narrativeSchoolContext(d.storage,before,NOW,d.storage.character().scene).objectiveInstances).toEqual([]);
+ expect(personalSchoolContext(d.storage,[],'').knownSnapshots[0].value).toMatchObject({sourceRevision:1});
+ const e={id:'e',happenedAt:NOW,description:'误称在旧班会现场得知安排',relatedEventIds:[instance.id]};
+ expect(()=>prepareSchoolCommits(d.storage,{id:'t',at:NOW,schoolNoticeRefs:[]} as any,{...narrative,experiences:[e],schoolObservations:[{via:'onsite',sourceId:instance.id,experienceIndex:0}]},[e])).toThrow(/onsite/);d.storage.close();
 });

@@ -5,7 +5,7 @@ import {knownSchoolSnapshots} from './calendar';
 import {milliseconds} from '../time';
 import {queryTerms} from '../memory/lexical';
 export function narrativeSchoolContext(storage:Storage,from:string,at:string,scene:Scene):NarrativeSchoolContext {
- const objectiveInstances=storage.all('school_instances').filter(i=>i.status!=='cancelled'&&(
+ const objectiveInstances=storage.all('school_instances').filter(i=>!i.needsExpansion&&i.status!=='cancelled'&&(
   milliseconds(i.startsAt)<=milliseconds(at)&&milliseconds(i.endsAt??i.startsAt)>=milliseconds(from)
   ||!!i.sourceSnapshot.location&&scene.description.includes(i.sourceSnapshot.location)));
  const noticeSnapshots=storage.all('school_notices').filter(n=>n.status==='available'&&n.releasedAt!==null&&milliseconds(n.releasedAt)<=milliseconds(at));
