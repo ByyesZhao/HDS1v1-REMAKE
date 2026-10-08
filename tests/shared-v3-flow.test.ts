@@ -104,7 +104,7 @@ it('silent_20_steps_natural_close: quiet nodes count and the twentieth closes wi
     if (step < 20) { expect(d.storage.character().scene.shared!.completedSteps).toBe(step); expect(await scheduler.collectReady(d.clock.now())).toBeNull(); d.clock.advance(60_000); }
   }
   expect(d.storage.character().scene.mode).toBe('chat'); expect(d.storage.runtime().sharedClock).toBeNull();
-  expect(d.sender.sent.map(i => i.payload)).toEqual(['本次活动告一段落，余下的事约好下次继续。', '共同活动结束']);
+  expect(d.sender.sent.map(i => i.payload)).toEqual(['游戏界面亮起，本次活动准备就绪。', '本次活动告一段落，余下的事约好下次继续。', '共同活动结束']);
   expect(d.models.calls.filter(c => c.name === 'narrative_shared')).toHaveLength(20); expect(d.storage.all('turns').at(-1)!.sharedMeta!.stepNumber).toBe(20);
   expect(await scheduler.collectReady(d.clock.now())).toBeNull(); d.storage.close();
 });
@@ -123,6 +123,7 @@ it.each(['inside', 'expired', 'postponed'] as const)('sleep_and_idle_cycle: shar
   expect(d.models.calls[0].input.waking).toBe(false); expect(d.storage.character().sleep).toEqual(sleep); expect(d.storage.character().scene.shared!.completedSteps).toBe(1);
   await new InputBuffer(d.storage).acceptInput({ id: 'end', content: '【推进】', receivedAt: d.clock.now() });
   d.models.outputs.personal_shared = { ...silent, sharedChange: { action: 'end' }, ...(kind === 'postponed' ? { sleepPreference: { reason: '晚点睡', sleepAt: '2026-10-08T01:00:00+08:00', wakeAt: '2026-10-08T09:00:00+08:00' } } : {}) };
+  d.models.outputs.narrative_shared = { ...narrative, publicNarration: '这次活动告一段落，准备休息。', progress: '结束', outline: { goal: '游戏', openThreads: [], endingCondition: '结束' }, simulatedUserActions: [] };
   await app.runTurn((await scheduler.collectReady(d.clock.now()))!);
   if (kind === 'inside') expect(d.storage.character().nextAutonomousAt).toBeNull();
   else expect(Date.parse(d.storage.character().nextAutonomousAt!)).toBe(Date.parse(d.clock.now()) + 180*60000);

@@ -16,7 +16,7 @@ export function makeSharedFixture(d: ReturnType<typeof setup>, overrides: Partia
 }
 
 export function configureSharedModels(d: ReturnType<typeof setup>): void {
-  d.models.outputs.narrative_shared = (input: any) => ({ ...narrative, publicNarration: input.sharedMeta.phase === 'final' ? '本次活动告一段落，余下的事约好下次继续。' : null,
+  d.models.outputs.narrative_shared = (input: any) => ({ ...narrative, publicNarration: input.sharedMeta.phase === 'final' ? '本次活动告一段落，余下的事约好下次继续。' : input.sharedMeta.stepNumber === 1 ? '游戏界面亮起，本次活动准备就绪。' : null,
     progress: `第${input.sharedMeta.stepNumber}轮`, outline: { goal: '一起游戏', openThreads: [], endingCondition: '本次游戏告一段落' }, simulatedUserActions: [] });
   d.models.outputs.personal_shared = (input: any) => ({ ...silent, ...(input.sharedMeta.phase === 'final' ? { sharedChange: { action: 'end' }, nextPlan: '剩余事项下次继续' } : {}) });
 }

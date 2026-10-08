@@ -61,10 +61,10 @@ it('sends start and end markers even without any character speech', async () => 
   d.models.outputs.personal_chat = { emotions: [], reply: { decision: 'none' }, taskChanges: [], sharedChange: { action: 'start', mode: 'shared_online', title: '游戏' } };
   const app = new HdsiApp(d); await app.runTurn({ inputMessageIds: ['a'], taskIds: [], triggerKinds: ['input'] });
   expect(d.sender.sent.map(i => i.payload)).toEqual(['共同活动开始']);
-  d.models.outputs.narrative_shared = { ...narrative, publicNarration: null, progress: '结束', outline: { goal: '游戏', openThreads: [], endingCondition: '结束' }, simulatedUserActions: [] };
+  d.models.outputs.narrative_shared = { ...narrative, publicNarration: '本次游戏已结束，回到各自的生活。', progress: '结束', outline: { goal: '游戏', openThreads: [], endingCondition: '结束' }, simulatedUserActions: [] };
   d.models.outputs.personal_shared = { emotions: [], reply: { decision: 'none' }, taskChanges: [], sharedChange: { action: 'end' } };
   await app.runTurn((await new Scheduler(d.storage).collectReady(d.clock.now()))!);
-  expect(d.sender.sent.map(i => i.payload)).toEqual(['共同活动开始', '共同活动结束']);
+  expect(d.sender.sent.map(i => i.payload)).toEqual(['共同活动开始', '本次游戏已结束，回到各自的生活。', '共同活动结束']);
   expect(d.models.calls.filter(c => c.name === 'expression')).toHaveLength(0);
   d.storage.close();
 });

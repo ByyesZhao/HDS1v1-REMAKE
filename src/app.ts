@@ -127,7 +127,7 @@ export async function generateTurn(d: Dependencies, request: TurnRequest, turnId
   let contactMisses = runtime.contactMisses;
   if (runPerson) {
     personal = await runPersonal(d.models, kind, at, allTasks, entryMode, [...visible, ...reconsider].map(m => m.id), { at, background: d.config.background, state, experiences: narrative.experiences, visibleMessages: visible, reconsiderMessages: reconsider, dueTasks: tasks.filter(t => t.kind !== 'check_messages' || canRead(state, at)), tasks: allTasks, events, history: personalHistory, contactEligible,
-      ...(shared ? { sharedMeta: request.sharedMeta, remainingSteps: request.sharedMeta ? request.sharedMeta.maxSteps - request.sharedMeta.stepNumber : null, outline: state.scene.shared?.outline, publicNarration: 'publicNarration' in narrative ? narrative.publicNarration : null } : {}) },phaseOptions(d.web,'turn',turnId,'personal',`personal_${kind}`,{lookup:q=>contextBuilder.retrieval.lookup(q,personalRequest)}), request.sharedMeta);
+      ...(shared ? { sharedMeta: request.sharedMeta, remainingSteps: request.sharedMeta ? request.sharedMeta.maxSteps - request.sharedMeta.stepNumber : null, outline: state.scene.shared?.outline, publicNarration: 'publicNarration' in narrative ? narrative.publicNarration : null } : {}) },phaseOptions(d.web,'turn',turnId,'personal',`personal_${kind}`,{lookup:q=>contextBuilder.retrieval.lookup(q,personalRequest)}), request.sharedMeta, 'publicNarration' in narrative ? narrative.publicNarration : null);
     state.emotions = personal.emotions;
     if (typeof personal.nextPlan === 'string') state.plan = personal.nextPlan;
     if ('reply' in personal && personal.reply.decision === 'now') intent = personal.reply;

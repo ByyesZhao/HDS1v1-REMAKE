@@ -28,10 +28,10 @@ it('final_requires_public_close_and_end: final closes both contracts and all sce
   const m = meta('final'), closed = { ...result, outline: { ...old, openThreads: [] } };
   expect(() => task(m).parse({ ...closed, publicNarration: ' ' })).toThrow(/publicNarration/);
   expect(() => task(m).parse(closed)).not.toThrow();
-  const p = personalTask('shared', NOW, [], 'shared_online', [], m);
+  const p = personalTask('shared', NOW, [], 'shared_online', [], m, closed.publicNarration);
   expect(() => p.parse(silent)).toThrow(/sharedChange/);
   expect(() => p.parse({ ...silent, sharedChange: { action: 'end' } })).not.toThrow();
-  expect(() => personalTask('shared', NOW, [], 'shared_online', [], meta()).parse({ ...silent, sharedChange: { action: 'end' } })).not.toThrow();
+  expect(() => personalTask('shared', NOW, [], 'shared_online', [], meta(), result.publicNarration).parse({ ...silent, sharedChange: { action: 'end' } })).not.toThrow();
   const scene = { id: 'scene:activity-a', kind: 'scene_step' as const, at: NOW, description: '节点', status: 'pending' as const };
   for (const change of [{ action: 'create', task: scene }, { action: 'update', id: scene.id, task: { at: NOW } }, { action: 'cancel', id: scene.id }]) {
     expect(() => personalTask('shared', NOW, [scene], 'shared_online', [], meta()).parse({ ...silent, taskChanges: [change] })).toThrow(/scene_step/);

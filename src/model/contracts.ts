@@ -59,6 +59,7 @@ export function narrativeTask(shared: boolean, from: string, at: string, eventId
     if (shared) {
       requireControl(!!sharedMeta, 'sharedMeta', 'shared calls require fixed selection metadata');
       const result = r as SharedNarrativeResult;
+      if (sharedMeta!.stepNumber === 1) requireControl(!!result.publicNarration?.trim(), 'publicNarration', 'first shared node requires a public opening');
       requireControl(sharedMeta!.allowSimulatedUserActions || result.simulatedUserActions.length === 0, 'simulatedUserActions', 'not allowed with new user input');
       requireControl(result.simulatedUserActions.every(action => !!result.publicNarration?.includes(action)), 'publicNarration', 'every simulatedUserActions entry must appear verbatim');
       if (sharedMeta!.phase === 'wrap_up' && previousOutline) requireControl(result.outline.openThreads.every(thread => previousOutline.openThreads.includes(thread)), 'outline.openThreads', 'wrap_up may only retain or remove original strings');
@@ -70,11 +71,12 @@ export function narrativeTask(shared: boolean, from: string, at: string, eventId
   });
 }
 
-export function personalTask(kind: 'chat' | 'life' | 'shared', at: string, tasks: ScheduledTask[], mode: string, messageIds: string[], sharedMeta?: SharedTurnMeta | null): ModelTask<PersonalResult> {
+export function personalTask(kind: 'chat' | 'life' | 'shared', at: string, tasks: ScheduledTask[], mode: string, messageIds: string[], sharedMeta?: SharedTurnMeta | null, publicNarration?: string | null): ModelTask<PersonalResult> {
   return modelTask(`personal_${kind}`, kind === 'life' ? life : chat, (r: PersonalResult) => {
     if (kind === 'shared') {
       requireControl(!!sharedMeta, 'sharedMeta', 'shared calls require fixed selection metadata');
       if (sharedMeta!.phase === 'final') requireControl(r.sharedChange?.action === 'end', 'sharedChange', 'final must end the shared activity');
+      if (r.sharedChange?.action === 'end') requireControl(!!publicNarration?.trim(), 'publicNarration', 'end requires existing public closing narration; you cannot rewrite narrative: defer end and plan a public close if narration is empty');
     }
     if ('reply' in r && r.reply.decision === 'later') requireControl(milliseconds(r.reply.reconsiderAt) > milliseconds(at), 'reply.reconsiderAt', 'must be later than at');
     const touched = new Set<string>();
