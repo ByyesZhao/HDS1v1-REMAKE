@@ -141,28 +141,46 @@ export function environmentTask(kind: 'world' | 'school', old: EnvironmentEvent[
   });
 }
 
-export function consolidationTask(snapshot:MemoryCandidate[],selectedIds:string[]):ModelTask<MaintenanceUnit[]> {
-  const unit=z.object({unitKey:text.min(1),action:z.enum(['refine','merge','discard','promote','retain']),readOwners:z.array(text).min(1),ids:z.array(text).min(1),sourceIds:z.array(text),canonicalId:text.optional(),content:text.optional(),eventSummary:text.optional(),feelingSummary:text.optional(),learnedKind:z.enum(['durable_experience','stable_understanding']).optional(),alwaysInclude:z.boolean().optional(),reason:text.optional()});
+export function consolidationTask(snapshot:MemoryCandidate[],selectedIds:string[],kind:'consolidation'|'audit'='consolidation'):ModelTask<MaintenanceUnit[]> {
+  const unit=z.object({unitKey:text.min(1),action:z.enum(['refine','merge','merge_short','discard','promote','retain','review_detail','review_learned']),readOwners:z.array(text).min(1),ids:z.array(text).min(1),sourceIds:z.array(text),canonicalId:text.optional(),canonicalShortId:text.optional(),targetId:text.optional(),decision:z.enum(['retain','report_conflict','suggest_revision','suggest_withdrawal']).optional(),content:text.optional(),eventSummary:text.optional(),feelingSummary:text.optional(),learnedKind:z.enum(['durable_experience','stable_understanding']).optional(),alwaysInclude:z.boolean().optional(),reason:text.optional()});
   const schema=z.object({units:z.array(unit)});
-  return {name:'memory_consolidation',prompt:prompts.memory_consolidation,schema:z.toJSONSchema(schema),parse(value:unknown){
+  return {name:'memory_consolidation',prompt:kind==='audit'?prompts.memory_audit:prompts.memory_consolidation,schema:z.toJSONSchema(schema),parse(value:unknown){
     const parsed=schema.parse(value),touched=new Set<string>(),unitKeys=new Set<string>(),covered=new Set<string>();
     const available=new Map(snapshot.map(row=>[row.id,row])),sources=new Set(snapshot.flatMap(row=>row.sourceIds));
     const units=parsed.units.map(u=>{
       requireControl(!unitKeys.has(u.unitKey),'unitKey','duplicate unit');unitKeys.add(u.unitKey);
       requireControl(u.readOwners.every(id=>available.has(id)),'readOwners','unknown snapshot owner');
       requireControl(u.ids.every(id=>u.readOwners.includes(id)),'ids','writes outside readOwners');
-      const projectionIds=snapshot.filter(r=>r.kind==='learned'&&r.canonicalMemoryId&&u.ids.includes(r.canonicalMemoryId)).map(r=>r.id);
-      const effectiveReadOwners=[...new Set([...u.readOwners,...projectionIds])];
+      const longIds=new Set(u.ids.flatMap(id=>{const row=available.get(id)!;return row.kind==='long'?[id]:row.linkedLongId?[row.linkedLongId]:[];}));
+      const implicit=snapshot.filter(r=>r.kind==='learned'&&(!!r.canonicalMemoryId&&longIds.has(r.canonicalMemoryId)||r.evidenceMemoryIds?.some(id=>longIds.has(id)))||['merge','merge_short'].includes(u.action)&&r.kind==='short'&&!!r.linkedLongId&&longIds.has(r.linkedLongId)).map(r=>r.id);
+      const effectiveReadOwners=[...new Set([...u.readOwners,...implicit])];
       requireControl(effectiveReadOwners.every(id=>!touched.has(id)),'ids','duplicate or overlapping unit');effectiveReadOwners.forEach(id=>touched.add(id));u.ids.forEach(id=>covered.add(id));
       requireControl(u.sourceIds.every(id=>sources.has(id)),'sourceIds','unknown snapshot source');
-      if(['refine','merge','promote'].includes(u.action)){requireControl(typeof u.content==='string'&&u.content.length>0,'content','required');requireControl(u.sourceIds.length>0,'sourceIds','required');}
+      if(['refine','merge','merge_short','promote'].includes(u.action)){requireControl(typeof u.content==='string'&&u.content.trim().length>0,'content','required');requireControl(u.sourceIds.length>0,'sourceIds','required');}
       if(['refine','discard','merge'].includes(u.action))for(const id of u.ids){const row=available.get(id)!;if(row.kind==='short'&&row.linkedLongId)requireControl(u.ids.includes(row.linkedLongId),'ids','linked long must be in the same unit');}
       if(u.action==='discard')requireControl(u.ids.every(id=>available.get(id)!.totalAwakenings===0),'discard','cannot discard awakened memory');
       if(u.action==='merge'){requireControl(!!u.canonicalId&&u.ids.includes(u.canonicalId)&&available.get(u.canonicalId)?.kind==='long','canonicalId','long identity required in merge inputs');requireControl(u.ids.filter(id=>available.get(id)!.kind==='long').length>=2,'ids','merge requires at least two long identities');}
-      if(u.action==='promote'){requireControl(!!u.learnedKind,'learnedKind','required');requireControl(u.ids.some(id=>available.get(id)!.totalAwakenings>=30),'promote','requires 30 dates');if(u.learnedKind==='stable_understanding')requireControl(new Set(u.readOwners.map(id=>available.get(id)!.canonicalMemoryId??available.get(id)!.linkedLongId??id)).size>=2,'readOwners','requires distinct events');}
+      if(u.action==='merge_short'){
+        const shorts=u.ids.map(id=>available.get(id)!).filter(r=>r.kind==='short').sort((a,b)=>milliseconds(a.createdAt)-milliseconds(b.createdAt)||(a.id<b.id?-1:a.id>b.id?1:0));
+        requireControl(shorts.length>=2,'ids','merge_short requires two shorts');requireControl(u.canonicalShortId===shorts[0]?.id,'canonicalShortId','must be earliest createdAt then smallest ID');
+        requireControl(typeof u.eventSummary==='string'&&!!u.eventSummary.trim()&&typeof u.feelingSummary==='string','eventSummary','merge_short summaries required');
+        requireControl(shorts.every(r=>!!r.linkedLongId&&u.readOwners.includes(r.linkedLongId)&&available.get(r.linkedLongId)?.kind==='long'),'readOwners','merge_short linked longs required');
+      }
+      if(u.action==='promote'){
+        requireControl(!!u.learnedKind,'learnedKind','required');requireControl(u.ids.some(id=>available.get(id)!.kind==='long'&&available.get(id)!.totalAwakenings>=30),'promote','requires 30 dates');
+        const evidence=u.readOwners.flatMap(id=>{const r=available.get(id)!;const canonical=r.kind==='long'?r.id:r.kind==='short'?r.linkedLongId:r.kind==='learned'?r.canonicalMemoryId:null;return canonical&&available.get(canonical)?.kind==='long'?[canonical]:[];});
+        if(u.learnedKind==='stable_understanding')requireControl(new Set(evidence).size>=2,'readOwners','requires distinct canonical events');
+      }
+      if(u.action==='review_detail'||u.action==='review_learned'){
+        requireControl(kind==='audit','action','review actions require audit job');const target=u.targetId?available.get(u.targetId):null;
+        requireControl(!!target&&u.ids.length===1&&u.ids[0]===target.id&&target.kind===(u.action==='review_detail'?'detail':'learned'),'targetId','review target kind and ids mismatch');
+        requireControl(!!u.decision&&(u.action==='review_detail'?['retain','report_conflict']:['retain','suggest_revision','suggest_withdrawal']).includes(u.decision),'decision','invalid review decision');
+        if(u.decision!=='retain'){requireControl(u.sourceIds.length>0,'sourceIds','report requires sources');requireControl(!!u.reason?.trim(),'reason','report requires reason');}
+      }else requireControl(kind==='consolidation'||u.action==='retain','action','audit may only review or retain');
       return {...u,readSet:effectiveReadOwners.map(id=>{const row=available.get(id)!;return {ownerType:row.ownerType,ownerId:row.ownerId,revision:row.revision,stateVersion:row.stateVersion} as OwnerVersion;})};
     });
     requireControl(selectedIds.every(id=>covered.has(id)),'selectedIds','every selected event requires a unit');
     return units;
   }};
 }
+export const auditTask=(snapshot:MemoryCandidate[],selectedIds:string[])=>consolidationTask(snapshot,selectedIds,'audit');

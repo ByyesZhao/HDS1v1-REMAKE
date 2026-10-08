@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import type { Clock,ModelRunner } from '../types';
 import { addMs,milliseconds,nextDaily } from '../time';
-import { consolidationTask } from '../model/contracts';
+import { consolidationTask,auditTask } from '../model/contracts';
 import { MemoryStore } from './store';
 import { MemoryLifecycle } from './lifecycle';
 import { MemoryIndex } from './index';
@@ -23,8 +23,14 @@ export class MemoryMaintenance {
   private makeJob(rows:MemoryCandidate[],cutoff:string,now:string):MaintenanceJob {
     const snapshot=rows.map(row=>row.linkedLongId?{...row,linkedLongId:this.store.canonical(row.linkedLongId)?.id??row.linkedLongId}:row);
     for(const row of snapshot.slice())if(row.linkedLongId){const long=this.store.canonical(row.linkedLongId);if(long&&!snapshot.some(r=>r.id===long.id))snapshot.push(long);}
-    for(const row of snapshot.slice().filter(r=>r.kind==='long'))for(const projection of this.store.projections(row.id))if(!snapshot.some(r=>r.id===projection.id))snapshot.push(projection);
-    const job:MaintenanceJob={id:randomUUID(),cutoff,createdAt:now,status:'pending',snapshot,selectedIds:rows.map(r=>r.id),readSet:snapshot.map(version),result:null,appliedUnitKeys:[],staleUnitKeys:[],retryAt:null,lastError:null};this.store.saveJob('memory_maintenance_jobs',job);return job;
+    const all=this.store.allOwners();let grew=true;
+    while(grew){grew=false;const longIds=new Set(snapshot.filter(r=>r.kind==='long').map(r=>r.id));
+      const dependencies=all.filter(r=>r.kind==='short'&&!!r.linkedLongId&&longIds.has(r.linkedLongId)||r.kind==='learned'&&r.status==='active'&&(!!r.canonicalMemoryId&&longIds.has(r.canonicalMemoryId)||r.evidenceMemoryIds?.some(id=>longIds.has(id))));
+      for(const r of snapshot.filter(r=>r.kind==='learned'))for(const id of [r.canonicalMemoryId,...r.evidenceMemoryIds??[]]){if(id){const l=this.store.canonical(id);if(l)dependencies.push(l);}}
+      for(const r of dependencies)if(!snapshot.some(s=>s.id===r.id)){snapshot.push(r);grew=true;}
+    }
+    const kind=rows.every(r=>r.kind==='detail'||r.kind==='learned')?'audit':'consolidation';
+    const job:MaintenanceJob={id:randomUUID(),kind,prunedOwnerKeys:[],cutoff,createdAt:now,status:'pending',snapshot,selectedIds:rows.map(r=>r.id),readSet:snapshot.map(version),result:null,appliedUnitKeys:[],staleUnitKeys:[],retryAt:null,lastError:null};this.store.saveJob('memory_maintenance_jobs',job);for(const row of rows)this.store.reserveDirty(row);return job;
   }
   private ensureCycle(now:string):void {
     let cycle=this.store.storage.get<{cutoff:string}>('memory_maintenance_cycle');
@@ -54,7 +60,7 @@ export class MemoryMaintenance {
     const cancelled=new Promise<never>((_,reject)=>{onAbort=()=>reject(controller.signal.reason??new Error('backend cancelled'));controller.signal.addEventListener('abort',onAbort,{once:true});});
     timer=setTimeout(()=>controller.abort(new Error('backend timeout')),this.options.backgroundTimeoutMs??120000);
     try {
-      const remote=work.table==='memory_index_jobs'?this.index.prepare(work.job,controller.signal):this.models.runModel(consolidationTask(work.job.snapshot,work.job.selectedIds??work.job.snapshot.map(r=>r.id)),{cutoff:work.job.cutoff,selectedIds:work.job.selectedIds??work.job.snapshot.map(r=>r.id),snapshot:work.job.snapshot},phaseOptions(this.options.web,'maintenance',work.job.id,'consolidation','memory_consolidation',{signal:controller.signal,lookup:null}));
+      const remote=work.table==='memory_index_jobs'?this.index.prepare(work.job,controller.signal):this.models.runModel((work.job.kind==='audit'?auditTask:consolidationTask)(work.job.snapshot,work.job.selectedIds??work.job.snapshot.map(r=>r.id)),{kind:work.job.kind??'consolidation',cutoff:work.job.cutoff,selectedIds:work.job.selectedIds??work.job.snapshot.map(r=>r.id),snapshot:work.job.snapshot},phaseOptions(this.options.web,'maintenance',work.job.id,'consolidation','memory_consolidation',{signal:controller.signal,lookup:null}));
       const result=await Promise.race([remote,cancelled]);
       if(this.stopped)return;
       if(work.table==='memory_index_jobs'){
@@ -86,7 +92,8 @@ export class MemoryMaintenance {
       const valid=unit.readSet.every(ref=>{const r=this.store.owner(ref);return r&&r.status!=='merged'&&r.status!=='discarded'&&r.stateVersion===ref.stateVersion&&r.revision===ref.revision;})&&unit.ids.every(id=>{const r=job.snapshot.find(r=>r.id===id);return !!r&&!!this.store.owner(r);})&&(!unit.canonicalId||unit.readSet.some(r=>r.ownerId===unit.canonicalId)&&!!this.store.canonical(unit.canonicalId));
       if(valid)this.applyUnit(unit,job,now);
       else {const eligible=this.store.maintenanceCandidates(job.cutoff).filter(r=>unit.ids.includes(r.id));if(eligible.length)this.makeJob(eligible,job.cutoff,now);}
-      const updated={...job,retryAt:null,lastError:null,appliedUnitKeys:valid?[...job.appliedUnitKeys,unit.unitKey]:job.appliedUnitKeys,staleUnitKeys:valid?job.staleUnitKeys:[...job.staleUnitKeys,unit.unitKey]};
+      const latest=this.store.job<MaintenanceJob>(work.table,job.id)??job;
+      const updated={...latest,retryAt:null,lastError:null,appliedUnitKeys:valid?[...latest.appliedUnitKeys,unit.unitKey]:latest.appliedUnitKeys,staleUnitKeys:valid?latest.staleUnitKeys.filter(k=>k!==unit.unitKey):[...new Set([...latest.staleUnitKeys,unit.unitKey])]};
       if(updated.appliedUnitKeys.length+updated.staleUnitKeys.length===job.result!.length)updated.status='done';this.store.saveJob(work.table,updated);if(updated.status==='done')this.options.web?.releaseOwner('maintenance',job.id);return valid?'applied':'stale';
     });}catch(error){
       // The entire application transaction has already rolled back. Preserve its prepared result.
@@ -96,7 +103,15 @@ export class MemoryMaintenance {
   }
   private applyUnit(unit:MaintenanceUnit,job:MaintenanceJob,now:string):void {
     const rows=unit.ids.map(id=>job.snapshot.find(r=>r.id===id)).filter((r):r is MemoryCandidate=>!!r).map(r=>this.store.owner(r)).filter((r):r is MemoryCandidate=>!!r);
-    if(unit.action==='merge'){
+    if(unit.action==='merge_short'){
+      const shorts=rows.filter(r=>r.kind==='short');const merged=this.lifecycle.mergeShort(shorts.map(r=>r.id),unit.canonicalShortId!,unit.content!,unit.eventSummary!,unit.feelingSummary!,unit.sourceIds,now);
+      this.updateSummary(this.store.canonical(merged.linkedLongId!)!,{...unit,sourceIds:[...new Set([...unit.sourceIds,...shorts.flatMap(r=>r.sourceIds)])]},now);
+    }else if(unit.action==='review_detail'||unit.action==='review_learned'){
+      const target=rows.find(r=>r.id===unit.targetId);if(!target)throw Error('audit missing target');
+      const prefix=`${target.ownerType}:${target.id}:`;
+      this.store.storage.prepare('DELETE FROM memory_audit_reports WHERE id LIKE ?').run(`${prefix}%`);
+      if(unit.decision!=='retain')this.store.saveAudit({id:`${prefix}${unit.decision}`,at:now,readSet:unit.readSet,kind:unit.action==='review_detail'?'detail_conflict':unit.decision==='suggest_revision'?'learned_revision':'learned_withdrawal',sourceIds:unit.sourceIds,reason:unit.reason!});
+    }else if(unit.action==='merge'){
       const longs=rows.filter(r=>r.kind==='long'),preferred=rows.map(r=>r.linkedLongId).filter((id):id is string=>!!id).map(id=>this.store.canonical(id)!).filter(Boolean);
       const main=[...(preferred.length?preferred:longs)].sort((a,b)=>milliseconds(a.createdAt)-milliseconds(b.createdAt)||a.id.localeCompare(b.id))[0];
       if(!main)throw new Error('merge requires long identities');this.lifecycle.merge(longs.map(r=>r.id),main.id,now);this.updateSummary(this.store.canonical(main.id)!,unit,now);
@@ -106,7 +121,11 @@ export class MemoryMaintenance {
       const row=rows.find(r=>r.kind==='long'&&r.totalAwakenings>=30)!;
       this.lifecycle.promote(row.id,`${job.id}:learned:${job.result!.findIndex(u=>u.unitKey===unit.unitKey)}`,unit.content!,unit.learnedKind!,unit.alwaysInclude??false,unit.readSet.map(r=>r.ownerId),now);
     } else for(const row of rows.filter(r=>r.kind==='long'&&r.totalAwakenings>=30))this.lifecycle.evaluateRetain(row.id);
-    for(const row of rows.filter(r=>r.kind==='short')){const current=this.store.owner(row)!;this.store.saveOwner({...current,consolidatedRevision:current.revision,stateVersion:current.stateVersion+1});}
+    for(const row of rows.filter(r=>r.kind==='short')){const current=this.store.owner(row);if(current&&current.status==='active')this.store.saveOwner({...current,consolidatedRevision:current.revision,stateVersion:current.stateVersion+1});}
+    for(const read of unit.readSet){const current=this.store.owner(read);if(!current)continue;
+      if(current.kind==='learned'&&!(job.selectedIds??unit.ids).includes(current.id)){if(current.stateVersion!==read.stateVersion)this.store.queueDirty(current,'learned',now);continue;}
+      if(current.kind==='short'||current.kind==='long'||(job.selectedIds??unit.ids).includes(current.id))this.store.completeDirty(read,current);
+    }
   }
   private updateSummary(row:MemoryCandidate,unit:MaintenanceUnit,now:string){
     const content=unit.content!,eventSummary=unit.eventSummary??content,feelingSummary=unit.feelingSummary??row.feelingSummary;

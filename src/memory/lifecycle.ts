@@ -25,24 +25,24 @@ export class MemoryLifecycle {
         if(change.existingLongId&&(!existing||existing.kind!=='long'))throw new Error('existingLongId: unknown memory');
         const longId=existing?.id??`${id}:long`;
         const short=this.store.makeOwner({ownerType:'short',ownerId:id},{content:change.content,eventSummary:change.eventSummary,feelingSummary:change.feelingSummary,topics:change.topics,sourceIds:change.sourceIds,importance:change.importance,happenedAt:change.happenedAt??at,happenedUntil:change.happenedUntil??change.happenedAt??at,shortExpiresAt:addMs(at,7*day),linkedLongId:longId},at);
-        this.store.saveOwner(short);this.store.queueIndex(short,at);
+        this.store.saveOwner(short);this.store.queueIndex(short,at);this.store.queueDirty(short,'event',at);
         if(!change.existingLongId) {
           const start=change.importance==='high'?at:short.shortExpiresAt!;
           const long=this.store.makeOwner({ownerType:'long',ownerId:longId},{content:summary(change.eventSummary,change.feelingSummary),eventSummary:change.eventSummary,feelingSummary:change.feelingSummary,topics:change.topics,sourceIds:change.sourceIds,...eventRange([short]),importance:change.importance,retainedFrom:start,expiresAt:addMs(start,90*day)},at);
-          this.store.saveOwner(long);this.store.queueIndex(long,at);this.grant(long,'initial',start,[]);
+          this.store.saveOwner(long);this.store.queueIndex(long,at);this.grant(long,'initial',start,[]);this.store.queueDirty(long,'event',at);
         } else {
           const content=summary(change.eventSummary,change.feelingSummary),long=existing!;
           const updated={...long,content,eventSummary:change.eventSummary,feelingSummary:change.feelingSummary,topics:change.topics,sourceIds:union(long.sourceIds,change.sourceIds),...eventRange([long,short]),lastEventUpdateAt:at,stateVersion:long.stateVersion+1};
           const changed=memoryIndexText(long)!==memoryIndexText(updated);updated.revision=long.revision+(changed?1:0);
           if(long.retainedFrom&&milliseconds(at)<milliseconds(long.retainedFrom)){updated.retainedFrom=short.shortExpiresAt;updated.expiresAt=addMs(updated.retainedFrom!,90*day);this.store.saveGrant({id:`${long.id}:initial`,canonicalMemoryId:long.id,kind:'initial',anchorAt:updated.retainedFrom!,expiresAt:updated.expiresAt,triggerDates:[]});}
-          this.store.saveOwner(updated);if(changed)this.store.queueIndex(updated,at);this.synchronizeProjections(updated,at);
+          this.store.saveOwner(updated);if(changed)this.store.queueIndex(updated,at);this.store.queueDirty(updated,'event',at);this.synchronizeProjections(updated,at,true);
         }
       } else {
         const old=this.store.owner({ownerType:'short',ownerId:change.id});if(!old)throw new Error('short update: unknown memory');
         const short={...old,content:change.content,eventSummary:change.eventSummary,feelingSummary:change.feelingSummary,topics:change.topics,sourceIds:union(old.sourceIds,change.sourceIds),...eventRange([old,{happenedAt:change.happenedAt??old.happenedAt,happenedUntil:change.happenedUntil}]),stateVersion:old.stateVersion+1};
         const changed=memoryIndexText(old)!==memoryIndexText(short);short.revision=old.revision+(changed?1:0);
         if(change.hasNewEventProgress){short.lastEventUpdateAt=at;short.shortExpiresAt=addMs(at,7*day);}
-        this.store.saveOwner(short);if(changed)this.store.queueIndex(short,at);
+        this.store.saveOwner(short);if(changed)this.store.queueIndex(short,at);this.store.queueDirty(short,'event',at);
         const long=old.linkedLongId?this.store.canonical(old.linkedLongId):null;
         if(long) {
           const content=summary(change.eventSummary,change.feelingSummary);
@@ -52,7 +52,7 @@ export class MemoryLifecycle {
             updated.retainedFrom=short.shortExpiresAt;updated.expiresAt=addMs(updated.retainedFrom!,90*day);
             this.store.saveGrant({id:`${long.id}:initial`,canonicalMemoryId:long.id,kind:'initial',anchorAt:updated.retainedFrom!,expiresAt:updated.expiresAt,triggerDates:[]});
           }
-          this.store.saveOwner(updated);if(textChanged)this.store.queueIndex(updated,at);this.synchronizeProjections(updated,at);
+          this.store.saveOwner(updated);if(textChanged)this.store.queueIndex(updated,at);this.store.queueDirty(updated,'event',at);this.synchronizeProjections(updated,at,true);
         }
       }
     }
@@ -62,7 +62,7 @@ export class MemoryLifecycle {
       const old=this.store.owner({ownerType:'detail',ownerId:change.key});
       const row=this.store.makeOwner({ownerType:'detail',ownerId:change.key},{content:change.value,key:change.key,value:change.value,aliases:change.aliases.length?change.aliases:prior?.aliases??[],sourceIds:change.sourceIds,effectiveAt:at,revision:(old?.revision??0)+1,stateVersion:(old?.stateVersion??0)+1},old?.createdAt??at);
       const id=`${turnId}:detail:${i}`;this.store.storage.save('detail_history',id,{id,key:change.key,previousValue:prior?.value??null,newValue:change.value,effectiveAt:at,reason:change.reason,sourceIds:change.sourceIds,turnId});
-      this.store.saveOwner(row);this.store.queueIndex(row,at);
+      this.store.saveOwner(row);this.store.queueIndex(row,at);this.store.queueDirty(row,'detail',at);
     });
   }
   private grant(row:MemoryCandidate,kind:RetentionGrant['kind'],anchorAt:string,triggerDates:string[]):void {
@@ -126,7 +126,7 @@ export class MemoryLifecycle {
     this.refresh(main.id);const current=this.store.canonical(main.id)!;if(textChanged)this.store.queueIndex(current,at??main.createdAt);this.synchronizeProjections(current,at??main.createdAt);
   }
   promotionCandidates():MemoryCandidate[]{return this.store.storage.prepare("SELECT data FROM memories WHERE json_extract(data,'$.kind')='long' AND json_extract(data,'$.status')='active' AND json_extract(data,'$.totalAwakenings')>=30 AND (json_extract(data,'$.evaluatedEvidenceVersion') IS NULL OR json_extract(data,'$.evaluatedEvidenceVersion')<json_extract(data,'$.stateVersion'))").all().map(r=>JSON.parse(String(r.data)));}
-  synchronizeProjections(row:MemoryCandidate,at:string):void {
+  synchronizeProjections(row:MemoryCandidate,at:string,dirty=false):void {
     for(const projection of this.store.projections(row.id)){
       const basis={content:row.content,sourceIds:row.sourceIds,revision:row.revision};
       const updated={...projection,sourceIds:union(projection.sourceIds,row.sourceIds),topics:union(projection.topics,row.topics),projectionBasis:basis};
@@ -134,15 +134,29 @@ export class MemoryLifecycle {
       if(projection.learnedKind==='durable_experience'){updated.content=row.content;updated.eventSummary=row.eventSummary;updated.feelingSummary=row.feelingSummary;Object.assign(updated,eventRange([row]),{lastEventUpdateAt:row.lastEventUpdateAt});}
       if(JSON.stringify(updated)===JSON.stringify(projection))continue;
       const textChanged=memoryIndexText(projection)!==memoryIndexText(updated);updated.revision=projection.revision+(textChanged?1:0);updated.stateVersion=projection.stateVersion+1;
-      this.store.saveOwner(updated);if(textChanged)this.store.queueIndex(updated,at);
+      this.store.saveOwner(updated);if(textChanged)this.store.queueIndex(updated,at);if(dirty)this.store.queueDirty(updated,'learned',at);
     }
   }
   evaluateRetain(id:string):void {const row=this.store.canonical(id)!;this.store.saveOwner({...row,evaluatedEvidenceVersion:row.stateVersion+1,stateVersion:row.stateVersion+1});}
   promote(id:string,learnedId:string,content:string,kind:'durable_experience'|'stable_understanding',alwaysInclude:boolean,evidenceIds:string[],at:string):void {
     const row=this.store.canonical(id)!;if(row.totalAwakenings<30)throw new Error('promotion requires 30 effective dates');
-    const evidence=union(evidenceIds.map(id=>this.store.canonical(id)?.id??id));
+    const evidence=union(evidenceIds.flatMap(id=>{const l=this.store.canonical(id);return l?[l.id]:[];}));
     if(kind==='stable_understanding'&&evidence.length<2)throw new Error('stable understanding requires distinct events');
-    const learned=this.store.makeOwner({ownerType:'learned',ownerId:learnedId},{content,eventSummary:content,sourceIds:union(row.sourceIds,evidence),canonicalMemoryId:row.id,learnedKind:kind,alwaysInclude:kind==='stable_understanding'&&alwaysInclude,topics:row.topics,...(kind==='durable_experience'?{...eventRange([row]),lastEventUpdateAt:row.lastEventUpdateAt}:{})},at);
-    this.store.saveOwner({...row,status:'durable',expiresAt:null,windowAwakenings:0,stateVersion:row.stateVersion+1});this.store.saveOwner(learned);this.store.queueIndex(learned,at);
+    const learned=this.store.makeOwner({ownerType:'learned',ownerId:learnedId},{content,eventSummary:content,sourceIds:union(row.sourceIds,...evidence.map(id=>this.store.canonical(id)!.sourceIds)),evidenceMemoryIds:evidence,canonicalMemoryId:row.id,learnedKind:kind,alwaysInclude:kind==='stable_understanding'&&alwaysInclude,topics:row.topics,...(kind==='durable_experience'?{...eventRange([row]),lastEventUpdateAt:row.lastEventUpdateAt}:{})},at);
+    this.store.saveOwner({...row,status:'durable',expiresAt:null,windowAwakenings:0,stateVersion:row.stateVersion+1});this.store.saveOwner(learned);this.store.queueIndex(learned,at);this.store.queueDirty(learned,'learned',at);
+  }
+  mergeShort(ids:string[],canonicalShortId:string,content:string,eventSummary:string,feelingSummary:string,sourceIds:string[],at:string):MemoryCandidate {
+    const shorts=ids.map(ownerId=>this.store.owner({ownerType:'short',ownerId})).filter((r):r is MemoryCandidate=>!!r&&r.kind==='short');
+    const main=shorts.find(r=>r.id===canonicalShortId);if(!main||shorts.length<2)throw new Error('merge_short needs live shorts');
+    const longs=[...new Map(shorts.map(s=>this.store.canonical(s.linkedLongId!)).filter((r):r is MemoryCandidate=>!!r).map(r=>[r.id,r])).values()];
+    const preferred=longs.sort((a,b)=>milliseconds(a.createdAt)-milliseconds(b.createdAt)||(a.id<b.id?-1:1))[0];if(!preferred)throw new Error('merge_short missing long summary');
+    if(longs.length>1)this.merge(longs.map(r=>r.id),preferred.id,at);
+    const latest=shorts.map(s=>s.lastEventUpdateAt).sort((a,b)=>milliseconds(b)-milliseconds(a))[0],exits=shorts.map(r=>r.capacityExitedAt).filter((s):s is string=>!!s).sort((a,b)=>milliseconds(a)-milliseconds(b));
+    const merged={...main,content,eventSummary,feelingSummary:union([feelingSummary],...shorts.map(s=>s.feelingSummary?[s.feelingSummary]:[])).join('\n'),sourceIds:union(sourceIds,...shorts.map(s=>s.sourceIds)),topics:union(...shorts.map(s=>s.topics)),...eventRange(shorts),lastEventUpdateAt:latest,shortExpiresAt:addMs(latest,7*day),linkedLongId:preferred.id,capacityExitedAt:exits[0]??null,capacityExitReason:exits.length?'short_capacity' as const:null,revision:main.revision+1,stateVersion:(this.store.owner(main)?.stateVersion??main.stateVersion)+1};
+    this.store.saveOwner(merged);this.store.queueIndex(merged,at);
+    for(const s of shorts.filter(s=>s.id!==main.id)){
+      this.store.pruneOwnerFromJobs(s,at);this.store.storage.prepare('DELETE FROM memory_index WHERE ownerType=? AND ownerId=?').run('short',s.id);
+      this.store.saveOwner({...s,content:'',eventSummary:'',feelingSummary:'',sourceIds:[],topics:[],status:'merged',mergedInto:main.id,stateVersion:s.stateVersion+1});
+    }return merged;
   }
 }
