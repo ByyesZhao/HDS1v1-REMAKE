@@ -42,6 +42,9 @@ export class WebSearchStore {
   }
   finishOperation(runId:string,id:string,response:WebSearchResponse):void {this.storage.transaction(()=>{const op=this.operation(runId,id);this.saveOperation({...op,status:'done',response});});}
   saveCheckpoint(runId:string,checkpoint:WebModelCheckpoint):void {const session=this.session(runId);this.put('web_sessions',runId,{...session,checkpoint});}
+  compactOwnerCheckpoint(ownerType:ModelRunRef['ownerType'],ownerId:string):void {
+    this.storage.prepare("UPDATE web_sessions SET data=json_set(data,'$.checkpoint',NULL) WHERE json_extract(data,'$.ref.ownerType')=? AND json_extract(data,'$.ref.ownerId')=?").run(ownerType,ownerId);
+  }
   incrementMetric(runId:string,metric:keyof WebSessionMetrics):void {const session=this.session(runId);session.metrics[metric]++;this.put('web_sessions',runId,session);}
   markProvided(runId:string,materialIds:string[]):void {
     this.storage.transaction(()=>{const session=this.session(runId),rows=this.materialRows(runId);if(materialIds.some(id=>!rows.some(r=>r.material.id===id)))throw new Error('unknown provided web material');

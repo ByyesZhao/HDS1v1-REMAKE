@@ -57,11 +57,20 @@ export class MemoryMaintenance {
       const remote=work.table==='memory_index_jobs'?this.index.prepare(work.job,controller.signal):this.models.runModel(consolidationTask(work.job.snapshot,work.job.selectedIds??work.job.snapshot.map(r=>r.id)),{cutoff:work.job.cutoff,selectedIds:work.job.selectedIds??work.job.snapshot.map(r=>r.id),snapshot:work.job.snapshot},phaseOptions(this.options.web,'maintenance',work.job.id,'consolidation','memory_consolidation',{signal:controller.signal,lookup:null}));
       const result=await Promise.race([remote,cancelled]);
       if(this.stopped)return;
-      if(work.table==='memory_index_jobs')this.store.saveJob(work.table,{...work.job,status:'ready',result:Array.from((result as import('./types').IndexResult).normalizedVector),lastError:null,retryAt:null});
-      else this.store.saveJob(work.table,{...work.job,status:'ready',result:result as MaintenanceUnit[],lastError:null,retryAt:null});
+      if(work.table==='memory_index_jobs'){
+        const current=this.store.job<IndexJob>(work.table,work.job.id);if(!current||current.status==='done'||!this.store.owner(current.owner))return;
+        this.store.saveJob(work.table,{...current,status:'ready',result:Array.from((result as import('./types').IndexResult).normalizedVector),lastError:null,retryAt:null});
+      }else{
+        const current=this.store.job<MaintenanceJob>(work.table,work.job.id);if(!current||current.status==='done')return;
+        const pruned=new Set(current.prunedOwnerKeys??[]),units=result as MaintenanceUnit[];
+        const invalid=units.filter(u=>u.readSet.some(r=>pruned.has(`${r.ownerType}:${r.ownerId}`)||!this.store.owner(r))||u.ids.some(id=>!current.snapshot.some(r=>r.id===id)));
+        const staleUnitKeys=[...new Set([...current.staleUnitKeys,...invalid.map(u=>u.unitKey)])];
+        const clean=units.map(u=>invalid.includes(u)?{unitKey:u.unitKey,action:u.action,ids:[],readSet:[],sourceIds:[]}:u);
+        this.store.saveJob(work.table,{...current,status:clean.every(u=>staleUnitKeys.includes(u.unitKey))?'done':'ready',result:clean,staleUnitKeys,lastError:null,retryAt:null});
+      }
       this.options.onReady?.();
-    }catch(error){if(!this.stopped){this.store.saveJob(work.table,{...work.job,status:'pending',retryAt:addMs(this.options.clock.now(),this.options.retryDelayMs??300000),lastError:error instanceof Error?error.message:String(error)});this.options.onReady?.();}}
-    finally{clearTimeout(timer);controller.signal.removeEventListener('abort',onAbort);}
+    }catch(error){if(!this.stopped){const current=this.store.job<IndexJob|MaintenanceJob>(work.table,work.job.id);if(current&&current.status!=='done'){this.store.saveJob(work.table,{...current,status:'pending',retryAt:addMs(this.options.clock.now(),this.options.retryDelayMs??300000),lastError:error instanceof Error?error.message:String(error)});this.options.onReady?.();}}}
+    finally{clearTimeout(timer);controller.signal.removeEventListener('abort',onAbort);if(work.table==='memory_maintenance_jobs')this.options.web?.compactOwnerCheckpoint('maintenance',work.job.id);}
   }
   applyOneReady(now:string):'applied'|'stale'|'none' {
     if(this.stopped)return 'none';const works=this.work();const work=works.find(w=>w.job.status==='ready'&&this.due(w.job,now))??works.find(w=>w.table==='memory_index_jobs'&&w.job.status==='pending'&&w.job.configSignature!==this.index.configSignature&&this.due(w.job,now));if(!work)return 'none';
@@ -74,7 +83,7 @@ export class MemoryMaintenance {
       }
       const job=work.job,unit=job.result!.find(u=>!job.appliedUnitKeys.includes(u.unitKey)&&!job.staleUnitKeys.includes(u.unitKey));
       if(!unit){this.store.saveJob(work.table,{...job,status:'done',retryAt:null,lastError:null});this.options.web?.releaseOwner('maintenance',job.id);return 'none';}
-      const valid=unit.readSet.every(ref=>this.store.owner(ref)?.stateVersion===ref.stateVersion);
+      const valid=unit.readSet.every(ref=>{const r=this.store.owner(ref);return r&&r.status!=='merged'&&r.status!=='discarded'&&r.stateVersion===ref.stateVersion&&r.revision===ref.revision;})&&unit.ids.every(id=>{const r=job.snapshot.find(r=>r.id===id);return !!r&&!!this.store.owner(r);})&&(!unit.canonicalId||unit.readSet.some(r=>r.ownerId===unit.canonicalId)&&!!this.store.canonical(unit.canonicalId));
       if(valid)this.applyUnit(unit,job,now);
       else {const eligible=this.store.maintenanceCandidates(job.cutoff).filter(r=>unit.ids.includes(r.id));if(eligible.length)this.makeJob(eligible,job.cutoff,now);}
       const updated={...job,retryAt:null,lastError:null,appliedUnitKeys:valid?[...job.appliedUnitKeys,unit.unitKey]:job.appliedUnitKeys,staleUnitKeys:valid?job.staleUnitKeys:[...job.staleUnitKeys,unit.unitKey]};
@@ -86,7 +95,7 @@ export class MemoryMaintenance {
     }
   }
   private applyUnit(unit:MaintenanceUnit,job:MaintenanceJob,now:string):void {
-    const rows=unit.ids.map(id=>job.snapshot.find(r=>r.id===id)!).map(r=>this.store.owner(r)!);
+    const rows=unit.ids.map(id=>job.snapshot.find(r=>r.id===id)).filter((r):r is MemoryCandidate=>!!r).map(r=>this.store.owner(r)).filter((r):r is MemoryCandidate=>!!r);
     if(unit.action==='merge'){
       const longs=rows.filter(r=>r.kind==='long'),preferred=rows.map(r=>r.linkedLongId).filter((id):id is string=>!!id).map(id=>this.store.canonical(id)!).filter(Boolean);
       const main=[...(preferred.length?preferred:longs)].sort((a,b)=>milliseconds(a.createdAt)-milliseconds(b.createdAt)||a.id.localeCompare(b.id))[0];

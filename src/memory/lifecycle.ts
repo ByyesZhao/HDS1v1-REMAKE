@@ -1,6 +1,6 @@
 import { addMs, milliseconds, localParts } from '../time';
 import { MemoryStore,memoryIndexText } from './store';
-import {MemoryCapacity} from './capacity';
+import {MemoryCapacity,archiveStart} from './capacity';
 import type { AwakeningInput, MemoryCandidate, MemoryResultV3, RetentionGrant } from './types';
 
 const day=86400_000;
@@ -95,7 +95,10 @@ export class MemoryLifecycle {
     const feelings=union(...ordered.map(r=>r.feelingSummary?[r.feelingSummary]:[]));
     let expiry=main.expiresAt;for(const row of unique)if(row.expiresAt&&(!expiry||milliseconds(row.expiresAt)>milliseconds(expiry)))expiry=row.expiresAt;
     const durable=unique.some(r=>r.status==='durable');
-    const merged={...main,sourceIds:union(...unique.map(r=>r.sourceIds)),topics:union(...unique.map(r=>r.topics)),feelingSummary:feelings.join('\n'),...eventRange(ordered),lastEventUpdateAt:ordered.map(r=>r.lastEventUpdateAt).sort((a,b)=>milliseconds(b)-milliseconds(a))[0],expiresAt:durable?null:expiry,status:durable?'durable' as const:main.status,stateVersion:main.stateVersion+1};
+    const mergeAt=at??main.createdAt,live=unique.filter(r=>!archiveStart(r,mergeAt)),anchors=unique.map(r=>archiveStart(r,mergeAt)).filter((s):s is string=>!!s).sort((a,b)=>milliseconds(a)-milliseconds(b));
+    const merged={...main,sourceIds:union(...unique.map(r=>r.sourceIds)),topics:union(...unique.map(r=>r.topics)),feelingSummary:feelings.join('\n'),...eventRange(ordered),lastEventUpdateAt:ordered.map(r=>r.lastEventUpdateAt).sort((a,b)=>milliseconds(b)-milliseconds(a))[0],expiresAt:durable?null:expiry,status:durable?'durable' as const:main.status,stateVersion:main.stateVersion+1,
+      archiveEnteredAt:live.length?null:anchors[0]??null,capacityExitedAt:live.length?null:main.capacityExitedAt??unique.find(r=>r.capacityExitedAt)?.capacityExitedAt??null,capacityExitReason:live.length?null:main.capacityExitReason??unique.find(r=>r.capacityExitReason)?.capacityExitReason??null,
+      retainedFrom:live.length?live.map(r=>r.retainedFrom).filter((s):s is string=>!!s).sort((a,b)=>milliseconds(a)-milliseconds(b))[0]??main.retainedFrom:main.retainedFrom};
     const textChanged=memoryIndexText(main)!==memoryIndexText(merged);merged.revision=main.revision+(textChanged?1:0);
     this.store.saveOwner(merged);
     for(const row of unique) {
@@ -108,7 +111,17 @@ export class MemoryLifecycle {
         const updated={...projection,canonicalMemoryId:main.id,stateVersion:projection.stateVersion+1,...(target?{status:'merged' as const,mergedInto:target.id}:{})};
         this.store.saveOwner(updated);
       }
-      this.store.saveOwner({...row,status:'merged',mergedInto:main.id,stateVersion:row.stateVersion+1});
+      this.store.pruneOwnerFromJobs(row,mergeAt);
+      this.store.storage.prepare('DELETE FROM memory_index WHERE ownerType=? AND ownerId=?').run(row.ownerType,row.id);
+      this.store.saveOwner({...row,content:'',eventSummary:'',feelingSummary:'',sourceIds:[],topics:[],status:'merged',mergedInto:main.id,stateVersion:row.stateVersion+1});
+    }
+    const memberIds=new Set(unique.map(r=>r.id));
+    for(const row of this.store.allOwners()){
+      if(row.kind==='short'&&row.linkedLongId&&memberIds.has(row.linkedLongId)&&row.linkedLongId!==main.id)this.store.saveOwner({...row,linkedLongId:main.id,stateVersion:row.stateVersion+1});
+      if(row.kind==='learned'&&row.status==='active'){
+        const evidence=union((row.evidenceMemoryIds??[]).map(id=>memberIds.has(id)?main.id:id));
+        if(JSON.stringify(evidence)!==JSON.stringify(row.evidenceMemoryIds??[]))this.store.saveOwner({...row,evidenceMemoryIds:evidence,stateVersion:row.stateVersion+1});
+      }
     }
     this.refresh(main.id);const current=this.store.canonical(main.id)!;if(textChanged)this.store.queueIndex(current,at??main.createdAt);this.synchronizeProjections(current,at??main.createdAt);
   }

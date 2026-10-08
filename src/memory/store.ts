@@ -1,6 +1,6 @@
 import { Storage } from '../storage';
 import { addMs, milliseconds, nextDaily } from '../time';
-import type { Awakening, IndexJob, MemoryCandidate, MemoryOwnerRef, OwnerVersion, RetentionGrant, RetrievalRequest,MemoryDirtyOwner,MemoryAuditReport } from './types';
+import type { Awakening, IndexJob, MemoryCandidate, MemoryOwnerRef, OwnerVersion, RetentionGrant, RetrievalRequest,MemoryDirtyOwner,MemoryAuditReport,MaintenanceJob,MaintenanceUnit } from './types';
 import {memoryOwnerData} from './types';
 
 const day=86400_000;
@@ -118,7 +118,44 @@ export class MemoryStore {
     const sources=[...new Set([...(existing?.sourceIds??[]),...a.sourceIds])];
     this.storage.prepare('INSERT INTO memory_awakenings VALUES(?,?,?,?,?) ON CONFLICT(canonicalMemoryId,localDate) DO UPDATE SET firstEffectiveAt=excluded.firstEffectiveAt,turnId=excluded.turnId,sourceIds=excluded.sourceIds').run(a.canonicalMemoryId,a.localDate,earliest.firstEffectiveAt,earliest.turnId,JSON.stringify(sources));
   }
-  saveJob<T extends {id:string}>(table:JobTable,job:T):void {this.storage.prepare(`INSERT INTO ${table}(id,data) VALUES(?,?) ON CONFLICT(id) DO UPDATE SET data=excluded.data`).run(job.id,JSON.stringify(job));}
+  saveJob<T extends {id:string}>(table:JobTable,job:T):void {
+    let data:any=table==='memory_maintenance_jobs'?{kind:'consolidation',prunedOwnerKeys:[],...job}:job;
+    if(data.status==='done')data=table==='memory_maintenance_jobs'?{...data,snapshot:[],readSet:[],result:null}:{...data,text:'',result:undefined};
+    this.storage.prepare(`INSERT INTO ${table}(id,data) VALUES(?,?) ON CONFLICT(id) DO UPDATE SET data=excluded.data`).run(job.id,JSON.stringify(data));
+  }
+  pruneOwnerFromJobs(owner:MemoryOwnerRef,at:string):void {
+    const key=`${owner.ownerType}:${owner.ownerId}`;
+    this.storage.prepare("DELETE FROM memory_index_jobs WHERE json_extract(data,'$.owner.ownerType')=? AND json_extract(data,'$.owner.ownerId')=?").run(owner.ownerType,owner.ownerId);
+    for(const job of this.jobs<MaintenanceJob>('memory_maintenance_jobs')){
+      if(!job.readSet.some(r=>`${r.ownerType}:${r.ownerId}`===key)&&!job.snapshot.some(r=>`${r.ownerType}:${r.ownerId}`===key))continue;
+      const affected=(u:MaintenanceUnit)=>u.readSet.some(r=>`${r.ownerType}:${r.ownerId}`===key)||u.ids.includes(owner.ownerId)||u.canonicalId===owner.ownerId;
+      const stale=(job.result??[]).filter(affected).map(u=>u.unitKey);
+      const result=job.result?.map(u=>affected(u)?{unitKey:u.unitKey,action:u.action,ids:[],readSet:[],sourceIds:[]}:u)??null;
+      const snapshot=job.snapshot.filter(r=>`${r.ownerType}:${r.ownerId}`!==key),selectedIds=(job.selectedIds??job.snapshot.map(r=>r.id)).filter(id=>id!==owner.ownerId);
+      const updated={...job,snapshot,selectedIds,readSet:job.readSet.filter(r=>`${r.ownerType}:${r.ownerId}`!==key),prunedOwnerKeys:[...new Set([...(job.prunedOwnerKeys??[]),key])],result,staleUnitKeys:[...new Set([...job.staleUnitKeys,...stale])]};
+      if(!selectedIds.length||job.status==='ready'&&updated.appliedUnitKeys.length+updated.staleUnitKeys.length===(result?.length??0))updated.status='done';
+      this.saveJob('memory_maintenance_jobs',updated);
+    }
+  }
+  purgeOwner(owner:MemoryOwnerRef,at:string):void {
+    this.pruneOwnerFromJobs(owner,at);
+    this.storage.prepare('DELETE FROM memory_index WHERE ownerType=? AND ownerId=?').run(owner.ownerType,owner.ownerId);
+    const table=owner.ownerType==='learned'?'learned_background':owner.ownerType==='detail'?'details':'memories';
+    this.storage.prepare(`DELETE FROM ${table} WHERE id=?`).run(owner.ownerId);
+    if(owner.ownerType==='long'){
+      this.storage.prepare('DELETE FROM memory_awakenings WHERE canonicalMemoryId=?').run(owner.ownerId);
+      this.storage.prepare("DELETE FROM memory_retention_grants WHERE json_extract(data,'$.canonicalMemoryId')=?").run(owner.ownerId);
+    }
+    this.storage.prepare('DELETE FROM memory_dirty_owners WHERE id=?').run(`${owner.ownerType}:${owner.ownerId}`);
+    this.storage.prepare("DELETE FROM memory_audit_reports WHERE EXISTS(SELECT 1 FROM json_each(data,'$.readSet') r WHERE json_extract(r.value,'$.ownerType')=? AND json_extract(r.value,'$.ownerId')=?)").run(owner.ownerType,owner.ownerId);
+  }
+  compactCompletedPayloads():void {
+    this.storage.prepare("UPDATE post_jobs SET data=json_set(data,'$.result',NULL) WHERE id IN (SELECT id FROM turns WHERE json_extract(data,'$.done')=1)").run();
+    for(const table of ['memory_index_jobs','memory_maintenance_jobs'] as const)for(const job of this.jobs<IndexJob|MaintenanceJob>(table,['done']))this.saveJob(table,job);
+    if(this.storage.prepare("SELECT 1 FROM sqlite_master WHERE name='web_sessions'").get()){
+      this.storage.prepare("UPDATE web_sessions SET data=json_set(data,'$.checkpoint',NULL) WHERE (json_extract(data,'$.ref.ownerType')='turn' AND json_extract(data,'$.ref.ownerId') IN(SELECT id FROM turns WHERE json_extract(data,'$.done')=1)) OR (json_extract(data,'$.ref.ownerType')='environment' AND json_extract(data,'$.ref.ownerId') IN(SELECT id FROM environment_steps WHERE json_extract(data,'$.status') IN('committed','superseded'))) OR (json_extract(data,'$.ref.ownerType')='maintenance' AND json_extract(data,'$.ref.ownerId') IN(SELECT id FROM memory_maintenance_jobs WHERE json_extract(data,'$.status')='done'))").run();
+    }
+  }
   projections(canonicalMemoryId:string):MemoryCandidate[]{return this.storage.prepare("SELECT data FROM learned_background WHERE json_extract(data,'$.canonicalMemoryId')=? AND json_extract(data,'$.status')='active' ORDER BY rowid").all(canonicalMemoryId).map(r=>memoryOwnerData(JSON.parse(String(r.data))));}
   maintenanceCandidates(cutoff:string):MemoryCandidate[]{
     return this.storage.prepare("SELECT data FROM memories WHERE json_extract(data,'$.status')='active' AND ((json_extract(data,'$.kind')='short' AND julianday(json_extract(data,'$.shortExpiresAt'))<=julianday(?) AND (json_extract(data,'$.consolidatedRevision') IS NULL OR json_extract(data,'$.consolidatedRevision')!=json_extract(data,'$.revision'))) OR (json_extract(data,'$.kind')='long' AND julianday(json_extract(data,'$.createdAt'))<=julianday(?) AND json_extract(data,'$.totalAwakenings')>=30 AND (json_extract(data,'$.evaluatedEvidenceVersion') IS NULL OR json_extract(data,'$.evaluatedEvidenceVersion')<json_extract(data,'$.stateVersion')))) ORDER BY julianday(json_extract(data,'$.createdAt')),id").all(cutoff,cutoff).map(r=>memoryOwnerData(JSON.parse(String(r.data))));

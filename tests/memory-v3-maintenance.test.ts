@@ -30,7 +30,7 @@ it('starts without awaiting remote, commits only one independent ready unit, and
   expect(d.maintenance.applyOneReady(NOW)).toBe('applied');expect(d.store.owner({ownerType:'long',ownerId:'c:long'})!.content).toBe('手机preview');
   expect(d.maintenance.applyOneReady(NOW)).toBe('stale');expect(d.store.owner({ownerType:'short',ownerId:'b'})!.content).toBe('前台的新内容');
   expect(d.maintenance.applyOneReady(NOW)).toBe('applied');expect(d.store.owner({ownerType:'long',ownerId:'c:long'})!.content).toBe('手机refined2');
-  const jobs=d.store.jobs<any>('memory_maintenance_jobs');expect(jobs.find(j=>j.result)?.staleUnitKeys).toEqual(['u1']);expect(jobs.some(j=>j.status==='pending'&&j.snapshot.some((s:any)=>s.id==='b'))).toBe(true);
+  const jobs=d.store.jobs<any>('memory_maintenance_jobs');expect(jobs.find(j=>j.appliedUnitKeys.length)?.staleUnitKeys).toEqual(['u1']);expect(jobs.find(j=>j.status==='done')?.result).toBeNull();expect(jobs.some(j=>j.status==='pending'&&j.snapshot.some((s:any)=>s.id==='b'))).toBe(true);
 });
 it('keeps twenty event batches complete by default and treats optional character target as a soft batch boundary',async()=>{
   const d=create();for(let i=0;i<21;i++)event(d.store,`e${i}`,'详细内容'.repeat(4000));d.storage.set('runtime',{...d.storage.runtime(),nextMaintenanceAt:NOW});d.maintenance.startOne(NOW);

@@ -42,4 +42,5 @@ export async function runEnvironmentStep(d:Dependencies,stepId:string,generate:E
   if(d.environmentStore.steps(batch.id).every(s=>s.status==='committed'))d.environmentStore.saveBatch({...batch,status:'committed',closedAt:d.clock.now()});
  });
  d.web?.releaseOwner('environment',step.id);
+ d.web?.compactOwnerCheckpoint('environment',step.id);
 }

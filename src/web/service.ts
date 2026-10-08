@@ -61,5 +61,6 @@ export class WebSearchService {
   providedUrls(runId:string):string[]{const s=this.store.snapshot(runId);return s.materials.filter(m=>s.providedMaterialIds.includes(m.id)).map(m=>m.url);}
   selfReadSources(turnId:string,runId?:string){return this.store.selfReadSources(turnId,runId);}
   releaseOwner(ownerType:ModelRunRef['ownerType'],ownerId:string):void {this.cache.delete(`${ownerType}:${ownerId}`);}
+  compactOwnerCheckpoint(ownerType:ModelRunRef['ownerType'],ownerId:string):void {this.store.compactOwnerCheckpoint(ownerType,ownerId);}
   status(){return this.store.operationalStatus();}
 }

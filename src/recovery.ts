@@ -96,6 +96,8 @@ export async function finishPostprocessing(d: Dependencies, turn: TurnRecord): P
     }
     d.storage.set('runtime', runtime);
     d.storage.save('turns', turn.id, { ...current, done: true, completedAt, frozenResult: null });
+    const completedPost=d.storage.read('post_jobs',turn.id)!;d.storage.save('post_jobs',turn.id,{...completedPost,result:null});
+    d.web?.compactOwnerCheckpoint('turn',turn.id);
   });
   d.web?.releaseOwner('turn',turn.id);
 }
