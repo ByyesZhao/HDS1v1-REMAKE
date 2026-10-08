@@ -3,6 +3,7 @@ import { narrativeTask, personalTask } from '../src/model/contracts';
 import { narrative, silent, NOW, setup } from './helpers';
 import { makeSharedFixture } from './shared-v3-fixture';
 import { selectSharedMeta } from '../src/host/shared';
+import { ModelClient, ChatCompletionsTransport } from '../src/model/client';
 import type { SharedTurnMeta, SharedOutline } from '../src/types';
 const old: SharedOutline = { goal: '吃饭', openThreads: ['取餐', '结账'], endingCondition: '吃完各自回去' };
 const result = { ...narrative, publicNarration: '你取餐后回到桌边', progress: '取餐完成', outline: old, simulatedUserActions: [] };
@@ -11,6 +12,25 @@ function meta(phase: SharedTurnMeta['phase'] = 'ongoing', allowed = true): Share
   return { ...m, phase, allowSimulatedUserActions: allowed };
 }
 const task = (m = meta(), previous: SharedOutline | null = old) => narrativeTask(true, NOW, NOW, [], m, previous);
+it.each([true, false])('frozen shared permission selects one system prompt and preserves it across repair: %s', async allowed => {
+  const requests: any[] = [];
+  const transport = new ChatCompletionsTransport(() => ({ baseUrl: 'https://test.invalid', apiKey: 'test', model: 'test', reasoningEffort: 'low' }), async (_url, init) => {
+    requests.push(JSON.parse(String(init?.body)));
+    return new Response(JSON.stringify({ choices: [{ message: { content: JSON.stringify(requests.length === 1 ? {} : result) } }] }));
+  });
+  const m = meta('ongoing', allowed), selected = task(m);
+  // Later input changes cannot change an already constructed task or its repair branch.
+  m.allowSimulatedUserActions = !allowed;
+  await new ModelClient(transport).runModel(selected, { sharedMeta: { ...m, allowSimulatedUserActions: allowed } });
+  expect(requests).toHaveLength(2);
+  const system = requests[0].messages[0].content;
+  expect(system).toContain(allowed ? '允许代写双方' : '禁止新增用户动作');
+  expect(system).not.toContain(allowed ? '禁止新增用户动作' : '允许代写双方');
+  expect(system).not.toContain('仅sharedMeta.allowSimulatedUserActions=true时');
+  expect(system).toContain('goal'); expect(system).toContain('final');
+  expect(requests[1].messages[0].content).toBe(system);
+  expect(JSON.parse(requests[1].messages[1].content).repair).toBeDefined();
+});
 it('wrap whitespace compatibility keeps stored originals, without semantic matching or resurrecting removed threads', () => {
   const previous = { ...old, openThreads: ['  结账\n 后收拾  ', '取餐'] };
   const parsed = task(meta('wrap_up'), previous).parse({ ...result, outline: { ...old, openThreads: ['结账  后收拾'] } });

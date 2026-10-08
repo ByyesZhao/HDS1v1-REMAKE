@@ -25,6 +25,11 @@ it.each([false, true])('first_freeze_retains_interval_once: %s unattempted recov
   if (shared) { makeSharedFixture(d, { completedSteps: 0 }); configureSharedModels(d); }
   else { saveInput(d.storage, 'input', '你好'); d.storage.set('character', { ...d.storage.character(), sleep: { sleepAt: '2026-10-07T23:00:00+08:00', wakeAt: '2026-10-08T08:00:00+08:00' } }); }
   speech(d, shared); d.random.next = vi.fn(() => 0.5);
+  const narrativePrompts: string[] = [], runModel = d.models.runModel.bind(d.models);
+  d.models.runModel = async (task, input, options) => {
+    if (task.name === 'narrative_shared') narrativePrompts.push(task.prompt);
+    return runModel(task, input, options);
+  };
   const request: TurnRequest = shared ? (await new Scheduler(d.storage).collectReady(NOW))! : { inputMessageIds: ['input'], taskIds: [], triggerKinds: ['input'] };
   const turn = record(request, shared); d.storage.save('turns', turn.id, turn); expect(d.storage.read('turns', turn.id)!.autonomousIntervalMinutes).toBeUndefined();
   const generated = await generateTurn(d, request, turn.id); const frozen = freezeTurn(d, turn, generated.candidate, generated.items);
@@ -35,7 +40,11 @@ it.each([false, true])('first_freeze_retains_interval_once: %s unattempted recov
   await new HdsiApp(d).resumeUnfinishedTurn();
   const done = d.storage.read('turns', turn.id)!; expect(done.autonomousIntervalMinutes).toBe(180); expect(done.sharedMeta).toEqual(request.sharedMeta); expect(done.done).toBe(true);
   expect(d.random.next).toHaveBeenCalledTimes(1); expect(done.inputMessageIds).toEqual(request.inputMessageIds);
-  if (shared) { expect(d.storage.read('control_requests', 'late')!.status).toBe('pending'); expect(d.storage.character().scene.shared!.completedSteps).toBe(1); }
+  if (shared) {
+    expect(d.storage.read('control_requests', 'late')!.status).toBe('pending'); expect(d.storage.character().scene.shared!.completedSteps).toBe(1);
+    expect(narrativePrompts).toHaveLength(2); expect(narrativePrompts[0]).toContain('允许代写双方');
+    expect(narrativePrompts[1]).toBe(narrativePrompts[0]);
+  }
   await finishPostprocessing(d, done); expect(d.storage.read('turns', turn.id)!.autonomousIntervalMinutes).toBe(180); d.storage.close();
 });
 it.each(['partial', 'post', 'committed'] as const)('recover_exact_same_step: file reopen at %s keeps output/count/control exactly once', async stage => {

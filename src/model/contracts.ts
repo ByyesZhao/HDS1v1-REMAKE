@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import type { ModelTask, NarrativeResult, SharedNarrativeResult, SharedTurnMeta, SharedOutline, PersonalResult, ExpressionResult, MemoryResult, EnvironmentResult, ScheduledTask, EnvironmentEvent } from '../types';
-import { prompts } from './prompts';
+import { prompts, sharedNarrativePrompt } from './prompts';
 import { milliseconds } from '../time';
 import type { MemoryCandidate, MaintenanceUnit, OwnerVersion } from '../memory/types';
 
@@ -46,7 +46,7 @@ export function modelTask<T>(name: keyof typeof prompts, schema: z.ZodType, vali
 const requireControl = (condition: boolean, path: string, message: string) => { if (!condition) throw new Error(`${path}: ${message}`); };
 
 export function narrativeTask(shared: boolean, from: string, at: string, eventIds: string[] = [], sharedMeta?: SharedTurnMeta | null, previousOutline?: SharedOutline | null): ModelTask<NarrativeResult | SharedNarrativeResult> {
-  return modelTask(shared ? 'narrative_shared' : 'narrative', shared ? sharedNarrative : narrative, (r: NarrativeResult | SharedNarrativeResult) => {
+  const task = modelTask(shared ? 'narrative_shared' : 'narrative', shared ? sharedNarrative : narrative, (r: NarrativeResult | SharedNarrativeResult) => {
     r.experiences.forEach((e, i) => {
       requireControl(milliseconds(e.happenedAt) >= milliseconds(from) && milliseconds(e.happenedAt) <= milliseconds(at), `experiences.${i}.happenedAt`, 'must be within the elapsed interval');
       requireControl(e.relatedEventIds.every(id => eventIds.includes(id)), `experiences.${i}.relatedEventIds`, 'unknown event ID');
@@ -76,6 +76,9 @@ export function narrativeTask(shared: boolean, from: string, at: string, eventId
       }
     }
   });
+  // Use the selected turn's frozen permission, including repair and regeneration.
+  if (shared) task.prompt = sharedNarrativePrompt(sharedMeta?.allowSimulatedUserActions === true);
+  return task;
 }
 
 export function personalTask(kind: 'chat' | 'life' | 'shared', at: string, tasks: ScheduledTask[], mode: string, messageIds: string[], sharedMeta?: SharedTurnMeta | null, publicNarration?: string | null): ModelTask<PersonalResult> {
