@@ -83,7 +83,7 @@ export class SerialHost {
   }
   async resume(): Promise<void> {
     const d = this.app.dependencies;
-    d.storage.set('runtime', { ...d.storage.runtime(), paused: false, lastError: null });
+    d.storage.set('runtime', { ...d.storage.runtime(), paused: false, lastError: null, lastFailure:null });
     this.recover = true;
     await this.wake();
   }
@@ -95,7 +95,7 @@ export class SerialHost {
     const maintenance=d.maintenance?.status();
     const web=d.web?.status();
     const capacity=d.memoryCapacity?.counts(d.clock.now()),idle=d.memoryIdle?.eligibility(d.clock.now()),cleanup=d.memoryCleanup?.status();
-    return `状态：${d.storage.runtime().paused ? '暂停' : '运行'}；阶段：${stage}；下次调度：${display}`+(maintenance?`；维护：待办${maintenance.pending}／就绪${maintenance.ready}／在途${maintenance.inFlight?1:0}／重试${maintenance.retries}／后台请求${maintenance.backendRequests}；后台错误：${maintenance.lastError??'无'}；检索：查询${maintenance.retrieval.queries}／缓存${maintenance.retrieval.cacheHits}／远程${maintenance.retrieval.remoteRequests}／超时${maintenance.retrieval.timeouts}／失败${maintenance.retrieval.failures}／词法降级${maintenance.retrieval.lexicalFallbacks}`:'')+(capacity?`；短期活跃${capacity.shortActive}；长期占用${capacity.longOccupied}／预备${capacity.longPreview}／可见${capacity.longVisible}／归档${capacity.longArchive}；容量目标${JSON.stringify(d.memoryCapacity!.config)}；超量${capacity.shortOverflow}/${capacity.longOverflow}/${capacity.archiveOverflow}；保护${capacity.protectedLong}；清理阻挡${cleanup?.oldestBlock??'无'}`:'')+(idle?`；空闲资格${idle.reason}／截止${idle.readyAt??'无'}；增量待办${d.memoryStore?.dirtyOwners().length??0}`:'')+(web?`；网页（页面额度，非费用）：${JSON.stringify(web)}`:'');
+    return `状态：${d.storage.runtime().paused ? '暂停' : '运行'}；阶段：${stage}；下次调度：${display}`+(d.storage.runtime().lastFailure?`；前台失败：${d.storage.runtime().lastFailure!.kind}／${d.storage.runtime().lastFailure!.task??'无模型任务'}／${d.storage.runtime().lastFailure!.safeSummary}`:'')+(maintenance?`；维护：待办${maintenance.pending}／就绪${maintenance.ready}／在途${maintenance.inFlight?1:0}／重试${maintenance.retries}／后台请求${maintenance.backendRequests}；后台错误：${maintenance.lastError??'无'}；检索：查询${maintenance.retrieval.queries}／缓存${maintenance.retrieval.cacheHits}／远程${maintenance.retrieval.remoteRequests}／超时${maintenance.retrieval.timeouts}／失败${maintenance.retrieval.failures}／词法降级${maintenance.retrieval.lexicalFallbacks}／主动跳过${maintenance.retrieval.semanticSkipped??0}`:'')+(capacity?`；短期活跃${capacity.shortActive}；长期占用${capacity.longOccupied}／预备${capacity.longPreview}／可见${capacity.longVisible}／归档${capacity.longArchive}；容量目标${JSON.stringify(d.memoryCapacity!.config)}；超量${capacity.shortOverflow}/${capacity.longOverflow}/${capacity.archiveOverflow}；保护${capacity.protectedLong}；清理阻挡${cleanup?.oldestBlock??'无'}`:'')+(idle?`；空闲资格${idle.reason}／截止${idle.readyAt??'无'}；增量待办${d.memoryStore?.dirtyOwners().length??0}`:'')+(web?`；网页（页面额度，非费用）：${JSON.stringify(web)}`:'');
   }
   async stop(): Promise<void> {
     this.stopped = true;

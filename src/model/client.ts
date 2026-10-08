@@ -12,7 +12,14 @@ import type { WebMaterial,WebModelCheckpoint,WebSearchResponse } from '../web/ty
 export interface CompletionRequest { task: ModelTask<unknown>; input: unknown; repair?: { original: unknown; errors: string }; lookupResult?: unknown;tools?:{web:boolean;lookup:boolean};webMaterials?:WebMaterial[];webStatus?:{counters:{successReads:number;failures:number};stopReason:'quota'|null};webResults?:WebSearchResponse[] }
 export interface Transport { complete(request: CompletionRequest, options?: {signal?:AbortSignal}): Promise<unknown> }
 export class ModelFormatError extends Error {}
-export class ModelRequestError extends Error {}
+export class ModelRequestError extends Error {
+  readonly taskName?:string; readonly httpStatus?:number; readonly providerCode?:string;
+  readonly kind:'context_limit'|'request';
+  constructor(message:string,info:{taskName?:string;httpStatus?:number;providerCode?:string;kind?:'context_limit'|'request'}={}){super(message);this.name='ModelRequestError';this.taskName=info.taskName;this.httpStatus=info.httpStatus;this.providerCode=info.providerCode;this.kind=info.kind??'request';}
+}
+function contextLimit(code:string|undefined,message:string):boolean {
+  return code==='context_length_exceeded'||/\bcontext length (?:is )?exceeded\b/i.test(message)||/\bmaximum context length is \d+ tokens\b/i.test(message);
+}
 export class ModelClient implements ModelRunner {
   constructor(private transport: Transport, private lookupDetails?: (query: string) => unknown, private repairLimit = 2) {}
   async runModel<T>(task: ModelTask<T>, input: unknown, options: ModelRunOptions = {}): Promise<T> {
@@ -91,11 +98,19 @@ export class ChatCompletionsTransport implements Transport {
     try {response = await this.fetcher(`${c.baseUrl.replace(/\/$/, '')}/chat/completions`, {
       signal: options.signal, method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${c.apiKey}` },
       body: JSON.stringify({ model: c.model, reasoning_effort: c.reasoningEffort, stream: false, messages, response_format: responseFormat }),
-    });}catch(error){if(options.signal?.aborted)throw error;throw new ModelRequestError(`${request.task.name}: ${error instanceof Error?error.message:String(error)}`);}
-    if (!response.ok) {let code='';try{const body=await response.json() as {error?:{code?:string;message?:string}};code=[body.error?.code,body.error?.message].filter(Boolean).join(': ');}catch{}throw new ModelRequestError(`${request.task.name}: model HTTP ${response.status}${code?`: ${code}`:''}`);}
+    });}catch(error){if(options.signal?.aborted)throw error;throw new ModelRequestError(`${request.task.name}: model network request failed`,{taskName:request.task.name});}
+    if (!response.ok) {
+      let code:string|undefined,message='';
+      try{const body=await response.json() as {error?:{code?:unknown;message?:unknown}};
+        if(typeof body.error?.code==='string'&&/^[a-zA-Z0-9_.-]{1,80}$/.test(body.error.code))code=body.error.code;
+        if(typeof body.error?.message==='string')message=body.error.message;
+      }catch{}
+      const kind=contextLimit(code,message)?'context_limit':'request';
+      throw new ModelRequestError(`${request.task.name}: model HTTP ${response.status} (${kind})`,{taskName:request.task.name,httpStatus:response.status,providerCode:code,kind});
+    }
     try {const body = await response.json() as { choices: Array<{ message: { content: string | null } }> };
       const content = body.choices?.[0]?.message?.content;if(typeof content!=='string')throw Error('missing response content');return content;
-    }catch(error){throw new ModelRequestError(`${request.task.name}: invalid response envelope`);}
+    }catch(error){throw new ModelRequestError(`${request.task.name}: invalid response envelope`,{taskName:request.task.name});}
   }
 }
 const lookupRequestSchema=z.union([z.string(),z.object({query:z.string(),scope:z.enum(['current','archive']),includeDetailHistory:z.boolean()})]);

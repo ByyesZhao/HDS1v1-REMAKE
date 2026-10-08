@@ -48,3 +48,9 @@ HTTP每次使用一个resources池，业务输入与补查返回使用引用，w
 ## 任务6：免调用与Host派生字段
 
 语义查询先检查校准、签名和兼容候选，没有可用语义路径时不请求查询向量并单列跳过指标；没有本轮新经历／首次可见输入／确认出站／本人读网页来源时不调用记忆整理。canonicalShortId由Host推导，旧式显式返回必须正确。新增8项用例先失败后通过。全套回归91文件510项通过；四处旧测试的固定调用次数按新规则调整，慢后处理测试新增真实经历以继续检验冻结顺序。类型检查通过。
+
+## 任务7：前台失败可观测性
+
+新增4项回归先全部失败，随后通过；指定恢复／后台回归26项通过，全套92文件514项通过，类型检查通过。ModelRequestError记录taskName/status/providerCode/kind，Runtime记录安全摘要和generation/sending/postprocessing。通知不带接口正文；后台环境重试与维护仍独立。旧轮、已确认输出及显式resume保留；等待和新输入不能绕过失败轮，resume不自动减载。
+
+容量分类仅认明确context_length_exceeded码或明确context length exceeded／maximum context length is N tokens措辞。错误形态用隔离模拟Response验证，未刻意向真实接口发送超大负载；不能声称已实测DeepSeek超限回包。官方[错误码说明](https://api-docs.deepseek.com/quick_start/error_codes/)表明400也可能是格式错误，因此不能仅按HTTP状态判断容量。

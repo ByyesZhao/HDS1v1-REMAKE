@@ -1,3 +1,4 @@
+import { ModelRequestError } from './model/client';
 import { DialogueEpisodes } from './dialogue/episodes';
 import { DialogueStore } from './dialogue/store';
 import { runEnvironmentStep } from './environment/runtime';
@@ -63,19 +64,25 @@ export class HdsiApp {
   private async execute(initialTurn: TurnRecord): Promise<void> {
     const d = this.dependencies;
     this.busy = true;
+    let stage: "generation"|"sending"|"postprocessing" = "generation";
     try {
       let turn = initialTurn;
       if (!turn.frozenResult) {
         const generated = await generateTurn(d, { inputMessageIds: turn.inputMessageIds, taskIds: turn.triggerTaskIds, triggerKinds: turn.triggerKinds, batchIds: turn.batchIds, environmentKind: turn.environmentKind, sharedMeta: turn.sharedMeta,schoolNoticeRefs:turn.schoolNoticeRefs??[] }, turn.id, turn.at, turn.autonomousIntervalMinutes);
         turn = freezeTurn(d, turn, generated.candidate, generated.items);
       }
-      if (!turn.outputComplete) await sendFrozen(d, turn);
+      if (!turn.outputComplete) { stage="sending"; await sendFrozen(d, turn); }
+      stage="postprocessing";
       await finishPostprocessing(d, d.storage.read('turns', turn.id)!);
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       const runtime = d.storage.runtime(); runtime.paused = true; runtime.lastError = message;
+      const kind=error instanceof ModelRequestError?error.kind:'error';
+      const label={generation:'生成',sending:'发送',postprocessing:'后处理'}[stage];
+      const safeSummary=`${label}失败，程序已暂停${kind==='context_limit'?'（接口明确报告上下文超限）':''}`;
+      runtime.lastFailure={kind,task:error instanceof ModelRequestError?error.taskName:undefined,stage,at:d.clock.now(),safeSummary};
       d.storage.set('runtime', runtime);
-      try { await d.sender.sendError('error'); } catch { /* Preserve the failed stage even if the system notice cannot be delivered. */ }
+      try { await d.sender.sendError(`error：${safeSummary}`); } catch { /* Preserve the failed stage even if the system notice cannot be delivered. */ }
       throw error;
     } finally { this.busy = false; }
   }
