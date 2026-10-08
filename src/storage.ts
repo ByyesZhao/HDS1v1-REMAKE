@@ -8,6 +8,7 @@ import type { CharacterState, ControlRequest, Detail, DetailHistory, Environment
 
 interface Tables {
   dialogue_episodes:import('./dialogue/types').DialogueEpisode;dialogue_activity_links:import('./dialogue/types').DialogueActivityLink;
+  chat_episodes:import('./dialogue/types').ChatEpisode;chat_index_metadata:import('./dialogue/types').ChatIndexMetadata;
   messages: Message; turns: TurnRecord; outbox: OutboxItem; post_jobs: PostJob;
   tasks: ScheduledTask; details: Detail; detail_history: DetailHistory; memories: Memory;
   events: EnvironmentEvent; experiences: Experience; stickers: Sticker;
@@ -18,7 +19,7 @@ interface Tables {
 const tables: Array<keyof Tables> = ['messages', 'turns', 'outbox', 'post_jobs', 'tasks', 'details', 'detail_history', 'memories', 'events', 'experiences', 'stickers', 'control_requests'];
 export const isUnfinishedTurn=(t:TurnRecord)=>!t.done&&t.legacyDisposition!=='superseded';
 export const environmentTables = ['environment_batches','environment_steps','school_plans','school_plan_items','school_instances','school_notices','school_knowledge','school_progress','school_weeks'] as const;
-tables.push(...environmentTables,'dialogue_episodes','dialogue_activity_links');
+tables.push(...environmentTables,'dialogue_episodes','dialogue_activity_links','chat_episodes','chat_index_metadata');
 export class Storage {
   private readonly db: DatabaseSync;
   constructor(path: string) {

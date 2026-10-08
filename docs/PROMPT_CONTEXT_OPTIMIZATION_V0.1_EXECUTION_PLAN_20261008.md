@@ -226,11 +226,11 @@
 
 **Interfaces:** 消费细化§13.2字段；新增chat_episodes及chat_index_metadata、ChatEpisode、ChatTurnBinding、ChatRecent、ActivityContextSelection及Runtime.activeChatEpisodeId。`DialogueStore.chatEpisodes():ChatEpisode[]`、`chatEpisode(id:string):ChatEpisode|null`、`saveChatEpisode(row:ChatEpisode):void`供新服务消费。ChatEpisodes实现acceptMessage/bindTurn/confirmOutput/releaseReply/closeDue/nextDeadline/recent精确签名。旧DialogueEpisodes／旧表兼容保留，新库版本2，旧库缺字段不自动升级。
 
-- [ ] 写`activity_never_anchors_or_holds_chat`、`closed_chat_still_eligible_until_four_newer`、`short_activity_can_continue_chat_before_idle`、`silent_life_has_no_chat_episode`、`ordinary_proactive_confirm_opens_chat`。
-- [ ] 写`visible_interaction_orders_mixed_seen_unread_episode`、`invisible_current_does_not_take_fourth_slot`、`forty_messages_in_chat_not_trimmed`；最近可见普通消息排序不改持久化锚点。
-- [ ] 用固定时钟断言20:00普通、20:05活动、20:40结束：普通截止仍20:15；关闭后recent仍包含该段，20:41普通建立新段。活动消息明确chatEpisodeId=null，不能建立空普通段。
-- [ ] 跑`npm test -- tests/chat-episodes.test.ts tests/storage.test.ts`确认新增红灯，再实现普通独立读写及保持逻辑；写方法不自行嵌套事务。
-- [ ] 同组及类型检查通过，日志记录版本1／2与模型DTO版本不同，提交任务14；暂不把正式库升级或生产Host切到不完整装配。
+- [x] 写`activity_never_anchors_or_holds_chat`、`closed_chat_still_eligible_until_four_newer`、`short_activity_can_continue_chat_before_idle`、`silent_life_has_no_chat_episode`、`ordinary_proactive_confirm_opens_chat`。
+- [x] 写`visible_interaction_orders_mixed_seen_unread_episode`、`invisible_current_does_not_take_fourth_slot`、`forty_messages_in_chat_not_trimmed`；最近可见普通消息排序不改持久化锚点。
+- [x] 用固定时钟断言20:00普通、20:05活动、20:40结束：普通截止仍20:15；关闭后recent仍包含该段，20:41普通建立新段。活动消息明确chatEpisodeId=null，不能建立空普通段。
+- [x] 跑`npm test -- tests/chat-episodes.test.ts tests/storage.test.ts`确认新增红灯，再实现普通独立读写及保持逻辑；写方法不自行嵌套事务。
+- [x] 同组及类型检查通过，日志记录版本1／2与模型DTO版本不同，提交任务14；暂不把正式库升级或生产Host切到不完整装配。
 
 ### 任务15：迁移实际参数及普通索引版本2升级
 

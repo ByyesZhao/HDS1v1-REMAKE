@@ -43,9 +43,10 @@ export interface Message {
   turnId: string | null; outboxSeq: number | null;
   sharedActivityId?: string | null;
   dialogueEpisodeId?: string;
+  chatEpisodeId?:string|null;
 }
 export interface Runtime {
-  dialogueContextVersion?:1|null;activeDialogueEpisodeId?:string|null;
+  dialogueContextVersion?:1|2|null;activeDialogueEpisodeId?:string|null;activeChatEpisodeId?:string|null;
   openBatch: { id: string; readyAt: ISOTime } | null; pendingBatchIds: string[]; paused: boolean;
   contactMisses: number; stickerMisses: number; nextWorldAt: ISOTime | null; nextSchoolAt: ISOTime | null;
   lastError: string | null;
@@ -91,6 +92,9 @@ export type TriggerKind = 'input' | 'autonomous' | 'sleep' | 'activity' | 'appoi
 export interface TurnRequest { schoolNoticeRefs?:import('./school/types').SchoolNoticeRef[];environmentStepId?:string; inputMessageIds: string[]; taskIds: string[]; triggerKinds: TriggerKind[]; batchIds?: string[]; environmentKind?: 'world' | 'school'; sharedMeta?: SharedTurnMeta | null }
 export interface TurnRecord {
   dialogueBinding?:import('./dialogue/types').DialogueTurnBinding;
+  dialogueWindowVersion?:1|2;
+  chatBinding?:import('./dialogue/types').ChatTurnBinding;
+  activityContext?:import('./dialogue/types').ActivityContextSelection|null;
   id: string; inputMessageIds: string[]; triggerTaskIds: string[]; triggerKinds: TriggerKind[];
   at: ISOTime; completedAt: ISOTime | null; frozenResult: TurnCandidate | null; outputComplete: boolean; done: boolean;
   batchIds: string[]; entryMode: Mode; environmentKind?: 'world' | 'school';
