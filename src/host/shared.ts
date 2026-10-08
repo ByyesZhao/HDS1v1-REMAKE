@@ -105,6 +105,7 @@ export function finishSharedTurn(storage: Storage, turn: TurnRecord, completedAt
     const transferred = storage.messages().filter(m => m.direction === 'incoming' && m.seenTurnId === null && m.sharedActivityId === activityId && m.batchId === null);
     if (transferred.length) {
       const batchId = runtime.openBatch?.id ?? randomUUID();
+      // Ordinary batching is fixed at 15s: readyAt - 15s recovers its latest input anchor.
       const anchor = Math.max(milliseconds(completedAt), ...transferred.map(m => milliseconds(m.receivedAt)), runtime.openBatch ? milliseconds(runtime.openBatch.readyAt) - 15_000 : 0);
       transferred.forEach(m => storage.save('messages', m.id, { ...m, batchId }));
       runtime.openBatch = { id: batchId, readyAt: addMs(new Date(anchor).toISOString(), 15_000) };

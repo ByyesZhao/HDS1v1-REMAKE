@@ -281,7 +281,7 @@ Koishi 入口只接收绑定机器人与用户之间的私聊，解析并拼接 
 
 保留经历时间、环境引用、当前活动时间校验。权限false清单必须空；清单每个非空文本必须原文在公开旁白中。wrap_up且previousOutline非null时，每个openThreads都必须属于旧字符串集合；首节点null可建立走向。final必须openThreads=[]及非空公开旁白，个人sharedChange=end。goal/endingCondition不做字符串等值假语义审核，提示词及真实多轮验收约束漂移。
 
-候选更新progress/outline及非空lastPublicNode；nextStepAt仅由sharedDeadline计算，并投影到唯一scene:activityId。公开正文裸字符串，发送统一【】；真实用户【动作：…】原样传入，角色自愿选择仍由个人决定。静默代写公开共享模拟经历不推成真实用户固定属性。
+候选更新progress/outline及非空lastPublicNode；nextStepAt仅由sharedDeadline计算，并投影到唯一scene:activityId。公开正文裸字符串，发送统一【】；真实用户【动作：…】原样传入。narrativeTask依据冻结allowSimulatedUserActions选择互斥提示：静默可实现双方活动动作，有输入禁止新增用户动作、角色配合由个人决定。simulatedUserActions只列用户；角色台词、心理及后续意图仍交个人导演。静默代写公开共享模拟经历不推成真实用户固定属性。
 
 ## 6. 个人导演输出
 

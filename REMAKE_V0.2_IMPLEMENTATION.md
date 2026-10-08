@@ -250,7 +250,7 @@ resumeUnfinishedTurn(): Promise<void>;
 
 共同模型不写nextStepAt；shared.ts统一取真实输入／确认输出／静默完成的最大锚点加idleSeconds，刷新Scene投影与唯一scene:activityId。全文【推进】独立控制、不进消息或记忆来源，选轮前多个合并一轮，段B仅消费固定ID；晚到输入／控制保留。
 
-sharedMeta保存身份、stepNumber、phase、控制集合及无新输入代写权限。每个成功共同段B计一次，失败／恢复不另计；默认17～19收束、20强制公开结束并end，可提前自然结束。已有wrap_up仅保留／删原字符串线索，final列表空；goal/endingCondition语义稳定依提示词和必做真实故事验收。所有代写行动公开并列显式清单，属于共享模拟经历，outline属于意图，不新增真实用户稳定属性。
+sharedMeta保存身份、stepNumber、phase、控制集合及无新输入代写权限。narrativeTask按冻结权限选择互斥提示：双方无新输入允许双方活动动作，有输入禁止新增用户动作；修补／续调用／恢复沿用原分支。全部代写公开，simulatedUserActions只列用户。每个成功共同段B计一次，失败／恢复不另计；默认17～19收束、20强制公开结束并end，可提前自然结束。已有wrap_up仅保留／删原字符串线索，final列表空；goal/endingCondition语义稳定依提示词和真实故事验收。公开代写属于共享模拟经历，outline属于意图，不新增真实用户稳定属性。
 
 公开旁白→角色文字／动作及表情→末项【共同活动结束】一起冻结。末标志确认立即路由普通，段B取消节点和该活动剩余控制，将未看共同消息并入普通窗口，截止=max(completedAt、最近输入、已有普通窗口锚点)+15秒；已看复议原ID保留。首／末边界仅按冻结结果与outbox位置识别，不扫描旁白关键词。
 
