@@ -110,5 +110,5 @@ export interface OutboxItem { turnId: string; seq: number; kind: 'narration' | '
 export interface PostJob { turnId: string; result: MemoryResult | null; memoryIds?:Record<string,string>; selfWebReadSources?:import('./memory/types').SelfWebReadSource[] }
 export interface Sender { sendItem(item: OutboxItem): Promise<{ platformMessageIds: string[] }>; sendError(message: string): Promise<void> }
 export interface HistoryContext { recent: Message[]; shortTerm: Memory[]; longTerm: Memory[]; details: Detail[]; detailHistory: DetailHistory[] }
-export interface ModelTask<T> { name: string; schema: unknown; prompt: string; parse(value: unknown): T }
+export interface ModelTask<T> { promptPolicy?:import('./model/prompt-policy').PromptPolicy;name: string; schema: unknown; prompt: string; parse(value: unknown): T }
 export interface ModelRunner { runModel<T>(task: ModelTask<T>, input: unknown, options?: import('./memory/types').ModelRunOptions): Promise<T> }

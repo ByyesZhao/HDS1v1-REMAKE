@@ -1,3 +1,4 @@
+import { buildPromptPolicy,policyRules } from './prompt-policy';
 import { z } from 'zod';
 import type { ModelTask, NarrativeResult, SharedNarrativeResult, SharedTurnMeta, SharedOutline, PersonalResult, ExpressionResult, MemoryResult, EnvironmentResult, ScheduledTask, EnvironmentEvent } from '../types';
 import { prompts, sharedNarrativePrompt } from './prompts';
@@ -50,6 +51,7 @@ export function modelTask<T>(name: keyof typeof prompts, schema: z.ZodType, vali
 const requireControl = (condition: boolean, path: string, message: string) => { if (!condition) throw new Error(`${path}: ${message}`); };
 
 export function narrativeTask(shared: boolean, from: string, at: string, eventIds: string[] = [], sharedMeta?: SharedTurnMeta | null, previousOutline?: SharedOutline | null,validateSchool?:(r:NarrativeResult)=>void): ModelTask<NarrativeResult | SharedNarrativeResult> {
+  sharedMeta=sharedMeta?structuredClone(sharedMeta):sharedMeta;
   const task = modelTask(shared ? 'narrative_shared' : 'narrative', shared ? sharedNarrative : narrative, (r: NarrativeResult | SharedNarrativeResult) => {
     r.experiences.forEach((e, i) => {
       requireControl(milliseconds(e.happenedAt) >= milliseconds(from) && milliseconds(e.happenedAt) <= milliseconds(at), `experiences.${i}.happenedAt`, 'must be within the elapsed interval');
@@ -82,12 +84,15 @@ export function narrativeTask(shared: boolean, from: string, at: string, eventId
     }
   });
   // Use the selected turn's frozen permission, including repair and regeneration.
-  if (shared) task.prompt = sharedNarrativePrompt(sharedMeta?.allowSimulatedUserActions === true);
+  task.promptPolicy=buildPromptPolicy(shared?'narrative_shared':'narrative',{sharedMeta});
+  if(shared)task.prompt=sharedNarrativePrompt(sharedMeta?.allowSimulatedUserActions===true)+'\n'+policyRules(task.promptPolicy);
   return task;
 }
 
-export function personalTask(kind: 'chat' | 'life' | 'shared', at: string, tasks: ScheduledTask[], mode: string, messageIds: string[], sharedMeta?: SharedTurnMeta | null, publicNarration?: string | null): ModelTask<PersonalResult> {
-  return modelTask(`personal_${kind}`, kind === 'life' ? life : chat, (r: PersonalResult) => {
+export function personalTask(kind: 'chat' | 'life' | 'shared', at: string, tasks: ScheduledTask[], mode: string, messageIds: string[], sharedMeta?: SharedTurnMeta | null, publicNarration?: string | null, eligibility:{contactEligible?:boolean}={}): ModelTask<PersonalResult> {
+  sharedMeta=sharedMeta?structuredClone(sharedMeta):sharedMeta;
+  const schema=kind==='life'?(eligibility.contactEligible===false?life.extend({contact:z.object({willing:z.literal(false)})}):life):chat;
+  const task=modelTask(`personal_${kind}`,schema, (r: PersonalResult) => {
     if (kind === 'shared') {
       requireControl(!!sharedMeta, 'sharedMeta', 'shared calls require fixed selection metadata');
       if (sharedMeta!.phase === 'final') requireControl(r.sharedChange?.action === 'end', 'sharedChange', 'final must end the shared activity');
@@ -117,6 +122,7 @@ export function personalTask(kind: 'chat' | 'life' | 'shared', at: string, tasks
     if (r.sharedChange?.action === 'start') requireControl(mode === 'chat', 'sharedChange', 'end the current shared activity before starting another');
     if (r.sharedChange?.action === 'end') requireControl(mode !== 'chat', 'sharedChange', 'there is no shared activity to end');
   });
+  task.promptPolicy=buildPromptPolicy(`personal_${kind}`,{mode,sharedMeta,hasCurrentPublicNarration:!!publicNarration?.trim(),...eligibility});task.prompt+='\n'+policyRules(task.promptPolicy);return task;
 }
 export const expressionTask = () => modelTask<ExpressionResult>('expression', expression);
 export function memoryTask(sourceIds: string[], memoryIds: string[], shortIds:string[]=[],selfReadIds:string[]=[]): ModelTask<MemoryResult> {

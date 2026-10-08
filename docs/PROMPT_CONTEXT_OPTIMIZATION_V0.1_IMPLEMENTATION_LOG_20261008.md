@@ -36,3 +36,11 @@
 共享模拟记忆改为引用实际outgoing ID，网页本人查阅保留原sourceId关联；不给新来源身份。维护模型接受白名单与预计算动作／摘要修复对，Host snapshot和readSet校验仍完整。各阶段入口、旧语义夹具及离线工具同步；合成模型输出适配器只存在测试，记录的calls.input仍是实际DTO。
 
 指定43项、类型检查、离线demo通过；全量88文件497项通过。字段去重不以字符比例充当质量判定。
+
+## 任务5
+
+HTTP每次使用一个resources池，业务输入与补查返回使用引用，webResults仅保留materialIds和计数／不足等元信息；完整累计网页正文每次仍提供。旧checkpoint材料只读投影，不清空进度。修补原响应独立保留。图片转image_url块，文本副本移除编码。json_object仍附Schema；明确配置json_schema时Schema只由response_format提供。
+
+任务业务策略冻结，续调用只更新实际工具能力。首节点与final可同时包含公开约束；无主动联系资格的life Schema只能willing:false，有资格仍允许false。主叙事代写分支沿冻结共享元数据；解析也复制元数据，避免外部变更影响本轮。资料依据／网页规则仅给实际适用任务；看图不再附表达／活动规则。生产life入口显式传资格。
+
+修正HTTP测试误用structuredClone复制函数的问题后，用旧Transport重新验证3项行为均失败，再恢复新实现确认通过。指定7文件36项、类型检查通过；全量90文件502项通过。

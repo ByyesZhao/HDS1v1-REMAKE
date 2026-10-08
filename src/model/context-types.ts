@@ -12,3 +12,5 @@ export interface StageBusinessSnapshot { [field:string]:unknown; recent?:Message
 export type StageInputSnapshot={ [S in PromptStage]:{stage:S;input:StageBusinessSnapshot} }[PromptStage];
 export interface StageModelInput {contextVersion:1;context:Record<string,unknown>;resources:ModelResourcePool;roles:ModelRoles}
 export function isStageModelInput(input:unknown):input is StageModelInput{return !!input&&typeof input==='object'&&'contextVersion' in input&&input.contextVersion===1&&'resources' in input;}
+
+export interface ModelCompletionEnvelope {input:unknown;resources:ModelResourcePool;lookupResult?:unknown;repair?:{original:unknown;errors:string};webResults?:Array<Omit<import('../web/types').WebSearchResponse,'materials'>&{materialIds:string[]}>;webStatus?:{counters:{successReads:number;failures:number};stopReason:'quota'|null}}

@@ -26,7 +26,7 @@ it.each([true, false])('frozen shared permission selects one system prompt acros
   expect(system).toContain(allowed ? '允许代写双方' : '禁止新增用户动作');
   expect(system).not.toContain(allowed ? '禁止新增用户动作' : '允许代写双方');
   expect(system).not.toContain('仅sharedMeta.allowSimulatedUserActions=true时');
-  expect(system).toContain('goal'); expect(system).toContain('final');
+  expect(system).toContain('goal'); expect(selected.promptPolicy?.facts.sharedMeta?.phase).toBe('ongoing'); expect(system).not.toContain('本轮必须公开收尾');
   for (const request of requests.slice(1)) {
     // JSON Schema gains/loses the one-use lookup tool; business prompt stays identical.
     expect(request.messages[0].content.split('\nJSON Schema:')[0]).toBe(system.split('\nJSON Schema:')[0]);

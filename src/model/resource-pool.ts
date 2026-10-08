@@ -9,3 +9,24 @@ export class ResourcePool {
  material(row:WebMaterial):string{if(!this.data.materials.some(r=>r.id===row.id))this.data.materials.push(structuredClone(row));return row.id;}
  merge(pool:ModelResourcePool):void{pool.messages.forEach(m=>this.message(m));pool.tasks.forEach(t=>this.task(t));pool.owners.forEach(o=>this.owner(o));pool.materials.forEach(m=>this.material(m));}
 }
+
+import type { CompletionRequest } from './client';
+import { isStageModelInput } from './context-types';
+import type { ModelCompletionEnvelope,PromptStage } from './context-types';
+import { stageInput } from './context-views';
+export function buildCompletionEnvelope(request:CompletionRequest):ModelCompletionEnvelope {
+ const pool=new ResourcePool(),input=isStageModelInput(request.input)?request.input:null;
+ if(input)pool.merge(input.resources);
+ for(const m of request.webMaterials??[])pool.material(m);
+ let lookupResult=request.lookupResult;
+ if(lookupResult&&typeof lookupResult==='object'){
+  const lookup=lookupResult as Record<string,unknown>,stage=(request.task.promptPolicy?.stage??request.task.name) as PromptStage;
+  const {materials,webMaterials,...raw}=lookup;
+  for(const rows of [materials,webMaterials])if(Array.isArray(rows))for(const m of rows)pool.material(m as WebMaterial);
+  if(['details','retrieved','history','recent','visibleMessages','reconsiderMessages','tasks','dueTasks','snapshot'].some(k=>k in raw)){
+   const view=stageInput(stage,raw);pool.merge(view.resources);lookupResult={context:view.context,roles:view.roles,...(Array.isArray(materials)?{materialIds:materials.map(m=>(m as WebMaterial).id)}:{})};
+  }else lookupResult={...raw,...(Array.isArray(materials)?{materialIds:materials.map(m=>(m as WebMaterial).id)}:{})};
+ }
+ const webResults=request.webResults?.map(result=>{const {materials,...metadata}=result;for(const m of materials)pool.material(m);return {...metadata,materialIds:[...new Set(materials.map(m=>m.id))]};});
+ return {input:input?{context:input.context,roles:input.roles}:request.input,resources:pool.data,lookupResult,repair:request.repair,webResults,webStatus:request.webStatus};
+}
