@@ -44,3 +44,8 @@ Ruling：未知活动结束缺少中间转场时点时，过去不可读区间�
 BASE=9093d39。旧格式fixture RED为模块缺失，随后check/apply/二次check通过。全量59文件321项通过；新增未生成旧轮后专项12项（环境＋共同迁移）通过，typecheck/build退出0。Storage、Host及共同升级诊断采用同一终态谓词。没有独立post_jobs worker，终结旧环境不会重新进入后处理。
 正式库：D:/HDSI-remake/runtime/data/hdsi-remake.sqlite。进程核对未发现HDSI／SnowLuma相关node/python；普通权限查询被系统拒绝，提升权限只读核对通过。升级前version=null，旧school事件0、旧环境轮0、异常outbox0、未完成普通/共同0、paused=false。临时CLI通过后显式--apply --stopped；升级后version=1，paused保持false。未修改密钥／正式配置或启动服务。
 备份：runtime/environment-upgrade-backups/environment-20261008054344875-43af0f85-7bde-4cb9-af7e-a8c57cdef8ba/，SQLite/WAL/SHM三文件。报告：runtime/environment-upgrade-backups/reports/world-school-v4-before.json及world-school-v4-after.json（主目录下，非Git）。正式库没有遗留轮，因此实际不宣称终结了旧轮；该行为由临时fixture证明。
+
+## 任务7：离线集成与文档
+BASE=b62b666。初次全空校园输出暴露新库未建立持续计划，增加初建active计划合同，允许零课程；真实ModelClient格式修补边界测试通过。新学校角色省略思考强度默认low的断言先RED（得到high），再修Schema默认；显式设置不改。GREEN：60文件327项通过，typecheck、build、demo、生产Koishi离线smoke均退出0。smoke经正式入口提交4个独立步骤、2个初始计划，未连接QQ。旧共同验收工具固定未来环境截止，保持原验收范围。
+示例使用三个school_*模型键及06:00；README、架构、生活、接口、恢复文档同步实际投影与调度。正式config.local.json显式补入独立学校模型键及新时间设置，旧school和旧时间数组移除，学校设定授权建档；更新前副本为runtime/environment-upgrade-backups/config.local-before-world-school-v4.json。该配置不含认证字段；密钥文件、角色背景未改，私有文件不入Git。
+Ruling：初次校园／课题组各须建立active持续计划，零课程仍合法；否则新库空响应可被当作建档完成，后续无可复用计划。成本：格式修补可能多一次调用，不强制每日制造事件。

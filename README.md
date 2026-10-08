@@ -10,7 +10,7 @@
 
 详情见 [实施记录](docs/IMPLEMENTATION_LOG.md)、[图库迁移说明](docs/STICKER_MIGRATION.md) 和 [文档核对与 DSH 审核清单](docs/DOCUMENT_AUDIT.md)。六份架构/子系统/实施文档已按当前代码更新，实施文件名保留，正文改为落地记录。
 
-DSH 二轮确认后的修订见 [修订与验证记录](docs/DSH_REVIEW_FIXES_20261007.md)：记忆整理使用独立预算；新建记忆／细节变更至少引用一个本轮来源；个人导演新建或更新检查任务的最终时间晚于本轮；空别名更新沿用旧别名。此前V0.2基线为18文件78项，当前版本验证见记忆实施记录。
+DSH 二轮确认后的修订见 [修订与验证记录](docs/DSH_REVIEW_FIXES_20261007.md)：记忆整理独立选择上下文，默认不设人为预算；新建记忆／细节变更至少引用一个本轮来源；个人导演新建或更新检查任务的最终时间晚于本轮；空别名更新沿用旧别名。此前V0.2基线为18文件78项，当前版本验证见记忆实施记录。
 
 记忆V0.3任务1～7已实施，规则及实测见[记忆实施记录](docs/MEMORY_V0.3_IMPLEMENTATION_LOG_20261007.md)。直接依据仍为记忆细化／执行计划、搜索设计／执行计划四份。搜索任务1～6离线核心已实施；具体搜索provider稍后选择，不能把离线接口当已联网。
 
@@ -31,6 +31,23 @@ npm run shared:migrate -- --database runtime/data/hdsi-remake.sqlite --apply --s
 ```
 
 第十轮修正已检查并停止备份升级正式库到共同活动版本1；正式服务仍未启动。新临时库直接初始化版本1。部署／在线验收最新结果见[第十轮记录](docs/REVIEW10_FIX_LOG_20261008.md)。
+
+## 世界与学校 V0.4
+
+故事时区每天06:00启动world → school_campus → school_group → school_week，争取07:00前完成，聊天和起床不等待整链。初次建立持续学期／课题组计划；每日增量检查，周五准备下周，周一确认。本版学校安排不受记忆TTL影响，也不另建Embedding索引。学校要求可被拒绝，科研只由主叙事实现在模拟经历中。
+
+模型失败默认5分钟后局部重试，不暂停聊天；ready只提交冻结结果，跨日不应用旧日未提交响应。步骤之间让出并重扫前台，普通15秒合批期间不新开环境；已开始的请求仍占串行槽。通知按publishAt发布，releasedAt只是审计；实际读到并成功段B才成为知识与记忆。未读更正时个人仍只有旧认知。睡眠／洗澡暂存，共同通知仅合并合法节点，拒看不会立即重复唤醒。
+
+实施依据：[细化](docs/WORLD_SCHOOL_PLANNING_V0.4_IMPLEMENTATION_20261008.md)、[执行计划](docs/WORLD_SCHOOL_PLANNING_V0.4_EXECUTION_PLAN_20261008.md)；证据见[实施日志](docs/WORLD_SCHOOL_PLANNING_V0.4_IMPLEMENTATION_LOG_20261008.md)。旧models.school仅内存补缺，新三项可分别设模型；旧worldTimes/schoolTimes不驱动调度。配置使用environmentDailyAt=06:00、environmentRetryMs=300000。
+
+已有库先停服，再只读检查：
+
+```powershell
+npm run migrate:environment -- --database runtime/data/hdsi-remake.sqlite --check
+npm run migrate:environment -- --database runtime/data/hdsi-remake.sqlite --apply --stopped --config config.local.json --backup-dir runtime/environment-upgrade-backups
+```
+
+正式库已备份升级环境版本1，服务保持停止。旧未完成环境轮显式superseded且done=false，不应用旧冻结结果；普通／共同轮继续受恢复门禁保护，paused不自动清除。新库直接版本1。
 
 ## 开发与验证
 
@@ -94,15 +111,15 @@ npm start
 }
 ```
 
-`models`中十项故事／后台任务分别配置：`narrative`、`narrative_shared`、`personal_chat`、`personal_life`、`personal_shared`、`expression`、`memory`、`memory_consolidation`、`world`、`school`。普通和共同场景可选择不同模型。`stickerDescriptionModel` 单独选择素材描述模型，对应运行任务名 `sticker_description`。可用名称：`deepseek-flash`、`deepseek-v4-flash`、`deepseek-v4-pro`。默认用 JSON Object 模式，并由本地 Schema 校验控制字段，原调用后最多修补两次；也提供 `json_schema`/`prompt` 接口选项，须由实际端点验证后选用。
+`models`中十二项故事／后台任务分别配置：`narrative`、`narrative_shared`、`personal_chat`、`personal_life`、`personal_shared`、`expression`、`memory`、`memory_consolidation`、`world`、`school_campus`、`school_group`、`school_week`。普通和共同场景可选择不同模型。`stickerDescriptionModel` 单独选择素材描述模型，对应运行任务名 `sticker_description`。可用名称：`deepseek-flash`、`deepseek-v4-flash`、`deepseek-v4-pro`。默认用 JSON Object 模式，并由本地 Schema 校验控制字段，原调用后最多修补两次；也提供 `json_schema`/`prompt` 接口选项，须由实际端点验证后选用。
 
-当前正式配置和样例中的十一个DeepSeek任务均使用 `deepseek-flash`。普通/共同场景主叙事、聊天/预约个人导演、自主生活/共同场景个人导演、表达润色与分段、世界导演、学校导演使用 `reasoningEffort: "low"`；记忆整理、记忆压缩和新表情包看图描述使用 `"high"`。后续可单独将任一任务的 `model` 改为 `deepseek-v4-pro`，该任务的思考强度独立保留。
+当前运行配置及样例中的十三个DeepSeek任务（含素材描述）均使用 `deepseek-flash`。普通/共同场景主叙事、聊天/预约个人导演、自主生活/共同场景个人导演、表达润色与分段、世界导演、校园／课题组／周计划学校导演使用 `reasoningEffort: "low"`；记忆整理、记忆压缩和新表情包看图描述使用 `"high"`。后续可单独将任一任务的 `model` 改为 `deepseek-v4-pro`，该任务的思考强度独立保留。
 
-`reasoningEffort` 支持 `none`、`low`、`high`、`max`，缺省为 `high`（兼容原接口默认行为）。请求将其传为官方 `reasoning_effort` 参数：`none` 关闭思考，其余开启对应强度。格式修补和本地细节查询后的续调用继承原任务的模型及思考强度；Embedding 配置不使用该参数。参数含义见 [DeepSeek Chat Completions 文档](https://api-docs.deepseek.com/api/create-chat-completion/)。
+`reasoningEffort` 支持 `none`、`low`、`high`、`max`，新school_*缺省为 `low`，其余缺省为 `high`（兼容原接口默认行为）。请求将其传为官方 `reasoning_effort` 参数：`none` 关闭思考，其余开启对应强度。格式修补和本地细节查询后的续调用继承原任务的模型及思考强度；Embedding 配置不使用该参数。参数含义见 [DeepSeek Chat Completions 文档](https://api-docs.deepseek.com/api/create-chat-completion/)。
 
 程序将配置的模型名称直接传入 [Chat Completions 接口](https://api-docs.deepseek.com/api/create-chat-completion/)，不自行切换模型。具体既有属性未预取到时，同一次任务运行最多允许一次本地 `lookupDetails` 查询及续调用；格式修补重新返回完整 JSON，程序不保证散文逐字不变。事实连续性、动作格式和意图含义主要由提示词约束，程序校验结构、时间与来源 ID，不使用额外事实审核模型。
 
-网页搜索为进程内共享模块，`webSearch.enabled` 默认 false，真实 provider 尚待选择。全部十一类任务都有各自持久化会话，独立20次成功正文／40次失败，任一到限停新操作；缓存B按阶段首次取得计数。`webSources`保留兼容配置，不自动注入候选或兜底；不足时反馈“结果不足”，模型可保留未知，对话角色可以询问用户。正文不按12000字符截断。世界／学校仅引用最终已实际提供的正文 URL；只有生活个人导演的实际阅读才产生可用于查阅类短期的来源。
+网页搜索为进程内共享模块，`webSearch.enabled` 默认 false，真实 provider 尚待选择。全部十三类任务都有各自持久化会话，独立20次成功正文／40次失败，任一到限停新操作；缓存B按阶段首次取得计数。`webSources`保留兼容配置，不自动注入候选或兜底；不足时反馈“结果不足”，模型可保留未知，对话角色可以询问用户。正文不按12000字符截断。世界／学校仅引用最终已实际提供的正文 URL；只有生活个人导演的实际阅读才产生可用于查阅类短期的来源。
 
 ## 表情素材
 

@@ -39,6 +39,7 @@ function upstreamTask(d:Dependencies,owner:'campus'|'group',providedUrls:()=>str
    const t=merged.timing;if(t?.kind==='once'&&t.endsAt&&Date.parse(t.endsAt)<Date.parse(t.startsAt))throw Error('school end precedes start');
    if(t?.kind==='weekly'&&new Set(t.slots.map(s=>s.slotKey)).size!==t.slots.length)throw Error('duplicate slotKey');
   }
+  if(!d.schoolStore.plans().some(p=>p.owner===owner&&p.status==='active')&&!value.planChanges.some(c=>c.action==='create'&&c.plan.status==='active'))throw Error('initial school planning requires an active plan; zero courses is allowed');
   return value as EnvironmentModelResult;
  }};
 }

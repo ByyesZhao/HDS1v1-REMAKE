@@ -23,13 +23,6 @@
     "wakeEnd": "09:00",
     "preparationMinutes": 60
   },
-  "worldTimes": [
-    "06:00"
-  ],
-  "schoolTimes": [
-    "06:10",
-    "16:00"
-  ],
   "historyBudget": null,
   "sharedIdleSeconds": 60,
   "sharedMaxSteps": 20,
@@ -67,13 +60,21 @@
       "model": "deepseek-flash",
       "reasoningEffort": "low"
     },
-    "school": {
-      "model": "deepseek-flash",
-      "reasoningEffort": "low"
-    },
     "memory_consolidation": {
       "model": "deepseek-flash",
       "reasoningEffort": "high"
+    },
+    "school_campus": {
+      "model": "deepseek-flash",
+      "reasoningEffort": "low"
+    },
+    "school_group": {
+      "model": "deepseek-flash",
+      "reasoningEffort": "low"
+    },
+    "school_week": {
+      "model": "deepseek-flash",
+      "reasoningEffort": "low"
     }
   },
   "stickerDescriptionModel": {
@@ -108,5 +109,7 @@
     "enabled": false,
     "maxSuccessReads": 20,
     "maxFailures": 40
-  }
+  },
+  "environmentDailyAt": "06:00",
+  "environmentRetryMs": 300000
 }

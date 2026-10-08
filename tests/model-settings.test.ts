@@ -10,6 +10,8 @@ async function withSettings(change: (sample: any) => void, run: (settings: Story
   const root = mkdtempSync(join(tmpdir(), 'hdsi-model-settings-'));
   try {
     const sample = JSON.parse(readFileSync('examples/story.sample.json', 'utf8'));
+    sample.models.school??=sample.models.school_campus;
+    for(const role of ['school_campus','school_group','school_week'])delete sample.models[role];
     change(sample);
     writeFileSync(join(root, 'story.json'), JSON.stringify(sample));
     await run(loadSettings(join(root, 'story.json'), {}));
@@ -55,6 +57,9 @@ it('invalid explicit school role does not fall back', async () => {
 });
 it('missing legacy and new school role is a named error', async () => {
   await expect(withSettings(sample => {delete sample.models.school;}, async()=>{})).rejects.toThrow(/school_campus/);
+});
+it('new school roles default to low without changing world default',async()=>{
+ await withSettings(sample=>{sample.models.school_group={model:'deepseek-flash'};delete sample.models.world.reasoningEffort;},async settings=>{expect(settings.models.school_group.reasoningEffort).toBe('low');expect(settings.models.world.reasoningEffort).toBe('high');});
 });
 
 it.each([['narrative', 'low'], ['memory', 'high'], ['sticker_description', 'high']])('sends the configured model and effort for %s through the HTTP transport', async (name, effort) => {

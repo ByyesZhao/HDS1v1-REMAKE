@@ -45,7 +45,7 @@ const settingsSchema = z.object({
   environmentDailyAt:clockTime.default('06:00'),environmentRetryMs:z.number().positive().default(300000),
   historyBudget: nullableLimit, stickersEnabled: z.boolean().default(false),memory:memorySettings,memoryEmbedding:embedding.prefault({}),
   sharedIdleSeconds: z.number().int().positive().default(60), sharedMaxSteps: z.number().int().min(1).max(20).default(20),
-  models: z.object(Object.fromEntries(modelRoles.map(role => [role, connection])) as Record<typeof modelRoles[number], typeof connection>),
+  models: z.object(Object.fromEntries(modelRoles.map(role => [role, role.startsWith('school_')?connection.extend({reasoningEffort:z.enum(['none','low','high','max']).default('low')}):connection])) as Record<typeof modelRoles[number], typeof connection>),
   stickerDescriptionModel: connection.optional(),
   embedding: embedding.optional(),
   webSources: z.array(z.url({protocol:/^https?$/})).default([]),

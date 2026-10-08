@@ -52,7 +52,7 @@ async function main() {
     // The seed is explicitly pre-confirmed; no live start marker is delivered.
     const { state, clock: sharedClock } = sharedStorySeed(initialState(settings, now), scenario, now);
     storage.set('character', state);
-    storage.set('runtime', { ...storage.runtime(), nextWorldAt: null, nextSchoolAt: null, sharedClock });
+    storage.set('runtime', { ...storage.runtime(), nextWorldAt: null, nextSchoolAt: null, nextEnvironmentAt: "2099-01-01T00:00:00Z", sharedClock });
     const memoryStore = new MemoryStore(storage); memoryStore.migrate(now);
     for (const detail of settings.initialDetails) {
       memoryStore.saveOwner(memoryStore.makeOwner({ ownerType: 'detail', ownerId: detail.key }, { ...detail, content: detail.value }, now));

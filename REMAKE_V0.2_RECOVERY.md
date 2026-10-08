@@ -125,7 +125,7 @@ SerialHost 在持久化 paused=false 时才进入恢复与新轮调度；paused=
 
 ### 睡眠与环境调度顺序
 
-启动先恢复未完成旧轮；新轮可运行前台优先，其次到期world/school，再符合资格的自主，最后沿用维护让位规则。共同60秒等待中环境截止保留，没有前台就可处理；已经开始的环境仍串行完成，不中断。
+启动先恢复未完成旧轮；新轮可运行前台优先，其次到期world及三个school_*步骤，再符合资格的自主，最后沿用维护让位规则。共同60秒等待中环境截止保留，没有前台就可处理；已经开始的环境仍串行完成，不中断。
 
 普通睡眠清自主并暂存未读，预约保持pending；起床补生活并交付已闭合输入。合法共同活动清醒，旧sleepAt/wakeAt不引发睡眠早退或伪起床。结束提交时有效睡眠窗口清自主，新睡眠未来重排自主，旧wake已过清过期计划，不额外抽作息或伪造刚醒。
 
@@ -180,7 +180,7 @@ SerialHost 在持久化 paused=false 时才进入恢复与新轮调度；paused=
 
 ## 搜索离线核心落地（2026-10-07）
 
-进程内唯一WebSearchService及四辅助表web_sessions/web_operations/web_materials/self_web_read_sources已接入。全部十一类任务独立run身份，阶段输入、补查、修补和工具请求检查点私有；公开正文缓存按owner释放，数据库材料保留恢复。同阶段重放计0，跨阶段首次取得各计1。正文响应成功后、最终parse前登记实际提供；personal_life的稳定来源及首次operationId进入post job。环境合同在最终parse读取providedUrls。后台共用既有120秒准备槽／signal，不阻塞前台，stop取消后不保存晚结果。
+进程内唯一WebSearchService及四辅助表web_sessions/web_operations/web_materials/self_web_read_sources已接入。全部十三类任务独立run身份，阶段输入、补查、修补和工具请求检查点私有；公开正文缓存按owner释放，数据库材料保留恢复。同阶段重放计0，跨阶段首次取得各计1。正文响应成功后、最终parse前登记实际提供；personal_life的稳定来源及首次operationId进入post job。环境合同在最终parse读取providedUrls。后台共用既有120秒准备槽／signal，不阻塞前台，stop取消后不保存晚结果。
 
 真实provider未配置，webSearch.enabled=false；当前未联网，待选服务后注入provider。网页无人工字符预算或12000截断，真实容量错误不删内容重试。来源语义、表达不新增事实和查阅不变亲历仍由任务提示约束，程序不冒称能判断散文真假。
 

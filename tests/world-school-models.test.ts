@@ -10,9 +10,9 @@ import {ensureEnvironmentBatch,selectEnvironmentStep} from '../src/environment/s
 import {runEnvironmentStep,environmentInput} from '../src/environment/runtime';
 import {ModelFormatError} from '../src/model/client';
 it('roles_can_differ_empty_updates_keep_plan_and_doctoral_zero_courses_valid',async()=>{
- const d=setup();d.storage.save('school_plans',schoolPlan.id,schoolPlan);
+ const d=setup();d.storage.save('school_plans',schoolPlan.id,schoolPlan);d.storage.save('school_plans','group',{...schoolPlan,id:'group',owner:'group',kind:'group'});
  for(const stage of ['school_campus','school_group','school_week'] as const){d.models.outputs[stage]=stage==='school_week'?{stage,instanceChanges:[],noticeCandidates:[],weekChanges:[]}:{stage,planChanges:[],itemChanges:[]};expect((await generateEnvironmentStep(d,{stage,batchId:'batch',at:NOW,context:{background:'已有导师和研究方向',plans:[schoolPlan],items:[]}})).stage).toBe(stage);}
- expect(d.models.calls.map(c=>c.name)).toEqual(['school_campus','school_group','school_week']);expect(d.schoolStore.plans()).toEqual([schoolPlan]);expect(d.storage.all('experiences')).toEqual([]);d.storage.close();
+ expect(d.models.calls.map(c=>c.name)).toEqual(['school_campus','school_group','school_week']);expect(d.schoolStore.plans()).toHaveLength(2);expect(d.storage.all('experiences')).toEqual([]);d.storage.close();
 });
 it('wrong_owner_or_revision_rejected',()=>{
  const d=setup();d.storage.save('school_plans',schoolPlan.id,schoolPlan);d.storage.save('school_plan_items','meeting',schoolItem());
@@ -27,6 +27,7 @@ it('fiction_default_and_provided_urls_only_and_plan_is_not_research_result',()=>
 });
 it('each_step_has_own_web_session_and_same_step_does_not_reopen',async()=>{
  const d=setup(),store=new WebSearchStore(d.storage),web=new WebSearchService(store,undefined,d.clock,{enabled:false});
+ d.storage.save('school_plans',schoolPlan.id,schoolPlan);d.storage.save('school_plans','group',{...schoolPlan,id:'group',owner:'group',kind:'group'});
  for(const stage of ['school_campus','school_group'] as const){d.models.outputs[stage]={stage,planChanges:[],itemChanges:[]};for(let i=0;i<2;i++)await generateEnvironmentStep({...d,web},{stage,batchId:'b',at:NOW,context:{}});}
  const refs=d.models.calls.map(c=>c.options?.runRef!);expect(refs[0].ownerType).toBe('environment');expect(refs[0].runId).toBe(refs[1].runId);expect(refs[2].runId).not.toBe(refs[0].runId);expect(web.selfReadSources('b')).toEqual([]);d.storage.close();
 });

@@ -100,7 +100,7 @@
 - `openBatch: { id, readyAt } | null`：仍在接收消息的批次。
 - `pendingBatchIds: string[]`：已结束合批但尚未首次由入口处理的批次，按顺序排列。
 - `paused: boolean`：仅保留原文要求的插件暂停开关。
-- 世界/学校下次更新时间和概率未命中次数。
+- 环境规划版本、下一本地日期批次入口与独立步骤截止，及概率未命中次数。
 - `lastError: string | null`：调用失败时保存错误，人工恢复时清空。
 
 收到输入时，同一短事务保存消息和 `openBatch.readyAt = receivedAt + 15 秒`。截止后移入 `pendingBatchIds`，清空 `openBatch`。如果下一条到达时旧截止已过、定时器尚未执行，先封闭旧批再创建新批，不能把已经静默满 15 秒的两次表达重新粘在一起。
@@ -190,7 +190,7 @@ resumeUnfinishedTurn(): Promise<void>;
 1. 普通合批到期先封闭；paused不启动故事。旧轮未完成先恢复／完成，生成、发送和post仍串行。
 2. 普通入睡边界清自主、暂存输入；合法共同活动保持清醒，旧sleep/wake不贡献截止。
 3. 可运行前台先选：共同首节点／manual／自动截止／具体预约合并为一轮，或普通消息／检查／预约／起床；固定sharedMeta及消费集合。
-4. 无前台时到期world、school依次独立运行；环境截止持续参与共同60秒等待，已开始任务不中断。
+4. 无前台且普通合批未占窗时，按06:00日批次执行world、school_campus、school_group、school_week独立步骤；每步提交后让位重扫。环境截止参与共同60秒等待，已开始请求仍占串行槽。
 5. 无合法共同活动、普通openBatch/pendingBatch及可运行前台时，才选清醒到期自主。未来预约不长期抑制自主；前台同到期不带autonomous。
 6. 沿用维护准备槽：应用一个ready单元后setImmediate让位再检查前台，准备不await远程。
 7. 一个定时器取所有合格截止的最早值；等待下一共享节点的检查／被抑制自主／旧共享睡眠不贡献过期立即截止。环境不等整场活动结束。
@@ -295,7 +295,7 @@ interface ModelTask<T> {
 
 实际使用 OpenAI 兼容 Chat Completions HTTP，默认 JSON Object + 本地 Zod Schema 校验；任务层不依赖 SDK。各任务按名分别选择连接。系统提示含固定职责规则与 JSON Schema，当前没有额外 few-shot 示例；动态输入独立序列化为用户消息。
 
-正式配置与样例的十一项任务均为 `deepseek-flash`。`narrative/narrative_shared/personal_chat/personal_life/personal_shared/expression/world/school` 使用 `reasoningEffort: low`，`memory/memory_consolidation/stickerDescriptionModel` 使用 `high`。任一任务可独立改为 `deepseek-v4-pro`；强度允许 none/low/high/max，省略为 high，请求传为 reasoning_effort。修补和本地查询续调用沿用同一任务连接。Embedding 独立配置，无思考强度。
+正式配置与样例的十三项任务均为 `deepseek-flash`。`narrative/narrative_shared/personal_chat/personal_life/personal_shared/expression/world/school_campus/school_group/school_week` 使用 `reasoningEffort: low`，`memory/memory_consolidation/stickerDescriptionModel` 使用 `high`。任一任务可独立改为 `deepseek-v4-pro`；强度允许 none/low/high/max，省略为 high，请求传为 reasoning_effort。修补和本地查询续调用沿用同一任务连接。Embedding 独立配置，无思考强度。
 
 ### 7.1 只校验真正影响控制的内容
 
@@ -383,25 +383,15 @@ T7 用固定随机种子做一次离线机会抽样验证长期频率；封顶�
 
 默认历史／条数／alwaysInclude预算均null，近期原文30。词法先校准筛选再RRF60，真实语义阈值待标定；不从score>0或固定Top K过渡。后台单准备槽不占前台active，每应用一个单元真实setImmediate重扫，openBatch／旧轮／到期故事优先。正式库schema3迁移已完成，核心背景摘录仍待审阅后切换。
 
-## 10. 世界与学校：增量输出合同
+## 10. 世界与学校 V0.4
 
-实际增量变更合同如下；模型不提供程序分配的 ID 或 status：
+当前实现详见 [V0.4细化](docs/WORLD_SCHOOL_PLANNING_V0.4_IMPLEMENTATION_20261008.md)及[实施日志](docs/WORLD_SCHOOL_PLANNING_V0.4_IMPLEMENTATION_LOG_20261008.md)。world沿用EnvironmentResult.changes公共事件合同；三个学校模型改用职责专属增量合同。校园／课题组维护持续计划和条目，周任务唯一展开实例与通知候选；程序分配ID、冻结版本并事务保存。
 
-```ts
-type EnvironmentChange =
-  | { action: 'create'; event: Omit<EnvironmentEvent, 'id' | 'status'>; id?: string }
-  | { action: 'update'; id: string; event: Partial<Omit<EnvironmentEvent, 'id' | 'status'>> }
-  | { action: 'cancel'; id: string };
-interface EnvironmentResult { changes: EnvironmentChange[] }
-```
+每日06:00单链，初次建档先建持续计划，学校不再16:00运行。环境批次和步骤独立存储，不创建TurnRecord/outbox/post job，不更新角色状态或自主截止。格式／请求错误局部5分钟重试，存储错误不被吞掉；ready恢复不重生成，跨日旧未提交结果只保留审计。聊天在下一选择点优先，已运行请求可能延迟聊天。
 
-事件存储额外有程序字段 `status: active | cancelled`。更新合并旧记录，取消后不再作为有效安排注入，已有经历引用仍保留。环境更新不修改角色状态、消息已看、情绪或体力。
+通知发布、实际读取、知识分开。冻结本轮SchoolNoticeRef，合法读到才通过experienceIndex关联经历；段B原子保存read、知识、研究进展、经历及故事完成。已读旧快照不自动变最新，计划／通知不是科研结果。学校事项自由参加，不强制执行真实研究。
 
-默认世界每天 06:00、学校每天 06:10 和 16:00，均可通过非空时点列表配置。首次故事初始化将两个更新设为立即到期；提交按实际完成时间选择下一个日程时点，不逐天补跑历史。学校模型按旧事件 ID 增量变化，学校事件不自动生成 appointment 或作息任务。
-
-环境回合复用 `turns / frozenResult` 和段 B 提交边界，无 QQ 输出、不调用表达或个人记忆整理；`post_jobs.result` 可保存合法空 `MemoryResult` 后提交环境变更。它不推进角色 `narratedUntil`，事件何时被角色感知由后续主叙事决定。
-
-搜索默认关闭（webSearch.enabled=false），真实provider待选择。webSources作为申请后的初始候选，取消批量预抓及12000截断；各阶段独立20成功／40失败，正文提供后动态校验basis/sourceUrls。公开缓存只存同owner资料，不共享阶段输入；本人阅读来源仅来自personal_life。实现及验收见docs/WEB_SEARCH_IMPLEMENTATION_LOG_20261007.md。
+网页保持每步20成功／40失败及可替换provider；修补、重试、恢复不重给额度。无provider不伪联网。上下文默认不限人为预算，接口实际超限保留错误。旧库使用migrate:environment显式停服备份升级，配置兼容不能绕过环境版本门禁。
 
 ## 11. 最小恢复与日常管理
 

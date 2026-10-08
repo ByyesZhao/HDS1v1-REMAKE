@@ -13,6 +13,7 @@ async function main() {
   let now = '2026-10-07T10:00:00+08:00';
   const clock = { now: () => now };
   const storage = new Storage(':memory:'); storage.set('character', initialCharacter(now));
+  storage.set('runtime',{...storage.runtime(),nextEnvironmentAt:'2026-10-08T06:00:00+08:00'});
   const models: ModelRunner = {
     async runModel<T>(task: ModelTask<T>, input: any): Promise<T> {
       let output: unknown;

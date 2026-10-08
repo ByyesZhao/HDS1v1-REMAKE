@@ -71,9 +71,11 @@ export interface Runtime {
   lastError: string | null;
   nextMaintenanceAt: string | null;
   sharedActivityVersion: 1 | null; sharedClock: SharedClock | null;
+  environmentPlanningVersion:1|null; nextEnvironmentAt:ISOTime|null;
 }
 export interface Experience { id: string; happenedAt: ISOTime; description: string; relatedEventIds: string[] }
 export interface NarrativeResult {
+  schoolObservations?:import('./school/types').SchoolObservation[];researchProgress?:import('./school/types').ResearchProgressDraft[];
   experiences: Array<Omit<Experience, 'id'>>;
   currentScene: { description: string; activity: Activity | null };
   energy: CharacterState['energy'];
@@ -103,20 +105,24 @@ export interface EnvironmentEvent { id: string; kind: 'world' | 'school'; starts
 export type EnvironmentChange = { action: 'create'; event: Omit<EnvironmentEvent, 'id' | 'status'>; id?: string } | { action: 'update'; id: string; event: Partial<Omit<EnvironmentEvent, 'id' | 'status'>> } | { action: 'cancel'; id: string };
 export interface EnvironmentResult { changes: EnvironmentChange[] }
 export interface Sticker { id: string; path: string; description: string; aliases?: string[]; embeddingInput?: string; embedding: number[]; embeddingModel: string; embeddingBaseUrl?: string; legacyFingerprint?: string }
-export type TriggerKind = 'input' | 'autonomous' | 'sleep' | 'activity' | 'appointment' | 'check_messages' | 'scene_step' | 'environment';
-export interface TurnRequest { inputMessageIds: string[]; taskIds: string[]; triggerKinds: TriggerKind[]; batchIds?: string[]; environmentKind?: 'world' | 'school'; sharedMeta?: SharedTurnMeta | null }
+export type TriggerKind = 'input' | 'autonomous' | 'sleep' | 'activity' | 'appointment' | 'check_messages' | 'scene_step' | 'environment'|'school_notification';
+export interface TurnRequest { schoolNoticeRefs?:import('./school/types').SchoolNoticeRef[];environmentStepId?:string; inputMessageIds: string[]; taskIds: string[]; triggerKinds: TriggerKind[]; batchIds?: string[]; environmentKind?: 'world' | 'school'; sharedMeta?: SharedTurnMeta | null }
 export interface TurnRecord {
   id: string; inputMessageIds: string[]; triggerTaskIds: string[]; triggerKinds: TriggerKind[];
   at: ISOTime; completedAt: ISOTime | null; frozenResult: TurnCandidate | null; outputComplete: boolean; done: boolean;
   batchIds: string[]; entryMode: Mode; environmentKind?: 'world' | 'school';
   sharedMeta?: SharedTurnMeta | null; autonomousIntervalMinutes?: number | null;
+  legacyDisposition?:'superseded';closedAt?:ISOTime;replacementBatchId?:string;
+  schoolNoticeRefs?:import('./school/types').SchoolNoticeRef[];
 }
 export interface TurnCandidate {
+  schoolObservations?:import('./school/types').SchoolObservationCommit[];schoolProgress?:import('./school/types').SchoolProgressCommit[];
   visibleMessageIds: string[]; reconsiderMessageIds: string[];
   narrative: NarrativeResult | SharedNarrativeResult | null; personal: PersonalResult | null; expression: ExpressionResult | null;
   experiences: Experience[]; nextState: CharacterState; taskChanges: TaskChange[]; completedTaskIds: string[];
   probability: { contactMisses: number; stickerMisses: number }; autonomousIntervalMinutes: number | null;
   environmentChanges: EnvironmentChange[]; nextEnvironmentAt?: ISOTime;
+  schoolNoticeRefs?:import('./school/types').SchoolNoticeRef[];
 }
 export interface OutboxItem { turnId: string; seq: number; kind: 'narration' | 'text' | 'action' | 'sticker'; payload: string; status: 'pending' | 'sending' | 'retry' | 'confirmed'; confirmedAt: ISOTime | null; platformMessageIds: string[]; notBefore: ISOTime | null }
 export interface PostJob { turnId: string; result: MemoryResult | null; memoryIds?:Record<string,string>; selfWebReadSources?:import('./memory/types').SelfWebReadSource[] }
@@ -237,7 +243,7 @@ export interface MemoryResultV3 {schemaVersion:3;shortTermChanges:Array<ShortCre
 
 | 任务 | 实际主要字段 |
 | --- | --- |
-| 世界／学校 | `at / timezone / worldSetting / schoolSetting / events / webMaterials / campusDetails`；世界的 campusDetails 为空，学校按细节 key 的 `school|roommate|classmate` 匹配取值 |
+| 世界／学校 | 冻结EnvironmentStepInput(stage/batchId/at/context)；world为公共事件，campus/group为完整身份背景及所属计划，group另含带experienceId进展；week为SchoolExpansionInput必需集合与预约时段。无完整私聊列表或旧身份正则 |
 | 主叙事 | `from / at / background / state / waking / events / dueTasks / recent / history`；共同场景额外传visibleMessages/sharedMeta/remainingSteps；工厂末尾另传previousOutline |
 | 个人导演 | `at / background / state / experiences / visibleMessages / reconsiderMessages / dueTasks / tasks / events / history / contactEligible` |
 | 表达 | `intent / mode / state / visibleMessages / history / chatExamples` |
@@ -257,7 +263,7 @@ Koishi 入口只接收绑定机器人与用户之间的私聊，解析并拼接 
 
 ### 逐任务模型连接
 
-`settings.ts` 从 `config.local.json` 加载十个独立故事／后台任务：`narrative / narrative_shared / personal_chat / personal_life / personal_shared / expression / memory / memory_consolidation / world / school`；素材描述另用第十一项 `stickerDescriptionModel`。配置键 `stickerDescriptionModel` 对应运行任务名 `sticker_description`。各连接支持 `model / baseUrl / apiKeyEnv / outputMode / reasoningEffort`。
+`settings.ts` 从 `config.local.json` 加载十二个独立故事／后台任务：`narrative / narrative_shared / personal_chat / personal_life / personal_shared / expression / memory / memory_consolidation / world / school_campus / school_group / school_week`；素材描述另用第十三项 `stickerDescriptionModel`。配置键 `stickerDescriptionModel` 对应运行任务名 `sticker_description`。各连接支持 `model / baseUrl / apiKeyEnv / outputMode / reasoningEffort`。
 
 - 模型允许 `deepseek-flash / deepseek-v4-flash / deepseek-v4-pro`，每项可独立改为 Pro。
 - `reasoningEffort` 允许 `none / low / high / max`，省略时默认为 `high`，HTTP 字段为 `reasoning_effort`。
@@ -269,7 +275,7 @@ Koishi 入口只接收绑定机器人与用户之间的私聊，解析并拼接 
 
 ## 4. 环境事件
 
-世界和学校共用 `EnvironmentResult { changes }`，以稳定事件 ID 增量 `create / update / cancel`；没有单独按日期存储的简报文件。create 的模型 event 不含 ID/status，程序生成 ID 并保存 `active`；update 合并指定旧事件的部分字段；cancel 保存 `cancelled`。通常只把 active 事件传回模型。
+world使用 `EnvironmentResult { changes }`，以稳定事件 ID 增量 `create / update / cancel`；没有单独按日期存储的简报文件。create 的模型 event 不含 ID/status，程序生成 ID 并保存 `active`；update 合并指定旧事件的部分字段；cancel 保存 `cancelled`。通常只把 active 事件传回模型。
 
 `environmentTask()` 校验变更 ID 属于当前导演种类、事件 kind 正确、结束不早于开始。`basis / sourceUrls` 由模型输出，程序要求所有 URL 来自本次提供材料，并要求 `web_reference` 至少包含一个 URL；不会自动替模型推断来源或核验报道真假。提示词要求无材料时使用 fiction 和空来源、有材料时保留报道／传闻的不确定措辞。
 
@@ -452,7 +458,7 @@ ModelClient 默认首次请求后最多两次格式修补。JSON 解析、Zod �
 
 ## 搜索离线核心落地（2026-10-07）
 
-进程内唯一WebSearchService及四辅助表web_sessions/web_operations/web_materials/self_web_read_sources已接入。全部十一类任务独立run身份，阶段输入、补查、修补和工具请求检查点私有；公开正文缓存按owner释放，数据库材料保留恢复。同阶段重放计0，跨阶段首次取得各计1。正文响应成功后、最终parse前登记实际提供；personal_life的稳定来源及首次operationId进入post job。环境合同在最终parse读取providedUrls。后台共用既有120秒准备槽／signal，不阻塞前台，stop取消后不保存晚结果。
+进程内唯一WebSearchService及四辅助表web_sessions/web_operations/web_materials/self_web_read_sources已接入。全部十三类任务独立run身份，阶段输入、补查、修补和工具请求检查点私有；公开正文缓存按owner释放，数据库材料保留恢复。同阶段重放计0，跨阶段首次取得各计1。正文响应成功后、最终parse前登记实际提供；personal_life的稳定来源及首次operationId进入post job。环境合同在最终parse读取providedUrls。后台共用既有120秒准备槽／signal，不阻塞前台，stop取消后不保存晚结果。
 
 真实provider未配置，webSearch.enabled=false；当前未联网，待选服务后注入provider。网页无人工字符预算或12000截断，真实容量错误不删内容重试。来源语义、表达不新增事实和查阅不变亲历仍由任务提示约束，程序不冒称能判断散文真假。
 
@@ -463,3 +469,5 @@ ModelClient 默认首次请求后最多两次格式修补。JSON 解析、Zod �
 ## 第七轮审核修正同步（2026-10-07）
 
 当前记忆owner不保存／回传action、clientRef、existingLongId、hasNewEventProgress；happenedAt与可选happenedUntil保留已知事件时间范围，lastEventUpdateAt独立。archive及lookup不提前暴露预备长期。维护应用异常整笔回滚后保留ready结果、五分钟再应用，其他待办和聊天可继续。搜索不注入webSources或用其兜底，结果不足保存并向原阶段模型反馈“结果不足”，角色可自然询问用户；20／40及缓存B不变。最终42文件200项回归、类型／构建／离线加载／启动检查通过，独立复核未发现实质问题。详细依据与记录见docs/REVIEW7_FIX_IMPLEMENTATION_20261007.md及四份V0.3权威规范。
+
+学校V0.4类型以src/school/types.ts、src/environment/types.ts和[细化](docs/WORLD_SCHOOL_PLANNING_V0.4_IMPLEMENTATION_20261008.md)为准。学校不使用旧EnvironmentEvent合同创建新事项；旧school事件导入实例保持legacyEventId。EnvironmentChangeSet冻结ID，SchoolNoticeRef冻结通知版本，SchoolObservationCommit/SchoolProgressCommit随TurnCandidate进入原段B；旧environmentKind仅用于历史升级／审计，新请求用environmentStepId且不建普通turn。
