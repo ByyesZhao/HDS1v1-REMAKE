@@ -95,3 +95,9 @@ refine只改长期摘要；审核targetId、decision和对象kind硬校验，固
 最终运行npm test：79文件／435项通过；npm run typecheck及npm run build通过。修正后独立离线工具用新库runtime/memory-capacity-acceptance-20261008/final-fixed/isolated.sqlite再验：100／1000／500、重开一致、11单元、派生泄漏[]、前台优先／保护后释放通过，耗时约2.6秒。没有再次发送在线请求；初验3次Flash/high记录保留，不以其手工快照替代新增生产dirty→audit测试。按执行技能只做一次全分支审查，修正靠失败→通过及整套回归，不再次派审。
 
 复核保留范围裁定：正式升级／QQ真实运行未验，服务按用户要求停止，不能把隔离通过说成已上线；容量对数月使用的适合性未宣称验证，默认保持100／1000／500、可独立调整。判断错误的代价分别是上线期业务差异、容量经验不足，需要后续真实使用反馈。本次无延期Minor。
+
+## 主目录集成与最终本地验证
+
+代码及复核修正提交60ec906，分支codex/memory-capacity-idle-v4；main由9e24b0d快进到该提交。用户当前项目的实施授权包含本地集成，沿用此前工作流程，不做远端推送或服务启动。主目录再次npm test为79文件／435项全通过，typecheck及build通过；require('./lib/index.js')构建插件导入检查通过、没有实例化服务。集成和验证前后正式DB的SHA256一致。
+
+完整任务／最终日志和账本已经复制到runtime/memory-capacity-acceptance-20261008/verification，初验含3次在线报告在final-1855，修正后离线复验在final-fixed。过程文档均在主目录docs保留；原有未跟踪DSH文件未纳入本次提交。正式库未apply或清理，两个启动cmd未改变，由用户自行运行。隔离工作区证据保存后归档，功能提交在本地Git保留。
