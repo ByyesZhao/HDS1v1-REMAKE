@@ -8,13 +8,14 @@
 
 **Tech Stack:** 现有TypeScript、Node >=22.13.0、内置SQLite、Zod、Vitest、Koishi；不新增依赖、向量数据库或模型角色。
 
-**Spec:** [实施细化](MEMORY_CAPACITY_IDLE_V0.4_IMPLEMENTATION_20261008.md)固定字段、合同及时序；本计划固定文件、任务和验收。DSH第十五轮及CODEX补充已折入细化，执行时不再拼接审核文件。
+**Spec:** [实施细化](MEMORY_CAPACITY_IDLE_V0.4_IMPLEMENTATION_20261008.md)固定字段、合同及时序；本计划固定文件、任务和验收。DSH第十五轮、CODEX补充及[第十六轮计划审核](../DSH-review/DSH_REVIEW16_MEMORY_CAPACITY_IDLE_PLAN_20261008.md)已折入细化，执行时不再拼接审核文件。
 
 日期：2026-10-08。状态：供审核，全部任务未执行。源码基线`005f9ac`。本次未运行测试、模型或QQ，未修改程序配置／正式库。实施开始后新建`docs/MEMORY_CAPACITY_IDLE_V0.4_IMPLEMENTATION_LOG_20261008.md`记录实际过程。
 
 ## Global Constraints
 
 - 活跃短期100、普通长期1000（包括未可见preview）、普通归档500个canonical；归档最长90天，超时与超量是OR。独立配置显式null关闭对应约束。
+- 归档集合以细化§3.1的isArchivedLong同源判定，计数、查询、清理和升级一致；已保存archiveEnteredAt是本次窗口唯一锚点，后续expiresAt不另开窗口。
 - 7天／90天／3个有效日期续期／30个日期常驻候选，canonical＋Asia/Shanghai日期去重不变；重谈不延长短期，处理now不给旧事保鲜。
 - 基础每轮提取及details更新保留；深度prepare、重试、ready应用均检查最新空闲15分钟与活动门禁。新输入即时刷新，输出／故事更晚时刻再次刷新。
 - 共同活动整体阻挡，普通明确活动未实际结束阻挡；expectedEndAt只作重查，不证明结束。睡眠例外只解除睡眠自身阻挡。
@@ -59,10 +60,13 @@
 
 **Interfaces:** 消费任务1配置／owner字段，产出细化§3.2的`MemoryCapacity(store,config)`及`MemoryCapacityCounts／CapacityResult`；SQL层统一current／archive与自然到期归档计数。`MemoryLifecycle(store,capacity?)`真实awaken在来源／ID验证后调用`reactivate(id,at)`；段B将本轮恢复的canonical ID传入`normalize(now,protectedLongIds)`，不引入双向构造依赖，保留canonical日期去重和更晚grant。
 
+归档纯函数从`src/memory/capacity.ts`导出`archiveStart(row:MemoryCandidate,now:string):string|null`和`isArchivedLong(row:MemoryCandidate,now:string):boolean`；Store的SQL判定与它们等价，任务3清理和任务7升级直接使用此口径，不各写新的判定。
+
 - [ ] 写`short_101_summary_immediate`：第101条后shortActive=100，退出条目摘要当刻可查；day 3提前转层的retainedFrom／initial grant是day 3，原短期截止仍day 7。
 - [ ] 写`long_1001_includes_preview`、`same_long_multiple_shorts_count`、`canonical_awaken_rank`：1001包含预备项，1000占用=preview+visible；两个short关联一个long仍占2个short；short自身0而关联长期日期不同仍正确排序。
 - [ ] 写`active_sort_and_protection`及`archive_query_not_reactivate`：重要新事优先保留、稳定时间／ID决胜；受保护long不被挤出；查询归档不唤醒、不清标记。
 - [ ] 写`capacity_reactivate_same_day`、`active_short_link_to_archived_long`：真实重谈恢复90天且不重复同日日期、不缩晚期限；活跃short的旧归档long保留并记录保护，不自动重置其期限。
+- [ ] 写`archive_membership_sql_matches_policy`：同一组未到期、仅expiresAt到期（archiveEnteredAt=null）、容量退出、有已保存锚点、durable、merged／discarded、short夹具，纯函数与SQL的归档集合完全相同；longArchive计数与current／archive可见性按同一集合及既有retainedFrom权限处理。
 - [ ] 运行`npm test -- tests/memory-capacity-lifecycle.test.ts tests/memory-capacity-retrieval.test.ts`确认缺失行为失败，再实现排序／转层／归档／恢复，容量改变只提升stateVersion。
 - [ ] 通过上述测试和`npm test -- tests/memory-v3-lifecycle.test.ts tests/memory-v3-retrieval.test.ts`及类型检查；在日志记录相对V0.3的查询变化并提交。
 
@@ -74,6 +78,7 @@
 
 - [ ] 写`archive_501_eviction_before_90_days`和`archive_age_without_overflow`：未满90天也可因501超量清理；只有一条超过90天也删除，OR不是AND。
 - [ ] 写`archive_oldest_low_awaken_first`及`short_details_expire_after_summary`：归档importance在唤醒数／时间之后；容量退出short至原day 7有详情，截止后有摘要则删除short全文和各revision向量。
+- [ ] 写`archive_anchor_survives_later_expiry`和`natural_expiry_without_persisted_anchor`：day 10容量退出保存锚点，后到day 90自然截止仍以day 100作为归档90天清理截止；仅自然day 90到期、字段未写时计入归档并以day 180为截止，落地不能改用维护now。真实恢复清空本次标记，后续真实退出才开新窗口。
 - [ ] 写`protect_and_repoint_references`：活跃short或有效learned证据阻挡删long；真正合并先重指short和learned证据，再去除旧副正文；按canonicalMemoryId删grant，不误删已迁移记录。
 - [ ] 写`missing_owner_stale_other_unit_applies`：删除一个owner后其unit stale，另一个unit仍可应用；既有contracts.ids⊆readOwners继续成立，应用不用非空断言。
 - [ ] 用可控Promise写`late_prepare_does_not_restore_pruned_snapshot`、`late_index_no_vector_resurrection`、`timeout_no_pruned_retry`：请求启动后删除owner／剪除job，再返回／超时，数据库没有其正文、snapshot或vector，其他有效unit保留。
@@ -102,7 +107,10 @@
 
 - [ ] 写`refine_targets_long_summary`：short+long输入时只改long摘要，short详细正文保持；不把DSH“没有摘要路径”误写为修short原文。
 - [ ] 写`merge_short_same_event_one_or_two_longs`：≥2short同一canonical可合并，不假装满足旧merge≥2long；不同long先正式合并、重指全部相关short／learned，保留日期去重、感受、来源和最大真实进展截止。
+- [ ] 写`merge_short_tied_created_at_stable_id`：两个short有相同真实createdAt、ID分别s-a／s-b，正序和反序输入都只接受canonicalShortId=s-a；选s-b合同失败。
+- [ ] 写`merge_short_sources_required_and_allowed`：sourceIds=[]或未知来源均合同失败，可用合法非空来源修补；只有历史快照来源、没有本轮新用户消息也能合法整理，合并成员来源并集不丢失。实现时显式把merge_short加入refine／merge／promote的非空来源及正文硬校验集合。
 - [ ] 写`merge_does_not_awaken_or_restore_archive`：同事件合并不加唤醒、不以now续期；不因全归档合并转回活跃，旧容量退出short不自动恢复。
+- [ ] 扩展`merge_does_not_awaken_or_restore_archive`：两个仅自然到期、archiveEnteredAt尚未落地的long分别day 90／day 100到期，在day 110合并后仍取day 90作归档锚点，不能随max expiresAt挪到day 100；有真实活跃成员的合并只继承已有资格／grant，不凭维护now加90天。
 - [ ] 写`detail_audit_reports_no_fact_rollback`、`learned_review_no_core_rewrite`：本轮details新值立即生效，空闲冲突只存当前建议；learned可retain／建议修订撤回，不自行改作者文件／发联系任务。
 - [ ] 写`distinct_canonical_evidence`、`selected_covered_sources_required`、`own_apply_no_dirty_loop`：多short同long不凑跨事件证据；所有selected有unit且变更有合法来源；后台改善处理后的版本作为水位，不自循环排队。
 - [ ] 运行`npm test -- tests/memory-idle-contracts.test.ts tests/memory-idle-consolidation.test.ts`确认红灯；实现合同、依赖补全、正式应用及增量去重，不增加文本长度校验。
@@ -130,6 +138,7 @@
 
 - [ ] 写`dry_run_readonly_no_ddl`：真正只读SQLite连接执行检查，schema、JSON、日期不变；不经Storage构造器；输出ID／原因／数量，不能输出正文／密钥。
 - [ ] 写`apply_stopped_and_idempotent`、`legacy_dates_no_now_refresh`：apply需要停止声明和已完成旧轮，schema仍3、容量标记1；第二次不重置日期／idle／grant；旧归档锚点取真实expiresAt，不从升级now另加90天。
+- [ ] 将`archive_membership_sql_matches_policy`的自然到期未落地／容量已归档夹具复用于`inspection_matches_runtime_archive_count`：dry-run、apply后运行时和清理候选使用相同集合与起点；已有archiveEnteredAt不因旧expiresAt变化被重置。
 - [ ] 写`legacy_evidence_and_done_payload`：可确认的历史记忆证据归一，常驻保护不漏；done快照／post_job结果压缩，旧computing转pending，ready等新idle，缺失关联报告不假造来源。
 - [ ] 写`startup_old_marker_named_error`、`fresh_seed_and_status_counts`：旧库缺迁移标记明确报命令，新库装配三组件；status只读数量／阻挡，不加载私聊内容。
 - [ ] 运行`npm test -- tests/memory-capacity-upgrade.test.ts tests/memory-capacity-deployment.test.ts`确认失败；实现工具／装配、示例配置与README说明。本轮部署时先做数量报告与备份，不能把测试库升级写成正式库已升级。
@@ -158,3 +167,5 @@
 实际实施只以本计划与[实施细化](MEMORY_CAPACITY_IDLE_V0.4_IMPLEMENTATION_20261008.md)为本期主依据，顺序任务1～8。V0.3与共同活动／世界学校文档作为既有接口参考，不重复执行旧任务。原方案和审核文件保留讨论历史，1000／500／真实清理／OR条件／活跃短期保护以本期细化为准。
 
 本轮只写文档。计划审核通过并获得实施指令后，按既有顺序执行方式开展代码修改和实施日志；不在用户审核期间启动服务或应用清理。
+
+第十六轮补充已合并：归档判定及锚点落实在任务2／3／7，merge_short稳定ID与非空合法来源落实在任务5；上述新增用例尚未运行。其余任务顺序及产品推荐值不变，无新增待用户决定项。

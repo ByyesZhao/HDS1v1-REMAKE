@@ -2,7 +2,7 @@
 
 日期：2026-10-08。状态：供实施审核，未编写本功能代码、未升级正式库。源码基线`005f9ac`（程序实现基线`4f09757`）。
 
-本文与[执行计划](MEMORY_CAPACITY_IDLE_V0.4_EXECUTION_PLAN_20261008.md)共同作为本次实施依据。已合并[原方案](MEMORY_CAPACITY_IDLE_V0.4_PROPOSAL_20261008.md)、[CODEX回复](../DSH-review/CODEX_REBUTTAL_MEMORY_CAPACITY_IDLE_V0.4_20261008.md)及[DSH修订审核](../DSH-review/DSH_REVIEW15_MEMORY_CAPACITY_IDLE_V0.4_20261008.md)。原稿3000条、所有记忆退出后无限留库的口径由本文替代。
+本文与[执行计划](MEMORY_CAPACITY_IDLE_V0.4_EXECUTION_PLAN_20261008.md)共同作为本次实施依据。已合并[原方案](MEMORY_CAPACITY_IDLE_V0.4_PROPOSAL_20261008.md)、[CODEX回复](../DSH-review/CODEX_REBUTTAL_MEMORY_CAPACITY_IDLE_V0.4_20261008.md)、[DSH修订审核](../DSH-review/DSH_REVIEW15_MEMORY_CAPACITY_IDLE_V0.4_20261008.md)及[第十六轮计划审核](../DSH-review/DSH_REVIEW16_MEMORY_CAPACITY_IDLE_PLAN_20261008.md)。原稿3000条、所有记忆退出后无限留库的口径由本文替代。
 
 ## 1. 范围与既有约束
 
@@ -62,7 +62,24 @@
 | `archiveEnteredAt` | `string|null`；普通长期本次进入归档的真实起点，不是维护执行时间 |
 | `evidenceMemoryIds` | `string[]`；learned引用的canonical经历身份，与原始sourceIds分开 |
 
-自然到期可通过`expiresAt`判定进入归档，不要求定时任务先写字段才能从current退出。统一函数`archiveStart(row, now)`：已容量退出或已有有效归档锚点取本次最早退出时刻；否则普通长期到期取`expiresAt`；尚未归档返回null。capacityExitedAt后又到expiresAt不后移锚点。真实重新激活才清空本次归档标记。
+归档判定和起点统一使用`src/memory/capacity.ts`导出的两个纯函数：`archiveStart(row:MemoryCandidate,now:string):string|null`及`isArchivedLong(row:MemoryCandidate,now:string):boolean`。它们只接受普通有效canonical长期作为归档池对象；short、learned、durable、merged／discarded不计入该池：
+
+```text
+archiveStart(row, now):
+  kind不是long、status不是active或mergedInto非空 -> null
+  archiveEnteredAt非空 -> archiveEnteredAt
+  否则capacityExitedAt非空 -> capacityExitedAt
+  否则expiresAt非空且expiresAt <= now -> expiresAt
+  否则 -> null
+
+isArchivedLong(row, now) := archiveStart(row, now) != null
+```
+
+自然到期不要求定时任务先写archiveEnteredAt：仅有expiresAt到期也立即算归档。首次落地归档字段时，将上述推导出的真实起点保存到archiveEnteredAt，不使用执行now。**一旦archiveEnteredAt已保存，本次归档窗口和90天清理截止只认该锚点**；之后expiresAt变化或再次到期都不能后移／重启窗口。expiresAt仍保留原长期grant的业务含义，不再作为另一套本次归档截止。任何合并／改写会改变已归档成员的期限字段时，先在同一事务固化修改前的archiveStart，不能因字段尚未落地而顺带延期。
+
+真实重新激活在同一事务清空archiveEnteredAt、capacityExitedAt及reason；随后新的真实退出才开启新窗口。§7.2正式同事件合并继承既有活跃成员资格是身份合并，沿用该成员真实grant，不是凭维护now重新激活；全归档成员合并保留最早真实归档锚点。
+
+current筛选、longArchive计数、清理候选与90天截止、状态统计和升级检查共用此定义。SQL使用等价的普通主身份过滤及同次序CASE表达式，集中在一个Store归档查询片段，不在各调用点重写判定；纯函数与SQL用相同夹具校验一致。不得仅以archiveEnteredAt非空计数，也不得按expiresAt另算一个不计500的历史池。
 
 `Runtime`新增`memoryCapacityVersion:1|null`及`memoryIdle:MemoryIdleState|null`。版本1是本功能迁移标记，`memory_schema_version`和基础记忆结果`schemaVersion`仍为3，不按文档V0.4改成4。
 
@@ -129,7 +146,7 @@ class MemoryCleanup {
 
 短期只数尚未自然到期、未容量退出、未merged／discarded的实际short行。不同短期关联相同long仍分别占短期容量；只有正式短期合并才能减数。
 
-普通长期按非durable的canonical主身份计数，排除merged／discarded、自然到期和容量归档，包含尚未达到retainedFrom的预备项：`longOccupied=longPreview+longVisible`。正常归一后占用不超过1000，可见是其子集，不另设配额。归档自然到期与容量退出统一计入500；别名不重复计数。
+普通长期按非durable的canonical主身份计数，排除merged／discarded及§3.1的isArchivedLong，包含尚未达到retainedFrom的预备项：`longOccupied=longPreview+longVisible`。正常归一后占用不超过1000，可见是其子集，不另设配额。`longArchive`计数、500容量候选和90天清理对象都用同一个isArchivedLong集合；自然到期与容量退出统一计入，别名不重复计数。
 
 自然过期查询立即失效。保护集合包括仍服务活跃短期的canonical长期、常驻必要证据，以及本次提前转层／真实恢复的长期；保护项本来就在池内，不能另扣100条。先处理短期归一，再处理长期；典型情况下100条活跃短期至多保护100个不同关联长期。无合格候选时记录超量和原因，不拒绝新记忆。
 
@@ -154,7 +171,7 @@ short容量退出时同事务标记、确认关联长期摘要存在、令普通
 
 容量退出不算唤醒；已有基础eventSummary／feelingSummary足以先接上，不等待LLM改善。short详情暂留至原7天截止，随后按§5清理。关闭容量不重新暴露已退出详情；新增真实进展可按合法来源建立／继续事件，但不得恢复旧详情为刚发生。
 
-长期容量退出写capacityExitedAt／reason及archiveEnteredAt，不伪造expiresAt，不复用discarded／merged。current排除容量标记；archive仍按既有权限开放，未生效预备项不能靠archive越过retainedFrom。常驻、details和学校客观上下文权限保留。
+长期容量退出写capacityExitedAt／reason及archiveEnteredAt，不伪造expiresAt，不复用discarded／merged。current排除isArchivedLong；archive仍按既有权限提供存活的当前项及归档项，未生效预备项不能靠archive越过retainedFrom。常驻、details和学校客观上下文权限保留。
 
 只有有合法当轮重谈来源的awaken才能恢复普通长期；清除本次归档标记、沿原canonical及每日去重处理，新增reactivate grant从真实重谈算90天，已有更晚有效期限不缩短。查询命中不恢复；同一重谈不能成为两份续期证据。即使该日已有有效唤醒，合法容量恢复也只能产生恢复窗口，不能重复增加日期数。恢复长期不恢复旧short详情，保护至当前归一结束，必要时归档另一合格候选。
 
@@ -166,7 +183,7 @@ short容量退出时同事务标记、确认关联长期摘要存在、令普通
 
 归档已满90天的合格记录可删除，哪怕只有一条；归档超过500时，未满90天也可按归档排序删除。90天是**最长**归档时间，不保证每条至少有90天找回期。否则超过500仍不能清理，违背有限容量。
 
-自然到期锚点取实际expiresAt，容量提前归档取实际退出时刻；离线、重启、摘要合并／改写、维护执行均不后移。真实重新激活结束本次归档窗口，下次真实退出重新计算。超过归档期限先清理，再处理超量；未晋升常驻的高唤醒／high记录没有无限归档豁免。
+归档对象统一用§3.1的isArchivedLong；清理期限统一为`archiveStart(row,now)+archiveRetentionDays天`。自然到期且字段尚未落地时用实际expiresAt推导；已落地则只取archiveEnteredAt。容量退出后又自然到期不会改窗口，离线、重启、摘要合并／改写、维护执行均不后移。真实重新激活结束本次归档窗口，下次真实退出重新计算。超过归档期限先清理，再处理超量；未晋升常驻的高唤醒／high记录没有无限归档豁免。
 
 ### 5.2 先处理引用，再删身份
 
@@ -271,13 +288,15 @@ short原7天截止、归档90天截止、容量归一待办纳入已有Host计�
 
 | 动作 | 必需输入／输出 | 程序应用 |
 | --- | --- | --- |
-| `merge_short` | ≥2个short及其必要long／learned／反向short依赖；canonicalShortId为最早createdAt、同分ID的输入short；content、eventSummary、feelingSummary、非空合法sourceIds | 合并同事件详细记录；linked long若不同先正式合并并重指；单一long不假装满足旧merge≥2long合同 |
+| `merge_short` | ≥2个short及其必要long／learned／反向short依赖；canonicalShortId为createdAt最早的输入short，相同时取ID升序最小者；content、eventSummary、feelingSummary、非空合法sourceIds | 合并同事件详细记录；linked long若不同先正式合并并重指；单一long不假装满足旧merge≥2long合同 |
 | `review_detail` | 被审detail ID、readOwners、sourceIds、decision=`retain`或`report_conflict`、reason | retain登记水位；冲突保存当前建议，不自动改details或历史 |
 | `review_learned` | 被审learned ID和证据readOwners、sourceIds、decision=`retain`／`suggest_revision`／`suggest_withdrawal`、reason | 保存审核水位／建议；本期不自行改作者背景或撤销常驻结论 |
 
 所有动作明确readOwners，程序生成包含写入对象和隐式重指对象的readSet。继续保证ids在readOwners内、每selected被一个unit覆盖、不重叠写入、来源来自快照合法证据。允许空结果仅在没有需要审核的selected时；有selected时用retain表达合法“无变化”。
 
-merge_short要求模型明确同一事件而非共享关键词，不允许不同事凑条数。保留sourceIds并集、完整事件范围及阶段感受；short保留截止取真实latestEventUpdateAt+7天，容量退出状态不靠合并清除，合并不算唤醒。关联长期合并迁移日期／grants、去重并保留更晚真实有效期限，不凭处理now续期；如果成员仍有活跃层资格，主身份继承真实现有资格，不能靠合并后台归档记录自动恢复。
+`merge_short`必须显式加入contracts中“content非空且sourceIds至少1个”的变更动作集合，成为`refine／merge／merge_short／promote`，不能只在提示词或表格中要求。sourceIds须来自提供的历史快照合法来源白名单；本阶段不要求另有当前用户新消息，也不能把维护job ID伪造为来源。空数组或未知来源按合同失败进入既有格式修补，不能通过正式应用；合并结果另保留成员来源并集。canonicalShortId的时间相等按解析后的createdAt时刻判断，ID按稳定字符串升序最小者，调换输入数组顺序不改变主身份。
+
+merge_short要求模型明确同一事件而非共享关键词，不允许不同事凑条数。保留sourceIds并集、完整事件范围及阶段感受；short保留截止取真实latestEventUpdateAt+7天，容量退出状态不靠合并清除，合并不算唤醒。关联长期合并迁移日期／grants、去重并保留更晚真实有效期限，不凭处理now续期；如果成员仍有活跃层资格，主身份继承真实现有资格并解除本次归档标记，沿用真实已有grant，不算新增唤醒；全归档成员合并固化各原始archiveStart，主身份保留最早锚点，不能靠合并后台归档记录自动恢复或延期。
 
 稳定认识证据独立字段evidenceMemoryIds包含至少两个不同canonical事件；原30次门槛不能通过多short指同long、后台复读或共同代写推导用户稳定性格来凑。原promote／retain／discard规则继续，其中discard零唤醒要求与容量清理分开，不能用discard表达有唤醒旧记忆的最终到期删除。
 
@@ -312,3 +331,7 @@ status展示四个长期统计、short活跃、容量目标／差额、保护数
 真实模型只使用此前允许的角色背景及隔离测试剧情，不连接QQ或发送正式聊天。验收工具单请求300秒；不把工具等待值改成正式后台超时。只做有限合并／审核场景并记录模型合法retain、冲突建议和实际调用量，不根据一批输出声称100／1000／500已适合数月使用。
 
 实际实施先读本文，再按[执行计划](MEMORY_CAPACITY_IDLE_V0.4_EXECUTION_PLAN_20261008.md)任务1～8顺序执行。相关既有能力查[记忆V0.3细化](MEMORY_V0.3_IMPLEMENTATION_20261007.md)、[共同活动细化](SHARED_ACTIVITY_V0.3_IMPLEMENTATION_20261007.md)、[世界学校细化](WORLD_SCHOOL_PLANNING_V0.4_IMPLEMENTATION_20261008.md)，不重做已完成计划。审核往返仅作历史依据；本期冲突以本文明确替代项为准，未替代项仍按现有实现。
+
+### 第十六轮合并记录
+
+第十六轮§2.1／§2.3的归档集合与锚点口径合并到§3.1／§4.1／§5.1；§2.2的ID决胜及来源硬校验合并到§7.2，并在执行计划任务2／3／5／7补充验收。其§3观察沿用现有OR清理、删除面和让位规则，不增加新的产品选择。本次只更新两份实施文档，不生成新rebuttal，不改代码／正式库。
