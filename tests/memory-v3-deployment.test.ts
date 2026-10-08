@@ -11,9 +11,9 @@ import { MemoryStore } from '../src/memory/store';
 import { assembleMemory } from '../src/deployment/memory-runtime';
 const dirs:string[]=[];afterEach(()=>dirs.splice(0).forEach(d=>rmSync(d,{recursive:true,force:true})));
 function settings(change:(sample:any)=>void=()=>{}){const dir=mkdtempSync(join(tmpdir(),'hdsi-v3-settings-'));dirs.push(dir);const sample=JSON.parse(readFileSync('examples/story.sample.json','utf8'));change(sample);writeFileSync(join(dir,'config.json'),JSON.stringify(sample));return loadSettings(join(dir,'config.json'),{});}
-it('configures eleven independent task models, consolidation Flash/high, nullable budgets and independent embedding identities',()=>{
+it('configures thirteen independent task models, consolidation Flash/high, nullable budgets and independent embedding identities',()=>{
   const s=settings(sample=>{sample.models.personal_life.model='deepseek-v4-pro';sample.embedding={baseUrl:'https://example.test/v1',model:'qwen-sticker',dimensions:2};sample.memoryEmbedding={baseUrl:'https://example.test/v1',model:'qwen-memory',dimensions:2};});
-  expect([...modelRoles,'sticker_description']).toHaveLength(11);expect(connectionFor(s,'memory_consolidation',{DEEPSEEK_API_KEY:'fixture'})).toMatchObject({model:'deepseek-flash',reasoningEffort:'high'});expect(connectionFor(s,'personal_life',{DEEPSEEK_API_KEY:'fixture'}).model).toBe('deepseek-v4-pro');
+  expect([...modelRoles,'sticker_description']).toHaveLength(13);expect(connectionFor(s,'memory_consolidation',{DEEPSEEK_API_KEY:'fixture'})).toMatchObject({model:'deepseek-flash',reasoningEffort:'high'});expect(connectionFor(s,'personal_life',{DEEPSEEK_API_KEY:'fixture'}).model).toBe('deepseek-v4-pro');
   expect(s.memoryEmbedding.model).toBe('qwen-memory');expect(s.embedding!.model).not.toBe('qwen-memory');expect(appConfig(s).historyBudget).toBeNull();expect(s.memory.contextLimits).toMatchObject({longItemsLimit:null,alwaysIncludeCharactersLimit:null,candidateItemsPerRoute:null});expect((s as any).webMaterialCharactersLimit).toBeUndefined();
 });
 it('defaults omitted limits to null and preserves task routing and uncapped HTTP requests',async()=>{
