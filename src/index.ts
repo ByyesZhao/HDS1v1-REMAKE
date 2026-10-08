@@ -101,7 +101,7 @@ export function apply(ctx: Context, config: Config): void {
   });
   app.dependencies.generateEnvironment=input=>generateEnvironmentStep(app.dependencies,input);
   const logger = ctx.logger(name);
-  host = new SerialHost(app, { onError: error => logger.error(error) });
+  host = new SerialHost(app, { onError: error => logger.error(error), onWarning: warning => logger.warn(warning) });
   ctx.middleware(async (session, next) => {
     if (!isTargetSession(session, config)) return next();
     const rawContent = session.content ?? '';

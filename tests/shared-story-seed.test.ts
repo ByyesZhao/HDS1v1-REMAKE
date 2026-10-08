@@ -19,3 +19,5 @@ it('fresh activities begin at the first node with the current confirmed marker',
     expect(state.scene.shared!.outline).toBeNull();
   }
 });
+
+it('final continuation starts after nineteen completed nodes with one minute remaining',()=>{const {state,clock}=sharedStorySeed(initialCharacter(now),'final',now);expect(state.scene.shared!.completedSteps).toBe(19);expect(Date.parse(now)-Date.parse(clock.startedAt)).toBe(19*60000);expect(Date.parse(state.scene.activity!.expectedEndAt!)-Date.parse(now)).toBe(60000);});

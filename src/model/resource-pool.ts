@@ -22,10 +22,10 @@ export function buildCompletionEnvelope(request:CompletionRequest):ModelCompleti
  if(lookupResult&&typeof lookupResult==='object'){
   const lookup=lookupResult as Record<string,unknown>,stage=(request.task.promptPolicy?.stage??request.task.name) as PromptStage;
   const {materials,webMaterials,...raw}=lookup;
-  for(const rows of [materials,webMaterials])if(Array.isArray(rows))for(const m of rows)pool.material(m as WebMaterial);
-  if(['details','retrieved','history','recent','visibleMessages','reconsiderMessages','tasks','dueTasks','snapshot'].some(k=>k in raw)){
-   const view=stageInput(stage,raw);pool.merge(view.resources);lookupResult={context:view.context,roles:view.roles,...(Array.isArray(materials)?{materialIds:materials.map(m=>(m as WebMaterial).id)}:{})};
-  }else lookupResult={...raw,...(Array.isArray(materials)?{materialIds:materials.map(m=>(m as WebMaterial).id)}:{})};
+  const materialIds:string[]=[];for(const rows of [materials,webMaterials])if(Array.isArray(rows))for(const m of rows)materialIds.push(pool.material(m as WebMaterial));
+  if(['details','retrieved','shortTerm','longTerm','learned','detailHistory','history','recent','visibleMessages','reconsiderMessages','tasks','dueTasks','snapshot'].some(k=>k in raw)){
+   const view=stageInput(stage,raw);pool.merge(view.resources);lookupResult={context:view.context,roles:view.roles,...(materialIds.length?{materialIds:[...new Set(materialIds)]}:{})};
+  }else lookupResult={...raw,...(materialIds.length?{materialIds:[...new Set(materialIds)]}:{})};
  }
  const webResults=request.webResults?.map(result=>{const {materials,...metadata}=result;for(const m of materials)pool.material(m);return {...metadata,materialIds:[...new Set(materials.map(m=>m.id))]};});
  return {input:input?{context:input.context,roles:input.roles}:request.input,resources:pool.data,lookupResult,repair:request.repair,webResults,webStatus:request.webStatus};

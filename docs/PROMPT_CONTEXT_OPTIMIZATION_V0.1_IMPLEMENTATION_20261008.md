@@ -1,6 +1,6 @@
 # 提示词与上下文优化 V0.1 实施细化
 
-日期：2026-10-08。源码基线 `6ed66e2`。状态：设计文档，尚未实施、迁移正式库或修改生产配置。
+日期：2026-10-08。设计源码基线 `6ed66e2`，实施起点 `f891c48`。状态：任务1～12已实施；停服空库升级及经批准本地配置已同步，证据见实施日志及交付验收记录。
 
 实施参考**本文＋[执行计划](PROMPT_CONTEXT_OPTIMIZATION_V0.1_EXECUTION_PLAN_20261008.md)**。[方案](PROMPT_CONTEXT_OPTIMIZATION_V0.1_PROPOSAL_20261008.md)、[REVIEW20](../DSH-review/DSH_REVIEW20_PROMPT_CONTEXT_V0.1_20261008.md)及[已确认回应（含后续补充）](../DSH-review/CODEX_REBUTTAL_PROMPT_CONTEXT_V0.1_20261008.md)用于追溯，其已同意的规则在本文集中落实，无需实施者另行拼接。
 
@@ -312,4 +312,4 @@ interface SchoolWeekTextResult {
 | §3.2 硬失败／历史降级 | 收窄后采纳，§4.3／任务3按影响范围分blockingIssues/historicalWarnings；不按记录类别跳过未知的近期、未读、复议或在途消息。正常原子事务回滚不造成已提交孤立消息 |
 | §3.3 自动关闭措辞 | 采纳，§4.3明确closeDue／releaseReply保留，不新增QQ操作命令；停服升级CLI仍按计划提供 |
 
-上述内容已成为本文及执行计划的一部分，没有新增待用户决定项。本次整合仅修改文档，未运行代码测试、模型请求、服务或正式库升级。
+上述内容已成为本文及执行计划的一部分，没有新增待用户决定项。该句描述整合审阅当时状态。现已完成任务1～12，代码／测试／停服迁移和隔离模型证据见[实施日志](PROMPT_CONTEXT_OPTIMIZATION_V0.1_IMPLEMENTATION_LOG_20261008.md)及[验收记录](PROMPT_CONTEXT_OPTIMIZATION_V0.1_DELIVERY_REVIEW_20261008.md)；正式服务仍未启动。

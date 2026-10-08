@@ -27,8 +27,8 @@ function fixture(request:CompletionRequest):unknown {
  }
 }
 // Isolated in-memory database, synthetic messages, recording sender; no production DB or QQ path.
-export async function validatePromptContext(options:{config?:AppConfig;connectionFor?:(task:string)=>ModelConnection;timeoutMs?:number}={}) {
- const scenarios:Array<{name:string;done:boolean;calls:RequestMeasure[];sent:number}>=[];let networkRequests=0;
+export async function validatePromptContext(options:{config?:AppConfig;connectionFor?:(task:string)=>ModelConnection;timeoutMs?:number;recordResults?:boolean}={}) {
+ const scenarios:Array<{name:string;done:boolean;calls:RequestMeasure[];sent:number;outputs?:Array<{task:string;result:unknown}>}>=[];let networkRequests=0;
  for(const name of ['normal','shared','life','empty']){
   let at='2026-10-08T10:00:00+08:00';const storage=new Storage(':memory:');
   try{
@@ -37,21 +37,22 @@ export async function validatePromptContext(options:{config?:AppConfig;connectio
    if(name!=='empty'){
     for(let group=0;group<5;group++){const count=group===4?40:1;const receivedAt=new Date(Date.parse(at)-(80-group*20)*60000-5*60000).toISOString();for(let n=0;n<count;n++)storage.transaction(()=>dialogue.acceptMessage({id:`${name}:history:${group}:${n}`,content:`隔离历史${group}/${n}`,direction:'incoming',receivedAt,platformMessageIds:[],seenTurnId:'past',turnId:null,outboxSeq:null,batchId:null}));}
    }
-   const calls:RequestMeasure[]=[],sent:string[]=[];
+   const calls:RequestMeasure[]=[],sent:string[]=[],outputs:Array<{task:string;result:unknown}>=[];
    const transport=options.connectionFor?new ChatCompletionsTransport(options.connectionFor):null;
-   const models=new ModelClient({complete:async(request,runOptions)=>{
+   const client=new ModelClient({complete:async(request,runOptions)=>{
     const envelope=buildCompletionEnvelope(request),view=isStageModelInput(request.input)?request.input:undefined;
     const m=envelope.resources.messages;calls.push({task:request.task.name,inputCharacters:JSON.stringify(envelope).length,messages:m.length,recentMessages:view?.roles.recentIds?.length??0,owners:envelope.resources.owners.length,materials:envelope.resources.materials.length,uniqueMessageBodies:new Set(m.map(r=>r.id)).size===m.length,unreadExposed:request.task.name==='narrative'&&m.some(r=>r.id==='current'),allowSimulatedUserActions:request.task.promptPolicy?.facts.sharedMeta?.allowSimulatedUserActions,repair:!!request.repair,ids:m.map(r=>r.id)});
     if(!transport)return fixture(request);
     networkRequests++;const timeout=AbortSignal.timeout(options.timeoutMs??300000);return transport.complete(request,{signal:runOptions?.signal?AbortSignal.any([timeout,runOptions.signal]):timeout});
    }});
+   const models:import('../types').ModelRunner={async runModel(task,input,opts){const result=await client.runModel(task,input,opts);if(options.recordResults)outputs.push({task:task.name,result});return result;}};
    const app=new HdsiApp({storage,dialogue,clock:{now:()=>at},config,models,environmentStore:new EnvironmentStore(storage),schoolStore:new SchoolStore(storage),random:{next:()=>0.5},wait:async ms=>{at=new Date(Date.parse(at)+ms).toISOString();},sender:{sendError:async()=>{},sendItem:async item=>{sent.push(item.payload);return {platformMessageIds:[`isolated-${sent.length}`]};}}});
    if(name==='normal'){storage.transaction(()=>dialogue.acceptMessage({id:'current',content:'明天十点联系吧，今天先不出门。',receivedAt:at,platformMessageIds:[],direction:'incoming',seenTurnId:null,turnId:null,outboxSeq:null,batchId:null}));await app.runTurn({inputMessageIds:['current'],taskIds:[],triggerKinds:['input']});}
    else if(name==='shared'){
     const state=storage.character();state.scene.mode='shared_offline';state.scene.shared={activityId:'isolated-walk',title:'散步',progress:'开始',lastPublicNode:'',completedSteps:0,maxSteps:20,idleSeconds:60,outline:null,nextStepAt:null};storage.set('character',state);storage.set('runtime',{...storage.runtime(),sharedClock:{activityId:'isolated-walk',mode:'shared_offline',status:'active',startedAt:at,lastInputAt:null,lastOutputAt:null,lastSilentCompletedAt:null}});
     await app.runTurn((await new Scheduler(storage,config).collectReady(at))!);
    }else await app.runTurn({inputMessageIds:[],taskIds:[],triggerKinds:['autonomous']});
-   scenarios.push({name,done:storage.unfinishedTurn()===null,calls,sent:sent.length});
+   scenarios.push({name,done:storage.unfinishedTurn()===null,calls,sent:sent.length,...(options.recordResults?{outputs}:{})});
   }finally{storage.close();}
  }
  return {scope:'isolated-synthetic-no-QQ',requestTimeoutMs:options.timeoutMs??300000,networkRequests,embeddingRequests:0,scenarios};

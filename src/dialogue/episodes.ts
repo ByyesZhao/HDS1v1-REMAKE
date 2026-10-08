@@ -68,7 +68,7 @@ export class DialogueEpisodes {
    const safe=historical(m)&&completed&&time(m.receivedAt)<cutoff&&!protectedMessages.has(m.id)&&!m.sharedActivityId;
    (safe?report.historicalWarnings:report.blockingIssues).push(`message ${m.id}: missing dialogue association`);
   }
-  for(const t of s.all('turns').filter(isUnfinishedTurn)){const b=t.dialogueBinding,needs=t.inputMessageIds.length>0||!!t.sharedMeta||s.outbox(t.id).some(o=>o.status==='confirmed');if(!b||b.episodeId&&!ids.has(b.episodeId)||needs&&!b.episodeId&&!t.outputComplete){report.unfinishedTurnIds.push(t.id);report.blockingIssues.push(`turn ${t.id}: missing dialogue binding`);}}
+  for(const t of s.all('turns').filter(isUnfinishedTurn)){const b=t.dialogueBinding,needs=this.bindTurn(t).episodeId!==null||s.outbox(t.id).some(o=>o.status==='confirmed');if(!b||b.episodeId&&!ids.has(b.episodeId)||!b.episodeId&&b.holdReply||needs&&!b.episodeId&&!t.outputComplete){report.unfinishedTurnIds.push(t.id);report.blockingIssues.push(`turn ${t.id}: missing dialogue binding`);}}
   for(const l of this.store.links()){if(!ids.has(l.episodeId)||l.status==='active'&&r.sharedClock?.activityId!==l.id){report.activityErrors.push(l.id);report.blockingIssues.push(`activity ${l.id}: invalid dialogue link`);}}
   if(r.sharedClock?.status==='active'&&!this.store.link(r.sharedClock.activityId)){report.activityErrors.push(r.sharedClock.activityId);report.blockingIssues.push('active shared activity missing dialogue link');}
   return report;

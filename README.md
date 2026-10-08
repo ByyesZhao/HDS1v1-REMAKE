@@ -165,7 +165,7 @@ SQLite 使用内置 `node:sqlite`，WAL + `synchronous=FULL`；事务、普通�
 
 ## 记忆V0.3运维
 
-正式库已备份并迁移schema3；服务保持停止。historyBudget及所有可选记忆人工预算默认null，原文窗口30；默认7/90/3/30生命周期见记忆文档。memoryEmbedding与embedding独立配置，memory_consolidation为独立Flash/high。
+正式库已备份并迁移schema3；服务保持停止。historyBudget及所有可选记忆人工预算默认null，原文默认4个完整对话段／空闲15分钟；默认7/90/3/30生命周期见记忆文档。memoryEmbedding与embedding独立配置，memory_consolidation为独立Flash/high。
 
 离线检查：npm run memory:check；背景候选：npm run memory:background；升级旧库先停服务，再npm run memory:migrate -- --stopped。背景候选在runtime/data/，尚未切换生产背景。未实际标定Qwen语义阈值时semantic-only关闭；不自动裁内容重发真实容量错误。
 

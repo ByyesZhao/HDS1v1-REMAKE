@@ -384,11 +384,11 @@ T7 用固定随机种子做一次离线机会抽样验证长期频率；封顶�
 
 已升级V0.3：src/memory/store、lifecycle、index、retrieval、maintenance负责身份／期限／计数／派生向量／混合检索／后台；context及organize适配前台与段B。直接规则见[记忆落地](REMAKE_V0.2_MEMORY.md)，执行及实际验证见[记忆实施记录](docs/MEMORY_V0.3_IMPLEMENTATION_LOG_20261007.md)。
 
-默认历史／条数／alwaysInclude预算均null，近期原文30。词法先校准筛选再RRF60，真实语义阈值待标定；不从score>0或固定Top K过渡。后台单准备槽不占前台active，每应用一个单元真实setImmediate重扫，openBatch／旧轮／到期故事优先。正式库schema3迁移已完成，核心背景摘录仍待审阅后切换。
+默认历史／条数／alwaysInclude预算均null，近期原文默认4完整段，双方实际消息空闲15分钟关闭。词法先校准筛选再RRF60，真实语义阈值待标定；不从score>0或固定Top K过渡。后台单准备槽不占前台active，每应用一个单元真实setImmediate重扫，openBatch／旧轮／到期故事优先。正式库schema3迁移已完成，背景用途映射已批准并启用，故事核心本次仍为原全文，style等本地可修改。
 
 ## 10. 世界与学校 V0.4
 
-当前实现详见 [V0.4细化](docs/WORLD_SCHOOL_PLANNING_V0.4_IMPLEMENTATION_20261008.md)及[实施日志](docs/WORLD_SCHOOL_PLANNING_V0.4_IMPLEMENTATION_LOG_20261008.md)。world沿用EnvironmentResult.changes公共事件合同；三个学校模型改用职责专属增量合同。校园／课题组维护持续计划和条目，周任务唯一展开实例与通知候选；程序分配ID、冻结版本并事务保存。
+当前实现详见 [V0.4细化](docs/WORLD_SCHOOL_PLANNING_V0.4_IMPLEMENTATION_20261008.md)及[实施日志](docs/WORLD_SCHOOL_PLANNING_V0.4_IMPLEMENTATION_LOG_20261008.md)。world沿用EnvironmentResult.changes公共事件合同；三个学校模型改用职责专属增量合同。校园／课题组维护持续计划和条目，周任务v1只生成必需通知正文和可选冲突注释；程序展开实例、固定通知实体、分配ID、冻结版本并事务保存。无必需通知时免模型调用，仍保存覆盖及程序冲突；旧冻结v0运行／ready恢复保留。
 
 每日06:00单链，初次建档先建持续计划，学校不再16:00运行。环境批次和步骤独立存储，不创建TurnRecord/outbox/post job，不更新角色状态或自主截止。格式／请求错误局部5分钟重试，存储错误不被吞掉；ready恢复不重生成，跨日旧未提交结果只保留审计。聊天在下一选择点优先，已运行请求可能延迟聊天。
 
@@ -455,7 +455,7 @@ T7 用固定随机种子做一次离线机会抽样验证长期频率；封顶�
 - 实现：`src/memory/context.ts`、`src/memory/organize.ts`、模型客户端本地查询。
 - 已验证：`tests/memory.test.ts`、`tests/turn.test.ts`、`tests/model-settings.test.ts`。中文/别名查找、当前值和相关历史、来源与意图区分、检索不加强、历史预算不截本轮输入、一次本地补查。
 - DSH 二轮补充：`tests/review-fixes.test.ts` 验证整理独立预算、长期排序与裁剪、空别名保留、来源非空及个人检查时间约束；`tests/review-recovery.test.ts` 验证真实批次睡眠/检查、文件重开 sending 恢复、静默冻结和冻结失败原子回滚。
-- 角色记忆已有独立Embedding派生索引／混合检索，真实Qwen阈值未标定；仅近期原文30，其他默认无人工配额。语义真实变化由整理模型判断，程序没有独立事实审核器。
+- 角色记忆已有独立Embedding派生索引／混合检索，真实Qwen阈值未标定；近期原文默认4完整段，其他默认无人工配额。语义真实变化由整理模型判断，程序没有独立事实审核器。
 
 ### T7：主动联系与表情素材
 

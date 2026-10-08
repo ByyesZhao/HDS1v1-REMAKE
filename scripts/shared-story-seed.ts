@@ -3,6 +3,7 @@ import type { CharacterState, SharedClock } from '../src/types';
 
 export function sharedStorySeed(base: CharacterState, scenario: string, now: string): { state: CharacterState; clock: SharedClock } {
   const state = structuredClone(base);
+  if(scenario==='final'){const seed=sharedStorySeed(base,'wrap',now);const startedAt=new Date(Date.parse(now)-19*60000).toISOString();seed.state.scene.shared!.completedSteps=19;seed.state.scene.shared!.progress='前十九个关卡已试跑，最后一个待完成';seed.state.scene.shared!.lastPublicNode='前十九关已试跑结束，余下一关等待继续。';seed.state.scene.shared!.outline={goal:'完成二十分钟协作试跑',openThreads:['完成最后一关并回到大厅'],endingCondition:'完成或合理暂停本次试跑并交代剩余内容'};seed.clock.startedAt=startedAt;seed.state.scene.activity!.startsAt=startedAt;seed.state.scene.activity!.expectedEndAt=new Date(Date.parse(startedAt)+20*60000).toISOString();seed.state.plan=`本次已完成十九关，尚余一关，活动已进行十九分钟，于${startedAt}开始；最后一轮公开完成或合理暂停，剩余事项约下次。`;return seed;}
   const title = scenario === 'interactive' ? '线下校园短途散步' : '线上二十分钟协作关卡试跑';
   state.sleep = null;
   state.scene = { mode: scenario === 'interactive' ? 'shared_offline' : 'shared_online',

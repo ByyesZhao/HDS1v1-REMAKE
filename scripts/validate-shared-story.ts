@@ -24,7 +24,7 @@ async function main() {
   const configPath = resolve(value('--config'));
   const settings = loadSettings(configPath);
   const selected = args.includes('--scenario') ? value('--scenario') : 'all';
-  if (!['all', 'quiet', 'interactive', 'wrap'].includes(selected)) throw Error('Unknown scenario.');
+  if (!['all', 'quiet', 'interactive', 'wrap', 'final'].includes(selected)) throw Error('Unknown scenario.');
   const root = join(dirname(configPath), 'runtime', 'data', `shared-acceptance-${randomUUID()}`);
   mkdirSync(root, { recursive: true });
   console.log(`Isolated report: ${root}`);

@@ -4,7 +4,7 @@
 
 ## 状态
 
-任务1进行中，任务2～12待执行。正式服务保持停止，未修改正式库。
+任务1～12已实施；正式服务保持停止。正式空库已备份并完成对话索引版本1升级，本地窗口和经批准可编辑背景配置已启用。最终验收及独立复核见交付记录。
 
 ## 实施判断
 
@@ -59,7 +59,7 @@ HTTP每次使用一个resources池，业务输入与补查返回使用引用，w
 
 新增隔离集成工具（内存库、模拟消息、记录发送器），默认离线且单请求上限300秒，普通／共同／生活／无新来源路径分别4／3／2／2次模型请求，HTTP网络及embedding均0。40条当前段原文保留，个人阶段包含完整4段；普通叙事无未读输入，池内身份不重复。指标仅含task、身份、数量、字符数与请求数，不落私有正文。构建、类型检查及指定集成通过。第一批515项通过；任务9红灯测试在同一次全套运行被纳入导致额外2项失败，随后已实现并重跑，不能把这次红灯记作全量通过。
 
-正式库迁移前SHA256 BC65898A1BACDD87798554AA3C14CE2EE683E052C76F2358F90D23A8BEDF3BBD；只读报告version=null、messageCount=0、活动0、在途0、canApply=true。Get-CimInstance提高只读执行权限后确认无HDSI／Koishi／SnowLuma进程；初次受限查询的“拒绝访问”不是服务已停的证据。2026-10-08 23:00执行停服apply，先备份到runtime/prompt-context-backups/dialogue-20261008150036587-87c15b07-a6d2-415a-a967-b41592359cd3，再事务置version=1，仍无消息／活动／在途。没有启动服务。旧30条当前规则同步至记忆细化、接口、手册；历史验收保留原数并标本期替代。config.local.json在最终集成后同步。
+正式库迁移前SHA256 BC65898A1BACDD87798554AA3C14CE2EE683E052C76F2358F90D23A8BEDF3BBD；只读报告version=null、messageCount=0、活动0、在途0、canApply=true。Get-CimInstance提高只读执行权限后确认无HDSI／Koishi／SnowLuma进程；初次受限查询的“拒绝访问”不是服务已停的证据。2026-10-08 23:00执行停服apply，先备份到runtime/prompt-context-backups/dialogue-20261008150036587-87c15b07-a6d2-415a-a967-b41592359cd3，再事务置version=1，仍无消息／活动／在途。没有启动服务。旧30条当前规则同步至记忆细化、接口、手册；历史验收保留原数并标本期替代。config.local.json已在最终隔离验收前同步（服务停止，代码尚在隔离分支）；启动仍由用户自行执行。
 
 ## 任务9：表达专用视图
 
@@ -69,10 +69,21 @@ HTTP每次使用一个resources池，业务输入与补查返回使用引用，w
 
 背景／环境4项新测试（含已有事实不覆盖）及指定14项通过，旧环境夹具改按真实新DTO读取。全量96文件521项通过，类型检查通过。world只取活跃世界事件；campus/group各自plans/items，group保留研究taskId对应全部35条过程测试和campusTiming，无固定裁剪。Host仍保留原冻结快照和验证对象。
 
-2026-10-08用户批准具体36段映射，前提是风格可修改；该配置是本地JSON，可修改后下次启动读取，满足前提。批准文件runtime/data/background-views.local.json；候选runtime/data/background-views-candidate.json保持pending原记录，原梁思璃设定.txt保留。此次core仍全文，style取8/9/32，world取25/26/28/31，campus取2/5/25/26/27/30/34，group取2/5/27/30/33/34（0起始）。facts为空，不擅自移动导师／培养阶段身份或覆盖运行details。程序支持经审阅的事实来源／key映射，只初始化缺失事实。正式config启用在最终集成后同步。
+2026-10-08用户批准具体36段映射，前提是风格可修改；该配置是本地JSON，可修改后下次启动读取，满足前提。批准文件runtime/data/background-views.local.json；候选runtime/data/background-views-candidate.json保持pending原记录，原梁思璃设定.txt保留。此次core仍全文，style取8/9/32，world取25/26/28/31，campus取2/5/25/26/27/30/34，group取2/5/27/30/33/34（0起始）。facts为空，不擅自移动导师／培养阶段身份或覆盖运行details。程序支持经审阅的事实来源／key映射，只初始化缺失事实。正式config已在最终隔离验收前启用上述批准文件；服务继续停止。
 
 ## 任务11：周计划机械展开与合同版本
 
 新增机械通知／恢复7项测试，首轮红灯后实现；旧调度fixture先纠正未来environment时间，重新确认缺少version1才是行为红灯。新结果只含noticeTexts/weekNotes；程序生成候选、固定声明实体及实际instanceId，文本不可改机械字段。必需通知逐key非空且唯一，无通知即使有冲突也不调用模型，仍提交coverage/checkedAt/冲突。模型weekNotes与程序冲突取并集。描述区分publishAt与活动startsAt，冻结目标课次精确映射；跨开课时刻历史重定向同时更新提醒与快照。
 
 新冻结modelContractVersion=1；旧缺失／0的running/pending沿旧候选和checkpoint，旧ready直接提交解析后的变更集。原review14跨开课／提醒回归显式标version0，另加version1历史重定向用例。指定29项、后续11项及调度16项通过；全套98文件528项通过，类型检查通过。两处旧“周必调用”预期更新为三上游模型，周覆盖提交仍被新用例验证。
+
+
+## 任务12：最终验收与交付复核
+
+新增第二批质量夹具和报告选项，覆盖表达保真、变动手机事实、同课程不同课次通知、已知日程冲突、用户纠正公开代写及结果不足可询问。资料身份／字段迁移表、实际请求和语义观察见[交付记录](PROMPT_CONTEXT_OPTIMIZATION_V0.1_DELIVERY_REVIEW_20261008.md)。工具只使用隔离数据库、模拟发送器和授权背景；未连接QQ、读取正式聊天或发送图片，未调用embedding／真实搜索供应商。背景用途可在本地JSON修改后重启生效。
+
+真实样例发现承诺弱化为询问、表达新增未提供的手机取得状态，以及个人导演略过位置纠正。对应加强表达保真规则、资源roles说明和本轮纠正优先；后续隔离表达与纠正样例恢复预期。记忆提示旧visibleMessages/outgoing术语同步为当前资源引用，不让模型猜字段对应关系。共享DTO删去与sharedMeta重复的轮数／时钟／outline字段，保留旧公开节点和本轮正文的区别。第20轮验收需两次格式修补后成功公开收尾，不能把首次响应写成一次通过。
+
+最终独立审核按executing-plans/requesting-code-review调用一次全新只读reviewer（未沿用过去审核代理），发现2项Important及1项Minor：迟读已关闭段的合法空binding被误阻挡恢复；补查顶层短期／长期／learned绕过正文池；历史安全警告未落运行日志。全部在新增失败回归后修复，保留旧段／消息身份、不同owner版本ref和Host完整校验。没有再开一轮审核；主代理负责修复后回归。夹具补充时少传sharedMeta及错误advanceReason造成验收／类型检查失败，已改为合法冻结元数据，没有掩盖失败记录。
+
+最终工作区类型检查、构建通过；98文件536项通过。合入当前项目后再验证实际构建及两个启动文件的--check路径，并保持服务关闭。逐任务提交和Python／PowerShell账本保存在Git及交付记录；不会把私有背景、密钥、在线完整报告提交到Git。

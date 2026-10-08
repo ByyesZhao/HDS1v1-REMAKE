@@ -13,10 +13,11 @@ export class SerialHost {
   private recover = false;
   private readonly input: InputBuffer;
   private readonly scheduler: Scheduler;
-  constructor(private app: HdsiApp, private options: { timers?: boolean; onError?: (error: unknown) => void; yieldToEvents?:()=>Promise<void> } = {}) {
+  constructor(private app: HdsiApp, private options: { timers?: boolean; onError?: (error: unknown) => void; onWarning?: (warning:string)=>void; yieldToEvents?:()=>Promise<void> } = {}) {
     this.input = new InputBuffer(app.dependencies.storage,app.dependencies.memoryIdle,app.dependencies.dialogue); this.scheduler = new Scheduler(app.dependencies.storage,app.dependencies.config);
   }
-  async start(): Promise<void> {const report=this.app.dependencies.dialogue?.checkConsistency();if(report?.blockingIssues.length)throw new Error(`dialogue 对话段索引不一致: ${report.blockingIssues.join('; ')}`);this.recover=true;await this.wake();}
+  private checkDialogue():void {const report=this.app.dependencies.dialogue?.checkConsistency();if(report?.blockingIssues.length)throw new Error(`dialogue 对话段索引不一致: ${report.blockingIssues.join('; ')}`);for(const warning of report?.historicalWarnings??[])this.options.onWarning?.(warning);}
+  async start(): Promise<void> {this.checkDialogue();this.recover=true;await this.wake();}
   async acceptInput(message: IncomingMessage): Promise<InputAcceptance> {
     const accepted = await this.input.acceptInput(message);
     void this.wake();
@@ -83,6 +84,7 @@ export class SerialHost {
   }
   async resume(): Promise<void> {
     const d = this.app.dependencies;
+    this.checkDialogue();
     d.storage.set('runtime', { ...d.storage.runtime(), paused: false, lastError: null, lastFailure:null });
     this.recover = true;
     await this.wake();

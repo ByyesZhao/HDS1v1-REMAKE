@@ -1,5 +1,5 @@
 import { it,expect } from 'vitest';
-import { buildStageModelInput,projectOwner } from '../src/model/context-views';
+import { buildStageModelInput,projectOwner,stageInput } from '../src/model/context-views';
 import { setup,saveInput,NOW } from './helpers';
 import { MemoryStore } from '../src/memory/store';
 it('recent_visible_reconsider_body_once_labels_all and due_task_body_once',()=>{
@@ -13,4 +13,19 @@ it('shared_null_not_old_public_node and unread_never_enters_narrative_pool',()=>
 });
 it('memory_public_uses_confirmed_outgoing_ids and self_read_material_unique_source_ids_preserved',()=>{
  const d=setup();try{const m={id:'out',content:'公开已确认剧情',receivedAt:NOW,direction:'outgoing' as const,platformMessageIds:[],seenTurnId:null,batchId:null,turnId:'t',outboxSeq:0};const source={id:'source',turnId:'t',runId:'run',operationId:'op',materialId:'page',url:'https://example.test',readAt:NOW,sourceKind:'self_web_read' as const,phase:'personal_life' as const};const material={id:'page',url:source.url,title:'标题',body:'唯一网页正文',readAt:NOW,bodyCharacters:6,selectionMode:'full_body' as const,sourceKind:'external_reference' as const};const view=buildStageModelInput('memory',{stage:'memory',input:{outgoing:[m],experiences:[{id:'experience',description:'发生',happenedAt:NOW,relatedEventIds:[]}],sharedPublicExperience:{publicNarration:m.content,simulatedUserActions:['行为'],rule:'共享模拟经历'},selfWebReadSources:[source],selfWebReadMaterials:[{sourceId:'source',material},{sourceId:'source',material}]}});expect(JSON.stringify(view).split(m.content)).toHaveLength(2);expect(view.roles.sharedPublicOutgoingIds).toEqual(['out']);expect(view.roles.currentSourceIds).toEqual(['experience','out','source']);expect(view.roles.selfReadSources).toEqual([source]);expect(view.resources.materials).toHaveLength(1);}finally{d.storage.close();}
+});
+
+it('shared_round_phase_outline_have_one_authority_and_previous_public_node_is_preserved',()=>{
+ const shared={activityId:'a',title:'散步',progress:'继续',lastPublicNode:'上轮公开节点',completedSteps:3,maxSteps:20,idleSeconds:60,outline:{goal:'活动',openThreads:[],endingCondition:'结束'},nextStepAt:'clock'};
+ const meta={activityId:'a',stepNumber:4,maxSteps:20,idleSeconds:60,phase:'ongoing',allowSimulatedUserActions:false};
+ const view=stageInput('personal_shared',{state:{scene:{mode:'shared_offline',description:'校门',activity:null,shared}},sharedMeta:meta,outline:shared.outline,publicNarration:null});
+ expect(JSON.stringify(view).split('\"outline\"').length-1).toBe(1);expect((view.context.state as any).scene.shared.completedSteps).toBeUndefined();expect((view.context.state as any).scene.shared.maxSteps).toBeUndefined();expect((view.context.state as any).scene.shared.lastPublicNode).toBe('上轮公开节点');expect(view.context.publicNarration).toBeNull();
+});
+
+import {buildCompletionEnvelope} from '../src/model/resource-pool';
+it('retrieved_top_level_lookup_owners_use_pool_whitelist_and_version_refs',()=>{
+ const d=setup();try{const store=new MemoryStore(d.storage),owner=store.makeOwner({ownerType:'long',ownerId:'lookup-long'},{content:'唯一补查内容',eventSummary:'概况',feelingSummary:'感受'},NOW);owner.normalizedVector=new Float32Array([1,0]);
+ const envelope=buildCompletionEnvelope({task:{name:'personal_chat',prompt:'test',schema:{},parse:x=>x},input:stageInput('personal_chat',{history:{longTerm:[owner]}}),lookupResult:{recent:[],details:[],shortTerm:[],longTerm:[owner,{...owner,revision:2,content:'更新版本'}],learned:[],detailHistory:[]}});
+ expect(envelope.resources.owners).toHaveLength(2);expect(JSON.stringify(envelope).split('唯一补查内容')).toHaveLength(2);expect(JSON.stringify(envelope)).not.toContain('normalizedVector');expect((envelope.lookupResult as any).context.longTerm).toBeUndefined();expect((envelope.lookupResult as any).roles.longRefs).toHaveLength(2);
+ }finally{d.storage.close();}
 });
