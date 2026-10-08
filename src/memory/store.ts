@@ -34,6 +34,10 @@ export class MemoryStore {
     const id=`${owner.ownerType}:${owner.ownerId}`;const row=parse<MemoryDirtyOwner>(this.storage.prepare('SELECT data FROM memory_dirty_owners WHERE id=?').get(id));
     if(row&&row.revision===owner.revision&&row.stateVersion===owner.stateVersion)this.storage.prepare('UPDATE memory_dirty_owners SET data=? WHERE id=?').run(JSON.stringify({...row,status:'reserved'}),id);
   }
+  releaseDirty(owner:MemoryOwnerRef):void {
+    const id=`${owner.ownerType}:${owner.ownerId}`;const row=parse<MemoryDirtyOwner>(this.storage.prepare('SELECT data FROM memory_dirty_owners WHERE id=?').get(id));
+    if(row?.status==='reserved')this.storage.prepare('UPDATE memory_dirty_owners SET data=? WHERE id=?').run(JSON.stringify({...row,status:'pending'}),id);
+  }
   completeDirty(readVersion:OwnerVersion,resultingVersion:OwnerVersion):void {
     const id=`${readVersion.ownerType}:${readVersion.ownerId}`;const row=parse<MemoryDirtyOwner>(this.storage.prepare('SELECT data FROM memory_dirty_owners WHERE id=?').get(id));if(!row)return;
     const same=row.revision===readVersion.revision&&row.stateVersion===readVersion.stateVersion;
@@ -133,6 +137,7 @@ export class MemoryStore {
       const result=job.result?.map(u=>affected(u)?{unitKey:u.unitKey,action:u.action,ids:[],readSet:[],sourceIds:[]}:u)??null;
       const snapshot=job.snapshot.filter(r=>`${r.ownerType}:${r.ownerId}`!==key),selectedIds=(job.selectedIds??job.snapshot.map(r=>r.id)).filter(id=>id!==owner.ownerId);
       const updated={...job,snapshot,selectedIds,readSet:job.readSet.filter(r=>`${r.ownerType}:${r.ownerId}`!==key),prunedOwnerKeys:[...new Set([...(job.prunedOwnerKeys??[]),key])],result,staleUnitKeys:[...new Set([...job.staleUnitKeys,...stale])]};
+      for(const r of job.snapshot.filter(r=>selectedIds.includes(r.id)))this.releaseDirty(r);
       if(!selectedIds.length||job.status==='ready'&&updated.appliedUnitKeys.length+updated.staleUnitKeys.length===(result?.length??0))updated.status='done';
       this.saveJob('memory_maintenance_jobs',updated);
     }

@@ -14,7 +14,7 @@ export class SerialHost {
   private readonly input: InputBuffer;
   private readonly scheduler: Scheduler;
   constructor(private app: HdsiApp, private options: { timers?: boolean; onError?: (error: unknown) => void; yieldToEvents?:()=>Promise<void> } = {}) {
-    this.input = new InputBuffer(app.dependencies.storage); this.scheduler = new Scheduler(app.dependencies.storage,app.dependencies.config);
+    this.input = new InputBuffer(app.dependencies.storage,app.dependencies.memoryIdle); this.scheduler = new Scheduler(app.dependencies.storage,app.dependencies.config);
   }
   start(): Promise<void> { this.recover = true; return this.wake(); }
   async acceptInput(message: IncomingMessage): Promise<InputAcceptance> {
@@ -50,6 +50,8 @@ export class SerialHost {
       const ready = await this.scheduler.collectReady(d.clock.now());
       if (ready) {await this.app.runTurn(ready);if(ready.environmentStepId)await (this.options.yieldToEvents??setImmediate)();continue;}
       if(this.stopped||d.storage.runtime().paused||d.storage.runtime().openBatch)break;
+      const cleaned=d.memoryCleanup?.applyOne(d.clock.now())??'none';
+      if(cleaned==='applied'){await (this.options.yieldToEvents??setImmediate)();continue;}
       const applied=d.maintenance?.applyOneReady(d.clock.now())??'none';
       if(applied!=='none'){await (this.options.yieldToEvents??setImmediate)();continue;}
       d.maintenance?.startOne(d.clock.now());
@@ -69,7 +71,8 @@ export class SerialHost {
   private async nextDeadline():Promise<string|null>{
     const d=this.app.dependencies,front=await this.scheduler.nextDeadline(d.clock.now());
     const back=d.storage.runtime().paused||d.storage.runtime().openBatch||d.storage.unfinishedTurn()?null:d.maintenance?.nextDeadline(d.clock.now());
-    return [front,back].filter((at):at is string=>!!at).sort((a,b)=>milliseconds(a)-milliseconds(b))[0]??null;
+    const cleanup=d.memoryCleanup?.nextDeadline(d.clock.now());
+    return [front,back,cleanup].filter((at):at is string=>!!at).sort((a,b)=>milliseconds(a)-milliseconds(b))[0]??null;
   }
   async pause(): Promise<void> {
     const d = this.app.dependencies;

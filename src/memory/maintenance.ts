@@ -7,18 +7,21 @@ import { MemoryLifecycle } from './lifecycle';
 import { MemoryIndex } from './index';
 import type { IndexJob,MaintenanceJob,MaintenanceUnit,MemoryCandidate,OwnerVersion } from './types';
 import { phaseOptions } from '../web/phases';
-export interface MaintenanceOptions {clock:Clock;onReady?:()=>void;batchItems?:number;batchCharacters?:number|null;backgroundTimeoutMs?:number;retryDelayMs?:number;web?:import('../web/service').WebSearchService}
+export interface MaintenanceOptions {clock:Clock;onReady?:()=>void;batchItems?:number;batchCharacters?:number|null;backgroundTimeoutMs?:number;retryDelayMs?:number;web?:import('../web/service').WebSearchService;idle?:import('./idle').MemoryIdle}
 type Work={table:'memory_index_jobs';job:IndexJob}|{table:'memory_maintenance_jobs';job:MaintenanceJob};
 const version=(r:MemoryCandidate):OwnerVersion=>({ownerType:r.ownerType,ownerId:r.ownerId,revision:r.revision,stateVersion:r.stateVersion});
 export class MemoryMaintenance {
   private active:Promise<void>|null=null;
   private controller:AbortController|null=null;
   private stopped=false;
+  private backendRequests=0;
   constructor(private store:MemoryStore,private lifecycle:MemoryLifecycle,private index:MemoryIndex,private models:ModelRunner,private options:MaintenanceOptions){
     for(const table of ['memory_index_jobs','memory_maintenance_jobs'] as const)for(const job of store.jobs<IndexJob|MaintenanceJob>(table,['computing']))store.saveJob(table,{...job,status:'pending'});
   }
   get inFlight(){return this.active!==null;}
   private due(job:IndexJob|MaintenanceJob,now:string){return !job.retryAt||milliseconds(job.retryAt)<=milliseconds(now);}
+  private eligible(work:Work,now:string){return work.table==='memory_index_jobs'||!this.options.idle||this.options.idle.eligibility(now).allowed;}
+  private blocked(){const r=this.store.storage.runtime();return r.paused||!!r.openBatch||!!this.store.storage.unfinishedTurn();}
   private work():Work[]{return [...this.store.jobs<IndexJob>('memory_index_jobs',['pending','computing','ready']).map(job=>({table:'memory_index_jobs' as const,job})),...this.store.jobs<MaintenanceJob>('memory_maintenance_jobs',['pending','computing','ready']).map(job=>({table:'memory_maintenance_jobs' as const,job}))].sort((a,b)=>milliseconds(a.job.createdAt)-milliseconds(b.job.createdAt)||a.job.id.localeCompare(b.job.id));}
   private makeJob(rows:MemoryCandidate[],cutoff:string,now:string):MaintenanceJob {
     const snapshot=rows.map(row=>row.linkedLongId?{...row,linkedLongId:this.store.canonical(row.linkedLongId)?.id??row.linkedLongId}:row);
@@ -33,6 +36,7 @@ export class MemoryMaintenance {
     const job:MaintenanceJob={id:randomUUID(),kind,prunedOwnerKeys:[],cutoff,createdAt:now,status:'pending',snapshot,selectedIds:rows.map(r=>r.id),readSet:snapshot.map(version),result:null,appliedUnitKeys:[],staleUnitKeys:[],retryAt:null,lastError:null};this.store.saveJob('memory_maintenance_jobs',job);for(const row of rows)this.store.reserveDirty(row);return job;
   }
   private ensureCycle(now:string):void {
+    if(this.options.idle){this.ensureIncremental(now);return;}
     let cycle=this.store.storage.get<{cutoff:string}>('memory_maintenance_cycle');
     if(!cycle&&this.store.storage.runtime().nextMaintenanceAt&&milliseconds(this.store.storage.runtime().nextMaintenanceAt!)<=milliseconds(now)){
       cycle={cutoff:now};this.store.storage.set('memory_maintenance_cycle',cycle);
@@ -46,11 +50,28 @@ export class MemoryMaintenance {
     if(selected.length)this.makeJob(selected,cycle.cutoff,now);
     else if(!jobs.length){this.store.storage.set('memory_maintenance_cycle',null);this.store.storage.set('runtime',{...this.store.storage.runtime(),nextMaintenanceAt:nextDaily(now,['04:30'],'Asia/Shanghai')});}
   }
+  private ensureIncremental(now:string):void {
+    const runtime=this.store.storage.runtime();
+    if(runtime.nextMaintenanceAt&&milliseconds(runtime.nextMaintenanceAt)<=milliseconds(now)){
+      const cutoff=now;
+      for(const row of this.store.maintenanceCandidates(cutoff))this.store.queueDirty(row,'expiry',cutoff);
+      this.store.storage.set('runtime',{...runtime,nextMaintenanceAt:nextDaily(cutoff,['04:30'],'Asia/Shanghai')});
+      this.store.storage.set('memory_maintenance_cycle',null);
+    }
+    const jobs=this.store.jobs<MaintenanceJob>('memory_maintenance_jobs',['pending','computing','ready']),reserved=new Set(jobs.flatMap(j=>j.readSet.map(r=>r.ownerId)));
+    const available=this.store.dirtyOwners().filter(r=>r.status==='pending'&&!reserved.has(r.ownerId)).map(r=>this.store.owner(r)).filter((r):r is MemoryCandidate=>!!r&&r.status!=='merged'&&r.status!=='discarded');
+    if(!available.length)return;
+    const first=available[0],audit=first.kind==='detail'||first.kind==='learned';
+    const selected=available.filter(r=>(r.kind==='detail'||r.kind==='learned')===audit&&(!r.linkedLongId||!reserved.has(r.linkedLongId))).slice(0,this.options.batchItems??20);
+    if(selected.length)this.makeJob(selected,now,now);
+  }
   startOne(now:string):boolean {
-    if(this.stopped||this.active||this.work().some(w=>w.job.status==='ready'&&this.due(w.job,now)))return false;
+    if(this.stopped||this.active||this.blocked())return false;
     this.ensureCycle(now);
-    const work=this.work().find(w=>w.job.status==='pending'&&(w.table!=='memory_index_jobs'||w.job.configSignature===this.index.configSignature)&&this.due(w.job,now));if(!work)return false;
+    if(this.work().some(w=>w.job.status==='ready'&&this.due(w.job,now)&&this.eligible(w,now)))return false;
+    const work=this.work().find(w=>w.job.status==='pending'&&(w.table!=='memory_index_jobs'||w.job.configSignature===this.index.configSignature)&&this.due(w.job,now)&&this.eligible(w,now));if(!work)return false;
     const controller=new AbortController();this.controller=controller;this.store.saveJob(work.table,{...work.job,status:'computing'});
+    this.backendRequests++;
     this.active=this.prepare(work,controller).finally(()=>{this.active=null;this.controller=null;});
     return true;
   }
@@ -70,6 +91,7 @@ export class MemoryMaintenance {
         const current=this.store.job<MaintenanceJob>(work.table,work.job.id);if(!current||current.status==='done')return;
         const pruned=new Set(current.prunedOwnerKeys??[]),units=result as MaintenanceUnit[];
         const invalid=units.filter(u=>u.readSet.some(r=>pruned.has(`${r.ownerType}:${r.ownerId}`)||!this.store.owner(r))||u.ids.some(id=>!current.snapshot.some(r=>r.id===id)));
+        for(const u of invalid)for(const ref of u.readSet){const row=this.store.owner(ref);if(row){this.store.queueDirty(row,row.kind==='detail'?'detail':row.kind==='learned'?'learned':'event',this.options.clock.now());this.store.releaseDirty(row);}}
         const staleUnitKeys=[...new Set([...current.staleUnitKeys,...invalid.map(u=>u.unitKey)])];
         const clean=units.map(u=>invalid.includes(u)?{unitKey:u.unitKey,action:u.action,ids:[],readSet:[],sourceIds:[]}:u);
         this.store.saveJob(work.table,{...current,status:clean.every(u=>staleUnitKeys.includes(u.unitKey))?'done':'ready',result:clean,staleUnitKeys,lastError:null,retryAt:null});
@@ -79,7 +101,7 @@ export class MemoryMaintenance {
     finally{clearTimeout(timer);controller.signal.removeEventListener('abort',onAbort);if(work.table==='memory_maintenance_jobs')this.options.web?.compactOwnerCheckpoint('maintenance',work.job.id);}
   }
   applyOneReady(now:string):'applied'|'stale'|'none' {
-    if(this.stopped)return 'none';const works=this.work();const work=works.find(w=>w.job.status==='ready'&&this.due(w.job,now))??works.find(w=>w.table==='memory_index_jobs'&&w.job.status==='pending'&&w.job.configSignature!==this.index.configSignature&&this.due(w.job,now));if(!work)return 'none';
+    if(this.stopped||this.blocked())return 'none';const works=this.work();const work=works.find(w=>w.job.status==='ready'&&this.due(w.job,now)&&this.eligible(w,now))??works.find(w=>w.table==='memory_index_jobs'&&w.job.status==='pending'&&w.job.configSignature!==this.index.configSignature&&this.due(w.job,now));if(!work)return 'none';
     try{return this.store.storage.transaction(()=>{
       if(work.table==='memory_index_jobs'){
         const owner=this.store.owner(work.job.owner),valid=owner&&owner.revision===work.job.owner.revision&&owner.status!=='merged'&&owner.status!=='discarded'&&work.job.configSignature===this.index.configSignature;
@@ -91,7 +113,10 @@ export class MemoryMaintenance {
       if(!unit){this.store.saveJob(work.table,{...job,status:'done',retryAt:null,lastError:null});this.options.web?.releaseOwner('maintenance',job.id);return 'none';}
       const valid=unit.readSet.every(ref=>{const r=this.store.owner(ref);return r&&r.status!=='merged'&&r.status!=='discarded'&&r.stateVersion===ref.stateVersion&&r.revision===ref.revision;})&&unit.ids.every(id=>{const r=job.snapshot.find(r=>r.id===id);return !!r&&!!this.store.owner(r);})&&(!unit.canonicalId||unit.readSet.some(r=>r.ownerId===unit.canonicalId)&&!!this.store.canonical(unit.canonicalId));
       if(valid)this.applyUnit(unit,job,now);
-      else {const eligible=this.store.maintenanceCandidates(job.cutoff).filter(r=>unit.ids.includes(r.id));if(eligible.length)this.makeJob(eligible,job.cutoff,now);}
+      else {
+        if(this.options.idle)for(const ref of unit.readSet){const row=this.store.owner(ref);if(row){this.store.queueDirty(row,row.kind==='detail'?'detail':row.kind==='learned'?'learned':'event',now);this.store.releaseDirty(row);}}
+        else {const eligible=this.store.maintenanceCandidates(job.cutoff).filter(r=>unit.ids.includes(r.id));if(eligible.length)this.makeJob(eligible,job.cutoff,now);}
+      }
       const latest=this.store.job<MaintenanceJob>(work.table,job.id)??job;
       const updated={...latest,retryAt:null,lastError:null,appliedUnitKeys:valid?[...latest.appliedUnitKeys,unit.unitKey]:latest.appliedUnitKeys,staleUnitKeys:valid?latest.staleUnitKeys.filter(k=>k!==unit.unitKey):[...new Set([...latest.staleUnitKeys,unit.unitKey])]};
       if(updated.appliedUnitKeys.length+updated.staleUnitKeys.length===job.result!.length)updated.status='done';this.store.saveJob(work.table,updated);if(updated.status==='done')this.options.web?.releaseOwner('maintenance',job.id);return valid?'applied':'stale';
@@ -132,11 +157,20 @@ export class MemoryMaintenance {
     const changed=content!==row.content||feelingSummary!==row.feelingSummary;const updated={...row,content,eventSummary,feelingSummary,summaryQuality:'refined' as const,sourceIds:[...new Set([...row.sourceIds,...unit.sourceIds])],revision:row.revision+(changed?1:0),stateVersion:row.stateVersion+1};this.store.saveOwner(updated);if(changed)this.store.queueIndex(updated,now);this.lifecycle.synchronizeProjections(updated,now);
   }
   nextDeadline(now:string):string|null {
-    if(this.stopped||this.active)return null;const works=this.work();if(works.some(w=>w.job.status==='ready'&&this.due(w.job,now)))return now;
-    const deadlines=works.filter(w=>w.job.status==='pending'||w.job.status==='ready').map(w=>w.job.retryAt??now);
+    if(this.stopped||this.active||this.blocked())return null;const works=this.work();
+    const deadlines:string[]=[];
+    for(const work of works.filter(w=>w.job.status==='pending'||w.job.status==='ready')){
+      const retry=work.job.retryAt??now;
+      if(this.eligible(work,now))deadlines.push(milliseconds(retry)>milliseconds(now)?retry:now);
+      else{const idleAt=this.options.idle?.nextDeadline(now);if(idleAt)deadlines.push(milliseconds(retry)>milliseconds(idleAt)?retry:idleAt);}
+    }
+    const reserved=new Set(works.filter(w=>w.table==='memory_maintenance_jobs').flatMap(w=>(w.job as MaintenanceJob).readSet.map(r=>r.ownerId)));
+    if(this.options.idle&&this.store.dirtyOwners().some(r=>r.status==='pending'&&!reserved.has(r.ownerId))){
+      const eligibility=this.options.idle.eligibility(now);if(eligibility.allowed)deadlines.push(now);else{const at=this.options.idle.nextDeadline(now);if(at)deadlines.push(at);}
+    }
     if(!this.store.storage.get('memory_maintenance_cycle')&&this.store.storage.runtime().nextMaintenanceAt)deadlines.push(this.store.storage.runtime().nextMaintenanceAt!);
     return deadlines.sort((a,b)=>milliseconds(a)-milliseconds(b))[0]??null;
   }
-  status(){const jobs=this.work();return {pending:jobs.filter(w=>w.job.status==='pending').length,ready:jobs.filter(w=>w.job.status==='ready').length,inFlight:this.inFlight,retries:jobs.filter(w=>w.job.retryAt).length,lastError:[...jobs].reverse().find(w=>w.job.lastError)?.job.lastError??null,retrieval:this.index.stats};}
+  status(){const jobs=this.work();return {pending:jobs.filter(w=>w.job.status==='pending').length,ready:jobs.filter(w=>w.job.status==='ready').length,inFlight:this.inFlight,retries:jobs.filter(w=>w.job.retryAt).length,backendRequests:this.backendRequests,lastError:[...jobs].reverse().find(w=>w.job.lastError)?.job.lastError??null,retrieval:this.index.stats};}
   async stop():Promise<void>{this.stopped=true;this.controller?.abort(new Error('backend stopped'));await this.active;}
 }

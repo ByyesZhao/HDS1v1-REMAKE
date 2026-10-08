@@ -74,6 +74,7 @@ export async function finishPostprocessing(d: Dependencies, turn: TurnRecord): P
     const completedAt = d.clock.now();
     const beforeState=d.storage.character();
     if (!turn.environmentKind) applyMemory(d, turn.id, memoryResult, turn.at);
+    if(!turn.environmentKind&&d.memoryCapacity){const restored=memoryResult.longTermChanges.map(c=>d.memoryCapacity!.store.canonical(c.id)?.id).filter((id):id is string=>!!id);d.memoryCapacity.normalize(completedAt,restored);}
     c.experiences.forEach(e => d.storage.save('experiences', e.id, e));
     applySchoolCommits(d.storage,c,turn.id);
     if (!turn.environmentKind) d.storage.set('character', c.nextState);
