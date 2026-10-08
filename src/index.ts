@@ -1,4 +1,5 @@
 import {generateEnvironmentStep} from './directors/school';
+import {inspectEnvironmentUpgrade,importLegacySchoolEvents} from './deployment/environment-upgrade';
 import { Context, Schema, h } from 'koishi';
 import { readFileSync, existsSync } from 'node:fs';
 import { resolve, extname } from 'node:path';
@@ -37,6 +38,7 @@ export function apply(ctx: Context, config: Config): void {
   if(settings.webSearch.enabled)throw new Error('web search enabled but provider not configured; select and inject a provider first');
   const databasePath = resolve(ctx.baseDir, config.databasePath);
   if (existsSync(databasePath) && inspectSharedUpgrade(databasePath).version !== 1) throw new Error('Stop HDSI and run npm run shared:migrate -- --database <path> --check before enabling this existing database.');
+  if(existsSync(databasePath)&&inspectEnvironmentUpgrade(databasePath).version!==1)throw new Error('Stop HDSI and run npm run migrate:environment -- --database <path> --check, then --apply --stopped --backup-dir <path> before starting this existing database.');
   const storage = new Storage(databasePath);
   try { ensureSharedActivityVersion(storage); } catch (error) { storage.close(); throw error; }
   const memoryStore=new MemoryStore(storage),fresh=!storage.get('character');
@@ -50,7 +52,8 @@ export function apply(ctx: Context, config: Config): void {
       storage.set('character', state); storage.set('background', settings.background);
       settings.initialDetails.forEach(detail => memoryStore.saveOwner(memoryStore.makeOwner({ownerType:'detail',ownerId:detail.key},{...detail,content:detail.value,effectiveAt:clock.now()},clock.now())));
       settings.initialEvents.forEach(event => storage.save('events', event.id, event));
-      storage.set('runtime', { ...storage.runtime(), nextWorldAt: clock.now(), nextSchoolAt: clock.now() });
+      importLegacySchoolEvents(storage,clock.now(),options.timezone);
+      storage.set('runtime', { ...storage.runtime(), nextWorldAt:null,nextSchoolAt:null,nextEnvironmentAt:null });
     });
   }
   if(fresh)memoryStore.migrate(clock.now());

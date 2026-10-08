@@ -39,3 +39,8 @@ Ruling：requiredNoticeKeys额外携带entityIds，固定候选宣告范围；�
 ## 任务5：角色知识与故事事务
 BASE=6ff59d7。RED：未知学校引用、拒看立即重复唤醒及未提交knowledge的业务断言失败。首次全量仅旧共同合同的默认数组相等断言失败，按兼容缺省[]更新；最终58文件316项通过，typecheck退出0。程序先验证观察index/冻结通知版本/发布与可读时刻，分配经历ID后给个人本轮投影，段B才保存。注入school_knowledge写入失败证明notice已读、经历、知识一起回滚；恢复及重复后处理不重记。拒看nextWakeAt设未来活动结束或null；正常故事仍可合并。纯通知不抽联系，实际获知才单独个人生活调用。研究进展有已知research及实际experienceId，意图/通知不自产成果，completed不关任务或等于导师认可。
 Ruling：未知活动结束缺少中间转场时点时，过去不可读区间只允许在at实际读取，或在主叙事给定明确新phoneAccess活动startsAt之后读取；不能由轮末状态回填睡眠已读。提示词同步此口径。程序只审引用/时刻/来源，描述是否真的是研究过程仍需任务8语义验收。
+
+## 任务6：升级、门禁与正式库
+BASE=9093d39。旧格式fixture RED为模块缺失，随后check/apply/二次check通过。全量59文件321项通过；新增未生成旧轮后专项12项（环境＋共同迁移）通过，typecheck/build退出0。Storage、Host及共同升级诊断采用同一终态谓词。没有独立post_jobs worker，终结旧环境不会重新进入后处理。
+正式库：D:/HDSI-remake/runtime/data/hdsi-remake.sqlite。进程核对未发现HDSI／SnowLuma相关node/python；普通权限查询被系统拒绝，提升权限只读核对通过。升级前version=null，旧school事件0、旧环境轮0、异常outbox0、未完成普通/共同0、paused=false。临时CLI通过后显式--apply --stopped；升级后version=1，paused保持false。未修改密钥／正式配置或启动服务。
+备份：runtime/environment-upgrade-backups/environment-20261008054344875-43af0f85-7bde-4cb9-af7e-a8c57cdef8ba/，SQLite/WAL/SHM三文件。报告：runtime/environment-upgrade-backups/reports/world-school-v4-before.json及world-school-v4-after.json（主目录下，非Git）。正式库没有遗留轮，因此实际不宣称终结了旧轮；该行为由临时fixture证明。

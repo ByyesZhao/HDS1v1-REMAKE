@@ -15,6 +15,7 @@ interface Tables {
   school_plans:SchoolPlan;school_plan_items:SchoolPlanItem;school_instances:SchoolInstance;school_notices:SchoolNotice;school_knowledge:SchoolKnowledge;school_progress:SchoolProgress;school_weeks:SchoolWeek;
 }
 const tables: Array<keyof Tables> = ['messages', 'turns', 'outbox', 'post_jobs', 'tasks', 'details', 'detail_history', 'memories', 'events', 'experiences', 'stickers', 'control_requests'];
+export const isUnfinishedTurn=(t:TurnRecord)=>!t.done&&t.legacyDisposition!=='superseded';
 export const environmentTables = ['environment_batches','environment_steps','school_plans','school_plan_items','school_instances','school_notices','school_knowledge','school_progress','school_weeks'] as const;
 tables.push(...environmentTables);
 export class Storage {
@@ -76,7 +77,7 @@ export class Storage {
     const open = this.runtime().openBatch?.id;
     return this.messages().filter(m => m.direction === 'incoming' && m.seenTurnId === null && !(m.sharedActivityId && m.batchId === null) && m.batchId !== open);
   }
-  unfinishedTurn(): TurnRecord | null { return this.all('turns').find(t => !t.done && t.legacyDisposition!=='superseded') ?? null; }
+  unfinishedTurn(): TurnRecord | null { return this.all('turns').find(isUnfinishedTurn) ?? null; }
   outbox(turnId: string): OutboxItem[] { return this.all('outbox').filter(i => i.turnId === turnId).sort((a, b) => a.seq - b.seq); }
   saveOutbox(item: OutboxItem): void { this.save('outbox', `${item.turnId}:${item.seq}`, item); }
 }
