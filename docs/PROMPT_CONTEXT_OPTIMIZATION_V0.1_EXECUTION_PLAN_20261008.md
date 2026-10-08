@@ -10,9 +10,12 @@
 
 **Spec:** [实施细化](PROMPT_CONTEXT_OPTIMIZATION_V0.1_IMPLEMENTATION_20261008.md)。基线`6ed66e2`，设计／审核已确认；本执行文档仍待审阅，不开始代码。
 
+[REVIEW21](../DSH-review/DSH_REVIEW21_PROMPT_CONTEXT_V0.1_PLAN_20261008.md)已整合，具体取舍见细化§12。用户选择B：无必需通知时，即使有日程冲突也不额外调用周模型；角色自由处理自己真正知道的安排。
+
 ## 全局约束
 
 - 固定默认`recentDialogueSegments=4`、`dialogueIdleMinutes=15`；段内完整，不叠加旧30条。
+- 周计划无必需通知则免调用，有冲突仍保存程序冲突及覆盖；个人导演决定参加、请假或协调，不由周模型自动改日程。
 - 不增加输入字数／token预算和默认检索条数限制；超限报错，不自动删减，不增加手动脱困命令。
 - Host完整snapshot／readSet／版本不精简；原消息ID、来源、可见权限、记忆周期和容量制度不改。
 - 原模型任务名／配置键／强度、普通15秒合批、共同60秒／20轮硬上限、环境每日06:00串行及后台让位不改。
@@ -56,6 +59,7 @@
 **Interfaces:** 消费任务1类型，产出细化§2的DialogueEpisodes及DialogueRecent。`recent`用阶段可见权限选有可见原文的4段；Retrieval不再`.slice(-recentMessagesLimit)`。写方法由调用者持有事务；nextDeadline只给可关闭段的截止，保持中不排零延时循环。
 
 - [ ] 写`four_total_with_or_without_current`：有当前时D＋前3，无当前时最近4；段内40条仍返回40条。
+- [ ] 写`episode_order_last_interaction_then_opened_time_then_id`：段取lastInteractionAt／openedAt／id稳定排序末4，以旧→新输出；构造建段时间与最后交互排序不一致夹具，不能按rowid选。
 - [ ] 写`invisible_current_does_not_consume_slot`、`unread_not_leaked`、`visible_after_commit_same_id`：当前未读不能提前进入普通narrative，成为真正可见后仍是原消息身份。
 - [ ] 写`idle_15_minutes_boundary`、`no_reply_can_close`、`proactive_output_opens`、`silent_background_does_not_open`、`advance_does_not_anchor`，按细化示例使用固定时钟。
 - [ ] 对窗口用以下精确断言（A～D已闭、E当前且有可见原文；夹具使用任务1的Store）：`expect(recent.episodeIds).toEqual(['B','C','D','E'])`；E含40条时`expect(recent.messages.filter(m=>m.dialogueEpisodeId==='E')).toHaveLength(40)`。无可见E的narrative应为`['A','B','C','D']`。
@@ -70,7 +74,7 @@
 
 - [ ] 写`segmented_reply_one_episode`、`generation_over_15_minutes_stays`、`memory_after_output_does_not_hold`、`shared_silent_gap_continuous`、`end_anchor_is_confirmation_not_postprocessing`。
 - [ ] 写`incoming_index_failure_rolls_back_message`、`confirmation_index_failure_rolls_back_local_receipt`、`close_and_new_input_recheck`、`duplicate_input_no_new_episode`、`restart_preserves_binding`、`idle_timer_closes_without_model_call_or_spin`；用可控异常／时钟模拟事务中断和事件顺序。
-- [ ] 写`deferred_old_source_not_retimestamped`、`start_transfers_activity_without_copying`、`inconsistent_index_errors_without_merge`；恢复不得修改旧来源或猜测合并。
+- [ ] 写`deferred_old_source_not_retimestamped`、`start_transfers_activity_without_copying`、`inconsistent_index_errors_without_merge`、`irrelevant_completed_history_warning_only`、`orphan_unread_or_recent_or_reconsider_blocks`；只可证明不影响当前运行的已完成窗外历史报warning，无法确定的关联仍报错；恢复不得修改旧来源或猜测合并。
 - [ ] 运行`npm test -- tests/dialogue-flow.test.ts tests/dialogue-recovery.test.ts`确认失败；按细化§4接入，保留网络确认与数据库确认的既有区别。
 - [ ] 新测试及`npm test -- tests/input.test.ts tests/recovery.test.ts tests/shared-v3-recovery.test.ts tests/memory-idle-recovery.test.ts`、类型检查通过；记录所有事务边界及恢复限制，提交任务3。
 
@@ -125,12 +129,15 @@
 
 **Files:** 新`tests/prompt-context-integration.test.ts`、`scripts/validate-prompt-context.ts`；改`README.md`、`docs/IMPLEMENTATION_HANDOFF_20261007.md`、`docs/DOCUMENT_AUDIT.md`、`examples/story.sample.json`、`scripts/demo.ts`、`scripts/check-web-context.ts`、`scripts/validate-shared-story.ts`及实施日志。其余使用旧字段的夹具通过`rg`查出后逐个更新，不隐式兼容成旧30条。
 
+同时核对并同步`docs/MEMORY_V0.3_IMPLEMENTATION_20261007.md`、`docs/MEMORY_V0.3_EXECUTION_PLAN_20261007.md`、`REMAKE_V0.2_MEMORY.md`、`REMAKE_V0.2_INTERFACES.md`、`REMAKE_V0.2_IMPLEMENTATION.md`，并搜索根目录其余REMAKE说明。当前规则／类型／参数改为4段与15分钟；历史已完成测试／交付数字保留当时事实并加“由本期替代”及日志链接。旧方案和review副本只标追溯状态，不批量改掉审查当时的源码事实。此任务实施前旧30条说明仍反映当前程序，不提前写成已落地4段。
+
 **Interfaces:** 验收工具构建隔离库，支持纯离线资料统计与既有授权范围的模拟故事请求；默认单请求300秒。检查脚本不得误用正式库、启动QQ或把密钥输出到报告。
 
 - [ ] 写`normal_shared_life_and_empty_memory_full_flow`、`four_episodes_preserve_source_roles`、`manual_start_files_and_offline_check_do_not_start_services`；统计实际HTTP／embedding调用和pool正文副本，不对修补原响应强行全文去重。
 - [ ] 针对集成测试确认红灯，再装配工具／报告；通过`npm test -- tests/prompt-context-integration.test.ts`和类型检查。
 - [ ] 跑`npm run typecheck`、`npm run build`、`npm test`，记录实际文件／用例数，不复用历史473项数字。
 - [ ] 检查正式库版本和迁移报告；正式apply只在已确定停服且备份完成后执行，按报告保留模糊边界。同步说明并提交；报告区分离线证据与真实模型证据。
+- [ ] 用`rg -n 'recentMessagesLimit|近期原文.{0,8}30|最新30条|最近30条' docs REMAKE_V0.2*.md`逐项检查：生产说明不再有未注明替代的旧30条；原方案、历史记录／review允许保留，但必须明确其追溯角色。PowerShell中根目录通配文件先展开后传给rg，不把未展开的glob当文件名。
 - [ ] 第一批单独复核可见性、未完成轮、服务停止和已确认来源；真实隔离验收若执行，记录发送范围及质量问题，再决定是否进入第二批。不要用“JSON变短”代替故事质量结论。
 
 ## 第二批
@@ -162,7 +169,8 @@
 
 **Interfaces:** 产出细化§10.4的SchoolWeekTextResult；`resolveSchoolWeekText(storage:Storage,result:SchoolWeekTextResult,input:SchoolExpansionInput,now:string):EnvironmentChangeSet`程序生成现行候选并调用原resolveSchoolWeek。`schoolWeekTextTask(input:SchoolExpansionInput):ModelTask<SchoolWeekTextResult>`新任务name仍school_week；旧schoolWeekTask保留版本0。EnvironmentStepInput新增modelContractVersion，缺失视为0；EnvironmentModelResult联合兼容新旧候选，EnvironmentChangeSet不变。
 
-- [ ] 写`required_occurrences_generated_without_model_copy`、`fixed_notice_entities_text_per_key`、`no_notice_skips_model_but_commits_coverage`、`required_notice_never_skipped`、`duplicate_or_missing_notice_key_rejected`。
+- [ ] 写`required_occurrences_generated_without_model_copy`、`fixed_notice_entities_text_per_key`、`no_notice_skips_model_but_commits_coverage`、`conflicts_without_notice_zero_calls_preserved`、`empty_week_notes_cannot_erase_program_conflicts`、`required_notice_never_skipped`、`duplicate_or_missing_notice_key_rejected`。
+- [ ] 写`notice_descriptor_targets_exact_occurrence_time_location`、`existing_occurrence_reminder_has_descriptor`、`reminder_instance_id_matches_occurrence`、`after_projection_updates_notice_binding`：同课程两次课使用不同key，描述、绑定和快照均指向所选那次；发布时间与上课开始时间分开。程序关联断言不得替代正文语义验收。
 - [ ] 写`old_ready_direct_commit_no_model`、`old_running_checkpoint_uses_v0`、`new_snapshot_uses_v1`、`cancelled_after_timezone_history_reminders_unchanged`。
 - [ ] 红灯→实现程序candidate适配和版本分派；保留EnvironmentChangeSet不变，机械空任务仍保存覆盖及冲突信息。
 - [ ] 运行`npm test -- tests/school-week-text-contract.test.ts tests/school-week-contract-recovery.test.ts tests/world-school-review14-calendar.test.ts tests/world-school-review14-contracts.test.ts tests/world-school-review14-environment.test.ts tests/world-school-review14-time.test.ts tests/world-school-notices.test.ts`和类型检查；日志注明ready／running各自路径，提交任务11。
@@ -173,7 +181,7 @@
 
 - [ ] 补第二批集成用例，红灯后实现验收装配；证明投影后角色已知边界、来源、模板版本及实例／通知一致性。
 - [ ] `npm run typecheck`、`npm run build`、`npm test`通过；新增修改或失败才补充重复检查。
-- [ ] 在隔离多轮样例检查表达保真、稳定背景与变动事实、学校自然通知、公开开场／收尾、goal／endingCondition语义及结果不足可询问行为；记录模型实际选择，不把程序字符串校验当语义审核。
+- [ ] 在隔离多轮样例检查表达保真、稳定背景与变动事实、学校自然通知、公开开场／收尾、goal／endingCondition语义及结果不足可询问行为；记录模型实际选择，不把程序字符串校验当语义审核。学校通知逐条对照occurrence日期／星期／时刻／地点，覆盖同课程多次课和publishAt≠startsAt；另检查角色已知课程与组会冲突时可自行安排或提出请假，计划不冒充获准结果，不要求模型必选请假。
 - [ ] 汇总前后资料ID／字段映射、去重数量、实际调用数、迁移与恢复报告、测试结果和已知限制；不默认公开私聊、背景全文或密钥。
 - [ ] 同步本次文档为已实施状态及日志入口，逐文件复核差异并提交最终交付。服务继续停止，由用户运行已有cmd。
 

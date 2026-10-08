@@ -4,6 +4,8 @@
 
 实施参考**本文＋[执行计划](PROMPT_CONTEXT_OPTIMIZATION_V0.1_EXECUTION_PLAN_20261008.md)**。[方案](PROMPT_CONTEXT_OPTIMIZATION_V0.1_PROPOSAL_20261008.md)、[REVIEW20](../DSH-review/DSH_REVIEW20_PROMPT_CONTEXT_V0.1_20261008.md)及[已确认回应（含后续补充）](../DSH-review/CODEX_REBUTTAL_PROMPT_CONTEXT_V0.1_20261008.md)用于追溯，其已同意的规则在本文集中落实，无需实施者另行拼接。
 
+[REVIEW21](../DSH-review/DSH_REVIEW21_PROMPT_CONTEXT_V0.1_PLAN_20261008.md)已按用户决定合并，逐项口径见§12；不再另建rebuttal。无必需通知时即使有冲突也不额外调用周模型，采用B，冲突由程序保留，角色在已知安排基础上自行选择。
+
 ## 1. 范围与不变的业务规则
 
 采用方案B，分两批。第一批完成确定去重、最近4个对话段、程序权限分支、轻量模型资料视图、无用途查询embedding免调用、无新来源时基础提取空结果及错误可观测性。第二批完成表达专用上下文、背景审阅拆分、世界学校资料投影及学校周计划机械输出移交；第二批单独验收，不与第一批一起混改。
@@ -80,7 +82,7 @@ buildPromptPolicy(stage: PromptStage, facts: PromptFacts): PromptPolicy;
 
 `nextDeadline`返回当前无回复保持／无活跃共同活动阻挡的段截止；纳入Host已有单timer。到期只做索引关闭事务，不触发主叙事或记忆模型。暂停期间允许这一已满足条件的元数据关闭，但有失败生成／待发送保持的段不越过门禁；不把已到期却被保持的段反复排成零延时唤醒。
 
-`DialogueConsistencyReport`至少包括索引版本、孤立消息ID、重复／失效归属、冲突当前段、未完成轮缺失关联、活动关联问题；报告默认只给ID和原因。
+`DialogueConsistencyReport`至少包括索引版本、孤立消息ID、重复／失效归属、冲突当前段、未完成轮缺失关联、活动关联问题，并区分`blockingIssues`与`historicalWarnings`。报告默认只给ID和原因，分类依据见§4.3。
 
 ### 3.2 配置迁移
 
@@ -120,11 +122,18 @@ buildPromptPolicy(stage: PromptStage, facts: PromptFacts): PromptPolicy;
 
 未提交事务回滚；重复入站ID不再建段或刷新；已确认outbox不再添加出站记录。未确认发送沿原outbox恢复语义，本次不承诺QQ发送恰好一次。恢复沿已提交binding继续分段回复；共同活动在途或回复生成未结束时不误关段。状态查看不能刷新时钟。
 
-发现无法由已保存证据解释的孤立／冲突关联，报错并保留现场；不默认“孤立消息并入最近段”或“重叠段全合并”。常规一致性由写事务保证，不新增自动历史修复后台任务。
+按影响范围区分，而不是按“孤立消息／重复归属”的名称一律降级：
+
+- `blockingIssues`：当前段状态冲突、活动归属冲突、未完成轮／待发送项缺少关联，以及任何影响近期4段、未读输入、延期复议或当前合法来源的未知归属。启动／恢复明确报错，不能通过跳过消息让检查变绿。
+- `historicalWarnings`：可以从已保存时间、完成状态和关联证明，问题仅在已完成且处于近期窗口之外的历史，未被待办复议、未完成轮、当前活动或来源引用。记录ID及原因，允许继续处理合法当前状态；原记录不删、不改、不自动合并。无法确认不影响时仍归阻挡项。
+
+现代接纳／确认事务回滚不会留下“消息已提交但段归属未提交”的正常半状态；历史警告不替代§9升级回建，不给缺失索引的新消息一个通用跳过入口。不默认“孤立消息并入最近段”或“重叠段全合并”，不新增自动历史修复后台任务。程序内部`closeDue`和`releaseReply`仍照常运行；不新增QQ强制关段／合并／脱困命令，既有计划中的停服迁移CLI不受此限制。
 
 ### 4.4 近期窗口与阶段权限
 
 先按阶段授权，再选最多4个**有该阶段可见原文**的最近段。有可见当前段则当前＋前3；当前只含普通主叙事不可见的未读输入时，不挤掉其第4个历史段，也不把未读输入泄漏进去。个人导演本轮`visible`仍显式授权，不把“段内完整”理解为提前阅读同段全部未读输入。
+
+段候选明确按`lastInteractionAt`升序、`openedAt`升序、`id`字面升序稳定排序，取末4段，以旧→新顺序提供；不是按数据库rowid或随机ID排序。排序不重写时刻，阶段无可见原文的段先排除；段内仍按实际消息时间及同轮输出序号排列。
 
 段内所有已授权原文完整保留，退出窗口不删除messages或记忆。`visible/reconsider/recent`引用同消息ID只展示一次正文，同时保留三种角色标签。旧相关事件走现有记忆检索，本期不新增全旧原文向量检索。
 
@@ -266,7 +275,19 @@ interface SchoolWeekTextResult {
 
 从冻结SchoolExpansionInput程序生成全部requiredOccurrences对应instanceChanges、revision及requiredNoticeKeys的声明实体集合；模型每个必需key给一次非空自然正文，不再抄instanceChanges、sourceVersions、entityRefs。输入通知描述给kind、publishAt、channel和程序固定声明实体／必要快照，要求正文不能偷偷宣布其他实体。程序将正文和固定实体映射成现行candidate，继续调用原resolveSchoolWeek及应用时normalize。
 
-weekNotes可空，声明的周必须合法且唯一；sourceVersions和checkedAt继续程序保存。通知是否读到、科研是否完成仍按主叙事经历，不由周模型判定。没有必需通知且机械工作无需模型说明时可不调用周模型，仍解析机械实例并保存覆盖／已有conflicts；有必需通知绝不能因hash未变跳过。
+**课次通知映射固定如下：**每个描述保留`key`、`sourceItemId`、`occurrenceKey`、kind/publishAt/channel、源条目标题／地点及声明实体。`occurrenceKey`非空时，提供它对应的冻结课次`instanceId`、startsAt/endsAt、status、标题和地点，并标明故事timezone。查找优先使用本次requiredOccurrences生成的预解析实例，再查既有existingInstances；不能用“该条目下一次课”替代精确key。未列入requiredOccurrences的既有课次提醒也必须有相应资料。
+
+有具体occurrence的通知，其声明快照包含目标instance及原规则要求的条目；提醒的最终`instanceId`必须等于该occurrence映射的真实实例ID，不能为null或绑定同课程的另一次。若应用时历史保护把候选重定向到after实例，继续由原normalize同时改实例ID、快照和通知身份；不保留过时引用。条目级issue/change/cancel在现行代码中occurrenceKey为空，按条目资料处理；week_digest声明给定实体集合，不编造一个课次。
+
+适配原candidate时，instance类`entityRefs.entityId`统一使用目标`occurrenceKey`，条目类继续原条目ID；尤其新实例尚未落库，不能把预解析instanceId直接送给只认识requiredOccurrences key／existingInstances的旧校验器。模型描述可提供两种身份帮助解释，最终通知行及payload快照则经resolver保存实际实例ID，随后按原历史保护规范化。
+
+程序校验key、实例及声明快照映射。自然中文是否把星期／时刻／地点说错还需真实通知验收，不能用正文非空或关键词相等冒充语义检查。提示明确publishAt是通知发布时间、startsAt才是活动开始时间，不让模型混用。
+
+**用户已选B：**`requiredNoticeKeys.length===0`时跳过周模型，包括有冲突的情况；仍生成／解析机械实例，保存覆盖、checkedAt及程序检测的冲突。程序可以由目标课次的标题、时间和身份生成直接冲突说明，不需要LLM改写。不能因为跳过调用就丢掉`SchoolWeek.conflictNotes`。
+
+有必需通知时照常调用，weekNotes可空，声明的周必须合法且唯一。转换现行candidate时，任何模型weekNotes只能补充程序冲突，不能用空数组或改写正文抹去程序检测结果；无调用时使用合法空noticeTexts/weekNotes及现有冲突fallback。sourceVersions和checkedAt继续程序保存。有必需通知绝不能因hash未变跳过。
+
+冲突记录不新增学校通知、不让角色提前知道安排，也不自动取消课程或组会。在角色通过既有通知／亲历真正知道两个安排后，由个人导演决定上课、参加组会、向导师请假或协调。请假请求／答复／结果属于模拟生活，按个人导演意图与主叙事经历推进，不能仅因生成了计划就写成已请假成功；不向现实导师发送消息。
 
 新冻结`EnvironmentStepInput.modelContractVersion=1`；缺失视为0。`EnvironmentModelResult`兼容联合新增SchoolWeekTextResult，而不直接删除旧school_week候选类型；按冻结输入版本分派解析，不靠字段猜测版本。旧running/pending且已有inputSnapshot沿版本0原模型合同和checkpoint续跑；新生成版本1用新合同。旧ready是已解析EnvironmentChangeSet，继续直接提交，不作废、不重新调用模型。解析后变更集合同不变；旧代码兼容入口保留到相关在途步骤已结束。
 
@@ -279,3 +300,16 @@ weekNotes可空，声明的周必须合法且唯一；sourceVersions和checkedAt
 实施时创建 `docs/PROMPT_CONTEXT_OPTIMIZATION_V0.1_IMPLEMENTATION_LOG_20261008.md`：记录基线、每任务变更、红绿回归、提交、升级报告、调用统计、已知限制和验收结果。默认统计task、分支／提示版本、资料ID和数量、资料去重数、输入字符数及实际HTTP／embedding请求数，不默认落正文或密钥。字符数是观测，不是预算，也不换算未经验证的token／费用。
 
 每批完成后做类型检查、构建、全量回归和差异复核；新增任务有独立验收，不把过去473项通过写成这次已跑。同步现状说明，旧方案保留历史检查事实并加实施状态入口。最终运行HDSI和SnowLuma仍由用户双击已有启动文件。
+
+## 12. REVIEW21整合记录与澄清
+
+| 意见 | 处理及执行位置 |
+| --- | --- |
+| §2.1 通知课次资料／instanceId | 采纳，§10.4及任务11补冻结课次描述、既有课次fallback、精确实例绑定和真实正文验收。当前条目级change/cancel实际为null，不把“部分变更已有occurrence”写成现行源码事实；非空key统一按具体课次规则处理 |
+| §2.2 无通知但有冲突 | 用户明确B，§10.4及任务11：不额外调用，程序冲突永远保留。已有resolveSchoolWeek本来就用input.conflicts兜底，跳过调用不等于冲突丢失 |
+| §2.3 旧30条文档同步 | 采纳，任务8加入记忆V0.3与根目录REMAKE说明；已完成历史验收标记保留当时事实并注明已替代，不伪装成过去已经测试4段 |
+| §3.1 段排序 | 采纳，§4.4／任务2固定lastInteractionAt、openedAt、id排序 |
+| §3.2 硬失败／历史降级 | 收窄后采纳，§4.3／任务3按影响范围分blockingIssues/historicalWarnings；不按记录类别跳过未知的近期、未读、复议或在途消息。正常原子事务回滚不造成已提交孤立消息 |
+| §3.3 自动关闭措辞 | 采纳，§4.3明确closeDue／releaseReply保留，不新增QQ操作命令；停服升级CLI仍按计划提供 |
+
+上述内容已成为本文及执行计划的一部分，没有新增待用户决定项。本次整合仅修改文档，未运行代码测试、模型请求、服务或正式库升级。
