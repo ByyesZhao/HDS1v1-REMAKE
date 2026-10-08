@@ -45,3 +45,9 @@ export function stageInput(stage:PromptStage,input:unknown):StageModelInput {
  if(isStageModelInput(input))return input;
  return buildStageModelInput(stage,{stage,input:(input??{}) as StageBusinessSnapshot});
 }
+
+export function buildExpressionView(snapshot:Extract<StageInputSnapshot,{stage:'expression'}>):StageModelInput {
+ const input=snapshot.input,state=input.state as import('../types').CharacterState|undefined;
+ const expressionState=state?{emotions:state.emotions,energy:state.energy,scene:{mode:state.scene.mode,description:state.scene.description,activity:state.scene.activity?{description:state.scene.activity.description}:null,shared:state.scene.shared?{title:state.scene.shared.title,progress:state.scene.shared.progress,lastPublicNode:state.scene.shared.lastPublicNode}:null}}:undefined;
+ return buildStageModelInput('expression',{stage:'expression',input:{intent:input.intent,mode:input.mode,state:expressionState,school:input.school,visibleMessages:input.visibleMessages,history:input.history,chatExamples:input.chatExamples,style:input.style,background:input.background}});
+}

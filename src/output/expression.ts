@@ -1,4 +1,4 @@
-import { stageInput } from '../model/context-views';
+import { buildExpressionView } from '../model/context-views';
 import type { ModelRunner } from '../types';
 import { expressionTask } from '../model/contracts';
-export const runExpression = (models: ModelRunner, input: unknown, options:import('../memory/types').ModelRunOptions={lookup:null}) => models.runModel(expressionTask(), stageInput('expression',input),options);
+export const runExpression = (models: ModelRunner, input: unknown, options:import('../memory/types').ModelRunOptions={lookup:null}) => models.runModel(expressionTask(), buildExpressionView({stage:'expression',input:(input??{}) as import('../model/context-types').StageBusinessSnapshot}),options);
