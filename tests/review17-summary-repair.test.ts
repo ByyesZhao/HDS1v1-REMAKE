@@ -19,6 +19,12 @@ function broken(sources=['e']){
 it('readonly retained-reference policy protects missing summary after short expiry',()=>{
  const d=broken();expect(d.cap.protectedIds(days(6),true).has('l')).toBe(true);expect(d.cap.protectedIds(days(188),true).has('l')).toBe(true);
 });
+it.each(['\u3000','\u00a0','\ufeff','\v','\f','\u2003'])('Unicode blank summary remains protected until sourced repair: %j',blank=>{
+ const d=broken();d.store.saveOwner({...d.l,content:blank});expect(d.cleanup.applyOne(days(188))).toBe('applied');expect(d.store.canonical('l')).not.toBeNull();expect(d.store.dirtyOwners().map(r=>r.ownerId)).toEqual(['s']);
+});
+it.each(['\u3000','\u00a0','\ufeff','\v','\f','\u2003'])('Unicode blank detail does not schedule an empty repair loop: %j',blank=>{
+ const d=broken();d.store.saveOwner({...d.s,content:blank});expect(d.cleanup.applyOne(days(188))).toBe('blocked');expect(d.store.dirtyOwners()).toHaveLength(0);expect(d.cleanup.nextDeadline(days(188))).toBeNull();expect(d.store.canonical('l')).not.toBeNull();
+});
 it('overdue missing summary protects long and registers one repair despite processed watermark',()=>{
  const d=broken();expect(d.cleanup.applyOne(days(188))).toBe('applied');expect(d.store.canonical('l')).not.toBeNull();expect(d.store.dirtyOwners().map(r=>r.ownerId)).toContain('s');
  const v=d.store.owner(d.s)!.stateVersion;expect(d.cleanup.applyOne(days(188))).toBe('blocked');expect(d.store.owner(d.s)!.stateVersion).toBe(v);

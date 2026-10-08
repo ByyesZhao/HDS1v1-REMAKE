@@ -178,6 +178,6 @@
 - [x] 基础双空白摘要合同；存量 missing_summary 引用保护、同版本一次增量登记、15分钟门禁、合法修复后先短后长清理。只读检查与清理共享保护谓词，归档锚点不变。
 - [x] promotionEligible、promotionCandidates(at)、冻结 evaluationAt=job.cutoff、模型输入 promotionEligibleIds；应用时按当前时刻验证同一主项，过期判 stale，其他单元继续。
 - [x] 审计按完整报告 ID 字面替换；无超量不执行容量排序。
-- [x] 新增 review17 四组回归，全套83文件457项通过；typecheck与build通过；隔离混合验收通过。未运行在线调用／QQ或正式库写入。
+- [x] 新增 review17 四组回归，全套83文件469项通过；typecheck与build通过；隔离混合验收通过。未运行在线调用／QQ或正式库写入。
 
 过程与最终复核／集成结果见[修复记录](REVIEW17_MEMORY_FIX_LOG_20261008.md)。原任务1～8的435项记录保留为历史基线。
