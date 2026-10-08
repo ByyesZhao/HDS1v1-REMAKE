@@ -1,3 +1,4 @@
+import {initializeMissingBackgroundFacts} from './model/background-views';
 import {generateEnvironmentStep} from './directors/school';
 import {inspectEnvironmentUpgrade,importLegacySchoolEvents} from './deployment/environment-upgrade';
 import { Context, Schema, h } from 'koishi';
@@ -63,6 +64,7 @@ export function apply(ctx: Context, config: Config): void {
   }
   if(fresh)memoryStore.migrate(clock.now());
   if(fresh)memoryStore.migrateCapacity(clock.now());
+  storage.transaction(()=>initializeMissingBackgroundFacts(memoryStore,options.backgroundViews,clock.now()));
   let stickers: StickerLibrary | undefined;
   if (options.stickersEnabled) {
     const e = settings.embedding;

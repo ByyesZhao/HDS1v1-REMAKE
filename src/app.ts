@@ -158,7 +158,7 @@ export async function generateTurn(d: Dependencies, request: TurnRequest, turnId
   }
   const change = personal?.sharedChange;
   const outputMode = change?.action === 'start' ? change.mode : entryMode;
-  const expression = intent ? await runExpression(d.models, { intent, mode: outputMode, state,school:personalSchool, visibleMessages: visible, history: personalHistory, chatExamples: d.config.chatExamples },phaseOptions(d.web,'turn',turnId,'expression','expression',{lookup:null})) : null;
+  const expression = intent ? await runExpression(d.models, { intent, mode: outputMode, state,school:personalSchool, visibleMessages: visible, history: personalHistory, chatExamples: d.config.chatExamples,style:d.config.backgroundViews?.status==='approved'?d.config.backgroundViews.style:undefined },phaseOptions(d.web,'turn',turnId,'expression','expression',{lookup:null})) : null;
   const candidate: TurnCandidate = {
     visibleMessageIds: visible.map(m => m.id), reconsiderMessageIds: reconsider.map(m => m.id), narrative, personal, expression,
     experiences,schoolNoticeRefs:request.schoolNoticeRefs??[],schoolObservations:schoolCommits.observations,schoolProgress:schoolCommits.progress,nextState: state,

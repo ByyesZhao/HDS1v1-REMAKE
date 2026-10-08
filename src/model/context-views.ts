@@ -1,3 +1,4 @@
+import {backgroundFor} from './background-views';
 import { summaryRepairPair } from '../memory/summary-repair';
 import { createHash } from 'node:crypto';
 import type { MemoryCandidate,RetrievedContext } from '../memory/types';
@@ -50,4 +51,14 @@ export function buildExpressionView(snapshot:Extract<StageInputSnapshot,{stage:'
  const input=snapshot.input,state=input.state as import('../types').CharacterState|undefined;
  const expressionState=state?{emotions:state.emotions,energy:state.energy,scene:{mode:state.scene.mode,description:state.scene.description,activity:state.scene.activity?{description:state.scene.activity.description}:null,shared:state.scene.shared?{title:state.scene.shared.title,progress:state.scene.shared.progress,lastPublicNode:state.scene.shared.lastPublicNode}:null}}:undefined;
  return buildStageModelInput('expression',{stage:'expression',input:{intent:input.intent,mode:input.mode,state:expressionState,school:input.school,visibleMessages:input.visibleMessages,history:input.history,chatExamples:input.chatExamples,style:input.style,background:input.background}});
+}
+
+export function buildEnvironmentView(input:import('../environment/types').EnvironmentStepInput):StageModelInput {
+ if(input.stage==='school_week')return stageInput(input.stage,input);
+ const c=input.context as {background:string;backgroundViews?:import('./background-views').BackgroundViews;timezone:string;worldSetting:string;schoolSetting:string;events:import('../types').EnvironmentEvent[];plans:import('../school/types').SchoolPlan[];items:import('../school/types').SchoolPlanItem[];progress?:import('../school/types').SchoolProgress[];campusTiming?:unknown};
+ const common={stage:input.stage,batchId:input.batchId,at:input.at,timezone:c.timezone,background:backgroundFor(c,input.stage)};
+ if(input.stage==='world')return stageInput(input.stage,{...common,worldSetting:c.worldSetting,events:c.events?.filter(e=>e.kind==='world')??[]});
+ const owner=input.stage==='school_campus'?'campus':'group',items=c.items?.filter(i=>i.owner===owner)??[],plans=c.plans?.filter(p=>p.owner===owner)??[];
+ const researchIds=new Set(items.filter(i=>i.kind==='research').map(i=>i.id));
+ return stageInput(input.stage,{...common,schoolSetting:c.schoolSetting,plans,items,...(owner==='group'?{campusTiming:c.campusTiming,progress:c.progress?.filter(p=>researchIds.has(p.taskId))??[]}:{})});
 }

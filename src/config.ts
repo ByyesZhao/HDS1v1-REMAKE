@@ -7,6 +7,7 @@ export interface ModelConnection {
 }
 export interface SleepHabits { sleepStart: string; sleepEnd: string; wakeStart: string; wakeEnd: string; preparationMinutes: number }
 export interface AppConfig {
+  backgroundViews?:import('./model/background-views').BackgroundViews;
   timezone: string; background: string; chatExamples: string; worldSetting: string; schoolSetting: string;
   sleepHabits: SleepHabits;
   /** Deprecated configuration decoding only; environmentDailyAt controls scheduling. */

@@ -1,6 +1,6 @@
 import { readFileSync,writeFileSync,mkdirSync,existsSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { prepareCharacterBackground,BackgroundSelection } from '../src/deployment/character-background';
+import { prepareCharacterBackground,prepareBackgroundViews,BackgroundSelection,BackgroundParagraphMapping } from '../src/deployment/character-background';
 const path=resolve(process.argv[2]??'梁思璃设定.txt');
 const selectionPath=resolve('runtime/data/background-selection.json');
 const selection=existsSync(selectionPath)?JSON.parse(readFileSync(selectionPath,'utf8')) as BackgroundSelection[]:[];
@@ -14,3 +14,6 @@ writeFileSync('runtime/data/character-background-review.json',JSON.stringify({so
 writeFileSync('runtime/data/character-detail-initialization-diff.json',JSON.stringify(initializationDiff,null,2));
 if(!existsSync(selectionPath))writeFileSync(selectionPath,'[]\n');
 console.log(JSON.stringify({status:candidate.status,paragraphCount:candidate.paragraphs.length,selectedDetails:candidate.details.length,existingStableDetails:initializationDiff.length,sourceUnchanged:true,productionSwitch:false,review:'runtime/data/character-background-review.json'}));
+
+const mappingIndex=process.argv.indexOf('--mapping');
+if(mappingIndex>=0){const mappingPath=resolve(process.argv[mappingIndex+1]);const mapping=JSON.parse(readFileSync(mappingPath,'utf8')) as BackgroundParagraphMapping[];const views=prepareBackgroundViews(original,mapping,selection);writeFileSync('runtime/data/background-views-candidate.json',JSON.stringify(views,null,2));console.log('runtime/data/background-views-candidate.json: pending review; production unchanged');}

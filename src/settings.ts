@@ -1,3 +1,4 @@
+import {backgroundViewsSchema,backgroundFor} from './model/background-views';
 import { readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { z } from 'zod';
@@ -44,6 +45,7 @@ const memorySettings=z.object({
 }).prefault({});
 export const memoryMaintenanceSettings=memorySettings;
 const settingsSchema = z.object({
+  backgroundViewsFile:z.string().optional(),backgroundViews:backgroundViewsSchema.optional(),
   background: z.string().min(1), backgroundFile: z.string().optional(), chatExamples: z.string().min(1), worldSetting: z.string(), schoolSetting: z.string(),
   timezone: z.string().default('Asia/Shanghai'), initialScene, initialPlan: z.string(),
   initialEnergy: z.object({ level: z.enum(['精力充沛', '正常', '疲惫', '精疲力尽']), reason: z.string() }).default({ level: '正常', reason: '初始设定' }),
@@ -65,6 +67,7 @@ export type StorySettings = z.infer<typeof settingsSchema>;
 export function loadSettings(path: string, environment: Record<string, string | undefined> = process.env): StorySettings {
   const input = JSON.parse(readFileSync(path, 'utf8'));
   if (input.backgroundFile) input.background = readFileSync(resolve(dirname(path), input.backgroundFile), 'utf8');
+  if(input.backgroundViewsFile){input.backgroundViews=backgroundViewsSchema.parse(JSON.parse(readFileSync(resolve(dirname(path),input.backgroundViewsFile),'utf8')));if(input.backgroundViews.status!=='approved')throw Error('background mapping requires explicit review approval');}
   const settings = settingsSchema.parse(normalizeDialogueSettings(normalizeSchoolModels(input)));
   if(settings.memory.calibrationFile)settings.memory.calibrationFile=resolve(dirname(path),settings.memory.calibrationFile);
   new Intl.DateTimeFormat('zh-CN', { timeZone: settings.timezone });
@@ -72,7 +75,7 @@ export function loadSettings(path: string, environment: Record<string, string | 
   loadLocalCredentials(join(dirname(path), 'key.txt'), environment);
   return settings;
 }
-export function appConfig(settings: StorySettings): AppConfig { return { ...defaultConfig, ...settings }; }
+export function appConfig(settings: StorySettings): AppConfig { return { ...defaultConfig, ...settings,background:backgroundFor(settings,'narrative') }; }
 export function connectionFor(settings: StorySettings, task: string, environment = process.env): ModelConnection {
   const c = task === 'sticker_description' ? settings.stickerDescriptionModel : settings.models[task as typeof modelRoles[number]];
   if (!c) throw new Error(`configure model for ${task}`);

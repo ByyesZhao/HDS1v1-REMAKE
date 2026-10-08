@@ -8,3 +8,11 @@ export function prepareCharacterBackground(input:string,selection:BackgroundSele
     sourceMap:selection.map(({paragraph,key})=>({paragraph,key,original:paragraphs[paragraph]})),
     paragraphs:paragraphs.map((content,paragraph)=>({paragraph,content,decision:selected.has(paragraph)?'detail':'keep'}))};
 }
+
+export interface BackgroundParagraphMapping {paragraph:number;uses:Array<'core'|'style'|'world'|'campus'|'group'>;text:string}
+export function prepareBackgroundViews(original:string,mapping:BackgroundParagraphMapping[],facts:BackgroundSelection[]=[]):import('../model/background-views').BackgroundViews {
+ const paragraphs=original.split(/\r?\n\s*\r?\n/);
+ if([...mapping,...facts].some(r=>r.paragraph<0||r.paragraph>=paragraphs.length))throw Error('unknown background paragraph');
+ const field=(use:BackgroundParagraphMapping['uses'][number])=>mapping.filter(r=>r.uses.includes(use)).map(r=>r.text).join('\n\n');
+ return {version:1,status:'candidate_pending_review',core:field('core'),style:field('style'),world:field('world'),campus:field('campus'),group:field('group'),facts:facts.map(f=>({key:f.key,value:f.value,aliases:f.aliases,source:{paragraph:f.paragraph,original:paragraphs[f.paragraph]}})),sourceMap:mapping.map(r=>({...r,original:paragraphs[r.paragraph]}))};
+}
