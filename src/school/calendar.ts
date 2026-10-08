@@ -153,6 +153,8 @@ export function normalizeSchoolWeekChanges(storage:Storage,changes:Extract<Envir
   });
   const instanceId=replacement===null?null:replacement?.id??notice.instanceId;
   const id=replacement?stableId('school-notice',[notice.sourceItemId,replacement.occurrenceKey,notice.weekStart,notice.kind,notice.reminderKey,notice.deliveryRevision]):notice.id;
+  const queued=storage.read('school_notices',id);
+  if(notice.kind==='reminder'&&milliseconds(notice.publishAt)<milliseconds(now)&&(!queued||queued.status==='invalidated'))return [];
   return [{...notice,id,instanceId,payload:{...notice.payload,snapshots}}];
  });
  return {...changes,instances,notices};

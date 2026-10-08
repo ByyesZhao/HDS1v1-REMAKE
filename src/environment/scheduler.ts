@@ -8,13 +8,21 @@ export function nextEnvironmentDate(at:string,timezone:string,clock:string):stri
 export function ensureEnvironmentBatch(storage:Storage,config:AppConfig,now:string):EnvironmentBatch|null {
  const r=storage.runtime();if(r.environmentPlanningVersion!==1)return null;
  const date=localDate(now,config.timezone),id=batchIdentity(date,config.timezone);
+ const batches=storage.all('environment_batches');
  const existing=storage.read('environment_batches',id);
- const stale=storage.all('environment_batches').filter(b=>b.status==='active'&&(b.timezone!==config.timezone||b.localDate!==localDate(now,b.timezone)));
+ const stale=batches.filter(b=>b.status==='active'&&(b.timezone!==config.timezone||b.localDate!==localDate(now,b.timezone)));
  return storage.transaction(()=>{
   for(const old of stale){storage.save('environment_batches',old.id,{...old,status:'superseded',closedAt:now});for(const step of storage.all('environment_steps').filter(s=>s.batchId===old.id&&s.status!=='committed'))storage.save('environment_steps',step.id,{...step,status:'superseded',completedAt:now});}
-  if(existing)return existing;
+  if(existing){
+   // A terminal identity is never reopened; reconcile its next local entry so
+   // returning to an earlier timezone cannot leave an unexecutable deadline.
+   if(existing.status!=='active'){const next=nextEnvironmentDate(now,config.timezone,config.environmentDailyAt);if(r.nextEnvironmentAt!==next)storage.set('runtime',{...r,nextEnvironmentAt:next});}
+   return existing;
+  }
   const p=localParts(now,config.timezone),[h,m]=config.environmentDailyAt.split(':').map(Number);
-  const scheduledAt=localTime(p.year,p.month,p.day,h*60+m,config.timezone),changedTimezone=stale.some(b=>b.timezone!==config.timezone);
+  // Storage.all is ordered by insertion; the latest recorded batch also tells
+  // us the prior configured timezone after it has completed.
+  const scheduledAt=localTime(p.year,p.month,p.day,h*60+m,config.timezone),changedTimezone=!!batches.length&&batches.at(-1)!.timezone!==config.timezone;
   if(r.nextEnvironmentAt){
    const entryDue=changedTimezone||due(r.nextEnvironmentAt,now);
    if(entryDue&&!due(scheduledAt,now)){storage.set('runtime',{...r,nextEnvironmentAt:scheduledAt});return null;}

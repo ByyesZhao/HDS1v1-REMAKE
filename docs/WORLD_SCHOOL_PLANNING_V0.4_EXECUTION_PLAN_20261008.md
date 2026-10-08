@@ -178,3 +178,5 @@
 验收索引：world-school-review14-calendar（跨请求／ready／pending重试、提醒身份、摘要三状态）、review14-environment（时区替代）、review14-time（午夜／早期例外及取消投影／知识）、review14-contracts（覆盖／已有下周／提醒正向／门禁／running恢复／公开版本／装配／旧截止），以及model-settings的原文件不改写断言。历史running_restart_keeps_attempt_and_ready_blocks_later_steps改名为ready_predecessor_blocks_later_steps_without_freezing_downstream；真正running恢复由新增业务用例验证。
 
 提交前跑全量测试、typecheck、build、demo及plugin-smoke；独立终审只做一次，正式服务不启动，正式数据库不改写，不声称本次重新做过在线多轮验收。
+
+终审补测：completed_batch_timezone_change_reconciles_local_six（05:00／06:00）与same_day_return_to_superseded_timezone锁住已完成后切换及返回终态身份；delayed_request／ready／pending_drops_uncommitted_missed_reminders锁住迟到未入库提醒剔除，already_committed_reminders_keep_delayed_publication保留既有延迟发布。两个Important发现均在同一次修复中完成RED→GREEN；不再派第二轮审查。

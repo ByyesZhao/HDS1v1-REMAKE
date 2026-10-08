@@ -38,3 +38,23 @@ Task 1：基线61文件336项通过。新增6项业务回归全部先RED；修�
 
 Task 2：新增4项，其中3项规则先RED，bootstrap／upgrade例外已有行为直接GREEN；cancelledAt为程序写入可选元数据，原起止／sourceSnapshot不改，跨区间客观投影截短，取消后的onsite拒绝，旧SchoolKnowledge保留。又补一条同轮早期获知的断言，先RED抓到截短结束时间提前暴露；修后onsite保存原安排并去除后来的cancelledAt。全量64文件346项通过，typecheck退出0。原跨日测试更新为午夜终结、06:00建新批；旧日结果审计仍保留。没有写正式库／更新正式角色状态。
 任务3：7个业务断言先RED（周元数据缺失／重复周、按kind误判三种提醒、装配错误未暂停、旧恢复重写截止），另5项已有行为GREEN。修后49项专项通过；追加pending重试跨开始、后继提醒身份、周五前已有下周三项正向业务验证。全量65文件361项通过，typecheck／build退出0，demo及真实Koishi Context的离线plugin-smoke通过。默认按timing；显式策略优先；校园及周提示词、实施细化／执行计划／原日志同步。运行日志保留task3-red／green／extra／suite／demo；正式服务和在线模型未调用。
+
+
+## 一次独立终审及本次裁定
+
+独立只读终审范围1466701..5048b72；无Critical、无另列Minor，发现两项Important。其一：上一批已committed后切换时区会沿用旧晨间截止，同日切回已superseded身份还会留下过期截止；其二：冻结后迟到结果能补发一串未入库历史提醒。两项均按实际影响接受，一次修复，不再派第二审。
+
+新增时区三个变体和请求／ready／pending迟到提醒三个变体，全部先RED；此前已入库提醒的延迟发布正向用例先GREEN。修后专项15项通过、typecheck退出0；原输出final-red／final-green保留。时区依据最近插入批次记录，并校正终态身份的下一入口，原已终结步骤／额度不重开。实际应用检查尚未入库提醒publishAt，保留当前issue／change、未来提醒和已入库合法通知。
+
+终审提出而未深入评判的事项，逐项裁定如下（不是遗漏的新待执行任务）：
+
+- Final: Ruling: 缺行／坏库及额外null保护不扩展，沿用本次非极端防御范围；代价是坏库仍走已有错误处置，不新增自愈。
+- Final: Ruling: 全表扫描优化／数月储量不重构，本轮只修已复现行为；代价是长期吞吐仍需运行证据评估。
+- Final: Ruling: SchoolWeek独立版本历史表／广泛实例归档不新增，保留原版本快照与通知审计；代价是周覆盖只保留当前记录。
+- Final: Ruling: 任意乱序重放旧已提交变更不承诺，生产仍按串行事务及同轮恢复；代价是手工乱序应用不受本次验收保证。
+- Final: Ruling: 不追改存量提醒策略，存量可能是显式选择，新缺省才按timing；代价是旧已保存策略继续生效。
+- Final: Ruling: 迟到归一化后的模型措辞／现场叙述合理性本次只锁结构和来源，不做新在线语义验收；代价是自由文本仍需后续真实剧情观察。
+- Final: Ruling: 本轮不连接QQ、不让正式库运行步骤、不声称数月运行验收；代价是正式首次环境链和长期运行尚无本次新证据。
+
+没有延期Minor。全部任务和終审裁定的原始ledger、失败与通过日志、审查diff最终复制到项目runtime/environment-upgrade-backups/development-audit-world-school-review14中；隔离工作树按Codex管理方式归档，供恢复而非直接删除独有记录。
+终审修复后最终验证：65文件368项通过（25.47s），typecheck／build退出0，demo／真实Koishi Context离线plugin-smoke通过。相对336项基线新增32项。正式配置／数据库SHA256与集成前一致；只读检查版本1，四步仍pending、attempt=0、起止null，未误记为执行完成。
