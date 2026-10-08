@@ -1,7 +1,7 @@
 import type { Dependencies } from './app';
 import type { TurnRecord, TurnCandidate, OutboxItem, MemoryResult } from './types';
 import { displayText, nextItemDelay } from './output/qq';
-import { addMs, milliseconds, nextDaily } from './time';
+import { addMs, milliseconds } from './time';
 import { applyMemory, applyTasks, organizeMemory, currentSelfWebReads } from './memory/organize';
 import { isSleeping } from './host/state';
 import { recordSharedOutput, finishSharedTurn } from './host/shared';
@@ -93,10 +93,6 @@ export async function finishPostprocessing(d: Dependencies, turn: TurnRecord): P
         const old = d.storage.read('events', change.id)!;
         d.storage.save('events', change.id, change.action === 'cancel' ? { ...old, status: 'cancelled' } : { ...old, ...change.event });
       }
-    }
-    if (turn.environmentKind) {
-      const next = nextDaily(completedAt, turn.environmentKind === 'world' ? d.config.worldTimes : d.config.schoolTimes, d.config.timezone);
-      if (turn.environmentKind === 'world') runtime.nextWorldAt = next; else runtime.nextSchoolAt = next;
     }
     d.storage.set('runtime', runtime);
     d.storage.save('turns', turn.id, { ...current, done: true, completedAt, frozenResult: null });

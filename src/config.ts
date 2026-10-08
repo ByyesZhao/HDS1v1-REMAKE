@@ -8,7 +8,9 @@ export interface ModelConnection {
 export interface SleepHabits { sleepStart: string; sleepEnd: string; wakeStart: string; wakeEnd: string; preparationMinutes: number }
 export interface AppConfig {
   timezone: string; background: string; chatExamples: string; worldSetting: string; schoolSetting: string;
-  sleepHabits: SleepHabits; worldTimes: string[]; schoolTimes: string[];
+  sleepHabits: SleepHabits;
+  /** Deprecated configuration decoding only; environmentDailyAt controls scheduling. */
+  worldTimes: string[]; schoolTimes: string[];
   environmentDailyAt:string; environmentRetryMs:number;
   historyBudget: number|null; stickersEnabled: boolean;
   sharedIdleSeconds: number; sharedMaxSteps: number;

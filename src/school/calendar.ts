@@ -108,6 +108,7 @@ export function validateWeekCoverage(result:Extract<EnvironmentModelResult,{stag
   for(const ref of c.entityRefs){const itemId=ref.entityKind==='plan_item'?ref.entityId:input.requiredOccurrences.find(o=>o.occurrenceKey===ref.entityId)?.sourceItemId??input.existingInstances.find(i=>i.id===ref.entityId||i.occurrenceKey===ref.entityId)?.sourceItemId;if(!itemId||!n.entityIds.includes(itemId))throw new ModelFormatError('notice declares unrelated or hidden entity');}
  }
  if(new Set(result.instanceChanges.map(c=>c.occurrenceKey)).size!==result.instanceChanges.length||new Set(result.noticeCandidates.map(c=>c.key)).size!==result.noticeCandidates.length)throw new ModelFormatError('duplicate week candidate');
+ if(new Set(result.weekChanges.map(w=>w.weekStart)).size!==result.weekChanges.length)throw new ModelFormatError('duplicate week metadata');
  for(const w of result.weekChanges){if(!input.weekStarts.includes(w.weekStart)||Object.entries(w.sourceVersions).some(([id,v])=>input.sourceItems.find(i=>i.id===id)?.revision!==v))throw new ModelFormatError('wrong week coverage version');}
 }
 export function resolveSchoolWeek(storage:Storage,result:Extract<EnvironmentModelResult,{stage:'school_week'}>,input:SchoolExpansionInput,now:string):EnvironmentChangeSet {
@@ -124,7 +125,8 @@ export function resolveSchoolWeek(storage:Storage,result:Extract<EnvironmentMode
   const instance=n.occurrenceKey?[...instances,...input.existingInstances].find(i=>i.occurrenceKey===n.occurrenceKey):null;
   return {id:n.id,sourceItemId:n.sourceItemId,instanceId:instance?.id??null,weekStart:n.weekStart,deliveryRevision:n.deliveryRevision,kind:n.kind,reminderKey:n.reminderKey,channel:n.channel,publishAt:n.publishAt,releasedAt:null,payload:{text:c.text,snapshots},status:'scheduled',nextWakeAt:n.publishAt,readAt:null,readTurnId:null};
  });
- const weeks:SchoolWeek[]=result.weekChanges.map(w=>({id:stableId('school-week',w.weekStart),...w,checkedAt:now,digestRevision:Math.max(0,...[...notices,...input.existingNotices].filter(n=>n.weekStart===w.weekStart&&n.kind==='week_digest').map(n=>n.deliveryRevision))}));
+ const sourceVersions=Object.fromEntries(input.sourceItems.map(item=>[item.id,item.revision]));
+ const weeks:SchoolWeek[]=input.weekStarts.map(weekStart=>({id:stableId('school-week',weekStart),weekStart,sourceVersions,conflictNotes:result.weekChanges.find(w=>w.weekStart===weekStart)?.conflictNotes??input.conflicts,checkedAt:now,digestRevision:Math.max(0,...[...notices,...input.existingNotices].filter(n=>n.weekStart===weekStart&&n.kind==='week_digest').map(n=>n.deliveryRevision))}));
  return normalizeSchoolWeekChanges(storage,{stage:'school_week',instances,notices,weeks},now);
 }
 

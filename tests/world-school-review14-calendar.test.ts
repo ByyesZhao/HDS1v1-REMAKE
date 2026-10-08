@@ -7,6 +7,7 @@ import {schoolExpansionInput,resolveSchoolWeek} from '../src/school/calendar';
 import {releaseSchoolNotices,selectSchoolNotices} from '../src/school/notices';
 import {ensureEnvironmentBatch,selectEnvironmentStep} from '../src/environment/scheduler';
 import {environmentInput,runEnvironmentStep} from '../src/environment/runtime';
+import {ModelRequestError} from '../src/model/client';
 function aboutToStart(){
  const d=setup();d.clock.time='2026-10-07T08:00:00+08:00';const item=schoolItem({issuedAt:d.clock.now(),timing:{kind:'once',startsAt:'2026-10-07T09:01:00+08:00',endsAt:'2026-10-07T10:00:00+08:00'}});d.storage.save('school_plan_items',item.id,item);expand(d,d.clock.now());
  d.clock.time='2026-10-07T09:00:00+08:00';d.storage.transaction(()=>applySchoolChanges(d.storage,{stage:'school_campus',plans:[],items:[{...item,revision:2,deliveryRevision:2,location:'新教室'}]},d.clock.now()));
@@ -26,6 +27,15 @@ it('ready_restart_cross_start_preserves_history_without_regeneration',async()=>{
  const {d,historical,step}=aboutToStart(),input=environmentInput(d,step),frozen=resolveSchoolWeek(d.storage,withInstanceRefs(input.context as any),input.context as any,d.clock.now());
  d.environmentStore.saveStep({...step,status:'ready',attempt:1,inputSnapshot:input,frozenResult:frozen});d.clock.advance(120000);const generate=vi.fn();await runEnvironmentStep(d,step.id,generate);
  expect(generate).not.toHaveBeenCalled();expect(d.storage.read('school_instances',historical.id)).toEqual(historical);expect(d.environmentStore.step(step.id)?.status).toBe('committed');expect(d.schoolStore.instances().find(i=>i.id!==historical.id)?.sourceRevision).toBe(2);d.storage.close();
+});
+it('pending_retry_cross_start_reuses_frozen_input_and_commits_corrected_version',async()=>{
+ const {d,historical,step}=aboutToStart();await runEnvironmentStep(d,step.id,async()=>{throw new ModelRequestError('temporary unavailable');});const frozen=d.environmentStore.step(step.id)!.inputSnapshot;d.clock.advance(d.config.environmentRetryMs);
+ await runEnvironmentStep(d,step.id,async input=>{expect(input).toEqual(frozen);return withInstanceRefs(input.context as any);});expect(d.environmentStore.step(step.id)).toMatchObject({status:'committed',attempt:2});expect(d.storage.read('school_instances',historical.id)).toEqual(historical);d.storage.close();
+});
+it('normalized_future_successor_reminder_keeps_canonical_identity_on_next_expansion',()=>{
+ const {d,historical}=aboutToStart(),item=d.schoolStore.items()[0];d.storage.save('school_plan_items',item.id,{...item,timing:{kind:'once',startsAt:'2026-10-07T09:30:00+08:00',endsAt:'2026-10-07T10:00:00+08:00'},noticePolicy:{...item.noticePolicy,reminders:[{kind:'minutes_before',offset:10,source:'institution'}]}});
+ const input=schoolExpansionInput(d.storage,d.clock.now(),d.config.timezone),raw=withInstanceRefs(input);d.clock.advance(120000);d.storage.transaction(()=>applySchoolChanges(d.storage,resolveSchoolWeek(d.storage,raw,input,d.clock.now()),d.clock.now()));const future=d.schoolStore.instances().find(i=>i.id!==historical.id)!,reminder=d.schoolStore.notices().find(n=>n.kind==='reminder'&&n.deliveryRevision===2)!;
+ expect(reminder.instanceId).toBe(future.id);expect(reminder.payload.snapshots.find(s=>s.entityKind==='instance')?.entityId).toBe(future.id);const repeated=schoolExpansionInput(d.storage,d.clock.now(),d.config.timezone);expect(repeated.requiredNoticeKeys.filter(n=>n.kind==='reminder')).toEqual([]);expect(repeated.requiredOccurrences).toEqual([]);d.storage.close();
 });
 it.each(['scheduled','available','read'] as const)('new_week_digest_retires_only_unread_old_%s_and_replay_keeps_read_history',status=>{
  const d=setup(),weekly=(id:string,weekday:number)=>schoolItem({id,kind:'course',timing:{kind:'weekly',startsOn:'2026-10-01',endsOn:null,slots:[{slotKey:'am',weekday,start:'09:00',end:'10:00'}]}});

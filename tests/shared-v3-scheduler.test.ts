@@ -11,7 +11,8 @@ it('shared deadlines require the same activity identity while preserving future 
   const d = setup(); makeSharedFixture(d); const scheduler = new Scheduler(d.storage);
   expect(Date.parse((await scheduler.nextDeadline(NOW))!)).toBe(Date.parse(after(60_000)));
   d.storage.set('runtime', { ...d.storage.runtime(), sharedClock: { ...d.storage.runtime().sharedClock!, activityId: 'old-activity' } });
-  expect(await scheduler.nextDeadline(after(61_000))).toBe(d.storage.runtime().nextWorldAt);
+  d.storage.set('runtime',{...d.storage.runtime(),nextWorldAt:'2026-10-09T01:00:00+08:00',nextSchoolAt:'2026-10-09T02:00:00+08:00'});
+  expect(await scheduler.nextDeadline(after(61_000))).toBe(d.storage.runtime().nextEnvironmentAt);
   expect(await scheduler.collectReady(after(61_000))).toBeNull();
   d.storage.close();
 });

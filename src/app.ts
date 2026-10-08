@@ -31,9 +31,8 @@ export class HdsiApp {
     const d = this.dependencies;
     if(request.environmentKind)throw new Error('legacy environment turn requires explicit upgrade');
     if(request.environmentStepId){
-      if(!d.generateEnvironment)throw new Error('environment generator not assembled');
       this.busy=true;
-      try{await runEnvironmentStep(d,request.environmentStepId,d.generateEnvironment);}
+      try{if(!d.generateEnvironment)throw new Error('environment generator not assembled');await runEnvironmentStep(d,request.environmentStepId,d.generateEnvironment);}
       catch(error){d.storage.set('runtime',{...d.storage.runtime(),paused:true,lastError:error instanceof Error?error.message:String(error)});throw error;}
       finally{this.busy=false;}return;
     }

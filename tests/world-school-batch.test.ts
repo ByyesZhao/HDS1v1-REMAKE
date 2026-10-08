@@ -54,7 +54,7 @@ it('input_arrives_during_request_committed_step_yields_before_next_generation',a
  expect(order.indexOf('narrative')).toBeGreaterThan(order.indexOf('world'));expect(order.indexOf('school_campus')).toBeGreaterThan(order.indexOf('memory'));
  expect(d.storage.read('messages','input')?.seenTurnId).not.toBeNull();await host.stop();d.storage.close();
 });
-it('running_restart_keeps_attempt_and_ready_blocks_later_steps',()=>{
+it('ready_predecessor_blocks_later_steps_without_freezing_downstream',()=>{
  const d=setup();ensureEnvironmentBatch(d.storage,d.config,NOW);const s=selectEnvironmentStep(d.storage,NOW)!;
  d.environmentStore.saveStep({...s,status:'ready',attempt:1,frozenResult:{stage:'world',changes:[]}});
  expect(selectEnvironmentStep(d.storage,NOW)?.stage).toBe('world');expect(d.environmentStore.steps().filter(s=>s.inputSnapshot)).toEqual([]);d.storage.close();

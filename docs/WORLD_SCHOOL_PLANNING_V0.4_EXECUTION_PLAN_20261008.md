@@ -166,3 +166,15 @@
 - [x] 正式库有真实check／备份／升级记录，旧普通／共同恢复未损坏，paused未自动清除。
 - [x] 离线集成和真实多轮语义验收分别报告；源码、示例、实际行为文档、日志口径一致。
 - [x] 服务仍由用户手动启动；无密钥／私聊／正式数据库入Git，无虚构联网或真实科研执行。
+
+## 第十四轮交付复核修复（原任务1～8不重复执行）
+
+本轮按照已接受回应§6依次执行三组修复；程序和细化为最终口径，详细过程见[修复记录](WORLD_SCHOOL_V0.4_REVIEW14_FIX_LOG_20261008.md)。
+
+- 冻结／ready跨开始的候选保留历史并归一化后继实例、引用及提醒身份；同周新摘要失效旧未读，read和重放状态保留；旧批按自身时区日期退出，配置时区改变替代。
+- 普通跨日／离线入口不得在06:00前启动新日常链，bootstrap／显式upgrade例外；取消记录cancelledAt，客观与onsite按有效区间退出，过去安排与角色知识保留。
+- 程序为全部weekStarts补全冻结sourceVersions和checkedAt；weekChanges可空或给conflictNotes，错误／重复声明及独立必需通知漏项拒绝。默认提醒按timing、显式策略优先；装配错误暂停并报一次，旧恢复不写退休截止。
+
+验收索引：world-school-review14-calendar（跨请求／ready／pending重试、提醒身份、摘要三状态）、review14-environment（时区替代）、review14-time（午夜／早期例外及取消投影／知识）、review14-contracts（覆盖／已有下周／提醒正向／门禁／running恢复／公开版本／装配／旧截止），以及model-settings的原文件不改写断言。历史running_restart_keeps_attempt_and_ready_blocks_later_steps改名为ready_predecessor_blocks_later_steps_without_freezing_downstream；真正running恢复由新增业务用例验证。
+
+提交前跑全量测试、typecheck、build、demo及plugin-smoke；独立终审只做一次，正式服务不启动，正式数据库不改写，不声称本次重新做过在线多轮验收。

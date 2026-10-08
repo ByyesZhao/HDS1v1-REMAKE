@@ -14,7 +14,9 @@ async function withSettings(change: (sample: any) => void, run: (settings: Story
     for(const role of ['school_campus','school_group','school_week'])delete sample.models[role];
     change(sample);
     writeFileSync(join(root, 'story.json'), JSON.stringify(sample));
-    await run(loadSettings(join(root, 'story.json'), {}));
+    const path=join(root,'story.json'),before=readFileSync(path,'utf8'),settings=loadSettings(path,{});
+    expect(readFileSync(path,'utf8')).toBe(before);
+    await run(settings);
   } finally { rmSync(root, { recursive: true }); }
 }
 function task(name: string): ModelTask<{ ok: true }> {

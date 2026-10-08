@@ -102,3 +102,7 @@ Ruling（本地集成）：用户已授权在D:/HDSI-remake落实完整功能并
 临时执行账本、逐任务RED/GREEN输出、终审前diff及临时升级fixture共35个文件已复制到主目录runtime/environment-upgrade-backups/development-audit-world-school/；执行目录及fixture逐文件SHA256与原件一致。真实验收原产物早已位于主目录runtime/data/world-school-acceptance/。这些审计产物及正式库／配置备份不入Git，但不依赖隔离工作树留存。
 
 原隔离工作树已通过Codex原生archive_worktree归档，list_artifacts确认archived_worktree；未手动强删Git目录或用户文件。已集成提交和可恢复快照保留，主目录是运行／后续审核入口。交付结束只留下原有5份未跟踪DSH审查文档，源码及本轮文档均已提交。
+
+## 第十四轮交付后修复
+
+本文件保留原实施／在线验收的历史事实；交付复核发现的实际程序问题已另行修复，过程、测试证据及终审见[修复记录](WORLD_SCHOOL_V0.4_REVIEW14_FIX_LOG_20261008.md)，最终字段／时序口径已同步回实施细化和执行计划。不能把原真实模型验收次数与本次离线修复测试合并计算。
