@@ -274,11 +274,11 @@
 
 **Interfaces:** 保留MemoryResultV3、每轮基础提取与MemoryRetrieval合同；currentActivityMessageIds只辅助理解，currentSourceIds仍由本轮合法来源计算。不得新增结束总结任务或独立活动记忆检索分支。
 
-- [ ] 写`one_activity_multiple_short_memories_with_current_sources`：同场两轮生成不同事件／细节／感受记忆，至少一个本轮来源；可返回多条，也可合法无新记忆，不强制重复历史。
-- [ ] 写`activity_history_not_new_source_or_awaken_candidate`、`silent_public_narration_still_extracts`、`activity_offtopic_fact_can_be_remembered`、`ending_extracts_current_closure_without_extra_summary_call`。
-- [ ] 写`post_end_recall_uses_normal_memory_retrieval`、`ended_activity_unread_first_visible_extracts`、`old_reconsider_not_first_visible_source`、`failed_end_postprocessing_restores_without_reopen_full_history`；检索相关短／长期，与其他记忆用相同规则，无activity alwaysInclude。
-- [ ] 跑`npm test -- tests/activity-memory-context.test.ts tests/memory.test.ts tests/prompt-context-call-skip.test.ts`确认红灯；实现必要投影／来源接线，未改变部分用集成断言验证，不为制造代码差异另写流程。
-- [ ] 同组及`npm test -- tests/web-memory-sources.test.ts tests/review17-identities.test.ts tests/review17-promotion-audit.test.ts tests/memory-capacity-retrieval.test.ts`、类型检查通过；日志分别列工作原文、直接输入、新来源和检索记忆，提交任务18。
+- [x] 写`one_activity_multiple_short_memories_with_current_sources`：同场两轮生成不同事件／细节／感受记忆，至少一个本轮来源；可返回多条，也可合法无新记忆，不强制重复历史。
+- [x] 写`activity_history_not_new_source_or_awaken_candidate`、`silent_public_narration_still_extracts`、`activity_offtopic_fact_can_be_remembered`、`ending_extracts_current_closure_without_extra_summary_call`。
+- [x] 写`post_end_recall_uses_normal_memory_retrieval`、`ended_activity_unread_first_visible_extracts`、`old_reconsider_not_first_visible_source`、`failed_end_postprocessing_restores_without_reopen_full_history`；检索相关短／长期，与其他记忆用相同规则，无activity alwaysInclude。
+- [x] 跑`npm test -- tests/activity-memory-context.test.ts tests/memory.test.ts tests/prompt-context-call-skip.test.ts`确认红灯；实现必要投影／来源接线，未改变部分用集成断言验证，不为制造代码差异另写流程。
+- [x] 同组及`npm test -- tests/web-memory-sources.test.ts tests/review17-identities.test.ts tests/review17-promotion-audit.test.ts tests/memory-capacity-retrieval.test.ts`、类型检查通过；日志分别列工作原文、直接输入、新来源和检索记忆，提交任务18。
 
 ### 任务19：按实际窗口检查保护范围
 
