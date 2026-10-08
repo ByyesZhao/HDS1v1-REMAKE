@@ -10,7 +10,7 @@
 
 **Spec:** [实施细化](MEMORY_CAPACITY_IDLE_V0.4_IMPLEMENTATION_20261008.md)固定字段、合同及时序；本计划固定文件、任务和验收。DSH第十五轮、CODEX补充及[第十六轮计划审核](../DSH-review/DSH_REVIEW16_MEMORY_CAPACITY_IDLE_PLAN_20261008.md)已折入细化，执行时不再拼接审核文件。
 
-日期：2026-10-08。状态：任务1～8已执行。实际基线`9e24b0d`；428项测试、类型检查、构建及隔离离线／有限在线验收通过，最终复核见交付记录。正式空库仅只读检查，未升级／清理，未连接QQ或启动服务。实际过程见[实施日志](MEMORY_CAPACITY_IDLE_V0.4_IMPLEMENTATION_LOG_20261008.md)。
+日期：2026-10-08。状态：任务1～8及最终复核修正已执行。实际基线`9e24b0d`；435项测试、类型检查、构建及隔离离线／有限在线验收通过，最终复核见交付记录。正式空库仅只读检查，未升级／清理，未连接QQ或启动服务。实际过程见[实施日志](MEMORY_CAPACITY_IDLE_V0.4_IMPLEMENTATION_LOG_20261008.md)。
 
 ## Global Constraints
 

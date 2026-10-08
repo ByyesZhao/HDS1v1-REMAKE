@@ -8,6 +8,7 @@ import {Storage} from '../src/storage';
 import {MemoryStore} from '../src/memory/store';
 import {MemoryCapacity} from '../src/memory/capacity';
 import {defaultMemoryCapacity} from '../src/memory/types';
+import {MemoryCleanup} from '../src/memory/cleanup';
 import {inspectMemoryCapacity,upgradeMemoryCapacity} from '../src/deployment/memory-capacity-upgrade';
 import {at,days} from './memory-capacity-fixture';
 const dirs:string[]=[];afterEach(()=>dirs.splice(0).forEach(d=>rmSync(d,{recursive:true,force:true})));
@@ -34,4 +35,14 @@ it('CLI reads only memory settings without a background or key file',()=>{
  const {path,dir}=file(),config=join(dir,'memory only.json');writeFileSync(config,JSON.stringify({memory:{capacity:{longActiveLimit:null,longArchiveLimit:1}}}));
  const run=spawnSync(process.execPath,['node_modules/tsx/dist/cli.mjs','scripts/migrate-memory-capacity.ts',path,'--config',config,'--dry-run'],{encoding:'utf8'});
  expect(run.status,run.stderr).toBe(0);const report=JSON.parse(run.stdout);expect(report.config.longActiveLimit).toBeNull();expect(report.archiveCapacityDeletes).toHaveLength(1);expect(report.mode).toBe('dry-run');expect(run.stdout).not.toContain('私密旧正文');
+});
+it('legacy_short_source_resolves_canonical_evidence_before_cleanup',()=>{
+ const {path}=file(),s=new Storage(path),store=new MemoryStore(s);
+ try{
+  const short=store.makeOwner({ownerType:'short',ownerId:'legacy-short'},{content:'旧短期详情',linkedLongId:'expired',shortExpiresAt:days(-1)},days(-8));store.saveOwner(short);
+  store.saveOwner(store.makeOwner({ownerType:'learned',ownerId:'u'},{content:'两个事件的稳定认识',canonicalMemoryId:'live',learnedKind:'stable_understanding',sourceIds:['live',short.id,'unknown-source']},at));
+  store.migrateCapacity(at);expect(store.owner({ownerType:'learned',ownerId:'u'})?.evidenceMemoryIds).toEqual(['live','expired']);
+  const cleanup=new MemoryCleanup(store,new MemoryCapacity(store,defaultMemoryCapacity));while(cleanup.applyOne(days(100))==='applied'){}
+  expect(store.owner(short)).toBeNull();expect(store.canonical('expired')).not.toBeNull();expect(store.owner({ownerType:'learned',ownerId:'u'})?.content).toBe('两个事件的稳定认识');
+ }finally{s.close();}
 });

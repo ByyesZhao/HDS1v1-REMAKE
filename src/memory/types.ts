@@ -13,6 +13,7 @@ export interface MemoryCandidate extends OwnerVersion {
   key?: string; value?: string; aliases?: string[]; effectiveAt?: string;
   canonicalMemoryId?: string; alwaysInclude?: boolean; learnedKind?: 'durable_experience'|'stable_understanding';
   projectionBasis?:{content:string;sourceIds:string[];revision:number};
+  evidenceVersions?: OwnerVersion[];
   capacityExitedAt?: string|null; capacityExitReason?: 'short_capacity'|'long_capacity'|null;
   archiveEnteredAt?: string|null; evidenceMemoryIds?: string[];
   normalizedVector?: Float32Array;

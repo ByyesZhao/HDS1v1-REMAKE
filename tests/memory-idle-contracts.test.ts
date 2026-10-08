@@ -26,3 +26,8 @@ it('audit targets match owner kind and read set',()=>{
  expect(task.parse({units:[{unitKey:'r',action:'review_detail',targetId:'phone',ids:['phone'],readOwners:['phone'],decision:'retain',sourceIds:[],reason:'一致'}]})).toHaveLength(1);
  expect(()=>task.parse({units:[{unitKey:'r',action:'review_learned',targetId:'phone',ids:['phone'],readOwners:['phone'],decision:'retain',sourceIds:[]}]})).toThrow();
 });
+it('audit_units_can_share_read_only_evidence_without_duplicate_targets',()=>{
+ const {store}=fixture(),a=store.makeOwner({ownerType:'detail',ownerId:'d-a'},{content:'A',sourceIds:['e']},at),b=store.makeOwner({ownerType:'detail',ownerId:'d-b'},{content:'B',sourceIds:['e']},at),e=store.makeOwner({ownerType:'long',ownerId:'e'},{content:'两项事实的同一来源',sourceIds:['e']},at);
+ const task=auditTask([a,b,e],[a.id,b.id]),units=[a,b].map(r=>({unitKey:r.id,action:'review_detail',targetId:r.id,ids:[r.id],readOwners:[r.id,e.id],decision:'report_conflict',sourceIds:['e'],reason:'需要核对，仅报告'}));
+ expect(task.parse({units})).toHaveLength(2);expect(()=>task.parse({units:[units[0],{...units[0],unitKey:'duplicate'}]})).toThrow(/overlapping/);
+});

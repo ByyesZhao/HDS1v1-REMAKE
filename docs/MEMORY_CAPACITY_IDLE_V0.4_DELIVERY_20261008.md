@@ -1,6 +1,6 @@
 # 记忆容量与空闲整理 V0.4 交付复核入口
 
-日期：2026-10-08。实施基线：`9e24b0d`，逐任务提交见实施日志及本地Git。任务1～8完成；最终复核记录在本文末尾继续补充。
+日期：2026-10-08。实施基线：`9e24b0d`，逐任务提交见实施日志及本地Git。任务1～8与最终复核修正完成；后续主目录集成结果另记。
 
 ## 审核依据
 
@@ -20,9 +20,9 @@
 
 ## 验收
 
-已运行：79个文件、428项测试全部通过；`npm run typecheck`及`npm run build`通过。新增混合Host验收实际完成普通输入→共同活动→结束→15分钟深度整理→容量压力→清理穿插输入→重开数据库；最终100／1000／500，重开后一致，派生副本无泄漏，原始来源保留，保护解除后继续清理。
+已运行：最终79个文件、435项测试全部通过；`npm run typecheck`及`npm run build`通过。任务8初验428项，最终复核新增7项回归。新增混合Host验收实际完成普通输入→共同活动→结束→15分钟深度整理→容量压力→清理穿插输入→重开数据库；最终100／1000／500，重开后一致，派生副本无泄漏，原始来源保留，保护解除后继续清理。
 
-工具命令：`npm run validate:memory-capacity -- --db <新的隔离库路径>`。有限在线验证可加`--online --config <本地配置>`，单请求300秒；只接受新隔离数据库，禁止覆盖现有库或正式库同名文件。实际报告位于`runtime/memory-capacity-acceptance-20261008/final-1855/isolated.sqlite.report.json`。
+工具命令：`npm run validate:memory-capacity -- --db <新的隔离库路径>`。有限在线验证可加`--online --config <本地配置>`，单请求300秒；只接受新隔离数据库，禁止覆盖现有库或正式库同名文件。初验及在线报告位于`runtime/memory-capacity-acceptance-20261008/final-1855/isolated.sqlite.report.json`；最终修正后独立离线复验报告在`runtime/memory-capacity-acceptance-20261008/final-fixed/isolated.sqlite.report.json`，同样通过，未追加在线请求。
 
 在线共3次DeepSeek Flash/high、0次格式修补：同事件采用merge_short；稳定认识候选采用合法retain，未强求晋升；事实冲突采用review_detail，正式值和作者背景未改。各请求耗时约12.4／13.4／3.9秒。仅使用已授权背景及三组模拟记忆，不发送正式聊天或图片、不连接QQ；不以这三例声称已完成数月运行验证。向量清理使用离线固定Embedding夹具，未调用实际Qwen接口，本期未改Embedding模型。
 
@@ -34,4 +34,17 @@ HDSI及SnowLuma未由本次任务启动，仍由用户在主目录双击既有cm
 
 ## 最终代码复核
 
-待全分支只读复核；发现的问题、修复测试及主目录集成结果在此补记。
+唯一新上下文只读复核覆盖`9e24b0d..03c50f8`，未启动服务，另用纯内存组合场景验证。无Critical／Minor；发现6项Important，统一补回归再修复：
+
+| 问题 | 修正及失败→通过的测试 |
+| --- | --- |
+| merge_short把详细content写进long | long使用事件／感受摘要；`merge_short_same_event_one_or_two_longs`两种分支先失败后通过 |
+| reserved linked long等待重试，dirty short导致deadline=now | 选择与deadline共用元数据候选筛选；`reserved_linked_long_waits_for_retry_without_zero_timer` |
+| 次级canonical证据更新不排learned审核 | `evidenceVersions`反向追踪且同版去重；`secondary_canonical_evidence_change_requeues_understanding_once` |
+| 正式detail审核只看到自身 | dirty→makeJob补同键／别名及同来源依赖；`dirty_detail_audit_reads_related_fact_and_source_evidence` |
+| 历史short来源漏保护、新promote合同与应用不同义 | `canonicalEvidence`解析已知short，promote readSet补长期版本；`legacy_short_source_resolves_canonical_evidence_before_cleanup`与`promotion_resolves_short_evidence_and_reads_its_canonical_version` |
+| audit消耗只读证据事件待办 | 仅完成selected审核对象水位；`audit_does_not_consume_unselected_event_dirty` |
+
+补依赖时另复现同批audit共享只读证据被误拒；新增`audit_units_can_share_read_only_evidence_without_duplicate_targets`先失败后通过。audit不同目标允许共享只读readSet，重复目标仍拒绝，事件整理仍隔离完整依赖。此次在同一修正过程内完成，未再派发复审；最终整套435项通过及独立离线复验作为修正证据。
+
+审查暂不判断的两项均维持既定范围：不以模拟测试代替正式上线验证（服务按用户要求保持停止）；不以有限验收声称默认容量已经适合数月真实运行（条数可独立配置，默认保持用户已接受值）。没有遗漏待处理的重要问题，无延期Minor。

@@ -82,6 +82,11 @@ export class MemoryStore {
     while(row?.mergedInto)row=this.owner({ownerType:'long',ownerId:row.mergedInto});
     return row?.kind==='long'?row:null;
   }
+  canonicalEvidence(id:string):MemoryCandidate|null {
+    const direct=this.canonical(id);if(direct)return direct;
+    const short=this.owner({ownerType:'short',ownerId:id});
+    return short?.kind==='short'&&short.linkedLongId?this.canonical(short.linkedLongId):null;
+  }
   migrateCapacity(at:string):void {
     if(this.storage.runtime().memoryCapacityVersion===1)return;
     if(this.schemaVersion()!==3)throw Error('memory schema 3 required: run memory:migrate first');
@@ -90,7 +95,7 @@ export class MemoryStore {
       for(const old of this.allOwners()){
         let row=memoryOwnerData(old);const anchor=archiveStart(row,at);
         if(anchor&&!row.archiveEnteredAt)row={...row,archiveEnteredAt:anchor,stateVersion:row.stateVersion+1};
-        if(row.kind==='learned')row={...row,evidenceMemoryIds:[...new Set([row.canonicalMemoryId,...row.evidenceMemoryIds??[],...row.sourceIds].flatMap(id=>{if(!id)return [];const canonical=this.canonical(id);return canonical?[canonical.id]:[];}))]};
+        if(row.kind==='learned')row={...row,evidenceMemoryIds:[...new Set([row.canonicalMemoryId,...row.evidenceMemoryIds??[],...row.sourceIds].flatMap(id=>{if(!id)return [];const canonical=this.canonicalEvidence(id);return canonical?[canonical.id]:[];}))]};
         this.saveOwner(row);if(row.status==='active'||row.status==='durable')this.queueDirty(row,row.kind==='detail'?'detail':row.kind==='learned'?'learned':'event',at);
       }
       for(const table of ['memory_index_jobs','memory_maintenance_jobs'] as const)for(const job of this.jobs<IndexJob|MaintenanceJob>(table))this.saveJob(table,{...job,status:job.status==='computing'?'pending':job.status});

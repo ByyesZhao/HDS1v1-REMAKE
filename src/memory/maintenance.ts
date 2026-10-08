@@ -7,6 +7,7 @@ import { MemoryLifecycle } from './lifecycle';
 import { MemoryIndex } from './index';
 import type { IndexJob,MaintenanceJob,MaintenanceUnit,MemoryCandidate,OwnerVersion } from './types';
 import { phaseOptions } from '../web/phases';
+import {memoryMetadata,metadataCanonical} from './metadata';
 export interface MaintenanceOptions {clock:Clock;onReady?:()=>void;batchItems?:number;batchCharacters?:number|null;backgroundTimeoutMs?:number;retryDelayMs?:number;web?:import('../web/service').WebSearchService;idle?:import('./idle').MemoryIdle}
 type Work={table:'memory_index_jobs';job:IndexJob}|{table:'memory_maintenance_jobs';job:MaintenanceJob};
 const version=(r:MemoryCandidate):OwnerVersion=>({ownerType:r.ownerType,ownerId:r.ownerId,revision:r.revision,stateVersion:r.stateVersion});
@@ -29,7 +30,14 @@ export class MemoryMaintenance {
   private makeJob(rows:MemoryCandidate[],cutoff:string,now:string):MaintenanceJob {
     const snapshot=rows.map(row=>row.linkedLongId?{...row,linkedLongId:this.store.canonical(row.linkedLongId)?.id??row.linkedLongId}:row);
     for(const row of snapshot.slice())if(row.linkedLongId){const long=this.store.canonical(row.linkedLongId);if(long&&!snapshot.some(r=>r.id===long.id))snapshot.push(long);}
-    const all=this.store.allOwners();let grew=true;
+    const all=this.store.allOwners();
+    for(const detail of rows.filter(r=>r.kind==='detail')){
+      const keys=new Set([detail.key,...detail.aliases??[]].filter((key):key is string=>!!key));
+      for(const dependency of all.filter(r=>r.status!=='merged'&&r.status!=='discarded'&&(r.kind==='detail'&&[r.key,...r.aliases??[]].some(key=>!!key&&keys.has(key))||r.sourceIds.some(id=>detail.sourceIds.includes(id))))){
+        if(!snapshot.some(r=>r.id===dependency.id))snapshot.push(dependency);
+      }
+    }
+    let grew=true;
     while(grew){grew=false;const longIds=new Set(snapshot.filter(r=>r.kind==='long').map(r=>r.id));
       const dependencies=all.filter(r=>r.kind==='short'&&!!r.linkedLongId&&longIds.has(r.linkedLongId)||r.kind==='learned'&&r.status==='active'&&(!!r.canonicalMemoryId&&longIds.has(r.canonicalMemoryId)||r.evidenceMemoryIds?.some(id=>longIds.has(id))));
       for(const r of snapshot.filter(r=>r.kind==='learned'))for(const id of [r.canonicalMemoryId,...r.evidenceMemoryIds??[]]){if(id){const l=this.store.canonical(id);if(l)dependencies.push(l);}}
@@ -62,11 +70,15 @@ export class MemoryMaintenance {
       this.store.storage.set('memory_maintenance_cycle',null);
     }
     const jobs=this.store.jobs<MaintenanceJob>('memory_maintenance_jobs',['pending','computing','ready']),reserved=new Set(jobs.flatMap(j=>j.readSet.map(r=>r.ownerId)));
-    const available=this.store.dirtyOwners().filter(r=>r.status==='pending'&&!reserved.has(r.ownerId)).map(r=>this.store.owner(r)).filter((r):r is MemoryCandidate=>!!r&&r.status!=='merged'&&r.status!=='discarded');
+    const available=this.incrementalCandidates(reserved);
     if(!available.length)return;
     const first=available[0],audit=first.kind==='detail'||first.kind==='learned';
-    const selected=available.filter(r=>(r.kind==='detail'||r.kind==='learned')===audit&&(!r.linkedLongId||!reserved.has(r.linkedLongId))).slice(0,this.options.batchItems??20);
+    const selected=available.filter(r=>(r.kind==='detail'||r.kind==='learned')===audit).slice(0,this.options.batchItems??20).map(r=>this.store.owner(r)!);
     if(selected.length)this.makeJob(selected,now,now);
+  }
+  private incrementalCandidates(reserved:Set<string>):MemoryCandidate[]{
+    const metadata=memoryMetadata(this.store.storage),byOwner=new Map(metadata.map(r=>[`${r.ownerType}:${r.ownerId}`,r]));
+    return this.store.dirtyOwners().filter(r=>r.status==='pending'&&!reserved.has(r.ownerId)).map(r=>byOwner.get(`${r.ownerType}:${r.ownerId}`)).filter((r):r is MemoryCandidate=>!!r&&r.status!=='merged'&&r.status!=='discarded'&&(!r.linkedLongId||!reserved.has(r.linkedLongId)&&!reserved.has(metadataCanonical(metadata,r.linkedLongId)?.id??r.linkedLongId)));
   }
   startOne(now:string):boolean {
     if(this.stopped||this.active||this.blocked())return false;
@@ -133,7 +145,7 @@ export class MemoryMaintenance {
     const rows=unit.ids.map(id=>job.snapshot.find(r=>r.id===id)).filter((r):r is MemoryCandidate=>!!r).map(r=>this.store.owner(r)).filter((r):r is MemoryCandidate=>!!r);
     if(unit.action==='merge_short'){
       const shorts=rows.filter(r=>r.kind==='short');const merged=this.lifecycle.mergeShort(shorts.map(r=>r.id),unit.canonicalShortId!,unit.content!,unit.eventSummary!,unit.feelingSummary!,unit.sourceIds,now);
-      this.updateSummary(this.store.canonical(merged.linkedLongId!)!,{...unit,sourceIds:[...new Set([...unit.sourceIds,...shorts.flatMap(r=>r.sourceIds)])]},now);
+      this.updateSummary(this.store.canonical(merged.linkedLongId!)!,{...unit,content:[merged.eventSummary,merged.feelingSummary].filter(Boolean).join('\n'),eventSummary:merged.eventSummary,feelingSummary:merged.feelingSummary,sourceIds:[...new Set([...unit.sourceIds,...shorts.flatMap(r=>r.sourceIds)])]},now);
     }else if(unit.action==='review_detail'||unit.action==='review_learned'){
       const target=rows.find(r=>r.id===unit.targetId);if(!target)throw Error('audit missing target');
       const prefix=`${target.ownerType}:${target.id}:`;
@@ -152,7 +164,7 @@ export class MemoryMaintenance {
     for(const row of rows.filter(r=>r.kind==='short')){const current=this.store.owner(row);if(current&&current.status==='active')this.store.saveOwner({...current,consolidatedRevision:current.revision,stateVersion:current.stateVersion+1});}
     for(const read of unit.readSet){const current=this.store.owner(read);if(!current)continue;
       if(current.kind==='learned'&&!(job.selectedIds??unit.ids).includes(current.id)){if(current.stateVersion!==read.stateVersion)this.store.queueDirty(current,'learned',now);continue;}
-      if(current.kind==='short'||current.kind==='long'||(job.selectedIds??unit.ids).includes(current.id))this.store.completeDirty(read,current);
+      if(job.kind==='audit'?(job.selectedIds??unit.ids).includes(current.id):current.kind==='short'||current.kind==='long'||(job.selectedIds??unit.ids).includes(current.id))this.store.completeDirty(read,current);
     }
   }
   private updateSummary(row:MemoryCandidate,unit:MaintenanceUnit,now:string){
@@ -168,7 +180,7 @@ export class MemoryMaintenance {
       else{const idleAt=this.options.idle?.nextDeadline(now);if(idleAt)deadlines.push(milliseconds(retry)>milliseconds(idleAt)?retry:idleAt);}
     }
     const reserved=new Set(works.filter(w=>w.table==='memory_maintenance_jobs').flatMap(w=>(w.job as MaintenanceJob).readSet.map(r=>r.ownerId)));
-    if(this.options.idle&&this.store.dirtyOwners().some(r=>r.status==='pending'&&!reserved.has(r.ownerId))){
+    if(this.options.idle&&this.incrementalCandidates(reserved).length){
       const eligibility=this.options.idle.eligibility(now);if(eligibility.allowed)deadlines.push(now);else{const at=this.options.idle.nextDeadline(now);if(at)deadlines.push(at);}
     }
     if(!this.store.storage.get('memory_maintenance_cycle')&&this.store.storage.runtime().nextMaintenanceAt)deadlines.push(this.store.storage.runtime().nextMaintenanceAt!);

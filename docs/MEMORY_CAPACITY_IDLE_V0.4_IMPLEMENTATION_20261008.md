@@ -1,6 +1,6 @@
 # 记忆容量与空闲整理 V0.4 实施细化
 
-日期：2026-10-08。状态：任务1～8已实现，428项测试、类型检查、构建和隔离离线／有限在线验收通过；最终代码复核另见交付记录。实际实施基线`9e24b0d`。正式空库仅只读检查，未升级或清理，服务保持停止。
+日期：2026-10-08。状态：任务1～8及最终复核修正已实现，435项测试、类型检查、构建和隔离离线／有限在线验收通过；最终代码复核另见交付记录。实际实施基线`9e24b0d`。正式空库仅只读检查，未升级或清理，服务保持停止。
 
 本文与[执行计划](MEMORY_CAPACITY_IDLE_V0.4_EXECUTION_PLAN_20261008.md)共同作为本次实施依据。已合并[原方案](MEMORY_CAPACITY_IDLE_V0.4_PROPOSAL_20261008.md)、[CODEX回复](../DSH-review/CODEX_REBUTTAL_MEMORY_CAPACITY_IDLE_V0.4_20261008.md)、[DSH修订审核](../DSH-review/DSH_REVIEW15_MEMORY_CAPACITY_IDLE_V0.4_20261008.md)及[第十六轮计划审核](../DSH-review/DSH_REVIEW16_MEMORY_CAPACITY_IDLE_PLAN_20261008.md)。原稿3000条、所有记忆退出后无限留库的口径由本文替代。
 
@@ -63,6 +63,7 @@
 | `capacityExitReason` | `'short_capacity'|'long_capacity'|null` |
 | `archiveEnteredAt` | `string|null`；普通长期本次进入归档的真实起点，不是维护执行时间 |
 | `evidenceMemoryIds` | `string[]`；learned引用的canonical经历身份，与原始sourceIds分开 |
+| `evidenceVersions` | 可选`OwnerVersion[]`；learned各必要canonical证据已同步的版本，旧值缺失按空数组处理，仅存ID／版本不复制正文 |
 
 归档判定和起点统一使用`src/memory/capacity.ts`导出的两个纯函数：`archiveStart(row:MemoryCandidate,now:string):string|null`及`isArchivedLong(row:MemoryCandidate,now:string):boolean`。它们只接受普通有效canonical长期作为归档池对象；short、learned、durable、merged／discarded不计入该池：
 
@@ -294,11 +295,13 @@ short原7天截止、归档90天截止、容量归一待办纳入已有Host计�
 | `review_detail` | targetId为被审detail ID、readOwners、sourceIds、decision=`retain`或`report_conflict`、reason | retain登记水位；冲突保存当前建议，不自动改details或历史 |
 | `review_learned` | targetId为被审learned ID及证据readOwners、sourceIds、decision=`retain`／`suggest_revision`／`suggest_withdrawal`、reason | 保存审核水位／建议；本期不自行改作者背景或撤销常驻结论 |
 
-所有动作明确readOwners，程序生成包含写入对象和隐式重指对象的readSet。继续保证ids在readOwners内、每selected被一个unit覆盖、不重叠写入、来源来自快照合法证据。允许空结果仅在没有需要审核的selected时；有selected时用retain表达合法“无变化”。
+所有动作明确readOwners，程序生成包含写入对象和隐式重指对象的readSet。继续保证ids在readOwners内、每selected被一个unit覆盖、不重叠写入、来源来自快照合法证据。事件整理仍隔离各单元完整依赖；只报告建议的audit允许不同目标共享只读证据，目标仍不得重复，每单元仍校验全部readSet版本。允许空结果仅在没有需要审核的selected时；有selected时用retain表达合法“无变化”。
+
+audit仅消费selected审核目标的dirty水位，作为比较证据读取的short／long仍保留其独立事件待办。detail快照补同键／别名事实及共享合法sourceIds的存活证据，再沿既有事件依赖补全，不一次发送全库。learned除主canonical外，任何evidenceMemoryIds关联事件的版本变化也登记新版本及一次审核；同一证据版本重复同步不重新入队，不改原结论。
 
 `merge_short`必须显式加入contracts中“content非空且sourceIds至少1个”的变更动作集合，成为`refine／merge／merge_short／promote`，不能只在提示词或表格中要求。sourceIds须来自提供的历史快照合法来源白名单；本阶段不要求另有当前用户新消息，也不能把维护job ID伪造为来源。空数组或未知来源按合同失败进入既有格式修补，不能通过正式应用；合并结果另保留成员来源并集。canonicalShortId的时间相等按解析后的createdAt时刻判断，ID按稳定字符串升序最小者，调换输入数组顺序不改变主身份。
 
-merge_short要求模型明确同一事件而非共享关键词，不允许不同事凑条数。保留sourceIds并集、完整事件范围及阶段感受；short保留截止取真实latestEventUpdateAt+7天，容量退出状态不靠合并清除，合并不算唤醒。关联长期合并迁移日期／grants、去重并保留更晚真实有效期限，不凭处理now续期；如果成员仍有活跃层资格，主身份继承真实现有资格并解除本次归档标记，沿用真实已有grant，不算新增唤醒；全归档成员合并固化各原始archiveStart，主身份保留最早锚点，不能靠合并后台归档记录自动恢复或延期。
+merge_short要求模型明确同一事件而非共享关键词，不允许不同事凑条数。保留sourceIds并集、完整事件范围及阶段感受；short保留截止取真实latestEventUpdateAt+7天，容量退出状态不靠合并清除，合并不算唤醒。详细content仅写short；关联long正文由合并后的eventSummary／feelingSummary构造，不能复制short详细正文。关联长期合并迁移日期／grants、去重并保留更晚真实有效期限，不凭处理now续期；如果成员仍有活跃层资格，主身份继承真实现有资格并解除本次归档标记，沿用真实已有grant，不算新增唤醒；全归档成员合并固化各原始archiveStart，主身份保留最早锚点，不能靠合并后台归档记录自动恢复或延期。
 
 稳定认识证据独立字段evidenceMemoryIds包含至少两个不同canonical事件；原30次门槛不能通过多short指同long、后台复读或共同代写推导用户稳定性格来凑。原promote／retain／discard规则继续，其中discard零唤醒要求与容量清理分开，不能用discard表达有唤醒旧记忆的最终到期删除。
 
@@ -314,7 +317,7 @@ Host每次选择顺序：旧未完成故事→现有可执行前台（含环境�
 
 ## 9. 升级、装配与观测
 
-新库按当前Clock初始化idle和版本1；旧库必须先用升级前版本恢复／完成旧非环境故事，停止服务后显式迁移，不能指望已被新装配门禁拒绝的版本替旧库续轮。结构升级兼容JSON字段，保留schema3；learnt历史可确认事件引用归一到evidenceMemoryIds，保留原始sourceIds，不能猜陌生ID是事件。
+新库按当前Clock初始化idle和版本1；旧库必须先用升级前版本恢复／完成旧非环境故事，停止服务后显式迁移，不能指望已被新装配门禁拒绝的版本替旧库续轮。结构升级兼容JSON字段，保留schema3；learnt历史可确认事件引用归一到evidenceMemoryIds，已知short ID沿linkedLongId解析到canonical long，保留原始sourceIds，不能猜陌生ID是事件。新promote同源解析短期证据，合同readSet包含该canonical长期版本，应用与合同使用同一个真实事件身份。
 
 脚本默认`--dry-run`：用内置SQLite只读连接，不经会写DDL的Storage／MemoryStore构造器，输出数量、拟转层／清理ID及原因、保护／缺失引用、待办差额；不打印正文／密钥。`--apply --stopped`写结构／标记和持久化待办，初次大批归一仍由Host逐单元推进；迁移前备份、记录检查结果，重复apply不重置日期／grants／idle或已经生效配置。
 

@@ -153,8 +153,10 @@ export function consolidationTask(snapshot:MemoryCandidate[],selectedIds:string[
       requireControl(u.ids.every(id=>u.readOwners.includes(id)),'ids','writes outside readOwners');
       const longIds=new Set(u.ids.flatMap(id=>{const row=available.get(id)!;return row.kind==='long'?[id]:row.linkedLongId?[row.linkedLongId]:[];}));
       const implicit=snapshot.filter(r=>r.kind==='learned'&&(!!r.canonicalMemoryId&&longIds.has(r.canonicalMemoryId)||r.evidenceMemoryIds?.some(id=>longIds.has(id)))||['merge','merge_short'].includes(u.action)&&r.kind==='short'&&!!r.linkedLongId&&longIds.has(r.linkedLongId)).map(r=>r.id);
-      const effectiveReadOwners=[...new Set([...u.readOwners,...implicit])];
-      requireControl(effectiveReadOwners.every(id=>!touched.has(id)),'ids','duplicate or overlapping unit');effectiveReadOwners.forEach(id=>touched.add(id));u.ids.forEach(id=>covered.add(id));
+      const evidenceOwners=u.action==='promote'?u.readOwners.flatMap(id=>{const row=available.get(id)!;const canonical=row.kind==='short'?row.linkedLongId:row.kind==='learned'?row.canonicalMemoryId:null;return canonical&&available.get(canonical)?.kind==='long'?[canonical]:[];}):[];
+      const effectiveReadOwners=[...new Set([...u.readOwners,...implicit,...evidenceOwners])];
+      const isolatedOwners=kind==='audit'?u.ids:effectiveReadOwners;
+      requireControl(isolatedOwners.every(id=>!touched.has(id)),'ids','duplicate or overlapping unit');isolatedOwners.forEach(id=>touched.add(id));u.ids.forEach(id=>covered.add(id));
       requireControl(u.sourceIds.every(id=>sources.has(id)),'sourceIds','unknown snapshot source');
       if(['refine','merge','merge_short','promote'].includes(u.action)){requireControl(typeof u.content==='string'&&u.content.trim().length>0,'content','required');requireControl(u.sourceIds.length>0,'sourceIds','required');}
       if(['refine','discard','merge'].includes(u.action))for(const id of u.ids){const row=available.get(id)!;if(row.kind==='short'&&row.linkedLongId)requireControl(u.ids.includes(row.linkedLongId),'ids','linked long must be in the same unit');}

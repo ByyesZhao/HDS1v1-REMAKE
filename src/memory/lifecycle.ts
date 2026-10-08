@@ -127,11 +127,14 @@ export class MemoryLifecycle {
   }
   promotionCandidates():MemoryCandidate[]{return this.store.storage.prepare("SELECT data FROM memories WHERE json_extract(data,'$.kind')='long' AND json_extract(data,'$.status')='active' AND json_extract(data,'$.totalAwakenings')>=30 AND (json_extract(data,'$.evaluatedEvidenceVersion') IS NULL OR json_extract(data,'$.evaluatedEvidenceVersion')<json_extract(data,'$.stateVersion'))").all().map(r=>JSON.parse(String(r.data)));}
   synchronizeProjections(row:MemoryCandidate,at:string,dirty=false):void {
-    for(const projection of this.store.projections(row.id)){
+    for(const projection of this.store.allOwners().filter(p=>p.kind==='learned'&&p.status==='active'&&(p.canonicalMemoryId===row.id||p.evidenceMemoryIds?.includes(row.id)))){
       const basis={content:row.content,sourceIds:row.sourceIds,revision:row.revision};
-      const updated={...projection,sourceIds:union(projection.sourceIds,row.sourceIds),topics:union(projection.topics,row.topics),projectionBasis:basis};
+      const primary=projection.canonicalMemoryId===row.id;
+      const evidenceIds=new Set([projection.canonicalMemoryId,...projection.evidenceMemoryIds??[]]);
+      const evidenceVersions=[...(projection.evidenceVersions??[]).filter(ref=>ref.ownerId!==row.id&&evidenceIds.has(ref.ownerId)),{ownerType:row.ownerType,ownerId:row.id,revision:row.revision,stateVersion:row.stateVersion}].sort((a,b)=>a.ownerId.localeCompare(b.ownerId));
+      const updated={...projection,sourceIds:union(projection.sourceIds,row.sourceIds),topics:union(projection.topics,row.topics),evidenceVersions,...(primary?{projectionBasis:basis}:{})};
       // Single-event experience follows its current summary; a multi-event understanding retains its conclusion and exposes the updated basis explicitly.
-      if(projection.learnedKind==='durable_experience'){updated.content=row.content;updated.eventSummary=row.eventSummary;updated.feelingSummary=row.feelingSummary;Object.assign(updated,eventRange([row]),{lastEventUpdateAt:row.lastEventUpdateAt});}
+      if(primary&&projection.learnedKind==='durable_experience'){updated.content=row.content;updated.eventSummary=row.eventSummary;updated.feelingSummary=row.feelingSummary;Object.assign(updated,eventRange([row]),{lastEventUpdateAt:row.lastEventUpdateAt});}
       if(JSON.stringify(updated)===JSON.stringify(projection))continue;
       const textChanged=memoryIndexText(projection)!==memoryIndexText(updated);updated.revision=projection.revision+(textChanged?1:0);updated.stateVersion=projection.stateVersion+1;
       this.store.saveOwner(updated);if(textChanged)this.store.queueIndex(updated,at);if(dirty)this.store.queueDirty(updated,'learned',at);
@@ -140,7 +143,7 @@ export class MemoryLifecycle {
   evaluateRetain(id:string):void {const row=this.store.canonical(id)!;this.store.saveOwner({...row,evaluatedEvidenceVersion:row.stateVersion+1,stateVersion:row.stateVersion+1});}
   promote(id:string,learnedId:string,content:string,kind:'durable_experience'|'stable_understanding',alwaysInclude:boolean,evidenceIds:string[],at:string):void {
     const row=this.store.canonical(id)!;if(row.totalAwakenings<30)throw new Error('promotion requires 30 effective dates');
-    const evidence=union(evidenceIds.flatMap(id=>{const l=this.store.canonical(id);return l?[l.id]:[];}));
+    const evidence=union(evidenceIds.flatMap(id=>{const l=this.store.canonicalEvidence(id);return l?[l.id]:[];}));
     if(kind==='stable_understanding'&&evidence.length<2)throw new Error('stable understanding requires distinct events');
     const learned=this.store.makeOwner({ownerType:'learned',ownerId:learnedId},{content,eventSummary:content,sourceIds:union(row.sourceIds,...evidence.map(id=>this.store.canonical(id)!.sourceIds)),evidenceMemoryIds:evidence,canonicalMemoryId:row.id,learnedKind:kind,alwaysInclude:kind==='stable_understanding'&&alwaysInclude,topics:row.topics,...(kind==='durable_experience'?{...eventRange([row]),lastEventUpdateAt:row.lastEventUpdateAt}:{})},at);
     this.store.saveOwner({...row,status:'durable',expiresAt:null,windowAwakenings:0,stateVersion:row.stateVersion+1});this.store.saveOwner(learned);this.store.queueIndex(learned,at);this.store.queueDirty(learned,'learned',at);
