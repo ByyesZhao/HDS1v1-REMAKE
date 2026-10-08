@@ -35,3 +35,11 @@
 日志保存在`runtime/review19-dry-run/verification/`：`baseline.log`、`red.log`、`green.log`、`full-test.log`、`typecheck.log`、`build.log`。临时测试库运行后清理，用户已有DSH文件原样保留。
 
 本次开始时正式库SHA256：`BC65898A1BACDD87798554AA3C14CE2EE683E052C76F2358F90D23A8BEDF3BBD`。没有启动服务、调用模型、连接QQ或写入正式库。主目录集成及最终核对另记下文。
+
+## 主目录集成与最终核对
+
+实现提交`f15beaa`，本地分支`codex/memory-review19-dry-run`已快进到主目录main。主目录再次运行83文件473测试通过（38.96秒），类型检查与构建通过，实际`lib/index.js`插件导入检查通过；证据为同目录`main-test.log`、`main-typecheck.log`、`main-build.log`。
+
+正式库前后SHA256一致；只读确认角色未初始化，memories／details／learned均0行。HDSI／SnowLuma启动进程匹配数0；两个cmd未修改。已有DSH审核文件仍保留为用户未跟踪文件，未加入本次提交。
+
+隔离证据已复制回主目录`runtime/review19-dry-run/verification/`，临时工作区通过Codex原生工具归档并确认目录已移除，主目录node_modules保留。此次未派独立复审，采用缺陷复现、实际归一对照、源码差异核对与完整回归验证；该只读预测Minor已闭环。
