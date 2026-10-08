@@ -1,5 +1,7 @@
 # 记忆容量与空闲整理 V0.4 实施细化
 
+最新交付：REVIEW17／18修复及整体复核修正已集成，83文件469项测试通过。原任务1～8的435项为历史基线；最新过程见REVIEW17_MEMORY_FIX_LOG_20261008.md。
+
 日期：2026-10-08。状态：任务1～8及最终复核修正已实现，435项测试、类型检查、构建和隔离离线／有限在线验收通过；最终代码复核另见交付记录。实际实施基线`9e24b0d`。正式空库仅只读检查，未升级或清理，服务保持停止。
 
 本文与[执行计划](MEMORY_CAPACITY_IDLE_V0.4_EXECUTION_PLAN_20261008.md)共同作为本次实施依据。已合并[原方案](MEMORY_CAPACITY_IDLE_V0.4_PROPOSAL_20261008.md)、[CODEX回复](../DSH-review/CODEX_REBUTTAL_MEMORY_CAPACITY_IDLE_V0.4_20261008.md)、[DSH修订审核](../DSH-review/DSH_REVIEW15_MEMORY_CAPACITY_IDLE_V0.4_20261008.md)及[第十六轮计划审核](../DSH-review/DSH_REVIEW16_MEMORY_CAPACITY_IDLE_PLAN_20261008.md)。原稿3000条、所有记忆退出后无限留库的口径由本文替代。

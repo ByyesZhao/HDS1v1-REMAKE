@@ -1,5 +1,7 @@
 # 记忆容量与空闲整理 V0.4 执行计划
 
+最新交付：REVIEW17／18修复及整体复核修正已集成，83文件469项测试通过。原任务1～8的435项为历史基线；最新过程见REVIEW17_MEMORY_FIX_LOG_20261008.md。
+
 > **For agentic workers:** REQUIRED SUB-SKILL: 使用`superpowers:executing-plans`逐任务实施。本计划在当前会话由实施者顺序执行；只有用户另选代理协作时使用`superpowers:subagent-driven-development`。用复选框和实施日志记录真实状态，不将文档编写视为代码完成。
 
 **Goal:** 实现短期100／普通长期1000／归档500的有限记忆工作集、真实清理与引用完整性，以及基础每轮提取、深度空闲15分钟整理。

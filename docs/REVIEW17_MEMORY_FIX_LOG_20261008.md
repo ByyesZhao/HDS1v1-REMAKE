@@ -42,3 +42,10 @@ Minor延期：只读inspectMemoryCapacity把删除保护集合也用于活跃容
 Ruling：不新增旧合同冻结ready结果的全面重新校验／迁移框架——本次不是旧库导入，正式库只读确认未初始化角色、owner数0，无未完成故事；本轮改变已有晋升应用门禁和修复登记版本，其他冻结恢复沿既有机制。代价：未来导入含旧冻结结果的库，仍须单独执行升级检查并处理不兼容结果。
 
 正式库SHA256：BC65898A1BACDD87798554AA3C14CE2EE683E052C76F2358F90D23A8BEDF3BBD。只读服务进程核对HDSI／SnowLuma匹配数0。
+## 主目录集成与证据
+
+本地分支codex/memory-review17-fixes快进到主目录main，代码终点2cac79d（实现1a2a282、文档6109956、整体复核修正2cac79d）。主目录再次83文件469测试通过（36.55秒），typecheck、build、实际lib插件导入检查均通过。首次受限测试环境报spawn EPERM，随后以获准的本地测试权限重新完整运行通过；两份日志均保留，未修改依赖。
+
+集成前后正式库SHA256相同；角色未初始化、memories/details/learned为0、无未完成轮，未执行正式升级或清理。没有在线调用／QQ连接，HDSI／SnowLuma保持停止，已有两个cmd未改。
+
+最终隔离库及报告位于runtime/memory-capacity-acceptance-20261008/review17-fixed-final/，完整测试、类型、构建和账本在其verification目录；首轮修复验收和旧缺陷复现各保留原目录。用户已有DSH审核文件原样保留。一次独立复核及唯一作者修正已闭环，无未处理Critical／Important；上述只读预测Minor明确延期。隔离工作区完成证据转存后通过Codex原生工具归档，源码提交保留在本地Git。
