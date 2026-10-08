@@ -122,7 +122,7 @@ it.each(['inside', 'expired', 'postponed'] as const)('sleep_and_idle_cycle: shar
   const sleep = { sleepAt: '2026-10-07T23:00:00+08:00', wakeAt: kind === 'expired' ? '2026-10-07T23:20:00+08:00' : '2026-10-08T08:00:00+08:00' };
   d.storage.set('character', { ...d.storage.character(), sleep });
   const app = new HdsiApp(d), scheduler = new Scheduler(d.storage); await app.runTurn((await scheduler.collectReady(d.clock.now()))!);
-  expect(d.models.calls[0].input.waking).toBe(false); expect(d.storage.character().sleep).toEqual(sleep); expect(d.storage.character().scene.shared!.completedSteps).toBe(1);
+  expect(d.models.calls[0].input.context.waking).toBe(false); expect(d.storage.character().sleep).toEqual(sleep); expect(d.storage.character().scene.shared!.completedSteps).toBe(1);
   await new InputBuffer(d.storage).acceptInput({ id: 'end', content: '【推进】', receivedAt: d.clock.now() });
   d.models.outputs.personal_shared = { ...silent, sharedChange: { action: 'end' }, ...(kind === 'postponed' ? { sleepPreference: { reason: '晚点睡', sleepAt: '2026-10-08T01:00:00+08:00', wakeAt: '2026-10-08T09:00:00+08:00' } } : {}) };
   d.models.outputs.narrative_shared = { ...narrative, publicNarration: '这次活动告一段落，准备休息。', progress: '结束', outline: { goal: '游戏', openThreads: [], endingCondition: '结束' }, simulatedUserActions: [] };
@@ -144,15 +144,15 @@ it('life_and_shared_memory: private catchup stays blind and public simulation us
   const d = setup(), app = new HdsiApp(d); saveInput(d.storage, 'a', '未看秘密'); d.clock.advance(3_600_000);
   await app.runTurn({ inputMessageIds: ['a'], taskIds: [], triggerKinds: ['input'] }); const firstAt = d.storage.character().narratedUntil;
   d.clock.advance(300_000); await app.runTurn({ inputMessageIds: [], taskIds: [], triggerKinds: ['appointment'] });
-  expect(d.models.calls.filter(c => c.name === 'narrative')[1].input.from).toBe(firstAt); expect(JSON.stringify(d.models.calls[0].input)).not.toContain('未看秘密');
+  expect(d.models.calls.filter(c => c.name === 'narrative')[1].input.context.from).toBe(firstAt); expect(JSON.stringify(d.models.calls[0].input)).not.toContain('未看秘密');
   makeSharedFixture(d, { completedSteps: 0 }); configureSharedModels(d);
   d.models.outputs.narrative_shared = { ...narrative, publicNarration: '你拿下了补给点', progress: '补给', outline: { goal: '游戏', openThreads: [], endingCondition: '结束' }, simulatedUserActions: ['你拿下了补给点'] };
   d.models.outputs.memory = (input: any) => ({ ...emptyMemory, shortTermChanges: [{ action: 'create', clientRef: 'simulation', content: '共同游戏时你拿下补给点，她感到高兴', eventSummary: '共同模拟游戏拿下补给点', feelingSummary: '高兴', topics: ['游戏'], importance: 'normal', sourceIds: [input.outgoing[0].id] }] });
   await app.runTurn((await new Scheduler(d.storage).collectReady(d.clock.now()))!);
   expect(d.storage.all('memories').some(m => m.content.includes('共同模拟'))).toBe(true);
   const memoryInput = d.models.calls.filter(c => c.name === 'memory').at(-1)!.input;
-  expect(memoryInput.sharedPublicExperience.simulatedUserActions).toEqual(['你拿下了补给点']); expect(memoryInput.arrangementsAndIntent.outline).toMatchObject({ goal: '游戏' });
-  expect(d.storage.all('memories').find(m => m.kind === 'short')!.sourceIds).toEqual([memoryInput.outgoing[0].id]);
+  expect(memoryInput.roles.sharedPublicOutgoingIds).toContain(memoryInput.resources.messages[0].id); expect(memoryInput.context.arrangementsAndIntent.outline).toMatchObject({ goal: '游戏' });
+  expect(d.storage.all('memories').find(m => m.kind === 'short')!.sourceIds).toEqual([memoryInput.resources.messages[0].id]);
   const published = d.storage.messages().filter(m => m.direction === 'outgoing').map(m => m.content);
   await new InputBuffer(d.storage).acceptInput({ id: 'correction', content: '我还没拿到', receivedAt: d.clock.now() });
   expect(d.storage.read('messages', 'correction')!.seenTurnId).toBeNull(); expect(d.storage.messages().filter(m => m.direction === 'outgoing').map(m => m.content)).toEqual(published); d.storage.close();

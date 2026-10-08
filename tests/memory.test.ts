@@ -25,8 +25,8 @@ it('keeps current facts out of future intent and saves real changes with previou
   expect(d.storage.read('details', 'character.phone.model')!.value).toBe('苹果');
   expect(d.storage.all('detail_history')[0]).toMatchObject({ previousValue: '某手机', newValue: '苹果' });
   const input = d.models.calls.find(c => c.name === 'memory')!.input;
-  expect(input.arrangementsAndIntent.plan).toBe('明天想买一部新手机');
-  expect(input.outgoing).toEqual([]); expect(input.personal).toBeUndefined();
+  expect(input.context.arrangementsAndIntent.plan).toBe('明天想买一部新手机');
+  expect(input.resources.messages.filter((m:any)=>m.direction==='outgoing')).toEqual([]); expect(input.context.personal).toBeUndefined();
   d.storage.close();
 });
 it('retrieves related long memories without reinforcing and respects the history budget', async () => {
@@ -39,7 +39,7 @@ it('retrieves related long memories without reinforcing and respects the history
   expect(d.storage.read('memories', '0')!.mentions).toBe(2);
   saveInput(d.storage, 'a', '本轮输入不能因预算丢失'); d.config.historyBudget = 10;
   await generateTurn(d, { inputMessageIds: ['a'], taskIds: [], triggerKinds: ['input'] }, 'a');
-  expect(d.models.calls.find(c => c.name === 'personal_chat')!.input.visibleMessages[0].content).toBe('本轮输入不能因预算丢失');
+  expect(d.models.calls.find(c => c.name === 'personal_chat')!.input.resources.messages[0].content).toBe('本轮输入不能因预算丢失');
   d.storage.close();
 });
 it('looks up a detail once in the same task then parses the actual result', async () => {

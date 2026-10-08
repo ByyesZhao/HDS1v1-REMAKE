@@ -26,7 +26,7 @@ it('starts only after confirmation, emits the marker and schedules the immediate
   d.models.outputs.expression = { parts: [{ kind: 'text', content: '好' }] };
   await new HdsiApp(d).runTurn({ inputMessageIds: ['a'], taskIds: [], triggerKinds: ['input'], sharedMeta: selectSharedMeta(d.storage, NOW, ['a'], []) });
   expect(d.models.calls[0].name).toBe('narrative');
-  expect(d.models.calls.find(c => c.name === 'expression')!.input.mode).toBe('shared_offline');
+  expect(d.models.calls.find(c => c.name === 'expression')!.input.context.mode).toBe('shared_offline');
   expect(d.sender.sent.map(i => i.payload)).toEqual(['共同活动开始', '好']);
   expect(d.storage.character().scene.mode).toBe('shared_offline');
   expect(d.storage.character().scene.shared!.lastPublicNode).toBe('');
@@ -36,9 +36,9 @@ it('starts only after confirmation, emits the marker and schedules the immediate
 it.each(['shared_online', 'shared_offline'] as const)('keeps closed scene input visible without phone access in %s', async mode => {
   const d = setup(); makeShared(d, mode); saveInput(d.storage, 'a', '【动作：推门】');
   await new HdsiApp(d).runTurn({ inputMessageIds: ['a'], taskIds: [], triggerKinds: ['input'], sharedMeta: selectSharedMeta(d.storage, NOW, ['a'], []) });
-  expect(d.models.calls[0].input.visibleMessages[0].content).toBe('【动作：推门】');
-  expect(d.models.calls[1].input.visibleMessages[0].content).toBe('【动作：推门】');
-  expect(d.models.calls[0].input.sharedMeta).toEqual(d.models.calls[1].input.sharedMeta);
+  expect(d.models.calls[0].input.resources.messages[0].content).toBe('【动作：推门】');
+  expect(d.models.calls[1].input.resources.messages[0].content).toBe('【动作：推门】');
+  expect(d.models.calls[0].input.context.sharedMeta).toEqual(d.models.calls[1].input.context.sharedMeta);
   expect(d.storage.all('turns')[0].sharedMeta!.allowSimulatedUserActions).toBe(false);
   expect(d.sender.sent.map(i => i.kind)).toEqual(['narration', 'action', 'text']);
   expect(d.sender.sent[0].payload).toBe('门口亮起灯');

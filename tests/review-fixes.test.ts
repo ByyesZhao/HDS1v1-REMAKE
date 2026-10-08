@@ -53,8 +53,8 @@ it('keeps relevant long memory for the organizer when unused recent history is l
     saveInput(d.storage, 'a', '聊聊手机');
     await new HdsiApp(d).runTurn({ inputMessageIds: ['a'], taskIds: [], triggerKinds: ['input'] });
     const input = d.models.calls.find(c => c.name === 'memory')!.input;
-    expect(input.retrieved.map((m: any) => m.id)).toEqual(['old']);
-    expect(input.details.map((x: any) => x.key)).toEqual(['phone']);
+    expect(input.resources.owners.filter((r:any)=>r.kind!=='detail').map((m: any) => m.id)).toEqual(['old']);
+    expect(input.resources.owners.filter((r:any)=>r.kind==='detail').map((x: any) => x.key)).toEqual(['phone']);
   } finally { d.storage.close(); }
 });
 it('bounds the organizer retrieval budget while keeping the highest ranked related memory', async () => {
@@ -68,8 +68,8 @@ it('bounds the organizer retrieval budget while keeping the highest ranked relat
     saveInput(d.storage, 'a', '手机');
     await new HdsiApp(d).runTurn({ inputMessageIds: ['a'], taskIds: [], triggerKinds: ['input'] });
     const input = d.models.calls.find(c => c.name === 'memory')!.input;
-    expect(input.retrieved.map((m: any) => m.id)).toEqual(['best']);
-    expect(JSON.stringify({ details: input.details, retrieved: input.retrieved }).length).toBeLessThanOrEqual(1500);
+    expect(input.resources.owners.filter((r:any)=>r.kind!=='detail').map((m: any) => m.id)).toEqual(['best']);
+    expect(JSON.stringify({ details: input.resources.owners.filter((r:any)=>r.kind==='detail'), retrieved: input.resources.owners.filter((r:any)=>r.kind!=='detail') }).length).toBeLessThanOrEqual(1500);
   } finally { d.storage.close(); }
 });
 it.each([

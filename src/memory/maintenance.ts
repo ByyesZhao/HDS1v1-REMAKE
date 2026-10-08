@@ -1,3 +1,4 @@
+import { stageInput } from '../model/context-views';
 import { randomUUID } from 'node:crypto';
 import type { Clock,ModelRunner } from '../types';
 import { addMs,milliseconds,nextDaily } from '../time';
@@ -97,7 +98,7 @@ export class MemoryMaintenance {
     const cancelled=new Promise<never>((_,reject)=>{onAbort=()=>reject(controller.signal.reason??new Error('backend cancelled'));controller.signal.addEventListener('abort',onAbort,{once:true});});
     timer=setTimeout(()=>controller.abort(new Error('backend timeout')),this.options.backgroundTimeoutMs??120000);
     try {
-      const remote=work.table==='memory_index_jobs'?this.index.prepare(work.job,controller.signal):this.models.runModel(consolidationTask(work.job.snapshot,work.job.selectedIds??work.job.snapshot.map(r=>r.id),work.job.kind??'consolidation',work.job.cutoff),{kind:work.job.kind??'consolidation',cutoff:work.job.cutoff,selectedIds:work.job.selectedIds??work.job.snapshot.map(r=>r.id),snapshot:work.job.snapshot,promotionEligibleIds:work.job.snapshot.filter(r=>promotionEligible(r,work.job.cutoff)).map(r=>r.id)},phaseOptions(this.options.web,'maintenance',work.job.id,'consolidation','memory_consolidation',{signal:controller.signal,lookup:null}));
+      const remote=work.table==='memory_index_jobs'?this.index.prepare(work.job,controller.signal):this.models.runModel(consolidationTask(work.job.snapshot,work.job.selectedIds??work.job.snapshot.map(r=>r.id),work.job.kind??'consolidation',work.job.cutoff),stageInput(work.job.kind==='audit'?'memory_audit':'memory_consolidation',{kind:work.job.kind??'consolidation',cutoff:work.job.cutoff,selectedIds:work.job.selectedIds??work.job.snapshot.map(r=>r.id),snapshot:work.job.snapshot,promotionEligibleIds:work.job.snapshot.filter(r=>promotionEligible(r,work.job.cutoff)).map(r=>r.id)}),phaseOptions(this.options.web,'maintenance',work.job.id,'consolidation','memory_consolidation',{signal:controller.signal,lookup:null}));
       const result=await Promise.race([remote,cancelled]);
       if(this.stopped)return;
       if(work.table==='memory_index_jobs'){

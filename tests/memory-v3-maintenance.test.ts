@@ -20,7 +20,7 @@ function event(store:MemoryStore,id:string,content='手机详细过程'){
   const row=store.makeOwner({ownerType:'short',ownerId:id},{content,sourceIds:['s'],shortExpiresAt:addMs(NOW,-1),linkedLongId:`${id}:long`},addMs(NOW,-8*86400000));store.saveOwner(row);
   store.saveOwner(store.makeOwner({ownerType:'long',ownerId:`${id}:long`},{content:'手机preview',sourceIds:['s'],retainedFrom:addMs(NOW,-1),expiresAt:addMs(NOW,90*86400000)},row.createdAt));return row;
 }
-function result(input:any){return {units:input.selectedIds.map((id:string,i:number)=>({unitKey:`u${i}`,action:'refine',readOwners:[id,`${id}:long`],ids:[id,`${id}:long`],content:`手机refined${i}`,eventSummary:'手机事件',feelingSummary:'开心',sourceIds:['s']}))};}
+function result(input:any){return {units:(input.context?.selectedIds??input.selectedIds).map((id:string,i:number)=>({unitKey:`u${i}`,action:'refine',readOwners:[id,`${id}:long`],ids:[id,`${id}:long`],content:`手机refined${i}`,eventSummary:'手机事件',feelingSummary:'开心',sourceIds:['s']}))};}
 async function flushed(){for(let i=0;i<10;i++)await Promise.resolve();}
 it('starts without awaiting remote, commits only one independent ready unit, and rejects a changed second unit',async()=>{
   const d=create();for(const id of['a','b','c'])event(d.store,id);d.storage.set('runtime',{...d.storage.runtime(),nextMaintenanceAt:NOW});
@@ -34,12 +34,12 @@ it('starts without awaiting remote, commits only one independent ready unit, and
 });
 it('keeps twenty event batches complete by default and treats optional character target as a soft batch boundary',async()=>{
   const d=create();for(let i=0;i<21;i++)event(d.store,`e${i}`,'详细内容'.repeat(4000));d.storage.set('runtime',{...d.storage.runtime(),nextMaintenanceAt:NOW});d.maintenance.startOne(NOW);
-  expect(d.calls[0].input.selectedIds).toHaveLength(20);expect(d.calls[0].input.snapshot.find((s:any)=>s.id==='e0').content.length).toBe(16000);
+  expect(d.calls[0].input.context.selectedIds).toHaveLength(20);expect(d.calls[0].input.resources.owners.find((s:any)=>s.id==='e0').content.length).toBe(16000);
   d.resolve(result(d.calls[0].input));await flushed();await d.maintenance.stop();
-  const small=create({batchCharacters:12000});event(small.store,'big','完整正文'.repeat(4000));event(small.store,'small');small.storage.set('runtime',{...small.storage.runtime(),nextMaintenanceAt:NOW});small.maintenance.startOne(NOW);expect(small.calls[0].input.selectedIds).toEqual(['big']);expect(small.calls[0].input.snapshot[0].content.length).toBe(16000);small.resolve(result(small.calls[0].input));await flushed();await small.maintenance.stop();
+  const small=create({batchCharacters:12000});event(small.store,'big','完整正文'.repeat(4000));event(small.store,'small');small.storage.set('runtime',{...small.storage.runtime(),nextMaintenanceAt:NOW});small.maintenance.startOne(NOW);expect(small.calls[0].input.context.selectedIds).toEqual(['big']);expect(small.calls[0].input.resources.owners[0].content.length).toBe(16000);small.resolve(result(small.calls[0].input));await flushed();await small.maintenance.stop();
 });
 it('holds a fixed cutoff, preserves later expiry for the next day, and schedules only the next future 04:30',async()=>{
-  const d=create();event(d.store,'old');const late=event(d.store,'later');d.store.saveOwner({...late,shortExpiresAt:addMs(NOW,1000)});d.storage.set('runtime',{...d.storage.runtime(),nextMaintenanceAt:addMs(NOW,-10*86400000)});d.maintenance.startOne(NOW);expect(d.calls[0].input.cutoff).toBe(NOW);expect(d.calls[0].input.selectedIds).toEqual(['old']);d.clock.advance(2000);d.resolve(result(d.calls[0].input));await flushed();d.maintenance.applyOneReady(d.clock.now());
+  const d=create();event(d.store,'old');const late=event(d.store,'later');d.store.saveOwner({...late,shortExpiresAt:addMs(NOW,1000)});d.storage.set('runtime',{...d.storage.runtime(),nextMaintenanceAt:addMs(NOW,-10*86400000)});d.maintenance.startOne(NOW);expect(d.calls[0].input.context.cutoff).toBe(NOW);expect(d.calls[0].input.context.selectedIds).toEqual(['old']);d.clock.advance(2000);d.resolve(result(d.calls[0].input));await flushed();d.maintenance.applyOneReady(d.clock.now());
   // The next scan closes this cycle but does not widen it to the later event.
   d.maintenance.startOne(d.clock.now());expect(d.calls).toHaveLength(1);expect(Date.parse(d.storage.runtime().nextMaintenanceAt!)).toBeGreaterThan(Date.parse(d.clock.now()));expect(d.storage.get('memory_maintenance_cycle')).toBeNull();
 });

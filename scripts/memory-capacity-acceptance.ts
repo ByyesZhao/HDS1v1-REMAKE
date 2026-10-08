@@ -1,3 +1,4 @@
+import { isStageModelInput } from '../src/model/context-types';
 import { DialogueEpisodes } from '../src/dialogue/episodes';
 import { DialogueStore } from '../src/dialogue/store';
 import assert from 'node:assert/strict';
@@ -25,7 +26,7 @@ export async function runMemoryCapacityAcceptance(path:string){
   const capacity=new MemoryCapacity(store,defaultMemoryCapacity),idle=new MemoryIdle(storage,15,true),cleanup=new MemoryCleanup(store,capacity),lifecycle=new MemoryLifecycle(store,capacity);
   const sent:OutboxItem[]=[],calls:string[]=[];
   const models:ModelRunner={async runModel<T>(task:ModelTask<T>,input:unknown):Promise<T>{
-    calls.push(task.name);const i=input as any;let result:any;
+    calls.push(task.name);const i=isStageModelInput(input)?{...input.context,visibleMessages:input.resources.messages.filter(m=>input.roles.visibleIds?.includes(m.id)),snapshot:input.resources.owners}:input as any;let result:any;
     const narrative={experiences:[{happenedAt:i.at,description:'隔离验收：一次共同活动中的阶段经历',relatedEventIds:[]}],currentScene:{description:'隔离活动场景',activity:null},energy:{level:'正常',reason:'正常活动'}};
     if(task.name==='narrative')result=narrative;
     else if(task.name==='narrative_shared')result={...narrative,publicNarration:i.sharedMeta.stepNumber===1?'活动开始，双方进入已约定的场景':'活动已完整结束，回到各自生活',progress:`已完成阶段${i.sharedMeta.stepNumber}`,outline:{goal:'完成隔离共同活动',openThreads:[],endingCondition:'完成两个阶段'},simulatedUserActions:[]};

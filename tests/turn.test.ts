@@ -11,8 +11,8 @@ it('implements the past before reaction and expression without changing official
   const result = await generateTurn(d, { inputMessageIds: ['a'], taskIds: [], triggerKinds: ['input'] }, 'turn-a');
   expect(d.models.calls.map(c => c.name)).toEqual(['narrative', 'personal_chat', 'expression']);
   expect(JSON.stringify(d.models.calls[0].input)).not.toContain('手机是什么型号');
-  expect(d.models.calls[1].input.visibleMessages[0].content).toBe('手机是什么型号');
-  expect(d.models.calls[2].input.intent.draft).toBe('某手机');
+  expect(d.models.calls[1].input.resources.messages[0].content).toBe('手机是什么型号');
+  expect(d.models.calls[2].input.context.intent.draft).toBe('某手机');
   expect(result.candidate.nextState.emotions).toEqual([]);
   expect(result.candidate.nextState.scene.activity).toBeNull();
   expect(d.storage.character().emotions).toHaveLength(1);

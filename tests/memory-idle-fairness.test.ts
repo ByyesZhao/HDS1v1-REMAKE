@@ -29,8 +29,8 @@ it('new_input_between_units_resets_15_minutes',async()=>{
 it('empty_night_zero_calls and eligible_batches_not_every_15_minutes',async()=>{
  const d=create();d.clock.time=min(15);expect(d.maintenance.startOne(min(15))).toBe(false);expect(d.models.calls).toEqual([]);
  for(let i=0;i<21;i++){const r=long(d.store,`e${String(i).padStart(2,'0')}`);d.store.queueDirty(r,'event',at);}
- d.maintenance.startOne(min(15));expect(d.models.calls[0].input.selectedIds).toHaveLength(20);await flush();while(d.maintenance.applyOneReady(min(15))!=='none'){}
- expect(d.maintenance.startOne(min(15))).toBe(true);expect(d.models.calls[1].input.selectedIds).toHaveLength(1);await flush();d.maintenance.applyOneReady(min(15));expect(d.maintenance.startOne(min(15))).toBe(false);expect(d.models.calls).toHaveLength(2);await d.maintenance.stop();
+ d.maintenance.startOne(min(15));expect(d.models.calls[0].input.context.selectedIds).toHaveLength(20);await flush();while(d.maintenance.applyOneReady(min(15))!=='none'){}
+ expect(d.maintenance.startOne(min(15))).toBe(true);expect(d.models.calls[1].input.context.selectedIds).toHaveLength(1);await flush();d.maintenance.applyOneReady(min(15));expect(d.maintenance.startOne(min(15))).toBe(false);expect(d.models.calls).toHaveLength(2);await d.maintenance.stop();
 });
 it('blocked_ready_no_zero_timer and retry_pause_stop_gates',async()=>{
  const d=create();deep(d);const state=d.storage.character();state.scene.activity={description:'洗澡',startsAt:at,expectedEndAt:min(3),phoneAccess:false};d.storage.set('character',state);
@@ -50,6 +50,6 @@ it('dirty_detail_audit_reads_related_fact_and_source_evidence',async()=>{
  d.store.saveOwner(d.store.makeOwner({ownerType:'detail',ownerId:'phone'},{key:'character.phone',value:'新B牌',content:'新B牌',sourceIds:['new-source']},at));
  const target=d.store.owner({ownerType:'detail',ownerId:'phone'})!;d.store.queueDirty(target,'detail',at);d.clock.time=min(15);
  d.models.outputs.memory_consolidation=(input:any)=>({units:[{unitKey:'conflict',action:'review_detail',ids:[target.id],targetId:target.id,readOwners:[target.id,prior.id,evidence.id],sourceIds:['new-source'],decision:'report_conflict',reason:'同一事实键值冲突，仅报告'}]});
- expect(d.maintenance.startOne(min(15))).toBe(true);await flush();const call=d.models.calls[0];expect(call.input.snapshot.map((r:MemoryCandidate)=>r.id)).toEqual(expect.arrayContaining([target.id,prior.id,evidence.id]));
+ expect(d.maintenance.startOne(min(15))).toBe(true);await flush();const call=d.models.calls[0];expect(call.input.resources.owners.map((r:MemoryCandidate)=>r.id)).toEqual(expect.arrayContaining([target.id,prior.id,evidence.id]));
  expect(d.maintenance.applyOneReady(min(15))).toBe('applied');expect(d.store.owner(target)?.value).toBe('新B牌');expect(d.store.storage.prepare('SELECT count(*) n FROM memory_audit_reports').get()!.n).toBe(1);await d.maintenance.stop();
 });

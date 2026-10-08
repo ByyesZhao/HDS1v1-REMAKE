@@ -1,3 +1,4 @@
+import { isStageModelInput } from '../src/model/context-types';
 import { DialogueEpisodes } from '../src/dialogue/episodes';
 import { DialogueStore } from '../src/dialogue/store';
 import { Storage } from '../src/storage';
@@ -22,13 +23,19 @@ export const narrative = {
 };
 export const silent = { emotions: [], reply: { decision: 'none' }, taskChanges: [] };
 export const emptyMemory = { schemaVersion:3,shortTermChanges: [], longTermChanges: [], detailChanges: [] };
+// Existing scripted fixtures consume semantic fields; captured calls retain the real DTO.
+export function fixtureModelInput(input:any):any {
+ if(!isStageModelInput(input))return input;
+ const owners=input.resources.owners,messages=input.resources.messages,byRole=(ids:string[]|undefined)=>messages.filter(m=>ids?.includes(m.id));
+ return {...input.context,recent:byRole(input.roles.recentIds),visibleMessages:byRole(input.roles.visibleIds),reconsiderMessages:byRole(input.roles.reconsiderIds),outgoing:messages.filter(m=>m.direction==='outgoing'),details:owners.filter(r=>r.kind==='detail'),retrieved:owners.filter(r=>r.kind!=='detail'),snapshot:owners,tasks:input.resources.tasks.filter(t=>input.roles.pendingTaskIds?.includes(t.id)),dueTasks:input.resources.tasks.filter(t=>input.roles.dueTaskIds?.includes(t.id)),history:{recent:byRole(input.roles.recentIds),details:owners.filter(r=>r.kind==='detail'),shortTerm:owners.filter(r=>r.kind==='short'),longTerm:owners.filter(r=>r.kind==='long'),learned:owners.filter(r=>r.kind==='learned'),detailHistory:input.context.detailHistory??[]},selfWebReadSources:input.roles.selfReadSources??[]};
+}
 export class ScriptedModels implements ModelRunner {
   calls: Array<{ name: string; input: any; options?:import('../src/memory/types').ModelRunOptions }> = [];
   constructor(public outputs: Record<string, any> = {}) {}
   async runModel<T>(task: ModelTask<T>, input: unknown,options?:import('../src/memory/types').ModelRunOptions): Promise<T> {
     this.calls.push({ name: task.name, input: structuredClone(input),options });
     const output = this.outputs[task.name];
-    return task.parse(typeof output === 'function' ? output(input) : structuredClone(output));
+    return task.parse(typeof output === 'function' ? output(fixtureModelInput(input)) : structuredClone(output));
   }
 }
 export class RecordingSender implements Sender {

@@ -26,7 +26,7 @@ it('guards archive and detail history independently and never derives permission
   const d=setup();stores.push(d.storage);saveInput(d.storage,'hidden','回忆一下去年那次生日');
   d.storage.set('character',{...d.storage.character(),scene:{mode:'chat',description:'自习',shared:null,activity:{description:'自习',startsAt:NOW,expectedEndAt:addMs(NOW,60000),phoneAccess:false}}});
   await generateTurn(d,{inputMessageIds:['hidden'],taskIds:[],triggerKinds:['input']},'turn');
-  const n=d.models.calls[0];expect(n.input.visibleMessages).toBeUndefined();expect(n.input.history.longTerm).toEqual([]);
+  const n=d.models.calls[0];expect(n.input.visibleMessages).toBeUndefined();expect(n.input.resources.owners.filter((r:any)=>r.kind==='long')).toEqual([]);
   await expect(n.options!.lookup!({query:'生日',scope:'archive',includeDetailHistory:false})).rejects.toThrow('permission');
 });
 it('switches at seven days to preview even without vectors or completed maintenance, and archives after ninety days',async()=>{

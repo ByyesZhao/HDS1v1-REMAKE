@@ -1,3 +1,4 @@
+import { isStageModelInput } from '../src/model/context-types';
 import { EnvironmentStore } from '../src/environment/store';
 import { SchoolStore } from '../src/school/store';
 import { Storage } from '../src/storage';
@@ -15,7 +16,8 @@ async function main() {
   const storage = new Storage(':memory:'); storage.set('character', initialCharacter(now));
   storage.set('runtime',{...storage.runtime(),nextEnvironmentAt:'2026-10-08T06:00:00+08:00'});
   const models: ModelRunner = {
-    async runModel<T>(task: ModelTask<T>, input: any): Promise<T> {
+    async runModel<T>(task: ModelTask<T>, rawInput: any): Promise<T> {
+      const input=isStageModelInput(rawInput)?{...rawInput.context,visibleMessages:rawInput.resources.messages.filter(m=>rawInput.roles.visibleIds?.includes(m.id)),outgoing:rawInput.resources.messages.filter(m=>m.direction==='outgoing')}:rawInput;
       let output: unknown;
       if (task.name === 'narrative') output = { experiences: [], currentScene: { description: '开发样例：仍在宿舍休息', activity: null }, energy: { level: '正常', reason: '休息后' } };
       else if (task.name === 'personal_chat') output = input.visibleMessages.some((m: any) => m.content === '现在开始散步')

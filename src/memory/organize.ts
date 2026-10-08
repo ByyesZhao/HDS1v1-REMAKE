@@ -1,3 +1,4 @@
+import { stageInput } from '../model/context-views';
 import type { MemoryResult, TurnRecord, TurnCandidate } from '../types';
 import type { Dependencies } from '../app';
 import { memoryTask } from '../model/contracts';
@@ -26,7 +27,7 @@ export async function organizeMemory(d: Dependencies, turn: TurnRecord): Promise
   const options=phaseOptions(d.web,'turn',turn.id,'memory','memory',{lookup:async q=>{const found=await builder.retrieval.lookup(q,base);const result={...builder.retrieval.budget({details:found.details,retrieved:[...found.shortTerm,...found.longTerm,...found.learned]},base.budget,base.permissions.visibleSourceIds),school:personalSchoolContext(d.storage,c.schoolObservations??[],typeof q==='string'?q:q.query)};includeLookupIds(result);return result;}});
   function includeLookupIds(result:unknown){if(!result||typeof result!=='object'||!('retrieved' in result)||!Array.isArray(result.retrieved))return;for(const row of result.retrieved){const ids=row.kind==='short'?shortIds:longIds;if(['short','long','learned'].includes(row.kind)&&!ids.includes(row.id))ids.push(row.id);}}
   includeLookupIds(options.web?.snapshot().checkpoint?.privateLookupResult);
-  return d.models.runModel(memoryTask(sourceIds,longIds,shortIds,selfWebReadSources.map(s=>s.id)), {
+  return d.models.runModel(memoryTask(sourceIds,longIds,shortIds,selfWebReadSources.map(s=>s.id)), stageInput('memory',{
     at: turn.at, background: d.config.background, experiences: c.experiences, visibleMessages, reconsiderMessages, outgoing,
     school:personalSchoolContext(d.storage,c.schoolObservations??[],query),
     arrangementsAndIntent: { plan: c.nextState.plan, tasks: c.taskChanges, outline: c.narrative && 'outline' in c.narrative ? c.narrative.outline : null },
@@ -38,7 +39,7 @@ export async function organizeMemory(d: Dependencies, turn: TurnRecord): Promise
     selfWebReadSources,
     selfWebReadMaterials:selfWebReadSources.map(source=>({sourceId:source.id,material:d.web?.store.snapshot(source.runId).materials.find(m=>m.id===source.materialId)})),
     ...(selfWebReadSources.length&&c.personal&&'innerThought' in c.personal?{selfWebReadReactions:{innerThought:c.personal.innerThought,emotions:c.personal.emotions}}:{}),
-  },options);
+  }),options);
 }
 
 // Called only inside the same transaction as the story and turn completion.
