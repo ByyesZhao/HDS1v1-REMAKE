@@ -23,6 +23,7 @@ export class MemoryIndex {
     store.storage.set('memory_embedding_signature', this.configSignature);
     this.stats = { queries: 0, cacheHits: 0, remoteRequests: 0, timeouts: 0, failures: 0, lexicalFallbacks: 0, startedAt: this.clock.now() };
   }
+  get dimensions():number|undefined{return this.provider.dimensions;}
   async query(text: string, signal?: AbortSignal): Promise<Float32Array | null> {
     this.stats.queries++;
     const now = Date.parse(this.clock.now()), key = `${this.configSignature}\n${text}`;

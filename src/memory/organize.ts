@@ -13,15 +13,16 @@ export function currentSelfWebReads(d:Dependencies,turnId:string) {return (d.web
 
 export async function organizeMemory(d: Dependencies, turn: TurnRecord): Promise<MemoryResult> {
   const c = turn.frozenResult!;
-  const visibleMessages = c.visibleMessageIds.map(id => d.storage.read('messages', id)!);
+  const visibleMessages=c.visibleMessageIds.map(id=>d.storage.read('messages',id)!).filter(m=>m.seenTurnId===null||m.seenTurnId===turn.id);
   const reconsiderMessages = c.reconsiderMessageIds.map(id => d.storage.read('messages', id)!);
   const outgoing = d.storage.messages().filter(m => m.direction === 'outgoing' && m.turnId === turn.id);
+  const selfWebReadSources=currentSelfWebReads(d,turn.id);
+  if(c.experiences.length===0&&visibleMessages.length===0&&outgoing.length===0&&selfWebReadSources.length===0)return {schemaVersion:3,shortTermChanges:[],longTermChanges:[],detailChanges:[]};
   const sourceIds = [...c.experiences.map(e => e.id), ...visibleMessages.map(m => m.id), ...outgoing.map(m => m.id)];
   const query = [...c.experiences.map(e => e.description), ...visibleMessages.map(m => m.content), ...outgoing.map(m => m.content)].join('\n');
   const builder=new ContextBuilder(d.storage,d.retrieval),base=makeRetrievalRequest(query,turn.at,'memory',d.config.historyBudget,sourceIds);
   const context = await builder.buildForMemory(base);
   const memories = context.retrieved;
-  const selfWebReadSources=currentSelfWebReads(d,turn.id);
   const shortIds=memories.filter(m=>m.ownerType==='short').map(m=>m.id);
   const longIds=memories.filter(m=>m.ownerType==='long'||m.ownerType==='learned').map(m=>m.id);
   const options=phaseOptions(d.web,'turn',turn.id,'memory','memory',{lookup:async q=>{const found=await builder.retrieval.lookup(q,base);const result={...builder.retrieval.budget({details:found.details,retrieved:[...found.shortTerm,...found.longTerm,...found.learned]},base.budget,base.permissions.visibleSourceIds),school:personalSchoolContext(d.storage,c.schoolObservations??[],typeof q==='string'?q:q.query)};includeLookupIds(result);return result;}});

@@ -18,8 +18,7 @@ it('keeps seen input seen and updates the same deferred check on reconsideration
   expect(d.storage.read('tasks', check.id)!.at).toBe('2026-10-07T10:30:00+08:00');
   const person = d.models.calls.filter(c => c.name === 'personal_chat')[1].input;
   expect(person.roles.visibleIds).toEqual([]); expect(person.roles.reconsiderIds).toEqual(['a']);
-  const memory = d.models.calls.filter(c => c.name === 'memory')[1].input;
-  expect(memory.roles.visibleIds).toEqual([]); expect(memory.roles.reconsiderIds).toHaveLength(1);
+  expect(d.models.calls.filter(c => c.name === 'memory')).toHaveLength(1);
   d.storage.close();
 });
 it('explicit rescheduling wins over default completion', async () => {

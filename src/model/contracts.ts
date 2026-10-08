@@ -176,7 +176,7 @@ export function consolidationTask(snapshot:MemoryCandidate[],selectedIds:string[
       if(u.action==='merge'){requireControl(!!u.canonicalId&&u.ids.includes(u.canonicalId)&&available.get(u.canonicalId)?.kind==='long','canonicalId','long identity required in merge inputs');requireControl(u.ids.filter(id=>available.get(id)!.kind==='long').length>=2,'ids','merge requires at least two long identities');}
       if(u.action==='merge_short'){
         const shorts=u.ids.map(id=>available.get(id)!).filter(r=>r.kind==='short').sort((a,b)=>milliseconds(a.createdAt)-milliseconds(b.createdAt)||(a.id<b.id?-1:a.id>b.id?1:0));
-        requireControl(shorts.length>=2,'ids','merge_short requires two shorts');requireControl(u.canonicalShortId===shorts[0]?.id,'canonicalShortId','must be earliest createdAt then smallest ID');
+        requireControl(shorts.length>=2,'ids','merge_short requires two shorts');requireControl(u.canonicalShortId===undefined||u.canonicalShortId===shorts[0]?.id,'canonicalShortId','must be earliest createdAt then smallest ID');u.canonicalShortId=shorts[0]!.id;
         requireControl(typeof u.eventSummary==='string'&&!!u.eventSummary.trim()&&typeof u.feelingSummary==='string','eventSummary','merge_short summaries required');
         requireControl(shorts.every(r=>!!r.linkedLongId&&u.readOwners.includes(r.linkedLongId)&&available.get(r.linkedLongId)?.kind==='long'),'readOwners','merge_short linked longs required');
       }

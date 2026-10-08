@@ -59,6 +59,8 @@ it('late_inputs_survive_frozen_commit: consumes only selected controls and keeps
   const d = setup(); makeSharedFixture(d); configureSharedModels(d); const input = new InputBuffer(d.storage);
   await input.acceptInput({ id: 'selected', content: '【推进】', receivedAt: NOW });
   const request = (await new Scheduler(d.storage).collectReady(NOW))!;
+  const sharedNarrative = d.models.outputs.narrative_shared;
+  d.models.outputs.narrative_shared = (input: any) => ({ ...sharedNarrative(input), experiences: [{ happenedAt: NOW, description: '继续配合游戏，完成一次移动', relatedEventIds: [] }] });
   const original = d.models.runModel.bind(d.models); let release!: () => void, entered = false;
   d.models.runModel = async (task, data, opts) => { if (task.name === 'narrative_shared') { entered = true; await new Promise<void>(r => release = r); } return original(task, data, opts); };
   const app = new HdsiApp(d), running = app.runTurn(request); await vi.waitFor(() => expect(entered).toBe(true));

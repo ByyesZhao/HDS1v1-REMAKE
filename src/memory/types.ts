@@ -33,10 +33,10 @@ export interface MemoryDirtyOwner extends OwnerVersion {queuedAt:string;reasons:
 export interface MemoryAuditReport {id:string;at:string;readSet:OwnerVersion[];kind:'detail_conflict'|'learned_revision'|'learned_withdrawal';sourceIds:string[];reason:string}
 export interface ContextLimits {
   historyBudget: number|null; alwaysIncludeCharactersLimit: number|null; candidateItemsPerRoute: number|null;
-  detailItemsLimit: number|null; shortItemsLimit: number|null; longItemsLimit: number|null; recentDialogueSegments:number;dialogueIdleMinutes:number;recentMessagesLimit?:number;
+  detailItemsLimit: number|null; shortItemsLimit: number|null; longItemsLimit: number|null; recentDialogueSegments:number;dialogueIdleMinutes:number;
 }
 export const defaultContextLimits: ContextLimits = {historyBudget:null,alwaysIncludeCharactersLimit:null,candidateItemsPerRoute:null,detailItemsLimit:null,shortItemsLimit:null,longItemsLimit:null,recentDialogueSegments:4,dialogueIdleMinutes:15};
-export interface RetrievalStats { queries:number; cacheHits:number; remoteRequests:number; timeouts:number; failures:number; lexicalFallbacks:number; startedAt:string }
+export interface RetrievalStats {semanticSkipped?:number;semanticSkipReasons?:Record<string,number>; queries:number; cacheHits:number; remoteRequests:number; timeouts:number; failures:number; lexicalFallbacks:number; startedAt:string }
 export interface RetrievalPermissions { allowArchive:boolean; allowDetailHistory:boolean; visibleSourceIds:string[] }
 export interface RetrievalRequest { query:string; at:string; phase:string; scope:'current'|'archive'; includeDetailHistory:boolean; permissions:RetrievalPermissions; budget:number|null }
 export type LookupRequest = string | {query:string; scope:'current'|'archive'; includeDetailHistory:boolean};
