@@ -4,6 +4,8 @@ import type { Awakening, IndexJob, MemoryCandidate, MemoryOwnerRef, OwnerVersion
 import {memoryOwnerData} from './types';
 
 const day=86400_000;
+// Keep this expression equivalent to capacity.archiveStart, including natural expiry without a persisted anchor.
+export function archiveStartSql(data='data',now='?'):string {return `CASE WHEN json_extract(${data},'$.kind')='long' AND json_extract(${data},'$.status')='active' AND json_extract(${data},'$.mergedInto') IS NULL THEN COALESCE(json_extract(${data},'$.archiveEnteredAt'),json_extract(${data},'$.capacityExitedAt'),CASE WHEN julianday(json_extract(${data},'$.expiresAt'))<=julianday(${now}) THEN json_extract(${data},'$.expiresAt') END) END`;}
 export type JobTable='memory_index_jobs'|'memory_maintenance_jobs';
 function parse<T>(row: Record<string,unknown>|undefined):T|null { return row ? JSON.parse(String(row.data)) : null; }
 export function memoryIndexText(owner:MemoryCandidate):string {
@@ -73,8 +75,10 @@ export class MemoryStore {
     let row=this.owner({ownerType:'long',ownerId:id})??this.owner({ownerType:'learned',ownerId:id});
     if(row?.canonicalMemoryId)row=this.owner({ownerType:'long',ownerId:row.canonicalMemoryId});
     while(row?.mergedInto)row=this.owner({ownerType:'long',ownerId:row.mergedInto});
-    return row;
+    return row?.kind==='long'?row:null;
   }
+  allOwners():MemoryCandidate[]{return ['memories','details','learned_background'].flatMap(table=>this.storage.prepare(`SELECT data FROM ${table} ORDER BY id`).all().map(r=>memoryOwnerData(JSON.parse(String(r.data)))));}
+  archivedLongs(now:string):MemoryCandidate[]{return this.storage.prepare(`SELECT data FROM memories WHERE (${archiveStartSql()}) IS NOT NULL ORDER BY id`).all(now).map(r=>memoryOwnerData(JSON.parse(String(r.data))));}
   saveOwner(owner:MemoryCandidate):void {
     const table=owner.ownerType==='detail'?'details':owner.ownerType==='learned'?'learned_background':'memories';
     const data=memoryOwnerData(owner);
@@ -85,8 +89,8 @@ export class MemoryStore {
     const archive=request.scope==='archive'; const signature=this.storage.get<string>('memory_embedding_signature')??'';
     const sql=`WITH owners AS (
       SELECT id,data FROM memories WHERE json_extract(data,'$.status') NOT IN ('merged','discarded') AND
-      ((json_extract(data,'$.kind')='short' AND (? OR julianday(json_extract(data,'$.shortExpiresAt'))>julianday(?))) OR
-       (json_extract(data,'$.kind')='long' AND json_extract(data,'$.status')!='durable' AND julianday(json_extract(data,'$.retainedFrom'))<=julianday(?) AND (? OR julianday(json_extract(data,'$.expiresAt'))>julianday(?))))
+      ((json_extract(data,'$.kind')='short' AND json_extract(data,'$.capacityExitedAt') IS NULL AND (? OR julianday(json_extract(data,'$.shortExpiresAt'))>julianday(?))) OR
+       (json_extract(data,'$.kind')='long' AND json_extract(data,'$.status')!='durable' AND julianday(json_extract(data,'$.retainedFrom'))<=julianday(?) AND (? OR (${archiveStartSql()}) IS NULL)))
       UNION ALL SELECT id,data FROM details
       UNION ALL SELECT id,data FROM learned_background WHERE json_extract(data,'$.status')='active')
       SELECT o.data,i.vector FROM owners o LEFT JOIN memory_index i ON i.ownerType=json_extract(o.data,'$.ownerType') AND i.ownerId=o.id AND i.revision=json_extract(o.data,'$.revision') AND i.configSignature=?`;

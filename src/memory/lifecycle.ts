@@ -1,5 +1,6 @@
 import { addMs, milliseconds, localParts } from '../time';
 import { MemoryStore,memoryIndexText } from './store';
+import {MemoryCapacity} from './capacity';
 import type { AwakeningInput, MemoryCandidate, MemoryResultV3, RetentionGrant } from './types';
 
 const day=86400_000;
@@ -12,7 +13,7 @@ function eventRange(rows:Array<{happenedAt:string;happenedUntil?:string}>){
 }
 function requireSources(ids:string[],allowed:string[]) {if(!ids.length||ids.some(id=>!allowed.includes(id)))throw new Error('sourceIds: unknown or missing current source');}
 export class MemoryLifecycle {
-  constructor(public readonly store:MemoryStore){}
+  constructor(public readonly store:MemoryStore,public readonly capacity?:MemoryCapacity){}
   apply(result:MemoryResultV3,turnId:string,at:string,allowedSources:string[],selfReads:string[]=[]):void {
     let createIndex=0;
     for(const change of result.shortTermChanges) {
@@ -70,11 +71,13 @@ export class MemoryLifecycle {
   awaken(input:AwakeningInput):void {
     requireSources(input.sourceIds,input.allowedSourceIds);if(!input.allowedIds.includes(input.id))throw new Error('awaken: unknown provided memory ID');
     const row=this.store.canonical(input.id);if(!row||row.kind!=='long')throw new Error('awaken: unknown canonical memory');
+    this.capacity?.reactivate(row.id,input.at);
     const p=localParts(input.at,'Asia/Shanghai');const date=`${p.year}-${String(p.month).padStart(2,'0')}-${String(p.day).padStart(2,'0')}`;
     const prior=this.store.listAwakenings(row.id).find(a=>a.localDate===date);
     this.store.saveAwakening({canonicalMemoryId:row.id,localDate:date,firstEffectiveAt:input.at,turnId:input.turnId,sourceIds:input.sourceIds});
-    if(!prior&&row.status!=='durable'&&row.expiresAt&&milliseconds(input.at)>=milliseconds(row.expiresAt))this.grant(row,'reactivate',input.at,[date]);
+    if(!this.capacity&&!prior&&row.status!=='durable'&&row.expiresAt&&milliseconds(input.at)>=milliseconds(row.expiresAt))this.grant(row,'reactivate',input.at,[date]);
     this.refresh(row.id);
+    this.store.queueDirty(this.store.canonical(row.id)!,'awaken',input.at);
   }
   private refresh(id:string):void {
     const row=this.store.canonical(id)!;const dates=this.store.listAwakenings(id);const grants=this.store.listGrants(id);
