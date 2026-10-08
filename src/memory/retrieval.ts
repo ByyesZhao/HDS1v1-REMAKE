@@ -12,7 +12,7 @@ export const defaultCalibration:RetrievalCalibration={lexical:{fact:1,experience
 const wantsArchive=(q:string)=>/还记得|回忆|那次|去年.*(?:生日|经历|考试)/.test(q);
 const wantsHistory=(q:string)=>/以前|之前|旧|曾经|变化|原来|过去/.test(q);
 export function makeRetrievalRequest(query:string,at:string,phase:string,budget:number|null=null,visibleSourceIds:string[]=[]):RetrievalRequest {
-  const currentOnly=phase==='world'||phase==='school';
+  const currentOnly=phase==='world'||phase==='school'||phase.startsWith('school_');
   const allowArchive=!currentOnly&&wantsArchive(query),allowDetailHistory=!currentOnly&&wantsHistory(query);
   return {query,at,phase,budget,scope:allowArchive?'archive':'current',includeDetailHistory:allowDetailHistory,permissions:{allowArchive,allowDetailHistory,visibleSourceIds}};
 }

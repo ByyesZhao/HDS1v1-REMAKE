@@ -1,3 +1,4 @@
+import {generateEnvironmentStep} from './directors/school';
 import { Context, Schema, h } from 'koishi';
 import { readFileSync, existsSync } from 'node:fs';
 import { resolve, extname } from 'node:path';
@@ -87,6 +88,7 @@ export function apply(ctx: Context, config: Config): void {
     environmentStore:new EnvironmentStore(storage),schoolStore:new SchoolStore(storage),storage, clock, random, models, config: options, sender, stickers,web,memoryStore:memory.store,memoryLifecycle:memory.lifecycle,retrieval:memory.retrieval,maintenance:memory.maintenance,
     wait: ms => new Promise(resolve => setTimeout(resolve, ms)),
   });
+  app.dependencies.generateEnvironment=input=>generateEnvironmentStep(app.dependencies,input);
   const logger = ctx.logger(name);
   host = new SerialHost(app, { onError: error => logger.error(error) });
   ctx.middleware(async (session, next) => {
