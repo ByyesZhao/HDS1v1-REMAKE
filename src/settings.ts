@@ -29,6 +29,8 @@ const clockTime = z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/);
 const nullableLimit=z.number().int().positive().nullable().default(null);
 const embedding=z.object({baseUrl:z.url().default('https://dashscope.aliyuncs.com/compatible-mode/v1'),apiKeyEnv:z.string().default('QWEN_API_KEY'),model:z.string().min(1).default('qwen3.7-text-embedding'),dimensions:z.number().int().positive().default(1024)});
 const memorySettings=z.object({
+  capacity:z.object({shortActiveLimit:z.number().int().positive().nullable().default(100),longActiveLimit:z.number().int().positive().nullable().default(1000),longArchiveLimit:z.number().int().positive().nullable().default(500),archiveRetentionDays:z.number().int().positive().nullable().default(90)}).prefault({}),
+  idleMaintenanceMinutes:z.number().positive().default(15),maintenanceDuringSleep:z.boolean().default(true),
   contextLimits:z.object({alwaysIncludeCharactersLimit:nullableLimit,candidateItemsPerRoute:nullableLimit,detailItemsLimit:nullableLimit,shortItemsLimit:nullableLimit,longItemsLimit:nullableLimit,recentMessagesLimit:z.number().int().positive().default(30)}).default({alwaysIncludeCharactersLimit:null,candidateItemsPerRoute:null,detailItemsLimit:null,shortItemsLimit:null,longItemsLimit:null,recentMessagesLimit:30}),
   batchItems:z.number().int().positive().default(20),batchCharacters:nullableLimit,
   queryTimeoutMs:z.number().positive().default(1500),backgroundTimeoutMs:z.number().positive().default(120000),retryDelayMs:z.number().positive().default(300000),cacheSize:z.number().int().positive().default(256),cacheTtlMs:z.number().positive().default(600000),calibrationFile:z.string().optional(),

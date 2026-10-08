@@ -50,6 +50,7 @@ export interface Runtime {
   nextMaintenanceAt: string | null;
   sharedActivityVersion: 1 | null; sharedClock: SharedClock | null;
   environmentPlanningVersion:1|null; nextEnvironmentAt:ISOTime|null;
+  memoryCapacityVersion?:1|null; memoryIdle?:import('./memory/types').MemoryIdleState|null;
 }
 export interface Experience { id: string; happenedAt: ISOTime; description: string; relatedEventIds: string[] }
 export interface NarrativeResult {

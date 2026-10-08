@@ -1,6 +1,6 @@
 import { Storage } from '../storage';
 import { addMs, milliseconds, nextDaily } from '../time';
-import type { Awakening, IndexJob, MemoryCandidate, MemoryOwnerRef, OwnerVersion, RetentionGrant, RetrievalRequest } from './types';
+import type { Awakening, IndexJob, MemoryCandidate, MemoryOwnerRef, OwnerVersion, RetentionGrant, RetrievalRequest,MemoryDirtyOwner,MemoryAuditReport } from './types';
 import {memoryOwnerData} from './types';
 
 const day=86400_000;
@@ -11,13 +11,33 @@ export function memoryIndexText(owner:MemoryCandidate):string {
 }
 export class MemoryStore {
   constructor(public readonly storage:Storage) {
-    for(const table of ['learned_background','memory_retention_grants','memory_index_jobs','memory_maintenance_jobs']) storage.prepare(`CREATE TABLE IF NOT EXISTS ${table}(id TEXT PRIMARY KEY,data TEXT NOT NULL)`).run();
+    for(const table of ['learned_background','memory_retention_grants','memory_index_jobs','memory_maintenance_jobs','memory_dirty_owners','memory_audit_reports']) storage.prepare(`CREATE TABLE IF NOT EXISTS ${table}(id TEXT PRIMARY KEY,data TEXT NOT NULL)`).run();
     storage.prepare('CREATE TABLE IF NOT EXISTS memory_awakenings(canonicalMemoryId TEXT NOT NULL,localDate TEXT NOT NULL,firstEffectiveAt TEXT NOT NULL,turnId TEXT NOT NULL,sourceIds TEXT NOT NULL,PRIMARY KEY(canonicalMemoryId,localDate))').run();
     storage.prepare('CREATE TABLE IF NOT EXISTS memory_index(ownerType TEXT NOT NULL,ownerId TEXT NOT NULL,revision INTEGER NOT NULL,configSignature TEXT NOT NULL,vector BLOB NOT NULL,PRIMARY KEY(ownerType,ownerId,revision,configSignature))').run();
     storage.prepare("CREATE INDEX IF NOT EXISTS memory_v3_visibility ON memories(json_extract(data,'$.kind'),json_extract(data,'$.status'),json_extract(data,'$.expiresAt'),json_extract(data,'$.shortExpiresAt'))").run();
     for(const table of ['memory_index_jobs','memory_maintenance_jobs']) storage.prepare(`CREATE INDEX IF NOT EXISTS ${table}_due ON ${table}(json_extract(data,'$.status'),json_extract(data,'$.retryAt'),json_extract(data,'$.createdAt'))`).run();
   }
   schemaVersion():number {return this.storage.get<number>('memory_schema_version')??2;}
+  queueDirty(owner:OwnerVersion,reason:MemoryDirtyOwner['reasons'][number],at:string):void {
+    const id=`${owner.ownerType}:${owner.ownerId}`;
+    const old=parse<MemoryDirtyOwner>(this.storage.prepare('SELECT data FROM memory_dirty_owners WHERE id=?').get(id));
+    if(old?.lastProcessedVersion?.revision===owner.revision&&old.lastProcessedVersion.stateVersion===owner.stateVersion)return;
+    if(old&&(old.revision>owner.revision||old.revision===owner.revision&&old.stateVersion>owner.stateVersion))return;
+    const same=old?.revision===owner.revision&&old.stateVersion===owner.stateVersion;
+    const row:MemoryDirtyOwner={ownerType:owner.ownerType,ownerId:owner.ownerId,revision:owner.revision,stateVersion:owner.stateVersion,queuedAt:old?.queuedAt??at,reasons:[...new Set([...(old?.reasons??[]),reason])],status:same?old!.status:'pending',lastProcessedVersion:old?.lastProcessedVersion??null};
+    this.storage.prepare('INSERT OR REPLACE INTO memory_dirty_owners VALUES(?,?)').run(id,JSON.stringify(row));
+  }
+  dirtyOwners():MemoryDirtyOwner[]{return this.storage.prepare("SELECT data FROM memory_dirty_owners WHERE json_extract(data,'$.status') IN ('pending','reserved') ORDER BY julianday(json_extract(data,'$.queuedAt')),id").all().map(r=>JSON.parse(String(r.data)));}
+  reserveDirty(owner:OwnerVersion):void {
+    const id=`${owner.ownerType}:${owner.ownerId}`;const row=parse<MemoryDirtyOwner>(this.storage.prepare('SELECT data FROM memory_dirty_owners WHERE id=?').get(id));
+    if(row&&row.revision===owner.revision&&row.stateVersion===owner.stateVersion)this.storage.prepare('UPDATE memory_dirty_owners SET data=? WHERE id=?').run(JSON.stringify({...row,status:'reserved'}),id);
+  }
+  completeDirty(readVersion:OwnerVersion,resultingVersion:OwnerVersion):void {
+    const id=`${readVersion.ownerType}:${readVersion.ownerId}`;const row=parse<MemoryDirtyOwner>(this.storage.prepare('SELECT data FROM memory_dirty_owners WHERE id=?').get(id));if(!row)return;
+    const same=row.revision===readVersion.revision&&row.stateVersion===readVersion.stateVersion;
+    this.storage.prepare('UPDATE memory_dirty_owners SET data=? WHERE id=?').run(JSON.stringify({...row,...(same?{revision:resultingVersion.revision,stateVersion:resultingVersion.stateVersion,status:'done'}:{}),lastProcessedVersion:{revision:resultingVersion.revision,stateVersion:resultingVersion.stateVersion}}),id);
+  }
+  saveAudit(report:MemoryAuditReport):void {this.storage.prepare('INSERT OR REPLACE INTO memory_audit_reports VALUES(?,?)').run(report.id,JSON.stringify(report));}
   makeOwner(ref:MemoryOwnerRef, data:Partial<MemoryCandidate>&{content:string}, at:string):MemoryCandidate {
     return {id:ref.ownerId,kind:ref.ownerType,...ref,revision:1,stateVersion:1,sourceIds:[],createdAt:at,topics:[],status:'active',mergedInto:null,importance:'normal',eventSummary:data.content,feelingSummary:'',happenedAt:at,happenedUntil:data.happenedAt??at,lastEventUpdateAt:at,shortExpiresAt:null,linkedLongId:null,retainedFrom:null,expiresAt:null,summaryQuality:'preview',totalAwakenings:0,windowAwakenings:0,legacyMentions:0,evaluatedEvidenceVersion:null,consolidatedRevision:null,...data};
   }

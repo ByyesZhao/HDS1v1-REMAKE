@@ -13,12 +13,22 @@ export interface MemoryCandidate extends OwnerVersion {
   key?: string; value?: string; aliases?: string[]; effectiveAt?: string;
   canonicalMemoryId?: string; alwaysInclude?: boolean; learnedKind?: 'durable_experience'|'stable_understanding';
   projectionBasis?:{content:string;sourceIds:string[];revision:number};
+  capacityExitedAt?: string|null; capacityExitReason?: 'short_capacity'|'long_capacity'|null;
+  archiveEnteredAt?: string|null; evidenceMemoryIds?: string[];
   normalizedVector?: Float32Array;
 }
 export function memoryOwnerData(owner:MemoryCandidate):MemoryCandidate {
   const {normalizedVector,action,clientRef,existingLongId,hasNewEventProgress,...data}=owner as MemoryCandidate&{action?:unknown;clientRef?:unknown;existingLongId?:unknown;hasNewEventProgress?:unknown};
-  return data;
+  return {capacityExitedAt:null,capacityExitReason:null,archiveEnteredAt:null,evidenceMemoryIds:[],...data};
 }
+export interface MemoryCapacityConfig {shortActiveLimit:number|null;longActiveLimit:number|null;longArchiveLimit:number|null;archiveRetentionDays:number|null}
+export const defaultMemoryCapacity:MemoryCapacityConfig={shortActiveLimit:100,longActiveLimit:1000,longArchiveLimit:500,archiveRetentionDays:90};
+export interface MemoryCapacityCounts {shortActive:number;longOccupied:number;longPreview:number;longVisible:number;longArchive:number;protectedLong:number;shortOverflow:number;longOverflow:number;archiveOverflow:number}
+export interface CapacityResult {changedOwners:OwnerVersion[];temporaryProtectedIds:string[];counts:MemoryCapacityCounts}
+export interface MemoryIdleState {lastInputAt:string|null;lastOutputAt:string|null;lastStoryCompletedAt:string|null;lastActivityChangedAt:string|null}
+export interface IdleEligibility {allowed:boolean;readyAt:string|null;reason:'ready'|'waiting'|'shared_activity'|'activity'|'unfinished'|'batch'|'paused'}
+export interface MemoryDirtyOwner extends OwnerVersion {queuedAt:string;reasons:Array<'event'|'awaken'|'detail'|'capacity'|'expiry'|'learned'>;status:'pending'|'reserved'|'done';lastProcessedVersion:{revision:number;stateVersion:number}|null}
+export interface MemoryAuditReport {id:string;at:string;readSet:OwnerVersion[];kind:'detail_conflict'|'learned_revision'|'learned_withdrawal';sourceIds:string[];reason:string}
 export interface ContextLimits {
   historyBudget: number|null; alwaysIncludeCharactersLimit: number|null; candidateItemsPerRoute: number|null;
   detailItemsLimit: number|null; shortItemsLimit: number|null; longItemsLimit: number|null; recentMessagesLimit: number;

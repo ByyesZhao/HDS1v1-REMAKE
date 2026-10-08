@@ -19,6 +19,16 @@ async function withSettings(change: (sample: any) => void, run: (settings: Story
     await run(settings);
   } finally { rmSync(root, { recursive: true }); }
 }
+it('capacity_defaults_and_nulls',async()=>{
+  await withSettings(s=>{delete s.memory;},async s=>{
+    expect(s.memory).toMatchObject({capacity:{shortActiveLimit:100,longActiveLimit:1000,longArchiveLimit:500,archiveRetentionDays:90},idleMaintenanceMinutes:15,maintenanceDuringSleep:true});
+    expect(s.memory.contextLimits.shortItemsLimit).toBeNull();
+  });
+  await withSettings(s=>{s.memory={capacity:{shortActiveLimit:null,archiveRetentionDays:null}};},async s=>{
+    expect(s.memory.capacity).toEqual({shortActiveLimit:null,longActiveLimit:1000,longArchiveLimit:500,archiveRetentionDays:null});
+  });
+  for(const n of [0,-1]) await expect(withSettings(s=>{s.memory={capacity:{longActiveLimit:n}};},async()=>{})).rejects.toThrow();
+});
 function task(name: string): ModelTask<{ ok: true }> {
   return { name, prompt: 'Return JSON with ok true.', schema: { type: 'object' }, parse(value) {
     if ((value as { ok?: boolean })?.ok !== true) throw new Error('expected ok true');
