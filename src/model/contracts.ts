@@ -12,6 +12,8 @@ const activity = z.object({ description: text, startsAt: time, expectedEndAt: ti
 const narrative = z.object({
   experiences: z.array(z.object({ happenedAt: time, description: text, relatedEventIds: z.array(text) })),
   currentScene: z.object({ description: text, activity: activity.nullable() }), energy,
+  schoolObservations:z.array(z.object({via:z.enum(['notice','onsite']),sourceId:text,experienceIndex:z.number().int().nonnegative()})).default([]),
+  researchProgress:z.array(z.object({taskId:text,kind:z.enum(['progress','completed','feedback']),experienceIndex:z.number().int().nonnegative(),summary:text})).default([]),
 });
 const sharedNarrative = narrative.extend({ publicNarration: text.nullable(), progress: text,
   outline: z.object({ goal: text.min(1), openThreads: z.array(text.min(1)), endingCondition: text.min(1) }),
@@ -45,7 +47,7 @@ export function modelTask<T>(name: keyof typeof prompts, schema: z.ZodType, vali
 }
 const requireControl = (condition: boolean, path: string, message: string) => { if (!condition) throw new Error(`${path}: ${message}`); };
 
-export function narrativeTask(shared: boolean, from: string, at: string, eventIds: string[] = [], sharedMeta?: SharedTurnMeta | null, previousOutline?: SharedOutline | null): ModelTask<NarrativeResult | SharedNarrativeResult> {
+export function narrativeTask(shared: boolean, from: string, at: string, eventIds: string[] = [], sharedMeta?: SharedTurnMeta | null, previousOutline?: SharedOutline | null,validateSchool?:(r:NarrativeResult)=>void): ModelTask<NarrativeResult | SharedNarrativeResult> {
   const task = modelTask(shared ? 'narrative_shared' : 'narrative', shared ? sharedNarrative : narrative, (r: NarrativeResult | SharedNarrativeResult) => {
     r.experiences.forEach((e, i) => {
       requireControl(milliseconds(e.happenedAt) >= milliseconds(from) && milliseconds(e.happenedAt) <= milliseconds(at), `experiences.${i}.happenedAt`, 'must be within the elapsed interval');
@@ -56,6 +58,7 @@ export function narrativeTask(shared: boolean, from: string, at: string, eventId
       requireControl(milliseconds(a.startsAt) <= milliseconds(at), 'currentScene.activity.startsAt', 'current activity cannot start in the future');
       requireControl(a.expectedEndAt === null || milliseconds(a.expectedEndAt) >= milliseconds(a.startsAt), 'currentScene.activity.expectedEndAt', 'must follow startsAt');
     }
+    validateSchool?.(r);
     if (shared) {
       requireControl(!!sharedMeta, 'sharedMeta', 'shared calls require fixed selection metadata');
       const result = r as SharedNarrativeResult;

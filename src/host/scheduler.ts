@@ -33,7 +33,7 @@ export class Scheduler {
       if(step)return {inputMessageIds:[],taskIds:[],triggerKinds:['environment'],batchIds:[],environmentStepId:step.id,sharedMeta:null};
     }
     if (this.autonomousEligible(now) && due(state.nextAutonomousAt, now)) return {
-      inputMessageIds: this.storage.unreadMessages().map(m => m.id), taskIds: [], triggerKinds: ['autonomous'], batchIds: [], sharedMeta: null };
+      inputMessageIds: this.storage.unreadMessages().map(m => m.id), taskIds: [], triggerKinds: ['autonomous'], batchIds: [], sharedMeta: null,schoolNoticeRefs:selectSchoolNotices(this.storage,now) };
     return null;
   }
 

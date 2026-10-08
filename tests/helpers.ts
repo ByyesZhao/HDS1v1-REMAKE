@@ -16,7 +16,7 @@ export class SequenceRandom implements Random {
   next() { return this.values.length > 1 ? this.values.shift()! : this.values[0]; }
 }
 export const narrative = {
-  experiences: [], currentScene: { description: '在宿舍', activity: null }, energy: { level: '正常', reason: '休息后' },
+  experiences: [], currentScene: { description: '在宿舍', activity: null }, energy: { level: '正常' as const, reason: '休息后' },
 };
 export const silent = { emotions: [], reply: { decision: 'none' }, taskChanges: [] };
 export const emptyMemory = { schemaVersion:3,shortTermChanges: [], longTermChanges: [], detailChanges: [] };

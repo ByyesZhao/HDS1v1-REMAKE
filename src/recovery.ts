@@ -5,6 +5,7 @@ import { addMs, milliseconds, nextDaily } from './time';
 import { applyMemory, applyTasks, organizeMemory, currentSelfWebReads } from './memory/organize';
 import { isSleeping } from './host/state';
 import { recordSharedOutput, finishSharedTurn } from './host/shared';
+import {applySchoolCommits} from './school/progress';
 
 export function freezeTurn(d: Dependencies, turn: TurnRecord, candidate: TurnCandidate, items: OutboxItem[]): TurnRecord {
   const updated = { ...turn, frozenResult: candidate, outputComplete: items.length === 0,
@@ -69,6 +70,7 @@ export async function finishPostprocessing(d: Dependencies, turn: TurnRecord): P
     const completedAt = d.clock.now();
     if (!turn.environmentKind) applyMemory(d, turn.id, memoryResult, turn.at);
     c.experiences.forEach(e => d.storage.save('experiences', e.id, e));
+    applySchoolCommits(d.storage,c,turn.id);
     if (!turn.environmentKind) d.storage.set('character', c.nextState);
     applyTasks(d, c);
     c.visibleMessageIds.forEach(id => {

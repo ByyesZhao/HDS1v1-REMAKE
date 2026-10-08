@@ -6,6 +6,7 @@ import { MemoryStore } from './store';
 import { MemoryLifecycle } from './lifecycle';
 import { makeRetrievalRequest } from './retrieval';
 import { phaseOptions } from '../web/phases';
+import {personalSchoolContext} from '../school/context';
 
 export function currentSelfWebReads(d:Dependencies,turnId:string) {return (d.web?.selfReadSources(turnId)??d.getSelfWebReadSources?.(turnId)??[]).filter(s=>s.turnId===turnId&&s.phase==='personal_life'&&s.sourceKind==='self_web_read');}
 
@@ -22,11 +23,12 @@ export async function organizeMemory(d: Dependencies, turn: TurnRecord): Promise
   const selfWebReadSources=currentSelfWebReads(d,turn.id);
   const shortIds=memories.filter(m=>m.ownerType==='short').map(m=>m.id);
   const longIds=memories.filter(m=>m.ownerType==='long'||m.ownerType==='learned').map(m=>m.id);
-  const options=phaseOptions(d.web,'turn',turn.id,'memory','memory',{lookup:async q=>{const found=await builder.retrieval.lookup(q,base);const result=builder.retrieval.budget({details:found.details,retrieved:[...found.shortTerm,...found.longTerm,...found.learned]},base.budget,base.permissions.visibleSourceIds);includeLookupIds(result);return result;}});
+  const options=phaseOptions(d.web,'turn',turn.id,'memory','memory',{lookup:async q=>{const found=await builder.retrieval.lookup(q,base);const result={...builder.retrieval.budget({details:found.details,retrieved:[...found.shortTerm,...found.longTerm,...found.learned]},base.budget,base.permissions.visibleSourceIds),school:personalSchoolContext(d.storage,c.schoolObservations??[],typeof q==='string'?q:q.query)};includeLookupIds(result);return result;}});
   function includeLookupIds(result:unknown){if(!result||typeof result!=='object'||!('retrieved' in result)||!Array.isArray(result.retrieved))return;for(const row of result.retrieved){const ids=row.kind==='short'?shortIds:longIds;if(['short','long','learned'].includes(row.kind)&&!ids.includes(row.id))ids.push(row.id);}}
   includeLookupIds(options.web?.snapshot().checkpoint?.privateLookupResult);
   return d.models.runModel(memoryTask(sourceIds,longIds,shortIds,selfWebReadSources.map(s=>s.id)), {
     at: turn.at, background: d.config.background, experiences: c.experiences, visibleMessages, reconsiderMessages, outgoing,
+    school:personalSchoolContext(d.storage,c.schoolObservations??[],query),
     arrangementsAndIntent: { plan: c.nextState.plan, tasks: c.taskChanges, outline: c.narrative && 'outline' in c.narrative ? c.narrative.outline : null },
     ...(c.narrative && 'simulatedUserActions' in c.narrative ? { sharedPublicExperience: {
       publicNarration: c.narrative.publicNarration, simulatedUserActions: c.narrative.simulatedUserActions,

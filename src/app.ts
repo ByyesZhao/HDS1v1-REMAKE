@@ -19,6 +19,8 @@ import { sampleOpportunity, stickerCurve, contactCurve } from './host/probabilit
 import { nextDaily, due } from './time';
 import { phaseOptions } from './web/phases';
 import { hasValidSharedScene } from './host/shared';
+import {narrativeSchoolContext,personalSchoolContext,personalEnvironmentEvents} from './school/context';
+import {prepareSchoolCommits} from './school/progress';
 
 export interface Dependencies { generateEnvironment?:EnvironmentGenerator; environmentStore:EnvironmentStore;schoolStore:SchoolStore; storage: Storage; clock: Clock; random: Random; models: ModelRunner; config: AppConfig; sender: Sender; wait(ms: number): Promise<void>; web?:import('./web/service').WebSearchService; memoryStore?:import('./memory/store').MemoryStore; memoryLifecycle?:import('./memory/lifecycle').MemoryLifecycle; retrieval?:MemoryRetrieval; maintenance?:import('./memory/maintenance').MemoryMaintenance; stickers?: { findSticker(query: string): Promise<string> }; getSelfWebReadSources?(turnId:string):import('./memory/types').SelfWebReadSource[] }
 export class HdsiApp {
@@ -40,6 +42,7 @@ export class HdsiApp {
       triggerKinds: request.triggerKinds, batchIds: request.batchIds ?? [], entryMode: d.storage.character().scene.mode,
       completedAt: null, frozenResult: null, outputComplete: false, done: false, environmentKind: request.environmentKind,
       sharedMeta: request.sharedMeta ?? null,
+      schoolNoticeRefs:request.schoolNoticeRefs??[],
     };
     d.storage.save('turns', turn.id, turn);
     await this.execute(turn);
@@ -62,7 +65,7 @@ export class HdsiApp {
     try {
       let turn = initialTurn;
       if (!turn.frozenResult) {
-        const generated = await generateTurn(d, { inputMessageIds: turn.inputMessageIds, taskIds: turn.triggerTaskIds, triggerKinds: turn.triggerKinds, batchIds: turn.batchIds, environmentKind: turn.environmentKind, sharedMeta: turn.sharedMeta }, turn.id, turn.at, turn.autonomousIntervalMinutes);
+        const generated = await generateTurn(d, { inputMessageIds: turn.inputMessageIds, taskIds: turn.triggerTaskIds, triggerKinds: turn.triggerKinds, batchIds: turn.batchIds, environmentKind: turn.environmentKind, sharedMeta: turn.sharedMeta,schoolNoticeRefs:turn.schoolNoticeRefs??[] }, turn.id, turn.at, turn.autonomousIntervalMinutes);
         turn = freezeTurn(d, turn, generated.candidate, generated.items);
       }
       if (!turn.outputComplete) await sendFrozen(d, turn);
@@ -93,7 +96,11 @@ export async function generateTurn(d: Dependencies, request: TurnRequest, turnId
   const messages = request.inputMessageIds.map(id => d.storage.read('messages', id)!);
   const allTasks = d.storage.all('tasks').filter(t => t.status === 'pending');
   const tasks = allTasks.filter(t => request.taskIds.includes(t.id));
-  const events = d.storage.all('events').filter(e => e.status === 'active');
+  const events = d.storage.all('events').filter(e => e.status === 'active'&&e.kind==='world');
+  const schoolTurn={id:turnId,at,schoolNoticeRefs:request.schoolNoticeRefs??[]} as TurnRecord;
+  const schoolContext=narrativeSchoolContext(d.storage,state.narratedUntil,at,state.scene);
+  schoolContext.noticeSnapshots=schoolContext.noticeSnapshots.filter(n=>schoolTurn.schoolNoticeRefs!.some(ref=>ref.noticeId===n.id&&ref.deliveryRevision===n.deliveryRevision));
+  schoolContext.eventIds=[...new Set([...schoolContext.objectiveInstances.flatMap(i=>[i.id,...(i.legacyEventId?[i.legacyEventId]:[])]),...schoolContext.noticeSnapshots.flatMap(n=>n.payload.snapshots.map(s=>s.entityId))])];
   const contextBuilder = new ContextBuilder(d.storage,d.retrieval);
   const narrativeQuery = [state.plan, state.scene.description, ...tasks.map(t => t.description), ...events.map(e => e.description), ...(shared ? messages.map(m => m.content) : [])].join('\n');
   const narrativeRequest=makeRetrievalRequest(narrativeQuery,at,shared?'narrative_shared':'narrative',d.config.historyBudget,shared?messages.map(m=>m.id):[]);
@@ -101,9 +108,12 @@ export async function generateTurn(d: Dependencies, request: TurnRequest, turnId
   const recent = narrativeHistory.recent;
   const waking = !shared && (request.triggerKinds.includes('sleep') || !!state.sleep && due(state.sleep.wakeAt, at));
   if (waking) state.sleep = null;
-  const narrativeInput = { from: state.narratedUntil, at, background: d.config.background, state, waking, events, dueTasks: tasks, recent, history: narrativeHistory,
+  const narrativeInput = { from: state.narratedUntil, at, background: d.config.background, state, waking, events,school:schoolContext, dueTasks: tasks, recent, history: narrativeHistory,
     ...(shared ? { visibleMessages: messages, sharedMeta: request.sharedMeta, remainingSteps: request.sharedMeta ? request.sharedMeta.maxSteps - request.sharedMeta.stepNumber : null } : {}) };
-  const narrative = await runNarrative(d.models, shared, state.narratedUntil, at, events.map(e => e.id), narrativeInput,phaseOptions(d.web,'turn',turnId,'narrative',shared?'narrative_shared':'narrative',{lookup:q=>contextBuilder.retrieval.lookup(q,narrativeRequest)}), request.sharedMeta, state.scene.shared?.outline);
+  const narrative = await runNarrative(d.models, shared, state.narratedUntil, at, [...events.map(e=>e.id),...schoolContext.eventIds], narrativeInput,phaseOptions(d.web,'turn',turnId,'narrative',shared?'narrative_shared':'narrative',{lookup:q=>contextBuilder.retrieval.lookup(q,narrativeRequest)}), request.sharedMeta, state.scene.shared?.outline,
+    result=>{prepareSchoolCommits(d.storage,schoolTurn,result,result.experiences.map((e,i)=>({...e,id:`draft:${i}`})));});
+  const experiences=narrative.experiences.map(e=>({...e,id:randomUUID()}));
+  const schoolCommits=prepareSchoolCommits(d.storage,schoolTurn,narrative,experiences);
   state.narratedUntil = at;
   state.scene.description = narrative.currentScene.description;
   state.scene.activity = narrative.currentScene.activity;
@@ -119,15 +129,17 @@ export async function generateTurn(d: Dependencies, request: TurnRequest, turnId
   const personalQuery = [state.scene.description, ...narrative.experiences.map(e => e.description), ...visible.map(m => m.content), ...reconsider.map(m => m.content)].join('\n');
   const personalRequest=makeRetrievalRequest(personalQuery,at,'personal',d.config.historyBudget,[...visible,...reconsider].map(m=>m.id));
   const personalHistory = await contextBuilder.build(personalRequest);
+  const personalSchool=personalSchoolContext(d.storage,schoolCommits.observations,personalQuery);
+  const personalEvents=personalEnvironmentEvents(d.storage,personalSchool.knownSnapshots);
   const contactEligible = request.triggerKinds.includes('autonomous') && !shared && visible.length === 0 && !tasks.some(t => t.kind === 'appointment') && canRead(state, at) && !isSleeping(state, at);
   const kind = shared ? 'shared' : visible.length || tasks.some(t => t.kind === 'appointment') || deferred.length > 0 ? 'chat' : 'life';
-  const runPerson = shared || visible.length > 0 || tasks.some(t => t.kind === 'appointment') || request.triggerKinds.includes('autonomous') || request.triggerKinds.includes('sleep') || tasks.some(t => t.checkReason === 'deferred_reply' && canRead(state, at));
+  const runPerson = shared || visible.length > 0 || tasks.some(t => t.kind === 'appointment') || request.triggerKinds.includes('autonomous') || request.triggerKinds.includes('sleep') || schoolCommits.observations.length>0 || tasks.some(t => t.checkReason === 'deferred_reply' && canRead(state, at));
   let personal: PersonalResult | null = null;
   let intent: UtteranceIntent | null = null;
   let contactMisses = runtime.contactMisses;
   if (runPerson) {
-    personal = await runPersonal(d.models, kind, at, allTasks, entryMode, [...visible, ...reconsider].map(m => m.id), { at, background: d.config.background, state, experiences: narrative.experiences, visibleMessages: visible, reconsiderMessages: reconsider, dueTasks: tasks.filter(t => t.kind !== 'check_messages' || canRead(state, at)), tasks: allTasks, events, history: personalHistory, contactEligible,
-      ...(shared ? { sharedMeta: request.sharedMeta, remainingSteps: request.sharedMeta ? request.sharedMeta.maxSteps - request.sharedMeta.stepNumber : null, outline: state.scene.shared?.outline, publicNarration: 'publicNarration' in narrative ? narrative.publicNarration : null } : {}) },phaseOptions(d.web,'turn',turnId,'personal',`personal_${kind}`,{lookup:q=>contextBuilder.retrieval.lookup(q,personalRequest)}), request.sharedMeta, 'publicNarration' in narrative ? narrative.publicNarration : null);
+    personal = await runPersonal(d.models, kind, at, allTasks, entryMode, [...visible, ...reconsider].map(m => m.id), { at, background: d.config.background, state, experiences: narrative.experiences,school:personalSchool, visibleMessages: visible, reconsiderMessages: reconsider, dueTasks: tasks.filter(t => t.kind !== 'check_messages' || canRead(state, at)), tasks: allTasks, events:personalEvents, history: personalHistory, contactEligible,
+      ...(shared ? { sharedMeta: request.sharedMeta, remainingSteps: request.sharedMeta ? request.sharedMeta.maxSteps - request.sharedMeta.stepNumber : null, outline: state.scene.shared?.outline, publicNarration: 'publicNarration' in narrative ? narrative.publicNarration : null } : {}) },phaseOptions(d.web,'turn',turnId,'personal',`personal_${kind}`,{lookup:async q=>({...await contextBuilder.retrieval.lookup(q,personalRequest),school:personalSchoolContext(d.storage,schoolCommits.observations,typeof q==='string'?q:q.query)})}), request.sharedMeta, 'publicNarration' in narrative ? narrative.publicNarration : null);
     state.emotions = personal.emotions;
     if (typeof personal.nextPlan === 'string') state.plan = personal.nextPlan;
     if ('reply' in personal && personal.reply.decision === 'now') intent = personal.reply;
@@ -138,10 +150,10 @@ export async function generateTurn(d: Dependencies, request: TurnRequest, turnId
   }
   const change = personal?.sharedChange;
   const outputMode = change?.action === 'start' ? change.mode : entryMode;
-  const expression = intent ? await runExpression(d.models, { intent, mode: outputMode, state, visibleMessages: visible, history: personalHistory, chatExamples: d.config.chatExamples },phaseOptions(d.web,'turn',turnId,'expression','expression',{lookup:null})) : null;
+  const expression = intent ? await runExpression(d.models, { intent, mode: outputMode, state,school:personalSchool, visibleMessages: visible, history: personalHistory, chatExamples: d.config.chatExamples },phaseOptions(d.web,'turn',turnId,'expression','expression',{lookup:null})) : null;
   const candidate: TurnCandidate = {
     visibleMessageIds: visible.map(m => m.id), reconsiderMessageIds: reconsider.map(m => m.id), narrative, personal, expression,
-    experiences: narrative.experiences.map(e => ({ ...e, id: randomUUID() })), nextState: state,
+    experiences,schoolNoticeRefs:request.schoolNoticeRefs??[],schoolObservations:schoolCommits.observations,schoolProgress:schoolCommits.progress,nextState: state,
     taskChanges: (personal?.taskChanges ?? []).map(c => c.action === 'create' ? { ...c, id: randomUUID() } : c), completedTaskIds: tasks.filter(t => t.kind !== 'check_messages' || canRead(state, at)).map(t => t.id),
     probability: { contactMisses, stickerMisses: runtime.stickerMisses },
     autonomousIntervalMinutes: retainedInterval === undefined ? autonomousMinutes(d.random) : retainedInterval, environmentChanges: [],

@@ -44,7 +44,7 @@ it('wrap whitespace compatibility keeps stored originals, without semantic match
   expect(() => task(meta('wrap_up'), { ...old, openThreads: ['结账'] }).parse({ ...result, outline: { ...old, openThreads: ['取餐'] } })).toThrow(/openThreads/);
 });
 it('shared_result_has_no_model_deadline: requires meta and new fields, rejects writable nextStepAt', () => {
-  expect(task().parse(result)).toEqual(result);
+  expect(task().parse(result)).toEqual({...result,schoolObservations:[],researchProgress:[]});
   expect(() => task().parse({ ...result, nextStepAt: null })).toThrow();
   const { outline, ...missing } = result; expect(() => task().parse(missing)).toThrow();
   expect(() => narrativeTask(true, NOW, NOW).parse(result)).toThrow(/sharedMeta/);

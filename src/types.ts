@@ -53,6 +53,7 @@ export interface Runtime {
 }
 export interface Experience { id: string; happenedAt: ISOTime; description: string; relatedEventIds: string[] }
 export interface NarrativeResult {
+  schoolObservations?:import('./school/types').SchoolObservation[];researchProgress?:import('./school/types').ResearchProgressDraft[];
   experiences: Array<Omit<Experience, 'id'>>;
   currentScene: { description: string; activity: Activity | null };
   energy: CharacterState['energy'];
@@ -93,6 +94,7 @@ export interface TurnRecord {
   schoolNoticeRefs?:import('./school/types').SchoolNoticeRef[];
 }
 export interface TurnCandidate {
+  schoolObservations?:import('./school/types').SchoolObservationCommit[];schoolProgress?:import('./school/types').SchoolProgressCommit[];
   visibleMessageIds: string[]; reconsiderMessageIds: string[];
   narrative: NarrativeResult | SharedNarrativeResult | null; personal: PersonalResult | null; expression: ExpressionResult | null;
   experiences: Experience[]; nextState: CharacterState; taskChanges: TaskChange[]; completedTaskIds: string[];

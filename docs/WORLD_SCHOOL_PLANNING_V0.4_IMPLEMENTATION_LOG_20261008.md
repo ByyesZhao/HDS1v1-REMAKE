@@ -35,3 +35,7 @@ BASE=8993511。RED：合同模块尚不存在；随后职责、版本、URL、�
 ## 任务4：周日历与通知发布
 BASE=cc32892。GREEN：56文件307项通过（最终全量），typecheck退出0。周五包含下周、周一沿用身份；once/weekly/deadline用稳定元组和SHA256标识，同一课次改期保持ID。必需更正从已下发／曾发布／已知及deliveryRevision恢复，覆盖记录不能代替候选。releasedAt在失效后保留；read快照不改。未来未知草案预排最新issue；默认提醒本地前1日／120分钟，错过的旧提醒不成串补发。collectReady门禁后事务发布，唯一Host计时器包含publishAt；未知结束不可读不贡献立即截止，合法未来提醒仍有将来截止。
 Ruling：requiredNoticeKeys额外携带entityIds，固定候选宣告范围；它是原有真实引用／周摘要声明要求的可校验表示，无新预算或模型职责。防止摘要带入未下发草案。周解析移动到school/calendar，学校事务应用在school/changes由runtime使用，同样复用Storage事务。
+
+## 任务5：角色知识与故事事务
+BASE=6ff59d7。RED：未知学校引用、拒看立即重复唤醒及未提交knowledge的业务断言失败。首次全量仅旧共同合同的默认数组相等断言失败，按兼容缺省[]更新；最终58文件316项通过，typecheck退出0。程序先验证观察index/冻结通知版本/发布与可读时刻，分配经历ID后给个人本轮投影，段B才保存。注入school_knowledge写入失败证明notice已读、经历、知识一起回滚；恢复及重复后处理不重记。拒看nextWakeAt设未来活动结束或null；正常故事仍可合并。纯通知不抽联系，实际获知才单独个人生活调用。研究进展有已知research及实际experienceId，意图/通知不自产成果，completed不关任务或等于导师认可。
+Ruling：未知活动结束缺少中间转场时点时，过去不可读区间只允许在at实际读取，或在主叙事给定明确新phoneAccess活动startsAt之后读取；不能由轮末状态回填睡眠已读。提示词同步此口径。程序只审引用/时刻/来源，描述是否真的是研究过程仍需任务8语义验收。
