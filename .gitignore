@@ -20,6 +20,9 @@ runtime/koishi.yml
 runtime/*backup*/
 *.log
 *.tsbuildinfo
+runtime/memory-capacity-acceptance*/
+runtime/memory-capacity-backups/
+.superpowers/
 
 # Local tool state
 .codex/

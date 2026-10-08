@@ -1,6 +1,6 @@
 # 记忆容量与空闲整理 V0.4 实施细化
 
-日期：2026-10-08。状态：供实施审核，未编写本功能代码、未升级正式库。源码基线`005f9ac`（程序实现基线`4f09757`）。
+日期：2026-10-08。状态：任务1～8已实现，428项测试、类型检查、构建和隔离离线／有限在线验收通过；最终代码复核另见交付记录。实际实施基线`9e24b0d`。正式空库仅只读检查，未升级或清理，服务保持停止。
 
 本文与[执行计划](MEMORY_CAPACITY_IDLE_V0.4_EXECUTION_PLAN_20261008.md)共同作为本次实施依据。已合并[原方案](MEMORY_CAPACITY_IDLE_V0.4_PROPOSAL_20261008.md)、[CODEX回复](../DSH-review/CODEX_REBUTTAL_MEMORY_CAPACITY_IDLE_V0.4_20261008.md)、[DSH修订审核](../DSH-review/DSH_REVIEW15_MEMORY_CAPACITY_IDLE_V0.4_20261008.md)及[第十六轮计划审核](../DSH-review/DSH_REVIEW16_MEMORY_CAPACITY_IDLE_PLAN_20261008.md)。原稿3000条、所有记忆退出后无限留库的口径由本文替代。
 
@@ -15,7 +15,7 @@
 - 不新增向量数据库、通用语义裁判或并发故事。一个Host、一个定时器、一个后台网络准备槽。每个后台提交／清理单元后让出事件循环，重扫前台。
 - 清理普通经历记忆及其派生副本；作者背景、details／detail_history、常驻必要证据、原始消息／公开剧情／experiences、学校计划不执行本期删除政策。容量不是整个SQLite文件大小上限。
 
-睡眠例外、500条归档及归档90天在本细化采用推荐值；用户要求本次整理成文档，不代表它们已写入部署配置。本期仅实现正常业务所需规则，不增加极端情况防御框架。
+睡眠例外、500条归档及归档90天已作为配置缺省值实现；本地配置未显式覆盖时采用缺省值。本期仅实现正常业务所需规则，不增加极端情况防御框架。
 
 ## 2. 文件职责及配置
 
@@ -31,6 +31,8 @@
 | `src/model/contracts.ts`、`prompts.ts` | 正式深度合同和角色／事实审核边界 |
 | `src/deployment/memory-runtime.ts`、`src/index.ts`、`settings.ts` | 装配、新旧库门禁、配置兼容 |
 | 新`scripts/migrate-memory-capacity.ts` | 只读检查／停止后的显式结构升级 |
+| 新`src/memory/metadata.ts`、`src/deployment/memory-capacity-upgrade.ts` | 无正文统计、同源检查、备份及结构升级 |
+| 新`scripts/validate-memory-capacity.ts`及离线／在线验收模块 | 新隔离库混合场景和有限模型合同验收 |
 
 新配置位于`settings.memory`，不得复用`contextLimits.shortItemsLimit／longItemsLimit`：
 
@@ -116,7 +118,7 @@ class MemoryCapacity {
   readonly config: MemoryCapacityConfig;
   constructor(store: MemoryStore, config: MemoryCapacityConfig);
   counts(now: string): MemoryCapacityCounts;
-  normalize(now: string, protectedLongIds?: string[]): CapacityResult;
+  normalize(now: string, protectedLongIds?: string[], changeBudget?: number): CapacityResult;
   reactivate(id: string, at: string): void;
 }
 // src/memory/idle.ts；调用方负责输入／输出／段B事务
@@ -138,7 +140,7 @@ class MemoryCleanup {
 
 `assembleMemory`扩展返回`capacity,idle,cleanup`；`Dependencies`增加对应可选依赖供既有开发fixture兼容，正式装配必须同时启用三者。已有`MemoryMaintenance.startOne／applyOneReady／nextDeadline`签名保留，其内部按任务类型使用idle资格。
 
-装配次序为store→capacity→`new MemoryLifecycle(store,capacity)`→idle／cleanup→maintenance；Lifecycle第二参数可选，兼容既有无容量fixture。awaken校验当轮来源／合法ID后才调用capacity.reactivate；不设置反向Lifecycle依赖。段B调用normalize时显式传入本轮真实恢复的canonical ID，函数内部另收集本次提前转层ID，保护只覆盖当前归一。
+装配次序为store→capacity→`new MemoryLifecycle(store,capacity)`→idle／cleanup→maintenance；Lifecycle第二参数可选，兼容既有无容量fixture。awaken校验当轮来源／合法ID后才调用capacity.reactivate；不设置反向Lifecycle依赖。段B调用normalize时显式传入本轮真实恢复的canonical ID，函数内部另收集本次提前转层ID，保护只覆盖当前归一。新增可选内部changeBudget，缺省Infinity；旧库清理入口用1逐对象推进，段B仍完整归一当轮小差额，不改变容量规则。
 
 ## 4. 活跃计数、排序与转层
 
@@ -289,8 +291,8 @@ short原7天截止、归档90天截止、容量归一待办纳入已有Host计�
 | 动作 | 必需输入／输出 | 程序应用 |
 | --- | --- | --- |
 | `merge_short` | ≥2个short及其必要long／learned／反向short依赖；canonicalShortId为createdAt最早的输入short，相同时取ID升序最小者；content、eventSummary、feelingSummary、非空合法sourceIds | 合并同事件详细记录；linked long若不同先正式合并并重指；单一long不假装满足旧merge≥2long合同 |
-| `review_detail` | 被审detail ID、readOwners、sourceIds、decision=`retain`或`report_conflict`、reason | retain登记水位；冲突保存当前建议，不自动改details或历史 |
-| `review_learned` | 被审learned ID和证据readOwners、sourceIds、decision=`retain`／`suggest_revision`／`suggest_withdrawal`、reason | 保存审核水位／建议；本期不自行改作者背景或撤销常驻结论 |
+| `review_detail` | targetId为被审detail ID、readOwners、sourceIds、decision=`retain`或`report_conflict`、reason | retain登记水位；冲突保存当前建议，不自动改details或历史 |
+| `review_learned` | targetId为被审learned ID及证据readOwners、sourceIds、decision=`retain`／`suggest_revision`／`suggest_withdrawal`、reason | 保存审核水位／建议；本期不自行改作者背景或撤销常驻结论 |
 
 所有动作明确readOwners，程序生成包含写入对象和隐式重指对象的readSet。继续保证ids在readOwners内、每selected被一个unit覆盖、不重叠写入、来源来自快照合法证据。允许空结果仅在没有需要审核的selected时；有selected时用retain表达合法“无变化”。
 
@@ -320,7 +322,7 @@ Host每次选择顺序：旧未完成故事→现有可执行前台（含环境�
 
 旧库idle初始化取现存真实输入／confirmed输出／非环境done故事时刻最大值；缺乏任何证据时取迁移Clock。现存实际活动按状态继续阻挡，不用预计结束代替。旧pending／ready维护job规范化kind及轻量剪除字段；computing按现有恢复规则转pending。done任务正文压缩，不把旧深度结果在新门禁前应用。
 
-正式装配旧标记缺失时报明确命令，不偷偷清库；配置解析本身不写库。保持用户手动cmd启动服务的安排。现有本地密钥、背景和正式聊天本期写文档时不读取。
+正式装配旧标记缺失时报明确命令，不偷偷清库；配置解析本身不写库。保持用户手动cmd启动服务的安排。升级工具不读取密钥或背景；有限在线验收在既有授权范围内读取本地模型配置和背景，不读取正式聊天。
 
 status展示四个长期统计、short活跃、容量目标／差额、保护数、最老清理阻挡、idleReadyAt／阻挡原因、增量pending／ready及实际后台请求／重试数；不加载或记录私聊／记忆正文。归档缺失按未找到，不保证500或90天之外可恢复。常驻／原始业务数据增长仍可另行评估，不宣称本期完成磁盘封顶。
 
@@ -334,4 +336,4 @@ status展示四个长期统计、short活跃、容量目标／差额、保护数
 
 ### 第十六轮合并记录
 
-第十六轮§2.1／§2.3的归档集合与锚点口径合并到§3.1／§4.1／§5.1；§2.2的ID决胜及来源硬校验合并到§7.2，并在执行计划任务2／3／5／7补充验收。其§3观察沿用现有OR清理、删除面和让位规则，不增加新的产品选择。本次只更新两份实施文档，不生成新rebuttal，不改代码／正式库。
+第十六轮§2.1／§2.3的归档集合与锚点口径合并到§3.1／§4.1／§5.1；§2.2的ID决胜及来源硬校验合并到§7.2，并在执行计划任务2／3／5／7补充验收。其§3观察沿用现有OR清理、删除面和让位规则，不增加新的产品选择。审核阶段只更新文档；后续任务1～8实施及实际验收见[过程日志](MEMORY_CAPACITY_IDLE_V0.4_IMPLEMENTATION_LOG_20261008.md)和[交付记录](MEMORY_CAPACITY_IDLE_V0.4_DELIVERY_20261008.md)。

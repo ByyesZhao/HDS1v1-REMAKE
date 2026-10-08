@@ -8,7 +8,7 @@
 
 ## 预检
 
-已逐项核对类型→容量→清理→空闲→合同→Host→迁移接口，未发现冲突。Windows下以PowerShell保留任务账本，替代Bash辅助脚本；复用主工作区node_modules，不改依赖。任务1开始，后续待实施。
+已逐项核对类型→容量→清理→空闲→合同→Host→迁移接口，未发现冲突。Windows下以PowerShell保留任务账本，替代Bash辅助脚本；复用主工作区node_modules，不改依赖。以下逐任务记录真实实施结果。
 
 ## 任务1：配置与存储（完成）
 
@@ -53,3 +53,13 @@ refine只改长期摘要；审核targetId、decision和对象kind硬校验，固
 ### 正式库只读检查
 
 2026-10-08 18:39（上海）：未发现命令行包含HDSI-remake／SnowLuma的node、python、cmd运行进程。runtime/data/hdsi-remake.sqlite schema3，character尚未初始化，容量标记null；短期／长期／归档均0，无旧轮、清理候选或缺失引用。仅dry-run，未升级／清理该库，未启动服务。该空库应由用户下一次启动后按新库路径正式初始化，避免在角色尚未初始化时另立迁移时钟。
+
+## 任务8：混合验收与交付文档（完成）
+
+新增集成模块缺失先红灯。初次压力夹具以两千余条SQLite自动提交插入，碰到Vitest默认5秒，导致未结束异步任务妨碍临时目录清理；定位后把夹具写入合为一个事务（不改生产逻辑或生产超时），集成用例用30秒上限，两项运行通过。完整npm test为79文件／428项通过，typecheck及build通过。
+
+独立命令：npm run validate:memory-capacity -- --db D:\HDSI-remake\runtime\memory-capacity-acceptance-20261008\final-1855\isolated.sqlite --online --config D:\HDSI-remake\config.local.json。报告：上述库路径+.report.json。实际Host完成3个故事轮、共同活动结束，15分钟前深度阻挡，之后2次离线深度调用；压力归一后100／1000／500、重开一致，清理11个单元，输入在第2个清理前优先完成；原始来源保留、派生正文零泄漏，活跃引用先保护后解除清理。
+
+在线使用既有授权角色背景及三组模拟记忆，DeepSeek Flash/high；3次请求、0次修补，耗时12.420／13.434／3.932秒。模型实际选择merge_short、retain+retain、review_detail，均合同通过并正式应用；事实和作者背景不改。合法retain不能当作稳定认识实际晋升已验证，该程序路径另由确定性测试覆盖。未读正式聊天、未传图片、未调用Qwen或连接QQ。工具超时300秒，正式后台120秒默认不改。
+
+同步两份实施主文档的完成状态、changeBudget／targetId与实际文件，并新增交付复核入口。测试／验收临时库报告仅在runtime保存，不提交配置、密钥或DSH原始审核文件。后续全分支只读复核及主目录集成结果另记。
