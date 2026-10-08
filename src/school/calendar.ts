@@ -78,7 +78,12 @@ export function schoolExpansionInput(storage:Storage,now:string,timezone:string)
  return {weekStarts,sourceItems,existingInstances,existingNotices,knownSnapshots,coveredVersions,requiredOccurrences,requiredNoticeKeys,conflicts};
 }
 export function validateWeekCoverage(result:Extract<EnvironmentModelResult,{stage:'school_week'}>,input:SchoolExpansionInput):void {
- for(const o of input.requiredOccurrences)if(!result.instanceChanges.some(c=>c.occurrenceKey===o.occurrenceKey&&c.sourceItemId===o.sourceItemId&&c.expectedRevision===input.sourceItems.find(i=>i.id===o.sourceItemId)!.revision))throw new ModelFormatError(`required occurrence missing: ${o.occurrenceKey}`);
+ for(const o of input.requiredOccurrences){
+  const candidate=result.instanceChanges.find(c=>c.occurrenceKey===o.occurrenceKey&&c.sourceItemId===o.sourceItemId);
+  if(!candidate)throw new ModelFormatError(`required occurrence missing: ${o.occurrenceKey}`);
+  const revision=input.sourceItems.find(i=>i.id===o.sourceItemId)!.revision;
+  if(candidate.expectedRevision!==revision)throw new ModelFormatError(`${o.occurrenceKey}: expectedRevision must be ${revision} from current sourceItems, not the old existingInstances revision`);
+ }
  for(const n of input.requiredNoticeKeys)if(!result.noticeCandidates.some(c=>c.key===n.id))throw new ModelFormatError(`required notice missing: ${n.id}`);
  for(const c of result.instanceChanges)if(!input.requiredOccurrences.some(o=>o.occurrenceKey===c.occurrenceKey&&o.sourceItemId===c.sourceItemId))throw new ModelFormatError('unknown occurrence candidate');
  for(const c of result.noticeCandidates){const n=input.requiredNoticeKeys.find(n=>n.id===c.key);if(!n)throw new ModelFormatError('unknown notice candidate');if(n.sourceItemId&&!c.entityRefs.some(r=>r.entityKind==='plan_item'&&r.entityId===n.sourceItemId))throw new ModelFormatError('notice must declare its source item');

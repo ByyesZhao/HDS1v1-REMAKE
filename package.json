@@ -18,6 +18,7 @@
     "memory:migrate": "tsx scripts/migrate-memory.ts",
     "shared:migrate": "tsx scripts/migrate-shared-activity.ts",
     "migrate:environment":"tsx scripts/migrate-environment.ts",
+    "validate:world-school":"tsx scripts/validate-world-school.ts",
     "memory:check": "tsx scripts/check-memory-retrieval.ts",
     "memory:background": "tsx scripts/prepare-character-background.ts",
     "web:check": "tsx scripts/check-web-context.ts"

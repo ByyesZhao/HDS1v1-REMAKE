@@ -1,6 +1,6 @@
 # 世界与学校规划 V0.4 实施细化
 
-日期：2026-10-08。状态：第十二／十三轮审查合并完成，任务1～8待实施；本文固定设计与验收口径，不代表源码、配置或正式数据库已经升级。设计基线为本地提交 `7da4ace`，本次合并前文档基线为 `ef88904`。
+日期：2026-10-08。状态：任务1～8实现与场景验收完成，整分支最终复核待完成。源码起点`690a5ed`，实际迁移／测试见[实施日志](WORLD_SCHOOL_PLANNING_V0.4_IMPLEMENTATION_LOG_20261008.md)，实际模型选择见[真实验收](WORLD_SCHOOL_PLANNING_V0.4_REAL_STORY_ACCEPTANCE_20261008.md)。设计基线为本地提交 `7da4ace`，审查合并前文档基线为 `ef88904`，保留用于追溯。
 
 实施以本文的字段／时序和[执行计划](WORLD_SCHOOL_PLANNING_V0.4_EXECUTION_PLAN_20261008.md)的任务顺序为准。[方案](WORLD_SCHOOL_PLANNING_V0.4_PROPOSAL_20261008.md)说明产品意图；第十一轮[已接受回应](../DSH-review/CODEX_REBUTTAL_WORLD_SCHOOL_V0.4_20261008.md)、第十二轮[计划审查回应](../DSH-review/CODEX_REBUTTAL_WORLD_SCHOOL_V0.4_PLAN_20261008.md)及[第十三轮补充](../DSH-review/DSH_REVIEW13_WORLD_SCHOOL_V0.4_PLAN_SUPPLEMENT_20261008.md)已并入这两份执行依据。审查文件仅供追溯，不再作为需要另行拼接的实施规则；本次合并的时间语义见§5.1、§7。
 
@@ -12,7 +12,7 @@
 
 不增加人为字符、token、检索条数预算；使用时间、归属、关联和角色已知范围选择信息。模型接口实际超限仍报错，不自动删低相关历史重试。新增计划不建立独立Embedding索引，也不受长期记忆90天TTL支配。
 
-本轮细化不改“已实现行为”说明、不启动HDSI／SnowLuma、不调用模型、不升级正式库。实施时逐任务记录测试、提交、迁移及真实验收，不能把计划中的断言写成已通过。
+本次实现已同步“已实现行为”说明，正式库显式备份升级；隔离模型验收在此前用户授权范围进行，HDSI／SnowLuma仍未启动。逐任务测试、提交、迁移及真实模型选择见记录；合法未读、未知反馈与格式失败分别保留。
 
 ## 2. 模块与配置
 
@@ -132,7 +132,7 @@ Host每完成一个环境步骤让出事件循环并重新选择。选择规则�
 
 `SchoolExpansionInput`固定包含 `weekStarts, sourceItems, existingInstances, existingNotices, knownSnapshots, coveredVersions, requiredOccurrences, requiredNoticeKeys, conflicts`。knownSnapshots给出相关SchoolEntitySnapshot，用于识别已通过周摘要／现场获知的条目；只提供学校知识，不附完整私聊。模型填公开措辞、实例／通知候选及覆盖记录，不可更改上游确切时刻。集合按以下判据生成并校验：
 
-- requiredOccurrences：当前需展开范围内缺失、标needsExpansion、或与最新上游公开日程不符的occurrenceKey。SchoolWeek.sourceVersions用于检查上游版本覆盖；实际实例身份、版本及日程仍须核对，内部备注改变不触发全套提醒。
+- requiredOccurrences：当前需展开范围内缺失、标needsExpansion、或与最新上游公开日程不符的occurrenceKey。候选expectedRevision取sourceItems对应条目的当前revision，不复制existingInstances的旧sourceRevision；requiredOccurrences本身不携带版本。SchoolWeek.sourceVersions用于检查上游版本覆盖；实际实例身份、版本及日程仍须核对，内部备注改变不触发全套提醒。
 - requiredNoticeKeys：按策略应生成且仍有意义的issue／change／cancel／reminder／week_digest完整通知元组身份。已有同身份合法scheduled／available／read行算候选已覆盖；invalidated及旧deliveryRevision不能覆盖新键。只有未来scheduled行不证明已经发布或已知。
 - 上游deliveryRevision改变、announceOnChange=true、条目已进入下发窗口，且缺相应本版合法通知时，必须包含change键；取消用cancel键。无失效未读、仅有已读旧通知时同样适用。旧周摘要或现场获知也纳入判断，不能只查单项issue。
 - 更正义务延续到相应候选实际提交；周任务失败／跨日后仍从当前版本、策略及通知／知识／覆盖记录恢复，不能仅凭“昨天已失效”或sourceVersions已写覆盖就略过。存在必需键时，空变更或只更新覆盖记录不能通过；同版合法候选已提交则不重建。

@@ -42,3 +42,17 @@ it('onsite_known_and_previously_released_invalidated_notice_keep_correction_obli
  d.storage.remove('school_notices',notice.id);d.storage.save('school_knowledge','known',{id:'known',entityKind:'plan_item',entityId:item.id,revision:1,snapshot:{entityKind:'plan_item',entityId:item.id,revision:1,value:item},acquiredAt:NOW,experienceId:'e',turnId:'t',via:'onsite'});
  expect(schoolExpansionInput(d.storage,NOW,d.config.timezone).requiredNoticeKeys.some(n=>n.kind==='change')).toBe(true);d.storage.close();
 });
+import {ModelClient} from '../src/model/client';
+import {schoolWeekTask} from '../src/school/contracts';
+
+it('reschedule_format_repair_uses_current_source_revision_not_old_instance',async()=>{
+ const d=setup();d.storage.save('school_plan_items','meeting',schoolItem());expand(d);
+ d.storage.save('school_plan_items','meeting',schoolItem({revision:2,deliveryRevision:2,location:'新教室'}));
+ const input=schoolExpansionInput(d.storage,NOW,d.config.timezone);let calls=0;
+ const client=new ModelClient({complete:async request=>{
+  calls++;const corrected=request.repair?.errors.includes('expectedRevision must be 2');
+  return {stage:'school_week',instanceChanges:input.requiredOccurrences.map(o=>({occurrenceKey:o.occurrenceKey,sourceItemId:o.sourceItemId,expectedRevision:corrected?2:1})),noticeCandidates:input.requiredNoticeKeys.map(n=>({key:n.id,text:'新通知',entityRefs:n.entityIds.map(entityId=>({entityKind:'plan_item',entityId}))})),weekChanges:[]};
+ }});
+ const result=await client.runModel(schoolWeekTask(input),input);
+ expect(calls).toBe(2);expect((result as any).instanceChanges[0].expectedRevision).toBe(2);d.storage.close();
+});
