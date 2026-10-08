@@ -304,7 +304,7 @@ Koishi 入口只接收绑定机器人与用户之间的私聊，解析并拼接 
 
 `sleepPreference` 的 reason 不被算法解析。已有区间时，仅 reason 和 null 时间不会改变作息；具体 sleepAt/wakeAt 可调整对应值。尚无区间或起床安排下一晚时，按习惯及体力抽取区间；次日早间预约减去准备时间可提前 wakeAt。两个偏好时间都有值时合同检查先后关系，最终安排还要求 wakeAt 晚于 sleepAt。不能将“只说想早睡就自动改变时间”视作已实现能力。
 
-每个实际角色叙事前台轮冻结一次自主间隔，首次freeze同时保存TurnRecord.autonomousIntervalMinutes，未尝试稿重生成也复用。段B从completedAt重排，普通睡眠清空；环境／无叙事控制轮为null。个人shared工厂及wrapper在原参数末尾（wrapper在options后）仅追加sharedMeta，final要求end；所有个人合同禁止create/update/cancel scene_step。
+每个实际角色叙事前台轮冻结一次自主间隔，首次freeze同时保存TurnRecord.autonomousIntervalMinutes，未尝试稿重生成也复用。段B从completedAt重排，普通睡眠清空；环境／无叙事控制轮为null。个人shared工厂及wrapper在原参数末尾（wrapper在options后）追加sharedMeta，再追加本轮publicNarration?: string | null；首节点非空开场，final要求end，提前end也要求已有非空公开正文，空正文可修补为暂缓end；所有个人合同禁止create/update/cancel scene_step。
 
 ## 7. 到期任务与变更
 

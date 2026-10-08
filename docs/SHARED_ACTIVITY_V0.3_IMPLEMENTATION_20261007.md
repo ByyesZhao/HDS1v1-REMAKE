@@ -65,9 +65,9 @@
 
 ### 4.1 控制指令
 
-绑定目标私聊入口仍先完成身份检查。去除首尾空白后全文恰为 `【推进】` 才进入控制分支；正文包含它、`【动作：推进】` 或混合内容都按普通原文保存。
+绑定目标私聊入口仍先完成身份检查。“全文”是按原顺序拼接所有text元素后去除首尾空白的文字投影；非text输入沿用既有未支持口径。该投影恰为 `【推进】` 才进入控制分支；正文包含它、`【动作：推进】` 或混合内容都按普通原文保存。
 
-有效命令创建 pending ControlRequest 并唤醒 SerialHost；不更新静默锚点，不创建普通批次。不在活动中则保存 cancelled 审计记录，返回固定系统提示“当前没有共同活动”，不调用模型；该提示不写角色消息／记忆，不重置活动或自主计时。入口采用返回值告知 index.ts 是否发送系统提示，避免绕过既有角色 outbox 伪装发言。
+有效命令创建 pending ControlRequest 并唤醒 SerialHost；不更新静默锚点，不创建普通批次。不在活动中则保存 cancelled 审计记录，返回固定系统提示“当前没有共同活动”，不因这条指令创建故事触发；入口wake仍可处理独立到期工作（维护applyOneReady本身不调用LLM，之后startOne可启动准备）；该提示不写角色消息／记忆，不重置活动或自主计时。入口采用返回值告知 index.ts 是否发送系统提示，避免绕过既有角色 outbox 伪装发言。
 
 准备轮已生成 start 候选但开始标志尚未确认，仍属于活动外控制；确认后才绑定活动。这项命令分类先于普通内容合批，不把 cancelled 控制在段 B 当成待转交文字。
 
@@ -115,7 +115,7 @@ anchor = max(startedAt, lastInputAt, lastOutputAt, lastSilentCompletedAt 中非�
 nextStepAt = anchor + idleSeconds
 ```
 
-startedAt 仅为初始兜底锚点。角色侧每个已确认 narration/text/action/sticker 更新 lastOutputAt，取最新确认；无可见输出的共同轮在段 B 更新 lastSilentCompletedAt。后台消息、错误、控制指令、日志和状态不更新锚点。
+startedAt 仅为初始兜底锚点。开始标志后的普通准备轮输出不更新共享节点锚点，段B后的首节点仍立即。角色侧每个共同轮已确认 narration/text/action/sticker 更新 lastOutputAt，取最新确认；无可见输出的共同轮在段 B 更新 lastSilentCompletedAt。后台消息、错误、控制指令、日志和状态不更新锚点。
 
 Runtime 的真实锚点由输入／发送更新；`Scene.shared.nextStepAt` 是同一公式的程序投影，`scene:${activityId}` 的 at 必须与它相同。refreshSharedStep 集中刷新这两处，不接受模型时间。正式 shared 尚未建立时只保存 clock，开始段 B 建立后再投影；结束标志确认后不再刷新旧活动。
 
@@ -134,7 +134,7 @@ SerialHost 先恢复未完成轮；否则 Scheduler 按以下顺序选择：
 
 共同 check_messages 不单独绕过窗口：到期后等下一合法共同节点合并交付，不能在 nextDeadline 中以过期检查任务反复立即唤醒。到期具体 appointment 可以提前触发共同协调，计同一轮，不能直接覆盖场景或另开活动。未来预约不长期抑制自主轮。
 
-nextDeadline 和 collectReady 必须共用上述资格判断：被 shared/openBatch/前台待办抑制的自主截止、活动中的旧 sleepAt/wakeAt、等待下一节点的复议任务，不再贡献过期的立即截止。普通睡眠暂存、不可读消息的原门禁及待看恢复仍有效；暂存输入本身不一直阻止正常私人生活。
+nextDeadline 和 collectReady 必须共用上述资格判断：被 shared/openBatch/前台待办抑制的自主截止、活动中的旧 sleepAt/wakeAt、等待下一节点的复议任务，不再贡献过期的立即截止。普通睡眠暂存、不可读消息门禁作用于开始前；成功开始后清醒参与，段B转交的未读在首节点可见且使代写权限为false。普通待看恢复仍有效；暂存输入本身不一直阻止正常私人生活。
 
 nextWorldAt/nextSchoolAt 持续参与 nextDeadline，不被共同等待排除。每次串行空闲判定，无可运行前台就可处理到期环境；连续存在手动／预约等可运行前台时，环境让位到首次出现可用空档，不把活动结束设为唯一入口，也不保证固定最长延迟。20轮限制故事提交次数，不能换算成20×60秒的墙钟时长。
 
@@ -144,7 +144,7 @@ nextWorldAt/nextSchoolAt 持续参与 nextDeadline，不被共同等待排除。
 
 ## 6. 模型合同与叙事职责
 
-共同主叙事结果保留普通 narrative 字段、publicNarration、progress，删除可写 nextStepAt；新增必填 `outline: SharedOutline`、`simulatedUserActions: string[]`。每轮返回当前走向，final 必须非空 publicNarration。outline按下列阶段规则处理：
+共同主叙事结果保留普通 narrative 字段、publicNarration、progress，删除可写 nextStepAt；新增必填 `outline: SharedOutline`、`simulatedUserActions: string[]`。每轮返回当前走向；stepNumber=1必须非空公开开场，即使phase已为wrap_up/final；final必须非空公开收尾。outline按下列阶段规则处理：
 
 | 情况 | openThreads规则 | 程序／模型责任 |
 | --- | --- | --- |
@@ -159,9 +159,9 @@ goal/endingCondition建立后原则上沿用。确需因真实新输入或明确
 
 simulatedUserActions 是本轮代写用户行为的显式清单，不是模拟用户消息或记忆新类型。程序校验：权限 false 时清单必须空；清单每个非空文本须原样出现在 publicNarration 中。模型正文不带外层 `【】`，既有发送格式统一包裹。程序不能仅靠这项字符串检查证明散文没有漏报代写，提示词仍约束全部代写公开；不增加语义审计模型。
 
-共同个人导演接收相同 phase/remainingSteps/outline/publicNarration/输入，决定角色自身的自愿行为、情绪及是否发言。final 合同要求 `sharedChange.action='end'`；非 final 可合理提前 end。角色允许 reply none/later，表达按既有意图调用，不能强制台词。scene_step 由程序独占：个人模型不得 create/update/cancel 这种任务；普通预约和检查合同继续使用。
+共同个人导演接收相同 phase/remainingSteps/outline/publicNarration/输入，决定角色自身的自愿行为、情绪及是否发言。final 合同要求 `sharedChange.action='end'`；非final可合理提前end，但必须已有本轮非空publicNarration。个人导演不能重写主叙事；空旁白时格式修补可暂不end，用nextPlan安排下一轮公开收尾。持续不合格沿用暂停，不发结束标志、不计数、不消费控制。角色允许 reply none/later，表达按既有意图调用，不能强制台词。scene_step 由程序独占：个人模型不得 create/update/cancel 这种任务；普通预约和检查合同继续使用。
 
-两个合同工厂及 directors 包装函数增加末尾可选 `sharedMeta?: SharedTurnMeta | null` 参数；普通调用兼容原签名，共同调用必传。narrativeTask/runNarrative再在其后追加 `previousOutline?: SharedOutline | null`，app从本轮正式状态传入旧outline，供wrap_up集合校验；个人合同无需此参数。轮号、activityId、权限、配置快照不属于模型输出字段。格式不合格继续原任务最多两次修补、同模型／思考强度；仍不合格保留报错／暂停，不自行清场或生成第 21 轮。
+两个合同工厂及 directors 包装函数增加末尾可选 `sharedMeta?: SharedTurnMeta | null` 参数；普通调用兼容原签名，共同调用必传。narrativeTask/runNarrative再在其后追加 `previousOutline?: SharedOutline | null`，app从本轮正式状态传入旧outline，供wrap_up集合校验；个人合同无需previousOutline；personalTask/runPersonal在sharedMeta后另追加publicNarration?: string | null，由app传同一份本轮公开正文，供end校验。轮号、activityId、权限、配置快照不属于模型输出字段。格式不合格继续原任务最多两次修补、同模型／思考强度；仍不合格保留报错／暂停，不自行清场或生成第 21 轮。
 
 提示词固定：
 
@@ -258,3 +258,6 @@ sendFrozen 在既有确认事务内保存 outgoing Message（带活动关联）�
 任务1～7已运行离线程序测试，未运行在线验证。`REMAKE_V0.2*.md` 中受影响的实际行为说明、README和配置样例已同步；`REMAKE_V0.2_RECOVERY.md` §6.1已更新新轮选择顺序，未完成轮恢复仍最先。旧的记忆／搜索实施记录保留历史日期。新增[实施日志](SHARED_ACTIVITY_V0.3_IMPLEMENTATION_LOG_20261007.md)记录每任务代码提交、RED/GREEN证据、偏差、临时库升级检查及真实故事验收待办。
 
 结构、时序、格式、来源及恢复由离线测试验证；叙事自然性、真实模型是否正确理解动作／代写、20轮内的文学收尾质量需后续真实故事验收，不能以mock输出声称保证。真实多轮验收为必做项，尤其逐轮核对goal/endingCondition是否无依据漂移、代写是否新增稳定设定；只减不增的字符串校验不能替代它。实施日志分别标注“离线开发完成”与“真实语义验收待办／通过”；当前不启动在线验证。
+
+
+第十轮已接受修正的执行入口：[修正计划](REVIEW10_FIX_PLAN_20261008.md)、[逐项修正／部署验收记录](REVIEW10_FIX_LOG_20261008.md)。选择时的代写权限为冻结快照，生成期间新消息留下一轮。status可刷新确定性投影，但不更新真实锚点、轮数或自主截止。

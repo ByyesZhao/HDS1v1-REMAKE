@@ -142,3 +142,5 @@ SQLite 使用内置 `node:sqlite`，WAL + `synchronous=FULL`；事务、普通�
 第七轮审核修正后：42文件200测试通过，typecheck/build/Koishi离线smoke及两个cmd --check通过；变更及待接入项见[实施交付与审核入口](docs/IMPLEMENTATION_HANDOFF_20261007.md)和[本轮修正记录](docs/REVIEW7_FIX_IMPLEMENTATION_20261007.md)。离线网页规模检查：npm run web:check。
 
 
+
+第十轮修正：首节点要求公开开场；提前结束须有本轮公开正文，允许无角色台词；空正文的个人修补可暂缓结束。修正／部署及真实模型验收的最新状态以[记录](docs/REVIEW10_FIX_LOG_20261008.md)为准，以上原始交付状态保留历史。

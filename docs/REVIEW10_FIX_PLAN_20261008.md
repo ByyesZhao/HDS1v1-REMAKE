@@ -22,15 +22,15 @@ Spec：[已接受回应](../DSH-review/CODEX_REBUTTAL_SHARED_ACTIVITY_DELIVERY_2
 
 Files：contracts.ts、directors/personal.ts、app.ts、prompts.ts及shared-v3-contracts／flow／fixture、shared-scene测试。
 Interfaces：personalTask和runPersonal现有sharedMeta后追加publicNarration；app只在共同调用传本轮narrative公开正文。
-- [ ] 先写首节点（max20/3/1）、提前end空旁白修补／暂停及中间静默测试；运行目标组取得业务RED。
-- [ ] narrative以stepNumber=1校验非空；personal shared的end校验已给旁白非空，错误明确不得改上一阶段，可暂不end。同步提示词，调整已替代夹具，非空提前end允许reply none。
-- [ ] 目标测试／全套／typecheck通过后记录并提交fix: require public shared opening and closure。
+- [x] 先写首节点（max20/3/1）、提前end空旁白修补／暂停及中间静默测试；运行目标组取得业务RED。
+- [x] narrative以stepNumber=1校验非空；personal shared的end校验已给旁白非空，错误明确不得改上一阶段，可暂不end。同步提示词，调整已替代夹具，非空提前end允许reply none。
+- [x] 目标测试／全套／typecheck通过后记录并提交fix: require public shared opening and closure。
 
 ## 任务2 口径回填
 
 Files：共同细化／执行计划、README及受影响根文档。
-- [ ] 明确普通门禁与开始转交、text拼接全文、活动外wake只处理已到期工作；准备轮后续输出不作共享节点锚点、首节点仍立即。
-- [ ] 同步新增个人合同上下文和正文约束，历史审核／回应不改成已实施；记录日志。
+- [x] 明确普通门禁与开始转交、text拼接全文、活动外wake只处理已到期工作；准备轮后续输出不作共享节点锚点、首节点仍立即。
+- [x] 同步新增个人合同上下文和正文约束，历史审核／回应不改成已实施；记录日志。
 
 ## 任务3 小维护项
 

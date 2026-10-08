@@ -17,7 +17,7 @@
 ## Global Constraints
 
 - 普通输入 15 秒合批；共同输入立即保存、等待双方最新输入／确认输出后默认 60 秒；无输出轮以 completedAt 补充锚点；首节点立即。
-- 全文精确 `【推进】` 是绑定私聊控制信息，独立持久化；不进 messages、近期原文、未读、记忆来源。活动外固定提示“当前没有共同活动”。
+- 全文精确 `【推进】` 是绑定私聊控制信息，独立持久化；不进 messages、近期原文、未读、记忆来源。活动外固定提示“当前没有共同活动”，不创建故事触发；wake仍可处理独立到期工作。全文是原顺序text拼接trim，非text沿用既有未支持口径。
 - 默认最多 20 个成功段 B 共同轮；准备轮不计，首节点计 1，静默轮计；默认 17～19 收束，20 必须公开收尾并 end。失败／恢复不另计。
 - 每个实际运行角色 narrative 的前台轮冻结一次 150～210 分钟整数抽样，以成功 completedAt 重排自主；睡眠为 null；后台不重排；不恢复旧截止或累加延期。
 - 真实用户动作原文保留；`【动作：…】` 的含义通过共同合同说明，不新增 parser。静默代写权限只取选轮时没有新输入；全部公开为 `【…】`，不编用户台词／心理／活动外承诺。
@@ -105,7 +105,7 @@
 
 **Files:** 修改 `src/model/contracts.ts`、`prompts.ts`、`src/directors/narrative.ts`、`personal.ts`、`src/types.ts` 的 narrative 结果类型；`src/app.ts` 适配 sharedMeta 保存／透传、走向结果及删除旧模型时间赋值；新增 `tests/shared-v3-contracts.test.ts`；更新 `tests/shared-scene.test.ts` 和受影响的 shared 固定输出夹具。
 
-**Interfaces:** narrativeTask原参数之后加 `sharedMeta?: SharedTurnMeta | null`，其后再加 `previousOutline?: SharedOutline | null`；runNarrative在options后按相同顺序追加这两项并传工厂。personalTask在messageIds后、runPersonal在options后只追加sharedMeta，不加previousOutline。app传入本轮正式状态的旧outline，首节点为null。共享结果必填outline和simulatedUserActions，删除nextStepAt；普通合同／返回值保持原约束。
+**Interfaces:** narrativeTask原参数之后加 `sharedMeta?: SharedTurnMeta | null`，其后再加 `previousOutline?: SharedOutline | null`；runNarrative在options后按相同顺序追加这两项并传工厂。personalTask在messageIds后、runPersonal在options后追加sharedMeta，再追加publicNarration?: string | null，不加previousOutline；app传本轮同一份公开正文，首节点要求非空开场，提前end要求已有非空公开正文。app传入本轮正式状态的旧outline，首节点为null。共享结果必填outline和simulatedUserActions，删除nextStepAt；普通合同／返回值保持原约束。
 
 - [x] 写 `shared_result_has_no_model_deadline`：共同结果含 outline/空代写清单通过；尝试提供模型 nextStepAt 不成为内部调度字段；共同调用缺 sharedMeta 拒绝。
 - [x] 写 `simulated_actions_must_be_public`：false 权限却有清单拒绝；true 权限且动作只在 experiences 没在 publicNarration 拒绝；公开包含每个清单原文通过。普通私聊不能走此授权。
@@ -177,7 +177,7 @@ inspect 使用只读 SQLite，不能调用会建表／初始化的 Storage 构�
 
 ### 真实多轮语义验收：必做，单独记录
 
-代码交付后安排真实模型多轮故事，不因字符串集合测试通过而省略。当前不发起在线调用、正式消息或服务启动；实施日志在实际验收前一直保留待办状态。至少核对：
+代码交付后安排真实模型多轮故事，不因字符串集合测试通过而省略。原始任务1～7不发起在线调用；第十轮修正已获准隔离真实模型验收，见新增修正计划；正式消息或服务启动仍由用户掌握。实施日志在实际验收前一直保留待办状态。至少核对：
 
 - 连续静默推进，逐轮检查goal/endingCondition是否仍围绕已确认活动；变化是否有真实输入或明确场景依据，是否由此前代写自我放大。
 - 代写是否全部公开，是否新增用户台词／心理、稳定性格／能力／偏好／关系；本次行动结果与用户真实固定属性分开。角色感受和用户动作主体正确。
@@ -191,3 +191,6 @@ inspect 使用只读 SQLite，不能调用会建表／初始化的 Storage 构�
 ## 文档自查
 
 已按方案逐项映射并实施任务1～7：输入／时间／计数／职责／共享记忆／生活补齐／睡眠／自主／前后台让位／恢复／升级均有归属。第九轮接受项已落实；previousOutline参数顺序与细化一致。Review Focus测试映射和最终程序检查结果见实施日志，语义部分明确保留真实多轮待办。
+
+
+第十轮已接受修正的执行入口：[修正计划](REVIEW10_FIX_PLAN_20261008.md)、[逐项修正／部署验收记录](REVIEW10_FIX_LOG_20261008.md)。选择时的代写权限为冻结快照，生成期间新消息留下一轮。status可刷新确定性投影，但不更新真实锚点、轮数或自主截止。
