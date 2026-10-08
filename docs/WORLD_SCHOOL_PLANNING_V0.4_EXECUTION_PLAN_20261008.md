@@ -8,9 +8,9 @@
 
 **Tech Stack:** 现有TypeScript、Node >=22.13.0、内置SQLite、Zod、Vitest、Koishi；版本沿用package.json，不新增依赖。
 
-**Spec:** [实施细化](WORLD_SCHOOL_PLANNING_V0.4_IMPLEMENTATION_20261008.md)是字段／时序依据，[方案](WORLD_SCHOOL_PLANNING_V0.4_PROPOSAL_20261008.md)是产品背景。两轮[已接受回应](../DSH-review/CODEX_REBUTTAL_WORLD_SCHOOL_V0.4_20261008.md)的裁定已并入，不需要再拼接审核意见。已有记忆、网页搜索和共同活动计划仅作为现有边界，不重复实施已完成任务。
+**Spec:** [实施细化](WORLD_SCHOOL_PLANNING_V0.4_IMPLEMENTATION_20261008.md)是字段／时序依据，本计划是任务／验收依据，[方案](WORLD_SCHOOL_PLANNING_V0.4_PROPOSAL_20261008.md)是产品背景。第十一轮回应、第十二轮[计划审查回应](../DSH-review/CODEX_REBUTTAL_WORLD_SCHOOL_V0.4_PLAN_20261008.md)及[第十三轮补充](../DSH-review/DSH_REVIEW13_WORLD_SCHOOL_V0.4_PLAN_SUPPLEMENT_20261008.md)已合并，实施不再拼接审核文件。已有记忆、网页搜索和共同活动文档用于相关接口查询，不重复执行已完成计划；完整阅读口径见细化§11。
 
-日期：2026-10-08。状态：任务1～8均待执行，当前只有文档；实施基线 `7da4ace`。开始任务1时创建 `docs/WORLD_SCHOOL_PLANNING_V0.4_IMPLEMENTATION_LOG_20261008.md`，记录实际起点、命令结果、变更与本地提交，不用计划替代过程记录。
+日期：2026-10-08。状态：第十二／十三轮审查合并完成，任务1～8均待执行，当前只有文档；设计基线 `7da4ace`。开始任务1时创建 `docs/WORLD_SCHOOL_PLANNING_V0.4_IMPLEMENTATION_LOG_20261008.md`，记录届时实际起点、命令结果、变更与本地提交，不用计划替代过程记录。
 
 ## Global Constraints
 
@@ -19,7 +19,8 @@
 - 模型失败默认300000ms局部重试，不全局暂停、不变成unfinishedTurn；存储／提交错误和人工暂停保持明确边界。旧未完成普通／共同故事仍先恢复。
 - 无变化合法；学期／科研计划持续保存，在读研究生允许零常规课程；要求参加不强制参加；只模拟科研，不运行真实实验／代码／论文／发送导师消息。
 - 常规本周／下一周、周五生成下周；远期事项当前下发／改期／取消通知不能被周窗口挡住。不增加人工字符、token或条数预算，不自动裁上下文超限。
-- 校园／课题组拥有上游，周任务唯一展开实例和通知候选，程序唯一保存／发布／失效；旧已读版本不可静默换最新值。
+- 校园／课题组拥有上游，周任务唯一展开实例和通知候选，程序唯一保存／发布／失效；默认announceOnIssue／announceOnChange为true。更正必需集合覆盖已读旧版本，合法本版候选去重；关闭reminders不关闭更正。
+- 下发窗口由issuedAt／曾发布／已知判定，远期但已下发事项及时更正；未知未下发草案更新未来候选，不强制当日发布。release只交付publishAt已到且仍合法通知，不以活动生效时间或新增validFrom门禁延后提前通知。发布不更新角色知识。
 - 已读是前台实际经历，段B与知识／进展一起提交；relatedEventIds不是已读证据，意图／通知／排程不是完成科研的证据。
 - 睡眠／洗澡通知暂存，无已知结束不轮询；共同通知只合并合法节点，不破60秒／不改变无真实输入代写分支；纯通知contactEligible=false。
 - 每个实际主叙事前台轮成功后沿用150～210分钟自主重排；客观环境／通知发布／暂存不重排。
@@ -61,7 +62,7 @@
 **Interfaces:** 实现 `ensureEnvironmentBatch(storage, config, now)`、`selectEnvironmentStep(storage, now)`、`environmentDeadline(storage, now)`、`runEnvironmentStep(d, stepId, generate)`，精确签名见细化§4。产生 `ModelRequestError`，只包装请求／HTTP／响应封装错误。Dependencies的环境／学校Store引用复用任务1，新增generateEnvironment注入点用于本任务假生成器，任务3绑定生产实现；业务时间用Clock。完整正式装配及启动门禁在任务6，不在中间提交启动服务。
 
 - [ ] 写 `daily_six_no_drift`、`bootstrap_same_date_once`、`world_before_three_school_steps`、`retry_wait_does_not_block_autonomy`、`model_failure_not_pause`、`storage_failure_not_model_retry`、`pending_dependency_no_hot_deadline`、`ready_restart_no_regeneration`、`cross_date_supersedes_only_uncommitted`。
-- [ ] 写 `open_batch_yields_before_new_step`及 `input_arrives_during_request`：阻塞fake generator时输入立刻落库，释放请求后先聊天再下一学校阶段；不声称请求中已并行回复。
+- [ ] 写 `open_batch_yields_before_new_step`及 `input_arrives_during_request`：阻塞fake generator时输入立刻落库，释放请求后先聊天再下一学校阶段；不声称请求中已并行回复。增加 `ready_predecessor_blocks_downstream`、`committed_step_yields_before_next_generation`：ready不能提前生成下游输入，committed后先让位重扫新消息再选择下一步。
 - [ ] RED：`npm test -- tests/world-school-batch.test.ts tests/scheduler.test.ts`。
 - [ ] 实现日批次稳定身份、步骤快照→running→ready→committed、固定5分钟模型重试、跨日替代。变更应用与步骤完成同事务，ready只应用不重生成。await一步后让出事件循环重扫，不把4次调用装入一个runTurn。
 - [ ] 用environmentStepId分流串行busy槽；新环境不创建TurnRecord／outbox／post job，不走前台报错暂停catch。旧环境Kind只在升级／审计识别。Scheduler及deadline移除旧world／school定时来源。
@@ -75,7 +76,7 @@
 **Interfaces:** 实现 `generateEnvironmentStep(d: Dependencies, input: EnvironmentStepInput): Promise<EnvironmentModelResult>`，内部分派world及 `runSchoolCampus/Group/Week(d, input)`；合同为 `schoolCampusTask`、`schoolGroupTask`、`schoolWeekTask`。生产runEnvironmentStep传 `input => generateEnvironmentStep(d,input)`，不能留测试generator替代正式模型；runtime将原始模型结果解析ID后冻为EnvironmentChangeSet。
 
 - [ ] 写 `roles_can_differ`、`wrong_owner_rejected`、`empty_updates_keep_plan`、`doctoral_zero_courses_valid`、`plan_is_not_research_result`、`fiction_default_and_provided_urls_only`、`campus_group_context_has_existing_identity`。研究／导师固定背景明确提供，不再只用旧school正则。
-- [ ] 写 `each_step_has_own_web_session`、`repair_and_retry_keep_counters`、`environment_not_personal_web_memory`、`new_roles_current_only`：20／40按step独立，lookup／repair沿用；新环境所有者不会产生personal_life来源，school_*不开放归档权限。
+- [ ] 写 `each_step_has_own_web_session`、`repair_and_retry_keep_counters`、`environment_not_personal_web_memory`、`new_roles_current_only`：20／40按step独立，lookup／repair沿用；新环境所有者不会产生personal_life来源，school_*不开放归档权限。增加 `superseded_step_keeps_web_counters`、`same_step_does_not_reopen_session`、`next_date_step_has_independent_quota`，断言旧终结计数不清零、同身份不重开、新日期step独立0／0，不形成跨日总池。
 - [ ] RED：`npm test -- tests/world-school-models.test.ts tests/environment.test.ts`。
 - [ ] 实现新合同及提示词、增量结果归属和clientRef解析，保留world已有事件校验。按细化§6为每步绑定environment owner；网络重试继续同一会话，不重新给网页额度。终态模型失败后的下一attempt按细化规定重置请求修补状态；仍保留成功工具结果／计数和审计。
 - [ ] 不启用搜索provider，缺服务按已有真实不足信息返回；大计划稳定复用，不强制每日新事件，不用完整私聊做导演输入。
@@ -89,10 +90,13 @@
 **Interfaces:** `schoolExpansionInput(storage, now, timezone): SchoolExpansionInput`；`applySchoolChanges(storage: Storage, changes: EnvironmentChangeSet, now: ISOTime): void`在调用者事务中使用；通知三个接口release/select/deadline精确签名见细化§7。任务3周生成入口接入真实calendar输入和合同覆盖校验。
 
 - [ ] 写 `friday_next_week_monday_confirm`、`same_slot_same_week_id`、`move_preserves_occurrence`、`no_change_no_duplicate`、`far_future_issue_today`、`tentative_no_two_hour_guess`、`local_day_offset`、`conflicts_are_not_forced_choices`。旧已发生课次不覆盖；周窗口不是人工数量预算。
+- [ ] 写 `reschedule_requires_correction_notice`、`read_only_old_version_requires_correction_notice`、`cancel_requires_cancellation_notice`、`correction_candidates_not_recreated_after_commit`、`disabled_change_policy_not_forced`：改期／取消缺必需候选拒绝；仅已读旧版也必须更正；只写覆盖记录不算完成，跨日重试义务保留；同版合法候选不重复；明确关闭更正遵守策略。
+- [ ] 写 `public_far_future_change_not_delayed`、`undisclosed_future_change_waits_for_issue`、`scheduled_notice_is_not_publication`：期限远不阻挡当前下发／更正；未到issuedAt且未发布／未已知的草案更新未来issue候选，不能强行当日change或设已知。周摘要／现场已知与曾发布后被invalidated的旧通知仍使条目进入更正判断，releasedAt在失效后保留。
 - [ ] 写 `upstream_change_immediately_invalidates_unread`、`read_snapshot_survives_reschedule`、`internal_note_no_reminder_storm`、`overdue_setup_single_meaningful_notice`、`release_without_model_or_autonomy_reset`、`sleep_and_unknown_end_no_hot_loop`、`declined_notice_no_immediate_rewake`、`personal_reminder_requires_known_version`（自己的提醒不泄漏未读安排，机构通知仍可交付）。
+- [ ] 写 `due_notice_released_before_selection`、`notice_deadline_reaches_host_timer`、`publication_waits_for_publish_at`、`future_effective_event_can_be_notified_now`：刚到publishAt当次collectReady先发布后冻结refs；未来publishAt仍scheduled且唯一定时器取该时刻；未来才生效的事项可提前通知，不新增validFrom检查。暂停／unfinished门禁不发布，恢复后才扫描；程序发布审计不作已读证明。
 - [ ] RED：`npm test -- tests/world-school-calendar.test.ts tests/world-school-notices.test.ts`。
-- [ ] 实现稳定occurrence／notice元组身份、日历输入、周模型唯一候选与覆盖校验；上游提交即失效旧未读，不等school_week；保留旧已读。程序只负责保存／发布等，不另起校园直接通知写入入口。
-- [ ] 接入短事务发布和deadline；已不可读／拒看不反复贡献now。模板使用前1本地日／120分钟、常规60分钟，允许上游策略调整；远期当前issue／change／cancel必处理。
+- [ ] 实现稳定occurrence／notice元组身份、日历输入及已知快照、周模型唯一候选与双覆盖判据；上游提交即失效旧未读，不等school_week；保留旧已读及releasedAt历史。依据细化§5.1推导窗口、必需change／cancel和未来最新候选，不能只查invalidated列表或只写SchoolWeek.sourceVersions。公开措辞来自周任务，程序补真实身份／引用／快照，不另起文案模型。
+- [ ] 在Scheduler.collectReady的closeReady及paused／unfinishedTurn门禁后接入release短事务，再读取／选择；schoolNoticeDeadline并入Scheduler.nextDeadline，由Host现有armTimer处理，不新增发布入口／计时器。已不可读／拒看不反复贡献now。模板使用前1本地日／120分钟、常规60分钟，允许上游策略调整；远期当前issue／change／cancel必处理，未来通知到publishAt才发布。
 - [ ] GREEN：同一命令及 `npm run typecheck`；精确检查定时器下一截止为未来或null，不仅检查一次collectReady返回null。
 - [ ] 日志记身份样例及周无变化前后行数。提交：`feat: schedule versioned school notices and weekly instances`。
 
@@ -104,6 +108,7 @@
 
 - [ ] 写 `personal_keeps_old_known_revision`、`related_id_not_read_proof`、`lookup_and_expression_no_hidden_plan`、`known_course_reused_without_new_source`、`explicit_future_known_query_allowed`、`late_notice_not_read_in_past`、`week_digest_only_declared_entities_known`。
 - [ ] 写 `pure_notice_life_no_contact_draw`、`unread_not_forced_personal`、`sleep_stashes_notice`、`shared_notice_waits_legal_step`、`shared_notice_does_not_disable_simulated_actions`、`read_and_experience_commit_atomically`、`recovery_no_double_read`、`future_notice_waits_next_frozen_turn`。
+- [ ] 写 `publication_does_not_update_known_revision`：客观改期已提交、新更正已available但未读时，个人／lookup仍旧已知版本；实际获知并段B成功才更新，不能把“发布”当作“读过”或把旧认知当客观仍有效。
 - [ ] 写 `research_intent_not_progress`、`notice_not_completion`、`progress_requires_actual_experience`、`mentor_feedback_uses_experience`、`notified_requirement_can_be_refused`、`foreground_success_rerolls_autonomy_only_once`。
 - [ ] RED：`npm test -- tests/world-school-perspective.test.ts tests/world-school-story.test.ts`。
 - [ ] 实现客观／已知版本双投影及引用过滤；观察index在分配experienceId后校验，个人本轮可见但段B才正式获知；研究只有实际经历来源。故事主叙事先补生活，通知不伪装用户input；纯通知不抽联系，未读可合法保持未读。
@@ -141,11 +146,11 @@
 
 **Files:** Create `scripts/validate-world-school.ts`、`docs/WORLD_SCHOOL_PLANNING_V0.4_REAL_STORY_ACCEPTANCE_20261008.md`；Modify package.json（新增 `validate:world-school`）、实施日志、本文和细化状态。
 
-**Interfaces:** 验收脚本调用正式模型及生产App／Host、隔离SQLite和记录Sender；默认单请求300秒，可显式覆盖。必须固定测试目录、时钟推进、目标模型和无QQ装配，不能把手写预期JSON当实际模型输出。
+**Interfaces:** 验收脚本调用正式模型及生产App／Host、隔离SQLite和记录Sender；`scripts/validate-world-school.ts`自身默认单请求等待／取消上限300000ms，可显式覆盖，仅工具包装Transport／请求signal生效，不新增AppConfig字段，不改正式ModelClient超时语义。必须固定测试目录、时钟推进、目标模型和无QQ装配，不能把手写预期JSON当实际模型输出。
 
-- [ ] 先写脚本数据路径／无QQ／授权输入范围检查，离线试跑确认不会读正式messages或写正式数据库；RED/GREEN属于工具验证，真实模型语义验收另列。
+- [ ] 先写脚本数据路径／无QQ／授权输入范围检查，离线试跑确认不会读正式messages或写正式数据库；确认300秒只在工具请求包装层、取消signal能终止该请求，不用仅结束等待的Promise.race留下请求写隔离库。RED/GREEN属于工具验证，真实模型语义验收另列。
 - [ ] `npm run validate:world-school -- --offline` 验证脚本与临时数据准备；实现正式模式后，在已允许角色背景＋模拟测试剧情范围执行 `npm run validate:world-school`。
-- [ ] 固定案例：周五→周一复用课程；下月科研任务今天issue；班会前一天／前2小时通知、洗澡待看、必到也可拒；已读旧日程＋未读更正保持旧知识；共同下一合法节点获知；个人意图→下次主叙事模拟研究→实际导师反馈→有experienceId进展；第二天空变更不重建。
+- [ ] 固定案例：周五→周一复用课程；下月科研任务今天issue及当前改期；未来未下发草案更新预排候选而不今日发布；班会前一天／前2小时通知、洗澡待看、必到也可拒；只已读旧日程也产生更正、发布未读仍保持旧知识；共同下一合法节点获知；个人意图→下次主叙事模拟研究→实际导师反馈→有experienceId进展；第二天空变更不重建。
 - [ ] 审阅输入、输出和数据库证据：是否出现隐藏知识／虚构联网／无时间成果／强制参加／每日换课表／通知空转。模型真实选择与预期不同但合法时记录选择，不强迫得到某个剧情结局；发现合同缺口修复并针对重验，不重复所有已经通过场景。
 - [ ] 验收报告列模型与思考强度、次数、实际用时、超时／修补、关键turn／experience／notice／版本证据及残留限制；原失败保留，不能只收最终成功。真实角色自由选择的语义风险不能由离线单测替代。
 - [ ] 完成后更新任务勾选和状态、日志、实际行为说明；运行最后受影响检查及 `git diff --check`，保存本地提交 `docs: record world school planning acceptance`。若验收尚未通过，明确待办并保持未完成，不提前标交付。
@@ -155,6 +160,8 @@
 - [ ] 配置补缺在Schema前；三个学校模型独立，旧school不运行，06:00是唯一配置起点。
 - [ ] 模型失败不暂停聊天；ready、重试和跨日可恢复；没有遗留环境turn堵unfinished门禁。
 - [ ] 周展开、远期下发、通知版本、睡眠／共同资格、个人已知与研究来源均有业务证据。
+- [ ] 更正包含已读旧版，未来草案与已下发远期事项区分，候选去重与实际发布独立；调度发布在collectReady门禁后／选择前，仍只有一个Host定时器。
+- [ ] 验收工具300秒只在工具包装生效；正式AppConfig／ModelClient超时语义未被改写，旧跨日网页会话未清零，新日期步骤仍有独立额度。
 - [ ] 正式库有真实check／备份／升级记录，旧普通／共同恢复未损坏，paused未自动清除。
 - [ ] 离线集成和真实多轮语义验收分别报告；源码、示例、实际行为文档、日志口径一致。
 - [ ] 服务仍由用户手动启动；无密钥／私聊／正式数据库入Git，无虚构联网或真实科研执行。

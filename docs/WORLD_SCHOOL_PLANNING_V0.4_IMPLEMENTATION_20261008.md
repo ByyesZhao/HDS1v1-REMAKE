@@ -1,8 +1,8 @@
 # 世界与学校规划 V0.4 实施细化
 
-日期：2026-10-08。状态：待实施；本文固定设计与验收口径，不代表源码、配置或正式数据库已经升级。设计基线为本地提交 `7da4ace`。
+日期：2026-10-08。状态：第十二／十三轮审查合并完成，任务1～8待实施；本文固定设计与验收口径，不代表源码、配置或正式数据库已经升级。设计基线为本地提交 `7da4ace`，本次合并前文档基线为 `ef88904`。
 
-实施以本文的字段／时序和[执行计划](WORLD_SCHOOL_PLANNING_V0.4_EXECUTION_PLAN_20261008.md)的任务顺序为准。[方案](WORLD_SCHOOL_PLANNING_V0.4_PROPOSAL_20261008.md)说明产品意图；[已接受回应](../DSH-review/CODEX_REBUTTAL_WORLD_SCHOOL_V0.4_20261008.md)中的全部裁定已并入本次执行依据，实施者不需要再从审核文件拼接规则。
+实施以本文的字段／时序和[执行计划](WORLD_SCHOOL_PLANNING_V0.4_EXECUTION_PLAN_20261008.md)的任务顺序为准。[方案](WORLD_SCHOOL_PLANNING_V0.4_PROPOSAL_20261008.md)说明产品意图；第十一轮[已接受回应](../DSH-review/CODEX_REBUTTAL_WORLD_SCHOOL_V0.4_20261008.md)、第十二轮[计划审查回应](../DSH-review/CODEX_REBUTTAL_WORLD_SCHOOL_V0.4_PLAN_20261008.md)及[第十三轮补充](../DSH-review/DSH_REVIEW13_WORLD_SCHOOL_V0.4_PLAN_SUPPLEMENT_20261008.md)已并入这两份执行依据。审查文件仅供追溯，不再作为需要另行拼接的实施规则；本次合并的时间语义见§5.1、§7。
 
 ## 1. 范围与既有边界
 
@@ -67,14 +67,16 @@ Runtime新增 `environmentPlanningVersion: 1|null`、`nextEnvironmentAt: ISOTime
 | `SchoolPlan`／`school_plans` | `id, owner: campus\|group, kind: semester\|group, title, startsOn, endsOn: string\|null, summary, revision, status: active\|archived`。学期不能因每日检查被整份替换。 |
 | `SchoolPlanItem`／`school_plan_items` | `id, planId, owner, kind: course\|exam\|meeting\|event\|research\|invitation\|holiday\|milestone\|legacy, title, description, location, requirement: required\|optional, issuedAt, timing, noticePolicy, revision, deliveryRevision, status: open\|cancelled\|closed, basis: fiction\|web_reference, sourceUrls`。research另有负责人、交付说明与阶段说明，均属模拟要求。 |
 | `SchoolTiming` | 区分once（明确起止时刻）、weekly（生效日期范围及稳定slotKey、weekday 1～7、当地起止HH:mm）、tentative（日期范围／说明）、deadline（明确截止或暂定日期）。weekly只用于重复课程／组会等；research可引用独立里程碑条目。 |
-| `SchoolNoticePolicy` | `announceOnIssue, announceOnChange, reminders[]`；reminder为 `local_days_before` 或 `minutes_before`＋非负offset＋来源 `institution\|personal_reminder`。未知时刻不能展开小时提醒。 |
+| `SchoolNoticePolicy` | `announceOnIssue=true, announceOnChange=true, reminders[]`；可显式调整。reminder为 `local_days_before` 或 `minutes_before`＋非负offset＋来源 `institution\|personal_reminder`。未知时刻不能展开小时提醒；关闭reminders不等于关闭更正。 |
 | `SchoolInstance`／`school_instances` | `id, sourceItemId, sourceRevision, deliveryRevision, occurrenceKey, weekStart: string\|null, startsAt, endsAt, sourceSnapshot, status: active\|cancelled\|archived, needsExpansion, legacyEventId: string\|null`。sourceSnapshot保存实际该版地点／要求／描述，不只指向最新源条目。 |
-| `SchoolNotice`／`school_notices` | `id, sourceItemId: string\|null, instanceId: string\|null, weekStart: string\|null, deliveryRevision, kind: issue\|change\|cancel\|reminder\|week_digest, reminderKey, channel: institution\|personal_reminder, publishAt, payload, status: scheduled\|available\|read\|invalidated, nextWakeAt: ISOTime\|null, readAt: ISOTime\|null, readTurnId: string\|null`。payload为公开内容及所宣告实体版本的不可变快照；周摘要可含多条实体。 |
+| `SchoolNotice`／`school_notices` | `id, sourceItemId: string\|null, instanceId: string\|null, weekStart: string\|null, deliveryRevision, kind: issue\|change\|cancel\|reminder\|week_digest, reminderKey, channel: institution\|personal_reminder, publishAt, releasedAt: ISOTime\|null, payload, status: scheduled\|available\|read\|invalidated, nextWakeAt: ISOTime\|null, readAt: ISOTime\|null, readTurnId: string\|null`。公开措辞由school_week产出，程序解析真实实体引用并冻结版本快照；周摘要可含多条实体。releasedAt记录首次scheduled→available操作，失效后仍保留，用于区分曾发布与仅预排；不证明角色已读。 |
 | `SchoolKnowledge`／`school_knowledge` | `id, entityKind: plan_item\|instance, entityId, revision, snapshot, acquiredAt, experienceId, turnId, via: notice\|onsite`。逐次获知保留；查询选该实体最近已获知版本，不直接解引用客观最新值。 |
 | `SchoolProgress`／`school_progress` | `id, taskId, kind: progress\|completed\|feedback, experienceId, turnId, happenedAt, summary`。实际已提交经历是必要来源；一次经历／任务／kind幂等。 |
 | `SchoolWeek`／`school_weeks` | `id, weekStart, sourceVersions, checkedAt, digestRevision, conflictNotes`；记录已覆盖上游版本和公开摘要版本。同一来源无变化只更新检查时刻，不复制课次。 |
 
 school_week是实例及通知候选唯一模型写入者；校园／课题组只写自己上游计划和通知策略。程序唯一负责稳定身份、校验、保存、到期发布及旧版本失效。校园不可改课题组任务，周任务不可改上游日期或把建议当成角色已决定的私人计划。
+
+时间字段各有用途：SchoolPlanItem.issuedAt为制度安排的首次下发时刻，可预排未来；SchoolTiming／instance.startsAt、endsAt表示活动或要求生效时间；SchoolNotice.publishAt表示该份通知可交付时刻；releasedAt是程序实际发布操作审计，readAt／SchoolKnowledge.acquiredAt是角色实际获知。已下发条目的改期不能通过把issuedAt挪到未来重新隐藏；未下发草案可调整下发时刻。本版不新增validFrom或独立“下发窗口”配置，不用活动开始时间拦住提前通知。
 
 同一重复课次的 `occurrenceKey = (sourceItemId, slotKey, localWeekStart)`；同一一次性事项用 `(sourceItemId, 'once')`，截止用 `(sourceItemId, 'deadline')`。这些元组无歧义编码，不拼接描述猜身份。同一周课次改期保留身份，跨周新实例；已发生历史不被改期覆盖。原“条目＋本地日期”在此固定为稳定周起点＋时段键，避免日期一改就复制一节课。
 
@@ -96,12 +98,14 @@ runEnvironmentStep(d: Dependencies, stepId: string, generate: EnvironmentGenerat
 
 ensure处理bootstrap／每日到期及跨日替代；select只返回active批次第一个尚未成功步骤，pending或到期retry有资格；当前日期ready优先应用冻结变更。deadline只使用未来retry／下一批次或实际可执行步骤，不反复返回已经过期但仍在等前序的下游时间。普通openBatch让位时，即便环境已经到期，也不得贡献now造成空转；等待其readyAt后重新选，暂停／未完成前台门禁同理。
 
+下游资格仅来自全部前序committed；前序pending／running／ready或等待retryAt时，下游不进入选择、不提前冻结输入。retryAt是截止字段，不是额外状态。前序事务提交后Host先让出事件循环、重扫前台与普通openBatch，再选择下一步；不能在一次generateEnvironmentStep中直接串调后续学校模型。
+
 `TurnRequest`新增 `environmentStepId?: string`。Scheduler用此字段选环境工作，trigger仍为environment，但不再用旧environmentKind创建故事。`HdsiApp.runTurn`先守busy／unfinished，再按stepId分流；两条分支共用一个busy槽，环境进入runEnvironmentStep而不进入freezeTurn／发送／故事段B。Dependencies新增 `environmentStore: EnvironmentStore`、`schoolStore: SchoolStore`；两类Store的构造参数均为现有Storage。测试可注入 `generateEnvironment?: EnvironmentGenerator`，生产也显式绑定`input => generateEnvironmentStep(d,input)`；选中步骤却未绑定生成器应明确装配报错，不回落旧school。生产入口及测试setup完成依赖后必须装配，不用隐式关闭功能掩盖资格错误。
 
 Host每完成一个环境步骤让出事件循环并重新选择。选择规则：
 
 1. 既有未完成前台故事、发送、段B先恢复；runtime.paused保留全局人工／前台暂停。
-2. 到期通知发布是短事务，可以先处理；发布不是故事，不重排自主，不耗模型调用。
+2. Scheduler.collectReady在closeReady及paused／unfinishedTurn门禁后短事务发布到期通知，再读取／选择本轮信息；发布不是故事，不重排自主，不耗模型调用。精确调用点和唯一计时器见§7。
 3. 可运行聊天、预约、起床、合法共同节点等前台优先；可读学校通知合并其中。没有现成前台时，符合§7条件可选纯通知轮。
 4. 普通openBatch未满15秒，暂不新开环境步骤，等待其截止。共同60秒窗无合法前台则仍可执行环境。
 5. 无前台／普通openBatch时，选择当前合格环境步骤；等待未来retry不能压住到期自主。自主及记忆维护继续沿用既有资格与让位规则，环境重试等待不构成unfinishedTurn。
@@ -124,7 +128,23 @@ Host每完成一个环境步骤让出事件循环并重新选择。选择规则�
 
 `src/school/calendar.ts`导出 `schoolExpansionInput(storage: Storage, now: ISOTime, timezone: string): SchoolExpansionInput`：给出本周范围、周五起纳入下周、既存下周需延续的范围、上游确定时段推导出的稳定occurrenceKey，以及远期当前下发／改期／取消项。它是周模型输入，不直接保存候选，不成为第二个通知写入者。
 
-`SchoolExpansionInput`固定包含 `weekStarts, sourceItems, existingInstances, existingNotices, coveredVersions, requiredOccurrences, requiredNoticeKeys, conflicts`。required集合来自未覆盖／变更上游及已有通知策略；模型填公开措辞、实例／通知候选及覆盖记录，校验不得漏掉必需键，不可更改上游确切时刻。所有required集合为空才允许无变更；明确不提醒的上游策略不产生必需提醒，不能一边标覆盖一边静默遗漏当前issue。
+### 5.1 必需展开集合与下发窗口
+
+`SchoolExpansionInput`固定包含 `weekStarts, sourceItems, existingInstances, existingNotices, knownSnapshots, coveredVersions, requiredOccurrences, requiredNoticeKeys, conflicts`。knownSnapshots给出相关SchoolEntitySnapshot，用于识别已通过周摘要／现场获知的条目；只提供学校知识，不附完整私聊。模型填公开措辞、实例／通知候选及覆盖记录，不可更改上游确切时刻。集合按以下判据生成并校验：
+
+- requiredOccurrences：当前需展开范围内缺失、标needsExpansion、或与最新上游公开日程不符的occurrenceKey。SchoolWeek.sourceVersions用于检查上游版本覆盖；实际实例身份、版本及日程仍须核对，内部备注改变不触发全套提醒。
+- requiredNoticeKeys：按策略应生成且仍有意义的issue／change／cancel／reminder／week_digest完整通知元组身份。已有同身份合法scheduled／available／read行算候选已覆盖；invalidated及旧deliveryRevision不能覆盖新键。只有未来scheduled行不证明已经发布或已知。
+- 上游deliveryRevision改变、announceOnChange=true、条目已进入下发窗口，且缺相应本版合法通知时，必须包含change键；取消用cancel键。无失效未读、仅有已读旧通知时同样适用。旧周摘要或现场获知也纳入判断，不能只查单项issue。
+- 更正义务延续到相应候选实际提交；周任务失败／跨日后仍从当前版本、策略及通知／知识／覆盖记录恢复，不能仅凭“昨天已失效”或sourceVersions已写覆盖就略过。存在必需键时，空变更或只更新覆盖记录不能通过；同版合法候选已提交则不重建。
+- announceOnIssue／announceOnChange默认true，可显式关闭；关闭是上游明确策略，不能由周模型漏项冒充。关闭普通reminders不等于关闭更正，未公开且明确不发布的安排不强造通知。
+
+“已进入下发窗口”固定为 `issuedAt <= now`，或已有实际发布证据（关联通知releasedAt／readAt）、或SchoolKnowledge已经获知该条目／实例。活动／期限离现在多久不参与这个门禁：三个月后截止的任务今天已下发，今天改期仍需更正；不等进入本周／下周才处理。
+
+尚未到issuedAt、未曾发布也未获知的远期草案，不强制立即change／cancel。程序先使旧预排候选失效；仍开放且announceOnIssue=true的条目，未来首次issue采用最新版本，缺本版合法候选时纳入预排必需键，publishAt不早于issuedAt。即使下发时刻落在下一晨间链之前，也能由通知定时器按时发布，不等次日模型检查。其提醒按既有展开范围／策略预排；已取消且未曾公开的草案不再强造首次issue。所有预排都不写成已发布／已知。到下发时刻且仍应通知时，缺失当前版通知仍进入必需集合。临时更正announceOnChange关闭的边界按明确策略处理，不让后台重试随意改变开关。
+
+已预排未来通知的条目需要更新未来候选与身份，但预排本身不迫使当天发布更正。已知／已发布条目的更正可以先说明未来才生效的安排，不用未来活动生效日期延后通知。仅内部revision变化、deliveryRevision不变不产生新更正键。所有required集合为空才允许无变更。
+
+### 5.2 应用与公开版本
 
 school_week校验后由 `applySchoolChanges(storage, changes, now)`统一事务应用：
 
@@ -144,6 +164,8 @@ school_week校验后由 `applySchoolChanges(storage, changes, now)`统一事务�
 
 `ModelRunRef.ownerType`扩为environment；每步使用ownerId=step.id、stageKey='generation'、taskName=stage。独立学校步骤各自20成功／40失败；同一步修补／续调用／重启恢复复用逻辑会话及模型，不因retry重新给额度。不把四个步骤合为一个池。成功提交／替代后释放缓存占用，保留审计及检查点。阶段输入随inputSnapshot冻结；新的日期步骤是新会话。
 
+跨日superseded保留旧step.id／runId及计数、操作、检查点，不通过改stageKey或重建同身份session清零，旧步骤不恢复生成。次日新step.id是独立调用，仍从0／0取得自己的20／40；不退款旧计数，也不将多日额度合为一个池。
+
 `makeRetrievalRequest`的currentOnly环境判定包含world、旧school兼容及三个新school_*，不意外允许环境读取细节历史／归档私聊。新增environment网页所有者不满足personal_life的自我网页阅读来源条件。模型的学校搜索只构建客观资料，不自动作为角色读过网页的短期记忆来源。
 
 不选择或启用搜索供应商，沿用当前provider缺失时的“结果不足／工具不可用”真实返回；不能伪造联网事实。不把验收工具300秒上限写成正式客户端超时，目前正式请求并没有该默认。
@@ -160,7 +182,15 @@ selectSchoolNotices(storage: Storage, now: ISOTime): SchoolNoticeRef[];
 schoolNoticeDeadline(storage: Storage, now: ISOTime): ISOTime | null;
 ```
 
-release只把合法未失效scheduled行变available。select供已合法故事合并全部相关可获知通知；只有available且nextWakeAt到期、当前可读、非共同模式时才单独唤起通知轮。纯通知运行主叙事后，实际有获知才要求personal_life反应；没有实际获知且无其他个人资格可不调用个人导演。`contactEligible=false`，不抽自主联系。普通消息与预约仍按原个人导演分支，学校通知不改变其身份。
+调用点固定为 `Scheduler.collectReady(now): closeReady → paused／unfinishedTurn门禁 → releaseSchoolNotices(storage, now)短事务 → 读取状态／通知 → 选择合法故事并冻结refs`，同一次选择使用同一个now。Host不另建发布入口，直接调用Scheduler的测试也有相同语义。未完成前台先恢复，门禁关闭时不发布／不改其冻结集合；resume后重新扫描。现有closeReady重复不作为本次额外重构。
+
+Scheduler.nextDeadline在原有门禁后合并environmentDeadline、schoolNoticeDeadline及前台截止；Host再与记忆维护截止取最早，由既有armTimer建立唯一计时器。新增deadline计算不发布、不调模型，既有共同节点维护不顺带改造。真正待发布通知到期可以触发一次扫描，已不可读／共同待合并／拒看的通知不得反复贡献过期now。
+
+release只将合法、未失效且 `publishAt <= now` 的scheduled行变available，同时记录首次releasedAt；发布窗尚未到的候选保持scheduled，不偷改为当前时刻。publishAt以§5.1下发规则校验，提醒还须当前仍有意义及满足个人提醒已知条件；过时失效通知不交付。没有validFrom门禁，活动／课程／研究要求未来生效仍可提前通知；下次deadline取真正publishAt。到期发布仍在同一个串行选择点，不增加正在请求中的并发发布线程。
+
+select供已合法故事合并全部相关可获知通知；只有available且nextWakeAt到期、当前可读、非共同模式时才单独唤起通知轮。纯通知运行主叙事后，实际有获知才要求personal_life反应；没有实际获知且无其他个人资格可不调用个人导演。`contactEligible=false`，不抽自主联系。普通消息与预约仍按原个人导演分支，学校通知不改变其身份。
+
+客观版本在上游提交时已经改变；旧已知快照保留的是角色当时的认识，不能称旧日程仍客观有效。新通知发布也不直接更新SchoolKnowledge，必须实际获知并在段B提交。通知内容、客观生效时间和角色知晓时间分别保存，不要求“更正只能晚于旧值失效时刻发布”。
 
 睡眠／洗澡不可读只暂存。deadline组合未来publishAt、可读后必要检查与现有起床／活动预计结束时间；**已发布但不可读的通知不能不断贡献过去的立即截止**。未知结束等已有故事，不新增高频轮询。角色拒看合法：一次纯通知轮成功而未读，令所选未读行nextWakeAt为已知未来活动结束时刻或null；后续可合并既有故事，但不立即又开同样通知轮。再次临近提醒是另一合法通知，不能无限循环同一份。
 
@@ -243,6 +273,24 @@ Storage.unfinishedTurn、Host恢复、启动诊断及统计都使用§3.1终态�
 
 真实模型隔离验收必须跨日期／周边界，至少包含班会两次提醒、拒绝必到事项、远期研究任务下发、实际模拟研究与导师反馈、未读改期知识差异、共同通知合并、已有学期无变化检查。查看真实多轮正文是否提前泄露隐藏安排、日历是否稳定、任务意图是否伪造成成果；不能只凭JSON合同通过宣称语义正确。
 
-沿用已允许的角色背景＋隔离测试剧情范围；不发送正式私聊或图片、不连QQ、不执行真实研究。新测试夹具不要引入未授权真实第三方资料。验收工具单请求默认300秒，超时按真实失败记录，不能提高上限后改写原失败记录；正式模型客户端超时保持其既有语义。
+沿用已允许的角色背景＋隔离测试剧情范围；不发送正式私聊或图片、不连QQ、不执行真实研究。新测试夹具不要引入未授权真实第三方资料。scripts/validate-world-school.ts自身单请求等待／取消默认300000ms，可显式覆盖，仅在工具包装Transport／请求signal生效；不新增AppConfig字段，不给正式ModelClient统一加300秒。超时按真实失败记录，不能提高上限后改写原失败记录；取消必须传到请求，不能只Promise.race停止等待后留下请求继续写隔离库。
 
 实施日志在执行任务1时创建 `docs/WORLD_SCHOOL_PLANNING_V0.4_IMPLEMENTATION_LOG_20261008.md`，逐任务记录起点、RED/GREEN、实际接口调整、提交、只读报告、备份与真实验收结果。实现完成后再同步README、实际架构／调度文档；本文与执行计划届时更新状态并链接日志，审核历史保留原文。
+
+## 11. 合并记录与最终实施入口
+
+| 审查／回应 | 已落入执行依据的位置 |
+| --- | --- |
+| 第十一轮及其回应 | 配置解析前兼容、独立环境步骤／失败隔离、通知唯一归属、角色视角及旧库升级，§2～9／任务1～6。 |
+| 第十二轮及计划回应 | §3.2通知措辞／默认；§4下游只在committed后经选择点放行；§5.1必需双判据、已读更正及幂等；§6跨日旧额度；§7发布点／唯一定时器；§10与任务8工具300秒范围。对应具名用例已补到任务2～5／8及交付自查。 |
+| 第十三轮2.1 | §5.1以issuedAt／实际发布／已知界定下发窗口。已下发的远期事项立即适用更正；未下发未知草案更新未来候选，预排不等于发布。 |
+| 第十三轮2.2 | §3.2及§7区分活动生效、通知publishAt、发布审计、实际获知；未到publishAt保持scheduled。该建议采用本项目实际字段，不引入审查中未定义的validFrom，不要求更正晚于旧值失效；客观改变、发布、获知依旧分开。 |
+
+本次增加releasedAt只是保存曾发布证据，避免通知invalidated后失去历史发布事实；它不构成新的下发窗口、角色知识或上下文预算。所有合并仍停留在文档，原审查／回应保留当时“尚未回填”的历史描述，不改写成已实施。
+
+正式实施直接使用以下两份：
+
+1. 本文：字段、职责、调度／冻结／事务、通知时间与知识、模型及升级规则。
+2. [执行计划](WORLD_SCHOOL_PLANNING_V0.4_EXECUTION_PLAN_20261008.md)：任务1～8顺序、文件／接口、RED／GREEN、迁移／验收和日志。
+
+[方案](WORLD_SCHOOL_PLANNING_V0.4_PROPOSAL_20261008.md)用于产品背景；第十一～十三轮review／rebuttal仅用于追溯，不是第三份待拼接的规范。既有源码及已实现记忆／搜索／共同活动文档用于接入基线，按任务查相关接口，不重新执行旧计划；本轮明确改变的目标行为以这两份为准。实施记录产生后用于说明实际进度和偏差，完成后再同步已实现口径。
