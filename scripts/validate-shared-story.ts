@@ -14,6 +14,7 @@ import type { ModelRunOptions } from '../src/memory/types';
 
 // Explicit online acceptance, isolated database, recording sender, virtual time.
 // No production database path, real QQ sender, embedding, or search adapter.
+const requestTimeoutMs = 300_000;
 async function main() {
   const args = process.argv.slice(2);
   const value = (flag: string) => args[args.indexOf(flag) + 1];
@@ -38,7 +39,7 @@ async function main() {
       calls++; if (request.repair) repairs++;
       console.log(`${scenario}: ${round?.step ?? '-'} ${request.task.name}${request.repair ? ' repair' : ''}`);
       return transport.complete(request, { signal: options?.signal
-        ? AbortSignal.any([options.signal, AbortSignal.timeout(120_000)]) : AbortSignal.timeout(120_000) });
+        ? AbortSignal.any([options.signal, AbortSignal.timeout(requestTimeoutMs)]) : AbortSignal.timeout(requestTimeoutMs) });
     } });
     const models: ModelRunner = { async runModel<T>(task: ModelTask<T>, input: unknown, options?: ModelRunOptions): Promise<T> {
       const result = await client.runModel(task, input, options);

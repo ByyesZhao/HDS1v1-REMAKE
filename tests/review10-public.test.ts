@@ -12,7 +12,7 @@ const shared = { ...narrative, publicNarration: null, progress: '继续', outlin
 function meta(step = 2, maxSteps = 20, phase: SharedTurnMeta['phase'] = 'ongoing'): SharedTurnMeta {
   return { activityId: 'activity-a', stepNumber: step, maxSteps, idleSeconds: 60, advanceReason: 'automatic', phase, controlRequestIds: [], sceneTaskId: 'scene:activity-a', allowSimulatedUserActions: true };
 }
-it.each([[20, 'opening'], [3, 'wrap_up'], [1, 'final']] as const)('first shared node requires public text with maxSteps=%s', (max, phase) => {
+it.each([[20, 'opening'], [3, 'wrap_up'], [2, 'wrap_up'], [1, 'final']] as const)('first shared node requires public text with maxSteps=%s', (max, phase) => {
   const task = narrativeTask(true, NOW, NOW, [], meta(1, max, phase), null);
   expect(() => task.parse(shared)).toThrow(/publicNarration/);
   expect(() => task.parse({ ...shared, publicNarration: '游戏界面亮起，第一关已经准备好。' })).not.toThrow();
@@ -20,6 +20,12 @@ it.each([[20, 'opening'], [3, 'wrap_up'], [1, 'final']] as const)('first shared 
 it('middle shared node can remain public-silent', () => {
   expect(() => narrativeTask(true, NOW, NOW, [], meta()).parse(shared)).not.toThrow();
   expect(() => personalTask('shared', NOW, [], 'shared_online', [], meta(), null).parse(silent)).not.toThrow();
+});
+it.each([3, 10])('soft pacing imposes no minimum or forced end at step %s', step => {
+  const sharedMeta = meta(step);
+  const task = personalTask('shared', NOW, [], 'shared_online', [], sharedMeta, '本次游戏已结束，双方回到大厅。');
+  expect(() => task.parse({ ...silent, sharedChange: { action: 'end' } })).not.toThrow();
+  expect(() => task.parse(silent)).not.toThrow();
 });
 it.each([null, '  '])('early end rejects missing public narration %s', publicNarration => {
   expect(() => personalTask('shared', NOW, [], 'shared_online', [], meta(), publicNarration).parse({ ...silent, sharedChange: { action: 'end' } })).toThrow(/publicNarration/);
