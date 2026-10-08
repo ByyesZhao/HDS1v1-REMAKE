@@ -3,7 +3,6 @@ import {inspectEnvironmentUpgrade,importLegacySchoolEvents} from './deployment/e
 import { Context, Schema, h } from 'koishi';
 import { readFileSync, existsSync } from 'node:fs';
 import { resolve, extname } from 'node:path';
-import { randomUUID } from 'node:crypto';
 import { Storage } from './storage';
 import { EnvironmentStore } from './environment/store';
 import { SchoolStore } from './school/store';
@@ -21,7 +20,7 @@ import { renderItem } from './output/qq';
 import { systemClock, addMs } from './time';
 import { loadSettings, connectionFor, modelRoles, appConfig, initialState } from './settings';
 import type { Sender } from './types';
-import { isTargetSession } from './host/input';
+import { isTargetSession,incomingMessageId } from './host/input';
 export { isTargetSession } from './host/input';
 
 export const name = 'hdsi-remake';
@@ -103,7 +102,7 @@ export function apply(ctx: Context, config: Config): void {
     if (/^hdsi\.(status|pause|resume)(?:\s|$)/.test(rawContent.trim())) return next();
     const text = h.parse(rawContent).filter(element => element.type === 'text').map(element => element.attrs.content).join('');
     if (!text.trim()) return;
-    const accepted = await host.acceptInput({ id: randomUUID(), receivedAt: clock.now(), content: text, platformMessageIds: session.messageId ? [session.messageId] : [] });
+    const accepted = await host.acceptInput({ id: incomingMessageId(session), receivedAt: clock.now(), content: text, platformMessageIds: session.messageId ? [session.messageId] : [] });
     if (accepted.systemReply) await bot().sendPrivateMessage(config.userId, accepted.systemReply);
   });
   for (const command of ['status', 'pause', 'resume'] as const) {

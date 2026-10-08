@@ -10,9 +10,10 @@ export function archiveStart(row:MemoryCandidate,now:string):string|null {
 export const isArchivedLong=(row:MemoryCandidate,now:string)=>archiveStart(row,now)!==null;
 export const activeShort=(r:MemoryCandidate,now:string)=>r.kind==='short'&&r.status==='active'&&!r.mergedInto&&!r.capacityExitedAt&&!!r.shortExpiresAt&&milliseconds(r.shortExpiresAt)>milliseconds(now);
 export const ordinaryLong=(r:MemoryCandidate)=>r.kind==='long'&&r.status==='active'&&!r.mergedInto;
+export const promotionEligible=(row:MemoryCandidate,at:string)=>ordinaryLong(row)&&row.totalAwakenings>=30&&!isArchivedLong(row,at);
 export function protectedCanonicalIds(rows:MemoryCandidate[],now:string,includeRetainedShorts=false):Set<string> {
   const ids=new Set<string>();for(const r of rows){
-    if(r.kind==='short'&&(activeShort(r,now)||includeRetainedShorts&&r.status==='active'&&!!r.shortExpiresAt&&milliseconds(r.shortExpiresAt)>milliseconds(now))&&r.linkedLongId){const l=metadataCanonical(rows,r.linkedLongId);if(l)ids.add(l.id);}
+    if(r.kind==='short'&&r.status==='active'&&!r.mergedInto&&r.linkedLongId){const l=metadataCanonical(rows,r.linkedLongId);if(l&&(activeShort(r,now)||includeRetainedShorts&&(!l.content.trim()||!!r.shortExpiresAt&&milliseconds(r.shortExpiresAt)>milliseconds(now))))ids.add(l.id);}
     if(r.kind==='learned'&&r.status==='active')for(const id of [r.canonicalMemoryId,...r.evidenceMemoryIds??[]]){if(id){const l=metadataCanonical(rows,id);if(l)ids.add(l.id);}}
   }return ids;
 }
@@ -44,9 +45,9 @@ export class MemoryCapacity {
   // A finite budget is used only for startup/backlog cleanup; story segment B normalizes its small delta.
   normalize(now:string,protectedLongIds:string[]=[],changeBudget=Infinity):CapacityResult {
     const changedOwners:MemoryCandidate[]=[],temporary=new Set(protectedLongIds),rows=this.store.allOwners();
-    const shorts=rows.filter(r=>activeShort(r,now)).sort(activeOrder(this.store,now));
+    const shorts=rows.filter(r=>activeShort(r,now));
     let shortExcess=this.config.shortActiveLimit===null?0:Math.max(0,shorts.length-this.config.shortActiveLimit);
-    for(const short of shorts){if(shortExcess<=0||changedOwners.length>=changeBudget)break;
+    for(const short of shortExcess>0?shorts.sort(activeOrder(this.store,now)):[]){if(shortExcess<=0||changedOwners.length>=changeBudget)break;
       const long=short.linkedLongId?this.store.canonical(short.linkedLongId):null;if(!long||long.kind!=='long'||!long.content.trim())continue;
       const exited={...short,capacityExitedAt:now,capacityExitReason:'short_capacity' as const,stateVersion:short.stateVersion+1};this.store.saveOwner(exited);this.store.queueDirty(exited,'capacity',now);changedOwners.push(exited);shortExcess--;
       if(long.status==='active'&&!isArchivedLong(long,now)&&long.retainedFrom&&milliseconds(long.retainedFrom)>milliseconds(now)){
@@ -60,7 +61,7 @@ export class MemoryCapacity {
     }
     const protectedIds=this.protectedIds(now);for(const id of temporary)protectedIds.add(id);
     const occupied=this.store.allOwners().filter(r=>ordinaryLong(r)&&!isArchivedLong(r,now));let longExcess=this.config.longActiveLimit===null?0:Math.max(0,occupied.length-this.config.longActiveLimit);
-    for(const r of occupied.filter(r=>!protectedIds.has(r.id)).sort(activeOrder(this.store,now))){if(longExcess<=0||changedOwners.length>=changeBudget)break;
+    for(const r of longExcess>0?occupied.filter(r=>!protectedIds.has(r.id)).sort(activeOrder(this.store,now)):[]){if(longExcess<=0||changedOwners.length>=changeBudget)break;
       const exited={...r,capacityExitedAt:now,capacityExitReason:'long_capacity' as const,archiveEnteredAt:now,stateVersion:r.stateVersion+1};this.store.saveOwner(exited);this.store.queueDirty(exited,'capacity',now);changedOwners.push(exited);longExcess--;
     }
     return {changedOwners:changedOwners.map(({ownerType,ownerId,revision,stateVersion})=>({ownerType,ownerId,revision,stateVersion})),temporaryProtectedIds:[...temporary],counts:this.counts(now)};

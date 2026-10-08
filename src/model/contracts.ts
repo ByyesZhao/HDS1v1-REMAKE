@@ -3,6 +3,8 @@ import type { ModelTask, NarrativeResult, SharedNarrativeResult, SharedTurnMeta,
 import { prompts, sharedNarrativePrompt } from './prompts';
 import { milliseconds } from '../time';
 import type { MemoryCandidate, MaintenanceUnit, OwnerVersion } from '../memory/types';
+import {summaryRepairPair} from '../memory/summary-repair';
+import {promotionEligible} from '../memory/capacity';
 
 const text = z.string();
 const time = z.iso.datetime({ offset: true });
@@ -121,6 +123,7 @@ export function memoryTask(sourceIds: string[], memoryIds: string[], shortIds:st
   return modelTask('memory', memory, (r: MemoryResult) => {
     const validateSources = (ids: string[], allowed=sourceIds) => requireControl(ids.length>0&&ids.every(id => allowed.includes(id)), 'sourceIds', 'unknown current source ID');
     const touched=new Set<string>();const refs=new Set<string>();
+    r.shortTermChanges.forEach(c=>requireControl(!!c.eventSummary.trim()||!!c.feelingSummary.trim(),'summary','eventSummary or feelingSummary must be meaningful'));
     r.shortTermChanges.forEach(c=>{validateSources(c.sourceIds,[...sourceIds,...selfReadIds]);if(c.action==='update'){requireControl(shortIds.includes(c.id)&&!touched.has(c.id),'shortTermChanges.id','unknown or duplicate memory ID');touched.add(c.id);}else{requireControl(!refs.has(c.clientRef),'shortTermChanges.clientRef','duplicate clientRef');refs.add(c.clientRef);if(c.existingLongId)requireControl(memoryIds.includes(c.existingLongId),'existingLongId','unknown memory ID');}});
     r.detailChanges.forEach(d=>validateSources(d.sourceIds));
     const awakened=new Set<string>();r.longTermChanges.forEach(c=>{validateSources(c.sourceIds);requireControl(memoryIds.includes(c.id)&&!awakened.has(c.id),'longTermChanges.id','unknown or duplicate memory ID');awakened.add(c.id);});
@@ -141,16 +144,19 @@ export function environmentTask(kind: 'world' | 'school', old: EnvironmentEvent[
   });
 }
 
-export function consolidationTask(snapshot:MemoryCandidate[],selectedIds:string[],kind:'consolidation'|'audit'='consolidation'):ModelTask<MaintenanceUnit[]> {
+export function consolidationTask(snapshot:MemoryCandidate[],selectedIds:string[],kind:'consolidation'|'audit'='consolidation',evaluationAt?:string):ModelTask<MaintenanceUnit[]> {
   const unit=z.object({unitKey:text.min(1),action:z.enum(['refine','merge','merge_short','discard','promote','retain','review_detail','review_learned']),readOwners:z.array(text).min(1),ids:z.array(text).min(1),sourceIds:z.array(text),canonicalId:text.optional(),canonicalShortId:text.optional(),targetId:text.optional(),decision:z.enum(['retain','report_conflict','suggest_revision','suggest_withdrawal']).optional(),content:text.optional(),eventSummary:text.optional(),feelingSummary:text.optional(),learnedKind:z.enum(['durable_experience','stable_understanding']).optional(),alwaysInclude:z.boolean().optional(),reason:text.optional()});
   const schema=z.object({units:z.array(unit)});
   return {name:'memory_consolidation',prompt:kind==='audit'?prompts.memory_audit:prompts.memory_consolidation,schema:z.toJSONSchema(schema),parse(value:unknown){
     const parsed=schema.parse(value),touched=new Set<string>(),unitKeys=new Set<string>(),covered=new Set<string>();
     const available=new Map(snapshot.map(row=>[row.id,row])),sources=new Set(snapshot.flatMap(row=>row.sourceIds));
+    const repairLongs=snapshot.filter(r=>selectedIds.includes(r.id)||!!r.linkedLongId&&selectedIds.includes(r.linkedLongId)).filter(r=>summaryRepairPair(r,r.linkedLongId?available.get(r.linkedLongId)??null:null)).map(r=>r.linkedLongId!);
     const units=parsed.units.map(u=>{
       requireControl(!unitKeys.has(u.unitKey),'unitKey','duplicate unit');unitKeys.add(u.unitKey);
       requireControl(u.readOwners.every(id=>available.has(id)),'readOwners','unknown snapshot owner');
       requireControl(u.ids.every(id=>u.readOwners.includes(id)),'ids','writes outside readOwners');
+      requireControl(new Set(u.ids).size===u.ids.length,'ids','duplicate identities');
+      if(kind==='consolidation'&&u.ids.some(id=>repairLongs.includes(id)||repairLongs.includes(available.get(id)?.linkedLongId??'')))requireControl(['refine','merge','merge_short'].includes(u.action)&&repairLongs.filter(id=>u.ids.includes(id)||u.ids.some(s=>available.get(s)?.linkedLongId===id)).every(id=>u.action==='merge_short'?u.readOwners.includes(id):u.ids.includes(id)),'summary','missing summary requires a sourced summary repair');
       const longIds=new Set(u.ids.flatMap(id=>{const row=available.get(id)!;return row.kind==='long'?[id]:row.linkedLongId?[row.linkedLongId]:[];}));
       const implicit=snapshot.filter(r=>r.kind==='learned'&&(!!r.canonicalMemoryId&&longIds.has(r.canonicalMemoryId)||r.evidenceMemoryIds?.some(id=>longIds.has(id)))||['merge','merge_short'].includes(u.action)&&r.kind==='short'&&!!r.linkedLongId&&longIds.has(r.linkedLongId)).map(r=>r.id);
       const evidenceOwners=u.action==='promote'?u.readOwners.flatMap(id=>{const row=available.get(id)!;const canonical=row.kind==='short'?row.linkedLongId:row.kind==='learned'?row.canonicalMemoryId:null;return canonical&&available.get(canonical)?.kind==='long'?[canonical]:[];}):[];
@@ -169,7 +175,7 @@ export function consolidationTask(snapshot:MemoryCandidate[],selectedIds:string[
         requireControl(shorts.every(r=>!!r.linkedLongId&&u.readOwners.includes(r.linkedLongId)&&available.get(r.linkedLongId)?.kind==='long'),'readOwners','merge_short linked longs required');
       }
       if(u.action==='promote'){
-        requireControl(!!u.learnedKind,'learnedKind','required');requireControl(u.ids.some(id=>available.get(id)!.kind==='long'&&available.get(id)!.totalAwakenings>=30),'promote','requires 30 dates');
+        requireControl(!!u.learnedKind,'learnedKind','required');requireControl(!!evaluationAt,'evaluationAt','promotion requires frozen evaluation time');requireControl(u.ids.some(id=>promotionEligible(available.get(id)!,evaluationAt!)),'promote','requires active unarchived main and 30 dates');
         const evidence=u.readOwners.flatMap(id=>{const r=available.get(id)!;const canonical=r.kind==='long'?r.id:r.kind==='short'?r.linkedLongId:r.kind==='learned'?r.canonicalMemoryId:null;return canonical&&available.get(canonical)?.kind==='long'?[canonical]:[];});
         if(u.learnedKind==='stable_understanding')requireControl(new Set(evidence).size>=2,'readOwners','requires distinct canonical events');
       }

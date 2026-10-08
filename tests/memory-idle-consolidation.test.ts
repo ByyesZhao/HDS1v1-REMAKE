@@ -7,7 +7,7 @@ import {consolidationTask,auditTask} from '../src/model/contracts';
 import type {MemoryCandidate} from '../src/memory/types';
 function create(){const d=fixture(),life=new MemoryLifecycle(d.store),index=new MemoryIndex(d.store,{model:'offline',embed:async()=>[1,0]},{clock:d.clock});return {...d,life,maintenance:new MemoryMaintenance(d.store,life,index,d.models,{clock:d.clock})};}
 function ready(d:ReturnType<typeof create>,rows:MemoryCandidate[],selected:string[],raw:any,kind:'consolidation'|'audit'='consolidation'){
- const units=(kind==='audit'?auditTask:consolidationTask)(rows,selected).parse(raw);
+ const units=consolidationTask(rows,selected,kind,at).parse(raw);
  for(const row of rows){d.store.saveOwner(row);d.store.queueDirty(row,row.kind==='detail'?'detail':'event',at);}
  d.store.saveJob('memory_maintenance_jobs',{id:'job',kind,cutoff:at,createdAt:at,status:'ready',snapshot:rows,selectedIds:selected,readSet:rows,result:units,appliedUnitKeys:[],staleUnitKeys:[],retryAt:null,lastError:null});
 }

@@ -2,7 +2,7 @@ import { Storage } from '../storage';
 import { addMs, milliseconds, nextDaily } from '../time';
 import type { Awakening, IndexJob, MemoryCandidate, MemoryOwnerRef, OwnerVersion, RetentionGrant, RetrievalRequest,MemoryDirtyOwner,MemoryAuditReport,MaintenanceJob,MaintenanceUnit } from './types';
 import {memoryOwnerData} from './types';
-import {archiveStart} from './capacity';
+import {archiveStart,promotionEligible} from './capacity';
 
 const day=86400_000;
 // Keep this expression equivalent to capacity.archiveStart, including natural expiry without a persisted anchor.
@@ -193,7 +193,7 @@ export class MemoryStore {
   }
   projections(canonicalMemoryId:string):MemoryCandidate[]{return this.storage.prepare("SELECT data FROM learned_background WHERE json_extract(data,'$.canonicalMemoryId')=? AND json_extract(data,'$.status')='active' ORDER BY rowid").all(canonicalMemoryId).map(r=>memoryOwnerData(JSON.parse(String(r.data))));}
   maintenanceCandidates(cutoff:string):MemoryCandidate[]{
-    return this.storage.prepare("SELECT data FROM memories WHERE json_extract(data,'$.status')='active' AND ((json_extract(data,'$.kind')='short' AND julianday(json_extract(data,'$.shortExpiresAt'))<=julianday(?) AND (json_extract(data,'$.consolidatedRevision') IS NULL OR json_extract(data,'$.consolidatedRevision')!=json_extract(data,'$.revision'))) OR (json_extract(data,'$.kind')='long' AND julianday(json_extract(data,'$.createdAt'))<=julianday(?) AND json_extract(data,'$.totalAwakenings')>=30 AND (json_extract(data,'$.evaluatedEvidenceVersion') IS NULL OR json_extract(data,'$.evaluatedEvidenceVersion')<json_extract(data,'$.stateVersion')))) ORDER BY julianday(json_extract(data,'$.createdAt')),id").all(cutoff,cutoff).map(r=>memoryOwnerData(JSON.parse(String(r.data))));
+    return this.storage.prepare("SELECT data FROM memories WHERE json_extract(data,'$.status')='active' AND ((json_extract(data,'$.kind')='short' AND julianday(json_extract(data,'$.shortExpiresAt'))<=julianday(?) AND (json_extract(data,'$.consolidatedRevision') IS NULL OR json_extract(data,'$.consolidatedRevision')!=json_extract(data,'$.revision'))) OR (json_extract(data,'$.kind')='long' AND julianday(json_extract(data,'$.createdAt'))<=julianday(?) AND json_extract(data,'$.totalAwakenings')>=30 AND (json_extract(data,'$.evaluatedEvidenceVersion') IS NULL OR json_extract(data,'$.evaluatedEvidenceVersion')<json_extract(data,'$.stateVersion')))) ORDER BY julianday(json_extract(data,'$.createdAt')),id").all(cutoff,cutoff).map(r=>memoryOwnerData(JSON.parse(String(r.data)))).filter(r=>r.kind!=='long'||promotionEligible(r,cutoff));
   }
   job<T>(table:JobTable,id:string):T|null {const row=parse<T>(this.storage.prepare(`SELECT data FROM ${table} WHERE id=?`).get(id));return row&&table==='memory_maintenance_jobs'?{kind:'consolidation',prunedOwnerKeys:[],...row}:row;}
   jobs<T>(table:JobTable,statuses?:Array<'pending'|'computing'|'ready'|'done'>):T[]{

@@ -58,8 +58,8 @@ describe('memory lifecycle V0.3',()=>{
   });
   it('30 distinct dates register one evidence candidate; durable promotion retains canonical counts without expiry',()=>{
     const{store,life}=setup();life.apply(create('high'),'t',at,['e']);const id='t:short:0:long';for(let i=0;i<30;i++)awake(life,id,`d${i}`,addMs(at,i*day));
-    expect(life.promotionCandidates()).toHaveLength(1);life.evaluateRetain(id);expect(life.promotionCandidates()).toHaveLength(0);
-    awake(life,id,'31',addMs(at,30*day));expect(life.promotionCandidates()).toHaveLength(1);life.promote(id,'learned','考试经验','durable_experience',false,[id],at);
+    expect(life.promotionCandidates(addMs(at,30*day))).toHaveLength(1);life.evaluateRetain(id);expect(life.promotionCandidates(addMs(at,30*day))).toHaveLength(0);
+    awake(life,id,'31',addMs(at,30*day));expect(life.promotionCandidates(addMs(at,30*day))).toHaveLength(1);life.promote(id,'learned','考试经验','durable_experience',false,[id],at);
     expect(store.canonical(id)).toMatchObject({status:'durable',expiresAt:null});expect(store.owner({ownerType:'learned',ownerId:'learned'})?.canonicalMemoryId).toBe(id);
     awake(life,'learned','future',addMs(at,300*day));expect(store.canonical(id)?.totalAwakenings).toBe(32);
   });

@@ -1,6 +1,6 @@
 import { addMs, milliseconds, localParts } from '../time';
 import { MemoryStore,memoryIndexText } from './store';
-import {MemoryCapacity,archiveStart} from './capacity';
+import {MemoryCapacity,archiveStart,promotionEligible} from './capacity';
 import type { AwakeningInput, MemoryCandidate, MemoryResultV3, RetentionGrant } from './types';
 
 const day=86400_000;
@@ -17,6 +17,7 @@ export class MemoryLifecycle {
   apply(result:MemoryResultV3,turnId:string,at:string,allowedSources:string[],selfReads:string[]=[]):void {
     let createIndex=0;
     for(const change of result.shortTermChanges) {
+      if(!change.eventSummary.trim()&&!change.feelingSummary.trim())throw new Error('summary: eventSummary or feelingSummary must be meaningful');
       requireSources(change.sourceIds,union(allowedSources,selfReads));
       if(change.action==='create') {
         const id=`${turnId}:short:${createIndex++}`;
@@ -125,7 +126,7 @@ export class MemoryLifecycle {
     }
     this.refresh(main.id);const current=this.store.canonical(main.id)!;if(textChanged)this.store.queueIndex(current,at??main.createdAt);this.synchronizeProjections(current,at??main.createdAt);
   }
-  promotionCandidates():MemoryCandidate[]{return this.store.storage.prepare("SELECT data FROM memories WHERE json_extract(data,'$.kind')='long' AND json_extract(data,'$.status')='active' AND json_extract(data,'$.totalAwakenings')>=30 AND (json_extract(data,'$.evaluatedEvidenceVersion') IS NULL OR json_extract(data,'$.evaluatedEvidenceVersion')<json_extract(data,'$.stateVersion'))").all().map(r=>JSON.parse(String(r.data)));}
+  promotionCandidates(at:string):MemoryCandidate[]{return this.store.storage.prepare("SELECT data FROM memories WHERE json_extract(data,'$.kind')='long' AND json_extract(data,'$.status')='active' AND json_extract(data,'$.totalAwakenings')>=30 AND (json_extract(data,'$.evaluatedEvidenceVersion') IS NULL OR json_extract(data,'$.evaluatedEvidenceVersion')<json_extract(data,'$.stateVersion'))").all().map(r=>JSON.parse(String(r.data))).filter(r=>promotionEligible(r,at));}
   synchronizeProjections(row:MemoryCandidate,at:string,dirty=false):void {
     for(const projection of this.store.allOwners().filter(p=>p.kind==='learned'&&p.status==='active'&&(p.canonicalMemoryId===row.id||p.evidenceMemoryIds?.includes(row.id)))){
       const basis={content:row.content,sourceIds:row.sourceIds,revision:row.revision};
@@ -142,14 +143,14 @@ export class MemoryLifecycle {
   }
   evaluateRetain(id:string):void {const row=this.store.canonical(id)!;this.store.saveOwner({...row,evaluatedEvidenceVersion:row.stateVersion+1,stateVersion:row.stateVersion+1});}
   promote(id:string,learnedId:string,content:string,kind:'durable_experience'|'stable_understanding',alwaysInclude:boolean,evidenceIds:string[],at:string):void {
-    const row=this.store.canonical(id)!;if(row.totalAwakenings<30)throw new Error('promotion requires 30 effective dates');
+    const row=this.store.canonical(id);if(!row||!promotionEligible(row,at))throw new Error('promotion requires active unarchived main and 30 effective dates');
     const evidence=union(evidenceIds.flatMap(id=>{const l=this.store.canonicalEvidence(id);return l?[l.id]:[];}));
     if(kind==='stable_understanding'&&evidence.length<2)throw new Error('stable understanding requires distinct events');
     const learned=this.store.makeOwner({ownerType:'learned',ownerId:learnedId},{content,eventSummary:content,sourceIds:union(row.sourceIds,...evidence.map(id=>this.store.canonical(id)!.sourceIds)),evidenceMemoryIds:evidence,canonicalMemoryId:row.id,learnedKind:kind,alwaysInclude:kind==='stable_understanding'&&alwaysInclude,topics:row.topics,...(kind==='durable_experience'?{...eventRange([row]),lastEventUpdateAt:row.lastEventUpdateAt}:{})},at);
     this.store.saveOwner({...row,status:'durable',expiresAt:null,windowAwakenings:0,stateVersion:row.stateVersion+1});this.store.saveOwner(learned);this.store.queueIndex(learned,at);this.store.queueDirty(learned,'learned',at);
   }
   mergeShort(ids:string[],canonicalShortId:string,content:string,eventSummary:string,feelingSummary:string,sourceIds:string[],at:string):MemoryCandidate {
-    const shorts=ids.map(ownerId=>this.store.owner({ownerType:'short',ownerId})).filter((r):r is MemoryCandidate=>!!r&&r.kind==='short');
+    const shorts=[...new Set(ids)].map(ownerId=>this.store.owner({ownerType:'short',ownerId})).filter((r):r is MemoryCandidate=>!!r&&r.kind==='short'&&r.status==='active'&&!r.mergedInto);
     const main=shorts.find(r=>r.id===canonicalShortId);if(!main||shorts.length<2)throw new Error('merge_short needs live shorts');
     const longs=[...new Map(shorts.map(s=>this.store.canonical(s.linkedLongId!)).filter((r):r is MemoryCandidate=>!!r).map(r=>[r.id,r])).values()];
     const preferred=longs.sort((a,b)=>milliseconds(a.createdAt)-milliseconds(b.createdAt)||(a.id<b.id?-1:1))[0];if(!preferred)throw new Error('merge_short missing long summary');

@@ -1,13 +1,14 @@
 import { randomUUID } from 'node:crypto';
 import type { Clock,ModelRunner } from '../types';
 import { addMs,milliseconds,nextDaily } from '../time';
-import { consolidationTask,auditTask } from '../model/contracts';
+import { consolidationTask } from '../model/contracts';
 import { MemoryStore } from './store';
 import { MemoryLifecycle } from './lifecycle';
 import { MemoryIndex } from './index';
 import type { IndexJob,MaintenanceJob,MaintenanceUnit,MemoryCandidate,OwnerVersion } from './types';
 import { phaseOptions } from '../web/phases';
 import {memoryMetadata,metadataCanonical} from './metadata';
+import {promotionEligible} from './capacity';
 export interface MaintenanceOptions {clock:Clock;onReady?:()=>void;batchItems?:number;batchCharacters?:number|null;backgroundTimeoutMs?:number;retryDelayMs?:number;web?:import('../web/service').WebSearchService;idle?:import('./idle').MemoryIdle}
 type Work={table:'memory_index_jobs';job:IndexJob}|{table:'memory_maintenance_jobs';job:MaintenanceJob};
 const version=(r:MemoryCandidate):OwnerVersion=>({ownerType:r.ownerType,ownerId:r.ownerId,revision:r.revision,stateVersion:r.stateVersion});
@@ -96,7 +97,7 @@ export class MemoryMaintenance {
     const cancelled=new Promise<never>((_,reject)=>{onAbort=()=>reject(controller.signal.reason??new Error('backend cancelled'));controller.signal.addEventListener('abort',onAbort,{once:true});});
     timer=setTimeout(()=>controller.abort(new Error('backend timeout')),this.options.backgroundTimeoutMs??120000);
     try {
-      const remote=work.table==='memory_index_jobs'?this.index.prepare(work.job,controller.signal):this.models.runModel((work.job.kind==='audit'?auditTask:consolidationTask)(work.job.snapshot,work.job.selectedIds??work.job.snapshot.map(r=>r.id)),{kind:work.job.kind??'consolidation',cutoff:work.job.cutoff,selectedIds:work.job.selectedIds??work.job.snapshot.map(r=>r.id),snapshot:work.job.snapshot},phaseOptions(this.options.web,'maintenance',work.job.id,'consolidation','memory_consolidation',{signal:controller.signal,lookup:null}));
+      const remote=work.table==='memory_index_jobs'?this.index.prepare(work.job,controller.signal):this.models.runModel(consolidationTask(work.job.snapshot,work.job.selectedIds??work.job.snapshot.map(r=>r.id),work.job.kind??'consolidation',work.job.cutoff),{kind:work.job.kind??'consolidation',cutoff:work.job.cutoff,selectedIds:work.job.selectedIds??work.job.snapshot.map(r=>r.id),snapshot:work.job.snapshot,promotionEligibleIds:work.job.snapshot.filter(r=>promotionEligible(r,work.job.cutoff)).map(r=>r.id)},phaseOptions(this.options.web,'maintenance',work.job.id,'consolidation','memory_consolidation',{signal:controller.signal,lookup:null}));
       const result=await Promise.race([remote,cancelled]);
       if(this.stopped)return;
       if(work.table==='memory_index_jobs'){
@@ -127,14 +128,16 @@ export class MemoryMaintenance {
       const job=work.job,unit=job.result!.find(u=>!job.appliedUnitKeys.includes(u.unitKey)&&!job.staleUnitKeys.includes(u.unitKey));
       if(!unit){this.store.saveJob(work.table,{...job,status:'done',retryAt:null,lastError:null});this.options.web?.releaseOwner('maintenance',job.id);return 'none';}
       const valid=unit.readSet.every(ref=>{const r=this.store.owner(ref);return r&&r.status!=='merged'&&r.status!=='discarded'&&r.stateVersion===ref.stateVersion&&r.revision===ref.revision;})&&unit.ids.every(id=>{const r=job.snapshot.find(r=>r.id===id);return !!r&&!!this.store.owner(r);})&&(!unit.canonicalId||unit.readSet.some(r=>r.ownerId===unit.canonicalId)&&!!this.store.canonical(unit.canonicalId));
-      if(valid)this.applyUnit(unit,job,now);
+      const main=unit.action==='promote'?unit.ids.map(id=>job.snapshot.find(r=>r.id===id)!).find(r=>promotionEligible(r,job.cutoff)):null;
+      const applicable=valid&&(unit.action!=='promote'||!!main&&!!this.store.owner(main)&&promotionEligible(this.store.owner(main)!,now));
+      if(applicable)this.applyUnit(unit,job,now);
       else {
         if(this.options.idle)for(const ref of unit.readSet){const row=this.store.owner(ref);if(row){this.store.queueDirty(row,row.kind==='detail'?'detail':row.kind==='learned'?'learned':'event',now);this.store.releaseDirty(row);}}
-        else {const eligible=this.store.maintenanceCandidates(job.cutoff).filter(r=>unit.ids.includes(r.id));if(eligible.length)this.makeJob(eligible,job.cutoff,now);}
+        else {const eligible=this.store.maintenanceCandidates(now).filter(r=>unit.ids.includes(r.id));if(eligible.length)this.makeJob(eligible,now,now);}
       }
       const latest=this.store.job<MaintenanceJob>(work.table,job.id)??job;
-      const updated={...latest,retryAt:null,lastError:null,appliedUnitKeys:valid?[...latest.appliedUnitKeys,unit.unitKey]:latest.appliedUnitKeys,staleUnitKeys:valid?latest.staleUnitKeys.filter(k=>k!==unit.unitKey):[...new Set([...latest.staleUnitKeys,unit.unitKey])]};
-      if(updated.appliedUnitKeys.length+updated.staleUnitKeys.length===job.result!.length)updated.status='done';this.store.saveJob(work.table,updated);if(updated.status==='done')this.options.web?.releaseOwner('maintenance',job.id);return valid?'applied':'stale';
+      const updated={...latest,retryAt:null,lastError:null,appliedUnitKeys:applicable?[...latest.appliedUnitKeys,unit.unitKey]:latest.appliedUnitKeys,staleUnitKeys:applicable?latest.staleUnitKeys.filter(k=>k!==unit.unitKey):[...new Set([...latest.staleUnitKeys,unit.unitKey])]};
+      if(updated.appliedUnitKeys.length+updated.staleUnitKeys.length===job.result!.length)updated.status='done';this.store.saveJob(work.table,updated);if(updated.status==='done')this.options.web?.releaseOwner('maintenance',job.id);return applicable?'applied':'stale';
     });}catch(error){
       // The entire application transaction has already rolled back. Preserve its prepared result.
       this.store.saveJob(work.table,{...work.job,retryAt:addMs(now,this.options.retryDelayMs??300000),lastError:error instanceof Error?error.message:String(error)});
@@ -149,7 +152,7 @@ export class MemoryMaintenance {
     }else if(unit.action==='review_detail'||unit.action==='review_learned'){
       const target=rows.find(r=>r.id===unit.targetId);if(!target)throw Error('audit missing target');
       const prefix=`${target.ownerType}:${target.id}:`;
-      this.store.storage.prepare('DELETE FROM memory_audit_reports WHERE id LIKE ?').run(`${prefix}%`);
+      this.store.storage.prepare('DELETE FROM memory_audit_reports WHERE id IN (?,?,?)').run(...['report_conflict','suggest_revision','suggest_withdrawal'].map(decision=>`${prefix}${decision}`));
       if(unit.decision!=='retain')this.store.saveAudit({id:`${prefix}${unit.decision}`,at:now,readSet:unit.readSet,kind:unit.action==='review_detail'?'detail_conflict':unit.decision==='suggest_revision'?'learned_revision':'learned_withdrawal',sourceIds:unit.sourceIds,reason:unit.reason!});
     }else if(unit.action==='merge'){
       const longs=rows.filter(r=>r.kind==='long'),preferred=rows.map(r=>r.linkedLongId).filter((id):id is string=>!!id).map(id=>this.store.canonical(id)!).filter(Boolean);
@@ -158,7 +161,8 @@ export class MemoryMaintenance {
     } else if(unit.action==='refine')for(const row of rows.filter(r=>r.kind==='long'))this.updateSummary(row,unit,now);
     else if(unit.action==='discard')for(const row of rows.filter(r=>r.kind==='long')){if(row.totalAwakenings)throw new Error('cannot discard awakened memory');this.store.saveOwner({...row,status:'discarded',stateVersion:row.stateVersion+1});}
     else if(unit.action==='promote'){
-      const row=rows.find(r=>r.kind==='long'&&r.totalAwakenings>=30)!;
+      const mainId=unit.ids.find(id=>promotionEligible(job.snapshot.find(r=>r.id===id)!,job.cutoff));
+      const row=rows.find(r=>r.id===mainId)!;
       this.lifecycle.promote(row.id,`${job.id}:learned:${job.result!.findIndex(u=>u.unitKey===unit.unitKey)}`,unit.content!,unit.learnedKind!,unit.alwaysInclude??false,unit.readSet.map(r=>r.ownerId),now);
     } else for(const row of rows.filter(r=>r.kind==='long'&&r.totalAwakenings>=30))this.lifecycle.evaluateRetain(row.id);
     for(const row of rows.filter(r=>r.kind==='short')){const current=this.store.owner(row);if(current&&current.status==='active')this.store.saveOwner({...current,consolidatedRevision:current.revision,stateVersion:current.stateVersion+1});}

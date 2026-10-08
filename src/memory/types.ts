@@ -16,6 +16,7 @@ export interface MemoryCandidate extends OwnerVersion {
   evidenceVersions?: OwnerVersion[];
   capacityExitedAt?: string|null; capacityExitReason?: 'short_capacity'|'long_capacity'|null;
   archiveEnteredAt?: string|null; evidenceMemoryIds?: string[];
+  summaryRepairBasis?:string;
   normalizedVector?: Float32Array;
 }
 export function memoryOwnerData(owner:MemoryCandidate):MemoryCandidate {

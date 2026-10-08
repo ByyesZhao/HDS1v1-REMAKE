@@ -19,7 +19,7 @@ it('selected_covered_sources_required and write/read closure',()=>{
 it('distinct_canonical_evidence excludes duplicate shorts and details',()=>{
  const rows=input(),row=rows[0];row.totalAwakenings=30;
  const value={unitKey:'p',action:'promote',ids:['l'],readOwners:['l','s-a','s-b'],content:'稳定认识',sourceIds:['historical'],learnedKind:'stable_understanding'};
- expect(()=>consolidationTask(rows,['l']).parse({units:[value]})).toThrow(/distinct/);
+ expect(()=>consolidationTask(rows,['l'],'consolidation',at).parse({units:[value]})).toThrow(/distinct/);
 });
 it('audit targets match owner kind and read set',()=>{
  const {store}=fixture(),detail=store.makeOwner({ownerType:'detail',ownerId:'phone'},{content:'A',sourceIds:['e']},at),task=auditTask([detail],['phone']);

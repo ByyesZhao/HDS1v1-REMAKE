@@ -9,6 +9,10 @@ export function isTargetSession(session: { isDirect?: boolean; selfId?: string; 
   return session.isDirect === true && session.selfId === config.botId && session.userId === config.userId;
 }
 
+export function incomingMessageId(session:{platform?:string;selfId?:string;userId?:string;channelId?:string;messageId?:string}):string {
+  return session.messageId ? `platform:${JSON.stringify([session.platform,session.selfId,session.userId,session.channelId,session.messageId])}` : randomUUID();
+}
+
 export class InputBuffer {
   constructor(private readonly storage: Storage,private readonly idle?:MemoryIdle) {}
   async acceptInput(message: IncomingMessage): Promise<InputAcceptance> {

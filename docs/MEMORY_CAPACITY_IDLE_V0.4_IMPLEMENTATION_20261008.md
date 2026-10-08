@@ -193,7 +193,7 @@ short容量退出时同事务标记、确认关联长期摘要存在、令普通
 | 引用 | 本次明确处理 |
 | --- | --- |
 | 活跃short.linkedLongId指向待删long | **保护long，不强行结束short**；如有正式合并，先同事务将short重指到真实新主身份 |
-| 已退出／到期short仍指向long | 若仍在原7天内暂存，保护long至该短期清理截止；到期后先清理该short及其派生副本，再删long |
+| 已退出／到期short仍指向long | 原7天内保护long；到期且摘要就绪时先清short及派生副本，再删long；摘要缺失时仍保护存活canonical long，并走下述修复闭环 |
 | learned.canonicalMemoryId／evidenceMemoryIds | 有效常驻证据保护；不因归档压力删除有效learned。历史sourceIds中可确认的记忆ID在迁移时归一为证据引用 |
 | mergedInto、其他短期／证据引用合并次身份 | 合并事务重指主身份，旧次身份移除正文／向量；仅仍被未完成工作引用的旧ID留轻量重定向 |
 | 未完成故事／post_job | 本期保守地暂缓物理清理；该故事完成后即重扫，不等待一次新的15分钟深度窗口 |
@@ -201,7 +201,9 @@ short容量退出时同事务标记、确认关联长期摘要存在、令普通
 
 归一后的正常状态不应出现“活跃short长期指向可删除long”；对旧库已存在的这种状态仍按上述闭包处理。DSH提出的“先把活跃短期也退出”不是默认策略，不能为清理一个弱long破坏本来合法的短期7天窗口。
 
-合并重指后增加相关owner.stateVersion，使旧快照过时。清理short前必须确认简要long或其真实canonical主身份已经保存；摘要缺失只登记明确阻挡，不凭空生成或删除。常驻必要证据只保留必要身份／摘要，不要求保留所有原short全文。
+合并重指后增加相关owner.stateVersion，使旧快照过时。清理short前必须确认非空简要long或其真实canonical主身份已经保存。基础create/update的eventSummary／feelingSummary至少一项非空白，另一项允许为空，无长度预算；双空白走既有格式修补。存量缺摘要的到期short显示missing_summary，保护其存活canonical long；仅有存活详情和合法历史来源时登记增量摘要修复，不造身份／来源、不重扫原始日志。short的可选summaryRepairBasis记录登记后的(short.revision,short.stateVersion,long.revision,long.stateVersion)；同版本只登记一次，登记仅提升stateVersion，不改变正文revision、事件时间、截止或grant，已处理水位也能合法重新登记。没有可用详情／来源／long时保留阻挡，不排空任务。
+
+修复准备和应用沿用空闲15分钟、活动、前台及重试门禁；选中可修复的空摘要事件必须refine或合法同事件合并生成非空简要摘要，不能retain／discard绕过。成功后原清理入口先删到期short及派生副本，再按原archiveStart判断long；删除保护不后移归档起点，也不改变活跃容量归一资格。正常已有基础摘要的short到期清理不等LLM。常驻必要证据只保留必要身份／摘要，不要求保留所有原short全文。
 
 ### 5.3 删除面与事务边界
 
@@ -257,7 +259,7 @@ short原7天截止、归档90天截止、容量归一待办纳入已有Host计�
 
 | 事件 | 写入入口 | 刷新 |
 | --- | --- | --- |
-| 新普通／共同消息、【推进】 | 实际类名`InputBuffer.acceptInput`，接纳事务 | lastInputAt；同ID重复投递不重复接纳或刷新 |
+| 新普通／共同消息、【推进】 | 实际类名`InputBuffer.acceptInput`，接纳事务 | lastInputAt；生产入口以platform/selfId/userId/channelId/messageId的JSON元组建立稳定ID，缺平台messageId才用独立UUID；同ID重复投递不重复接纳或刷新 |
 | 实际输出成功确认 | `sendFrozen`的confirmed提交事务 | lastOutputAt；失败、sending、草稿不算 |
 | 实际非环境故事完成 | `finishPostprocessing`段B，与done／completedAt一起 | lastStoryCompletedAt；静默生活故事也算 |
 | 共同活动真正开始／结束 | 公开开始确认及段B正式状态转换 | lastActivityChangedAt；最终轮完成／输出取最晚 |
@@ -291,11 +293,11 @@ short原7天截止、归档90天截止、容量归一待办纳入已有Host计�
 
 | 动作 | 必需输入／输出 | 程序应用 |
 | --- | --- | --- |
-| `merge_short` | ≥2个short及其必要long／learned／反向short依赖；canonicalShortId为createdAt最早的输入short，相同时取ID升序最小者；content、eventSummary、feelingSummary、非空合法sourceIds | 合并同事件详细记录；linked long若不同先正式合并并重指；单一long不假装满足旧merge≥2long合同 |
+| `merge_short` | ≥2个不同存活short身份及其必要long／learned／反向short依赖；canonicalShortId为createdAt最早的输入short，相同时取ID升序最小者；content、eventSummary、feelingSummary、非空合法sourceIds | 合并同事件详细记录；linked long若不同先正式合并并重指；单一long不假装满足旧merge≥2long合同 |
 | `review_detail` | targetId为被审detail ID、readOwners、sourceIds、decision=`retain`或`report_conflict`、reason | retain登记水位；冲突保存当前建议，不自动改details或历史 |
 | `review_learned` | targetId为被审learned ID及证据readOwners、sourceIds、decision=`retain`／`suggest_revision`／`suggest_withdrawal`、reason | 保存审核水位／建议；本期不自行改作者背景或撤销常驻结论 |
 
-所有动作明确readOwners，程序生成包含写入对象和隐式重指对象的readSet。继续保证ids在readOwners内、每selected被一个unit覆盖、不重叠写入、来源来自快照合法证据。事件整理仍隔离各单元完整依赖；只报告建议的audit允许不同目标共享只读证据，目标仍不得重复，每单元仍校验全部readSet版本。允许空结果仅在没有需要审核的selected时；有selected时用retain表达合法“无变化”。
+所有动作明确readOwners，程序生成包含写入对象和隐式重指对象的readSet。继续保证ids在readOwners内且不重复、每selected被一个unit覆盖、不重叠写入、来源来自快照合法证据。事件整理仍隔离各单元完整依赖；只报告建议的audit允许不同目标共享只读证据，目标仍不得重复，每单元仍校验全部readSet版本。允许空结果仅在没有需要审核的selected时；有selected时用retain表达合法“无变化”。
 
 audit仅消费selected审核目标的dirty水位，作为比较证据读取的short／long仍保留其独立事件待办。detail快照补同键／别名事实及共享合法sourceIds的存活证据，再沿既有事件依赖补全，不一次发送全库。learned除主canonical外，任何evidenceMemoryIds关联事件的版本变化也登记新版本及一次审核；同一证据版本重复同步不重新入队，不改原结论。
 
@@ -303,9 +305,9 @@ audit仅消费selected审核目标的dirty水位，作为比较证据读取的sh
 
 merge_short要求模型明确同一事件而非共享关键词，不允许不同事凑条数。保留sourceIds并集、完整事件范围及阶段感受；short保留截止取真实latestEventUpdateAt+7天，容量退出状态不靠合并清除，合并不算唤醒。详细content仅写short；关联long正文由合并后的eventSummary／feelingSummary构造，不能复制short详细正文。关联长期合并迁移日期／grants、去重并保留更晚真实有效期限，不凭处理now续期；如果成员仍有活跃层资格，主身份继承真实现有资格并解除本次归档标记，沿用真实已有grant，不算新增唤醒；全归档成员合并固化各原始archiveStart，主身份保留最早锚点，不能靠合并后台归档记录自动恢复或延期。
 
-稳定认识证据独立字段evidenceMemoryIds包含至少两个不同canonical事件；原30次门槛不能通过多short指同long、后台复读或共同代写推导用户稳定性格来凑。原promote／retain／discard规则继续，其中discard零唤醒要求与容量清理分开，不能用discard表达有唤醒旧记忆的最终到期删除。
+稳定认识证据独立字段evidenceMemoryIds包含至少两个不同canonical事件；原30次门槛不能通过多short指同long、后台复读或共同代写推导用户稳定性格来凑。promote主long必须是未归档的活跃普通身份且满足累计30有效日期；归档主项必须先以合法当轮来源显式awaken恢复，再进入正常审核，累计日期不清零，不能靠维护改写或检索恢复。该限制不自动撤销已有durable，也不禁止仍合法的次事件证据。consolidationTask(snapshot,selectedIds,kind,evaluationAt)使用job.cutoff作为冻结评估时刻；正式模型输入给promotionEligibleIds，应用按同一冻结主项在当前时刻再次检查。准备期间自然到期判stale、重排当前合法工作，其他单元继续，不把冻结promote投入五分钟重复应用。promotionCandidates(at)与定时审核候选采用同一谓词。retain／discard规则继续，其中discard零唤醒要求与容量清理分开，不能用discard表达有唤醒旧记忆的最终到期删除。
 
-具体事实有新来源仍每轮立即更新；空闲审核初版只报告矛盾／重复key，不回滚正式事实，不发新消息／任务联系用户。审核报告只保存必要结论、ID和来源，不复制整个候选正文。
+具体事实有新来源仍每轮立即更新；空闲审核初版只报告矛盾／重复key，不回滚正式事实，不发新消息／任务联系用户。审核报告只保存必要结论、ID和来源，不复制整个候选正文。替换报告按固定decision的完整报告ID精确删除；_／%是字面键字符，不使用LIKE模式。
 
 ## 8. 公平调度与截止
 

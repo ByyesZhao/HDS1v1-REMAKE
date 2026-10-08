@@ -103,7 +103,7 @@
 
 **Files:** Create `tests/memory-idle-contracts.test.ts`、`tests/memory-idle-consolidation.test.ts`；Modify `src/model/contracts.ts`、`prompts.ts`、`src/memory/types.ts`、`maintenance.ts`、`lifecycle.ts`、`store.ts`、`organize.ts`。
 
-**Interfaces:** 消费任务1dirtyOwner、任务2容量与任务3引用处理。扩展`consolidationTask(snapshot:MemoryCandidate[],selectedIds:string[])`支持细化§7三种新增动作；新增`auditTask(snapshot:MemoryCandidate[],selectedIds:string[])`，ModelTask.name仍为`memory_consolidation`，独立job.kind='audit'。`MaintenanceUnit`显式增加canonicalShortId、targetId／decision字段，保留readSet和来源合同。
+**Interfaces:** 消费任务1dirtyOwner、任务2容量与任务3引用处理。扩展`consolidationTask(snapshot:MemoryCandidate[],selectedIds:string[],kind,evaluationAt)`支持细化§7三种新增动作；新增`auditTask(snapshot:MemoryCandidate[],selectedIds:string[])`，ModelTask.name仍为`memory_consolidation`，独立job.kind='audit'。`MaintenanceUnit`显式增加canonicalShortId、targetId／decision字段，保留readSet和来源合同。
 
 - [x] 写`refine_targets_long_summary`：short+long输入时只改long摘要，short详细正文保持；不把DSH“没有摘要路径”误写为修short原文。
 - [x] 写`merge_short_same_event_one_or_two_longs`：≥2short同一canonical可合并，不假装满足旧merge≥2long；不同long先正式合并、重指全部相关short／learned，保留日期去重、感受、来源和最大真实进展截止。
