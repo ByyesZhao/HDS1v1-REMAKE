@@ -8,6 +8,7 @@ import { Scheduler } from '../src/host/scheduler';
 import { ModelClient, ChatCompletionsTransport } from '../src/model/client';
 import { loadSettings, appConfig, connectionFor, initialState } from '../src/settings';
 import { MemoryStore } from '../src/memory/store';
+import { sharedStorySeed } from './shared-story-seed';
 import type { ModelRunner, ModelTask, OutboxItem, SharedNarrativeResult, PersonalResult } from '../src/types';
 import type { ModelRunOptions } from '../src/memory/types';
 
@@ -45,21 +46,10 @@ async function main() {
       return result;
     } };
     const cfg = { ...appConfig(settings), stickersEnabled: false };
-    const state = initialState(settings, now);
-    const title = scenario === 'interactive' ? '线下校园短途散步' : '线上二十分钟协作关卡试跑';
-    // Explicit seed: the activity has already been mutually confirmed and its marker recorded.
-    // This does not test a real user's confirmation or delivery of the start marker.
-    state.sleep = null;
-    state.scene = { mode: scenario === 'interactive' ? 'shared_offline' : 'shared_online',
-      description: scenario === 'interactive' ? '校园店铺门外，两人已约好一起短途散步' : '线上共同游戏已进入二十个小关卡的试跑大厅', activity: null,
-      shared: { activityId: randomUUID(), title, progress: scenario === 'wrap' ? '前十六个关卡已试跑，最后四个待完成' : '双方刚刚确认活动并准备开始',
-        lastPublicNode: '', completedSteps: scenario === 'wrap' ? 16 : 0, maxSteps: 20, idleSeconds: 60,
-        outline: scenario === 'wrap' ? { goal: '完成二十分钟协作试跑', openThreads: ['完成最后四个关卡并回到大厅'], endingCondition: '完成或合理暂停本次试跑并交代剩余内容' } : null, nextStepAt: null } };
-    state.plan = scenario === 'interactive' ? '刚刚双方已确认现在一起散步，用户可随时动作参与或结束。'
-      : '刚刚双方已确认现在开始二十分钟协作试跑，共二十个约一分钟的小关卡。按实际已过去时间推进，不把一分钟写成全程结束；允许合理暂停，最后回到大厅。';
+    // The seed is explicitly pre-confirmed; no live start marker is delivered.
+    const { state, clock: sharedClock } = sharedStorySeed(initialState(settings, now), scenario, now);
     storage.set('character', state);
-    storage.set('runtime', { ...storage.runtime(), nextWorldAt: null, nextSchoolAt: null,
-      sharedClock: { activityId: state.scene.shared!.activityId, mode: state.scene.mode as 'shared_online' | 'shared_offline', status: 'active', startedAt: now, lastInputAt: null, lastOutputAt: null, lastSilentCompletedAt: null } });
+    storage.set('runtime', { ...storage.runtime(), nextWorldAt: null, nextSchoolAt: null, sharedClock });
     const memoryStore = new MemoryStore(storage); memoryStore.migrate(now);
     for (const detail of settings.initialDetails) {
       memoryStore.saveOwner(memoryStore.makeOwner({ ownerType: 'detail', ownerId: detail.key }, { ...detail, content: detail.value }, now));
