@@ -13,6 +13,7 @@ export function freezeTurn(d: Dependencies, turn: TurnRecord, candidate: TurnCan
     autonomousIntervalMinutes: turn.autonomousIntervalMinutes === undefined ? candidate.autonomousIntervalMinutes : turn.autonomousIntervalMinutes };
   d.storage.transaction(() => {
     d.storage.save('turns', turn.id, updated);
+    if(items.length===0){d.dialogue?.releaseReply(turn.id,d.clock.now());updated.dialogueBinding=d.storage.read('turns',turn.id)!.dialogueBinding;}
     items.forEach((item, index) => d.storage.saveOutbox({ ...item, notBefore: index === 0 ? d.clock.now() : null }));
     d.storage.save('post_jobs', turn.id, { turnId: turn.id, result: null });
   });
@@ -37,12 +38,16 @@ export async function sendFrozen(d: Dependencies, turn: TurnRecord): Promise<voi
     d.storage.transaction(() => {
       d.storage.saveOutbox({ ...item, status: 'confirmed', confirmedAt, platformMessageIds: ids });
       const id = `${turn.id}:out:${item.seq}`;
-      d.storage.save('messages', id, {
+      const message:import('./types').Message={
         id, content: item.kind === 'sticker' ? `[表情素材:${item.payload}]` : displayText(item), receivedAt: confirmedAt, platformMessageIds: ids,
         direction: 'outgoing', seenTurnId: null, batchId: null, turnId: turn.id, outboxSeq: item.seq,
         sharedActivityId: turn.sharedMeta?.activityId ?? turn.frozenResult!.nextState.scene.shared?.activityId ?? null,
-      });
+      };
+      if(d.dialogue)d.dialogue.confirmOutput(turn,message);else d.storage.save('messages',id,message);
       recordSharedOutput(d.storage, turn, item, confirmedAt);
+      const publicChange=turn.frozenResult!.personal?.sharedChange;
+      const activityId=turn.sharedMeta?.activityId??turn.frozenResult!.nextState.scene.shared?.activityId;
+      if(activityId&&message.dialogueEpisodeId){if(publicChange?.action==='start'&&item.seq===0&&item.kind==='narration')d.dialogue?.recordActivity(activityId,message.dialogueEpisodeId,'start',confirmedAt);if(publicChange?.action==='end'&&item.kind==='narration'&&index===items.length-1)d.dialogue?.recordActivity(activityId,message.dialogueEpisodeId,'end',confirmedAt);}
       d.memoryIdle?.record('output',confirmedAt);
       const change=turn.frozenResult!.personal?.sharedChange;
       if(change?.action==='start'&&item.seq===0||change?.action==='end'&&item.seq===items.length-1)d.memoryIdle?.record('activity',confirmedAt);
@@ -52,6 +57,7 @@ export async function sendFrozen(d: Dependencies, turn: TurnRecord): Promise<voi
       } else {
         const current = d.storage.read('turns', turn.id)!;
         d.storage.save('turns', turn.id, { ...current, outputComplete: true });
+        d.dialogue?.releaseReply(turn.id,confirmedAt);
       }
     });
   }
@@ -81,7 +87,7 @@ export async function finishPostprocessing(d: Dependencies, turn: TurnRecord): P
     applyTasks(d, c);
     c.visibleMessageIds.forEach(id => {
       const m = d.storage.read('messages', id)!;
-      d.storage.save('messages', id, { ...m, seenTurnId: m.seenTurnId ?? turn.id });
+      d.storage.save('messages',id,{...m,seenTurnId:m.seenTurnId??turn.id});
     });
     if (!turn.environmentKind) {
       finishSharedTurn(d.storage, current, completedAt);
@@ -105,6 +111,7 @@ export async function finishPostprocessing(d: Dependencies, turn: TurnRecord): P
     d.storage.save('turns', turn.id, { ...current, done: true, completedAt, frozenResult: null });
     const completedPost=d.storage.read('post_jobs',turn.id)!;d.storage.save('post_jobs',turn.id,{...completedPost,result:null});
     d.web?.compactOwnerCheckpoint('turn',turn.id);
+    d.dialogue?.closeDue(completedAt);
   });
   d.web?.releaseOwner('turn',turn.id);
 }

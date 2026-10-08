@@ -1,3 +1,5 @@
+import { DialogueEpisodes } from '../src/dialogue/episodes';
+import { DialogueStore } from '../src/dialogue/store';
 import assert from 'node:assert/strict';
 import {Storage} from '../src/storage';
 import {EnvironmentStore} from '../src/environment/store';
@@ -65,7 +67,7 @@ export async function runMemoryCapacityAcceptance(path:string){
     });
     const protectedArchive=store.canonical('protected-archive')!,protector=store.owner({ownerType:'short',ownerId:'protected-short'})!;
     const sentinel='DERIVED_PAYLOAD_PURGE_ACCEPTANCE',gone=makeLong('purged',{content:sentinel,archiveEnteredAt:addMs(now,-100*86400000)}),survivor=makeLong('surviving');
-    storage.save('messages','raw-source',{id:'raw-source',content:sentinel,receivedAt:now,direction:'incoming',platformMessageIds:[],batchId:null,seenTurnId:'previous',turnId:null,outboxSeq:null});
+    new DialogueEpisodes(new DialogueStore(storage)).acceptMessage({id:'raw-source',content:sentinel,receivedAt:now,direction:'incoming',platformMessageIds:[],batchId:null,seenTurnId:'previous',turnId:null,outboxSeq:null});
     for(const revision of [1,2])store.saveVector({...gone,revision},'isolated',new Float32Array([1,0]));
     store.queueIndex(gone,now,index.configSignature);store.queueDirty(gone,'event',now);store.saveGrant({id:'unrelated-prefix',canonicalMemoryId:gone.id,kind:'initial',anchorAt:now,expiresAt:addMs(now,90*86400000),triggerDates:[]});store.saveAwakening({canonicalMemoryId:gone.id,localDate:'2026-10-08',firstEffectiveAt:now,turnId:'sim',sourceIds:['sim']});
     store.saveAudit({id:'orphan-report',at:now,readSet:[gone],kind:'learned_revision',reason:'测试建议',sourceIds:['sim']});

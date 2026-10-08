@@ -2,6 +2,8 @@ import { it, expect, vi } from 'vitest';
 import { mkdtempSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
+import { DialogueEpisodes } from '../src/dialogue/episodes';
+import { DialogueStore } from '../src/dialogue/store';
 import { HdsiApp, generateTurn } from '../src/app';
 import { Storage } from '../src/storage';
 import { Scheduler } from '../src/host/scheduler';
@@ -64,7 +66,7 @@ it.each(['partial', 'post', 'committed'] as const)('recover_exact_same_step: fil
     const turn = d.storage.all('turns')[0], countBefore = d.sender.sent.length;
     const confirmations = d.storage.outbox(turn.id).filter(i => i.status === 'confirmed').map(i => i.seq);
     expect(turn.sharedMeta).toEqual(request.sharedMeta); expect(turn.autonomousIntervalMinutes).toBe(180);
-    d.storage.close(); d.storage = new Storage(path); fail = false; d.clock.advance(60_000);
+    d.storage.close(); d.storage = new Storage(path); (d as import('../src/app').Dependencies).dialogue=new DialogueEpisodes(new DialogueStore(d.storage)); fail = false; d.clock.advance(60_000);
     await new HdsiApp(d).resumeUnfinishedTurn(); await new HdsiApp(d).resumeUnfinishedTurn();
     expect(d.storage.character().scene.shared!.completedSteps).toBe(1); expect(d.storage.read('control_requests', 'control')!.status).toBe('consumed');
     expect(d.storage.read('turns', turn.id)!.sharedMeta).toEqual(request.sharedMeta); expect(d.random.next).toHaveBeenCalledTimes(1);

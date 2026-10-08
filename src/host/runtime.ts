@@ -14,9 +14,9 @@ export class SerialHost {
   private readonly input: InputBuffer;
   private readonly scheduler: Scheduler;
   constructor(private app: HdsiApp, private options: { timers?: boolean; onError?: (error: unknown) => void; yieldToEvents?:()=>Promise<void> } = {}) {
-    this.input = new InputBuffer(app.dependencies.storage,app.dependencies.memoryIdle); this.scheduler = new Scheduler(app.dependencies.storage,app.dependencies.config);
+    this.input = new InputBuffer(app.dependencies.storage,app.dependencies.memoryIdle,app.dependencies.dialogue); this.scheduler = new Scheduler(app.dependencies.storage,app.dependencies.config);
   }
-  start(): Promise<void> { this.recover = true; return this.wake(); }
+  async start(): Promise<void> {const report=this.app.dependencies.dialogue?.checkConsistency();if(report?.blockingIssues.length)throw new Error(`dialogue 对话段索引不一致: ${report.blockingIssues.join('; ')}`);this.recover=true;await this.wake();}
   async acceptInput(message: IncomingMessage): Promise<InputAcceptance> {
     const accepted = await this.input.acceptInput(message);
     void this.wake();
@@ -41,6 +41,7 @@ export class SerialHost {
     while (!this.stopped) {
       this.requested = false;
       this.input.closeReady(d.clock.now());
+      d.storage.transaction(()=>d.dialogue?.closeDue(d.clock.now()));
       if (d.storage.runtime().paused || this.stopped) break;
       if (d.storage.unfinishedTurn()) {
         if (!this.recover) break;
@@ -72,7 +73,7 @@ export class SerialHost {
     const d=this.app.dependencies,front=await this.scheduler.nextDeadline(d.clock.now());
     const back=d.storage.runtime().paused||d.storage.runtime().openBatch||d.storage.unfinishedTurn()?null:d.maintenance?.nextDeadline(d.clock.now());
     const cleanup=d.memoryCleanup?.nextDeadline(d.clock.now());
-    return [front,back,cleanup].filter((at):at is string=>!!at).sort((a,b)=>milliseconds(a)-milliseconds(b))[0]??null;
+    return [front,back,cleanup,d.dialogue?.nextDeadline(d.clock.now())].filter((at):at is string=>!!at).sort((a,b)=>milliseconds(a)-milliseconds(b))[0]??null;
   }
   async pause(): Promise<void> {
     const d = this.app.dependencies;

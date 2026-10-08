@@ -1,3 +1,5 @@
+import { DialogueEpisodes } from '../src/dialogue/episodes';
+import { DialogueStore } from '../src/dialogue/store';
 import { Storage } from '../src/storage';
 import { EnvironmentStore } from '../src/environment/store';
 import { SchoolStore } from '../src/school/store';
@@ -47,5 +49,5 @@ export function setup() {
   return { generateEnvironment:undefined as import('../src/environment/types').EnvironmentGenerator|undefined,environmentStore:new EnvironmentStore(storage),schoolStore:new SchoolStore(storage),storage, clock, random, models, config, sender, wait };
 }
 export function saveInput(storage: Storage, id: string, content: string) {
-  storage.save('messages', id, { id, content, receivedAt: NOW, platformMessageIds: [], direction: 'incoming', batchId: `batch-${id}`, seenTurnId: null, turnId: null, outboxSeq: null });
+  new DialogueEpisodes(new DialogueStore(storage)).acceptMessage({ id, content, receivedAt: NOW, platformMessageIds: [], direction: 'incoming', batchId: `batch-${id}`, seenTurnId: null, turnId: null, outboxSeq: null });
 }

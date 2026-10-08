@@ -74,7 +74,7 @@ describe('memory lifecycle V0.3',()=>{
   it('organizes role self-reading without a chat source and persists its ID for postprocessing recovery',async()=>{
     const d=setupApp();stores.push(d.storage);(d as any).getSelfWebReadSources=(turnId:string)=>[{id:'web',turnId,runId:'life-run',operationId:'op',materialId:'page',url:'https://example.test',readAt:at,sourceKind:'self_web_read',phase:'personal_life'}];
     const output=create();output.shortTermChanges[0].sourceIds=['web'];d.models.outputs.memory=output;
-    const transaction=d.storage.transaction.bind(d.storage);let calls=0;d.storage.transaction=((fn:any)=>{if(++calls===2)throw new Error('commit stopped');return transaction(fn);}) as any;
+    const transaction=d.storage.transaction.bind(d.storage);let calls=0;d.storage.transaction=((fn:any)=>{const turn=d.storage.unfinishedTurn();if(calls===0&&turn?.outputComplete&&d.storage.read('post_jobs',turn.id)?.result){calls++;throw new Error('commit stopped');}return transaction(fn);}) as any;
     const app=new HdsiApp(d);await expect(app.runTurn({inputMessageIds:[],taskIds:[],triggerKinds:['autonomous']})).rejects.toThrow('commit stopped');
     const turn=d.storage.unfinishedTurn()!;expect(d.storage.read('post_jobs',turn.id)).toMatchObject({selfWebReadSources:[{id:'web'}],memoryIds:{one:`${turn.id}:short:0`}});
     delete (d as any).getSelfWebReadSources;await app.resumeUnfinishedTurn();expect(new MemoryStore(d.storage).owner({ownerType:'short',ownerId:`${turn.id}:short:0`})?.sourceIds).toEqual(['web']);

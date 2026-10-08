@@ -1,3 +1,5 @@
+import { DialogueEpisodes } from '../dialogue/episodes';
+import { DialogueStore } from '../dialogue/store';
 import { randomUUID } from 'node:crypto';
 import type { IncomingMessage, InputAcceptance } from '../types';
 import { Storage } from '../storage';
@@ -14,7 +16,8 @@ export function incomingMessageId(session:{platform?:string;selfId?:string;userI
 }
 
 export class InputBuffer {
-  constructor(private readonly storage: Storage,private readonly idle?:MemoryIdle) {}
+  private readonly dialogue:DialogueEpisodes;
+  constructor(private readonly storage: Storage,private readonly idle?:MemoryIdle,dialogue?:DialogueEpisodes) {this.dialogue=dialogue??new DialogueEpisodes(new DialogueStore(storage));}
   async acceptInput(message: IncomingMessage): Promise<InputAcceptance> {
     return this.storage.transaction(() => {
       const existing=this.storage.read('messages',message.id),control=this.storage.read('control_requests',message.id);
@@ -28,7 +31,7 @@ export class InputBuffer {
         return { kind: 'advance', systemReply: activity ? null : '当前没有共同活动' };
       }
       if (activity) {
-        this.storage.save('messages', message.id, { ...message, platformMessageIds: message.platformMessageIds ?? [],
+        this.dialogue.acceptMessage({ ...message, platformMessageIds: message.platformMessageIds ?? [],
           direction: 'incoming', batchId: null, sharedActivityId: activity.activityId, seenTurnId: null, turnId: null, outboxSeq: null });
         const runtime = this.storage.runtime();
         if (runtime.sharedClock?.activityId === activity.activityId) {
@@ -42,10 +45,11 @@ export class InputBuffer {
       this.closeExpired(message.receivedAt);
       const runtime = this.storage.runtime();
       const batchId = runtime.openBatch?.id ?? randomUUID();
-      this.storage.save('messages', message.id, {
+      this.dialogue.acceptMessage({
         ...message, platformMessageIds: message.platformMessageIds ?? [], direction: 'incoming',
         batchId, sharedActivityId: null, seenTurnId: null, turnId: null, outboxSeq: null,
       });
+      runtime.activeDialogueEpisodeId=this.storage.runtime().activeDialogueEpisodeId;
       runtime.openBatch = { id: batchId, readyAt: addMs(message.receivedAt, 15_000) };
       this.storage.set('runtime', runtime);
       return { kind: 'message', systemReply: null };

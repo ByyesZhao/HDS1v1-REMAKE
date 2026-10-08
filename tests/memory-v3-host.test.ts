@@ -46,7 +46,7 @@ it('stop aborts backend before waiting for a running foreground turn and suppres
 });
 it('recovers an old story before due world, school, input story and ready maintenance',async()=>{
   const {d,store,host,app}=create();ready(store);response(d);d.models.outputs.world={changes:[]};d.models.outputs.school={changes:[]};d.generateEnvironment=async input=>{d.models.calls.push({name:input.stage,input});return input.stage==='world'?{stage:'world',changes:[]}:input.stage==='school_week'?{stage:'school_week',instanceChanges:[],noticeCandidates:[],weekChanges:[]}:{stage:input.stage,planChanges:[],itemChanges:[]};};
-  d.storage.save('turns','old',{id:'old',at:NOW,inputMessageIds:[],triggerTaskIds:[],triggerKinds:['autonomous'],batchIds:[],entryMode:'chat',completedAt:null,frozenResult:null,outputComplete:false,done:false});
+  d.storage.save('turns','old',{id:'old',at:NOW,inputMessageIds:[],triggerTaskIds:[],triggerKinds:['autonomous'],batchIds:[],dialogueBinding:{episodeId:null,holdReply:false},entryMode:'chat',completedAt:null,frozenResult:null,outputComplete:false,done:false});
   app.dependencies.generateEnvironment=d.generateEnvironment;d.storage.set('runtime',{...d.storage.runtime(),nextEnvironmentAt:null});await host.acceptInput({id:'input',receivedAt:NOW,content:'你好',platformMessageIds:[]});d.clock.advance(15000);await host.start();
   const calls=d.models.calls.map(c=>c.name);expect(calls.slice(0,3)).toEqual(['narrative','personal_life','memory']);expect(calls.slice(3,7)).toEqual(['narrative','personal_chat','expression','memory']);expect(calls.slice(7)).toEqual(['world','school_campus','school_group','school_week']);expect(store.job<any>('memory_maintenance_jobs','ready').appliedUnitKeys).toEqual(['u0','u1']);
 });
