@@ -82,14 +82,15 @@ export interface EnvironmentEvent { id: string; kind: 'world' | 'school'; starts
 export type EnvironmentChange = { action: 'create'; event: Omit<EnvironmentEvent, 'id' | 'status'>; id?: string } | { action: 'update'; id: string; event: Partial<Omit<EnvironmentEvent, 'id' | 'status'>> } | { action: 'cancel'; id: string };
 export interface EnvironmentResult { changes: EnvironmentChange[] }
 export interface Sticker { id: string; path: string; description: string; aliases?: string[]; embeddingInput?: string; embedding: number[]; embeddingModel: string; embeddingBaseUrl?: string; legacyFingerprint?: string }
-export type TriggerKind = 'input' | 'autonomous' | 'sleep' | 'activity' | 'appointment' | 'check_messages' | 'scene_step' | 'environment';
-export interface TurnRequest { environmentStepId?:string; inputMessageIds: string[]; taskIds: string[]; triggerKinds: TriggerKind[]; batchIds?: string[]; environmentKind?: 'world' | 'school'; sharedMeta?: SharedTurnMeta | null }
+export type TriggerKind = 'input' | 'autonomous' | 'sleep' | 'activity' | 'appointment' | 'check_messages' | 'scene_step' | 'environment'|'school_notification';
+export interface TurnRequest { schoolNoticeRefs?:import('./school/types').SchoolNoticeRef[];environmentStepId?:string; inputMessageIds: string[]; taskIds: string[]; triggerKinds: TriggerKind[]; batchIds?: string[]; environmentKind?: 'world' | 'school'; sharedMeta?: SharedTurnMeta | null }
 export interface TurnRecord {
   id: string; inputMessageIds: string[]; triggerTaskIds: string[]; triggerKinds: TriggerKind[];
   at: ISOTime; completedAt: ISOTime | null; frozenResult: TurnCandidate | null; outputComplete: boolean; done: boolean;
   batchIds: string[]; entryMode: Mode; environmentKind?: 'world' | 'school';
   sharedMeta?: SharedTurnMeta | null; autonomousIntervalMinutes?: number | null;
   legacyDisposition?:'superseded';closedAt?:ISOTime;replacementBatchId?:string;
+  schoolNoticeRefs?:import('./school/types').SchoolNoticeRef[];
 }
 export interface TurnCandidate {
   visibleMessageIds: string[]; reconsiderMessageIds: string[];
@@ -97,6 +98,7 @@ export interface TurnCandidate {
   experiences: Experience[]; nextState: CharacterState; taskChanges: TaskChange[]; completedTaskIds: string[];
   probability: { contactMisses: number; stickerMisses: number }; autonomousIntervalMinutes: number | null;
   environmentChanges: EnvironmentChange[]; nextEnvironmentAt?: ISOTime;
+  schoolNoticeRefs?:import('./school/types').SchoolNoticeRef[];
 }
 export interface OutboxItem { turnId: string; seq: number; kind: 'narration' | 'text' | 'action' | 'sticker'; payload: string; status: 'pending' | 'sending' | 'retry' | 'confirmed'; confirmedAt: ISOTime | null; platformMessageIds: string[]; notBefore: ISOTime | null }
 export interface PostJob { turnId: string; result: MemoryResult | null; memoryIds?:Record<string,string>; selfWebReadSources?:import('./memory/types').SelfWebReadSource[] }

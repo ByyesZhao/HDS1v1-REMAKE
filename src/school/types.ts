@@ -33,7 +33,7 @@ export type SchoolItemDraft = Omit<SchoolPlanItem,'id'|'revision'|'deliveryRevis
 export type SchoolPlanChange = {action:'create';clientRef:string;plan:SchoolPlanDraft}|{action:'update';id:string;expectedRevision:number;plan:Partial<SchoolPlanDraft>};
 export type SchoolItemChange = {action:'create';clientRef:string;item:SchoolItemDraft}|{action:'update';id:string;expectedRevision:number;item:Partial<SchoolItemDraft>}|{action:'cancel';id:string;expectedRevision:number};
 export interface RequiredOccurrence {occurrenceKey:string;sourceItemId:string;weekStart:string|null;startsAt:ISOTime;endsAt:ISOTime|null}
-export interface RequiredNotice {id:string;sourceItemId:string|null;occurrenceKey:string|null;weekStart:string|null;deliveryRevision:number;kind:SchoolNotice['kind'];reminderKey:string;channel:SchoolNotice['channel'];publishAt:ISOTime}
+export interface RequiredNotice {id:string;sourceItemId:string|null;occurrenceKey:string|null;weekStart:string|null;deliveryRevision:number;kind:SchoolNotice['kind'];reminderKey:string;channel:SchoolNotice['channel'];publishAt:ISOTime;entityIds:string[]}
 export interface SchoolExpansionInput {weekStarts:string[];sourceItems:SchoolPlanItem[];existingInstances:SchoolInstance[];existingNotices:SchoolNotice[];knownSnapshots:SchoolEntitySnapshot[];coveredVersions:Record<string,number>;requiredOccurrences:RequiredOccurrence[];requiredNoticeKeys:RequiredNotice[];conflicts:string[]}
 export interface SchoolInstanceCandidate {occurrenceKey:string;sourceItemId:string;expectedRevision:number}
 export interface SchoolNoticeCandidate {key:string;text:string;entityRefs:{entityKind:SchoolEntitySnapshot['entityKind'];entityId:string}[]}

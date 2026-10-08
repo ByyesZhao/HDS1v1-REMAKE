@@ -31,3 +31,7 @@ BASE见账本。RED：新调度模块尚不存在，六个业务用例待实现�
 
 ## 任务3：三个学校角色与网页阶段
 BASE=8993511。RED：合同模块尚不存在；随后职责、版本、URL、空结果及会话用例通过。GREEN：54文件294项通过、typecheck退出0。各school_*任务使用独立模型键，环境owner及稳定step.id/generation；重试只重置失败修补，不清成功工具、lookup和计数，次日新步骤0／0。背景完整提供且无私聊列表；归属上游输入分开。create clientRef一次解析为程序ID，更新保持身份；非公开stageInfo不增加deliveryRevision。周非空解析将在任务4接入，当前显式报未装配。没有启用搜索provider。
+
+## 任务4：周日历与通知发布
+BASE=cc32892。GREEN：56文件307项通过（最终全量），typecheck退出0。周五包含下周、周一沿用身份；once/weekly/deadline用稳定元组和SHA256标识，同一课次改期保持ID。必需更正从已下发／曾发布／已知及deliveryRevision恢复，覆盖记录不能代替候选。releasedAt在失效后保留；read快照不改。未来未知草案预排最新issue；默认提醒本地前1日／120分钟，错过的旧提醒不成串补发。collectReady门禁后事务发布，唯一Host计时器包含publishAt；未知结束不可读不贡献立即截止，合法未来提醒仍有将来截止。
+Ruling：requiredNoticeKeys额外携带entityIds，固定候选宣告范围；它是原有真实引用／周摘要声明要求的可校验表示，无新预算或模型职责。防止摘要带入未下发草案。周解析移动到school/calendar，学校事务应用在school/changes由runtime使用，同样复用Storage事务。

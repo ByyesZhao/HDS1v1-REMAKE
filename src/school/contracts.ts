@@ -3,6 +3,8 @@ import type {Dependencies} from '../app';
 import type {ModelTask} from '../types';
 import type {EnvironmentModelResult} from '../environment/types';
 import {prompts} from '../model/prompts';
+import {validateWeekCoverage} from './calendar';
+import type {SchoolExpansionInput} from './types';
 const time=z.iso.datetime({offset:true}),date=z.iso.date(),clock=z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/);
 export const timingSchema=z.discriminatedUnion('kind',[
  z.object({kind:z.literal('once'),startsAt:time,endsAt:time.nullable()}),
@@ -43,4 +45,4 @@ function upstreamTask(d:Dependencies,owner:'campus'|'group',providedUrls:()=>str
 export const schoolCampusTask=(d:Dependencies,urls:()=>string[]=()=>[])=>upstreamTask(d,'campus',urls);
 export const schoolGroupTask=(d:Dependencies,urls:()=>string[]=()=>[])=>upstreamTask(d,'group',urls);
 export const schoolWeekSchema=z.object({stage:z.literal('school_week'),instanceChanges:z.array(z.object({occurrenceKey:z.string(),sourceItemId:z.string(),expectedRevision:z.number().int().positive()})),noticeCandidates:z.array(z.object({key:z.string(),text:z.string().min(1),entityRefs:z.array(z.object({entityKind:z.enum(['plan_item','instance']),entityId:z.string()}))})),weekChanges:z.array(z.object({weekStart:date,sourceVersions:z.record(z.string(),z.number().int().positive()),conflictNotes:z.array(z.string())}))}).strict();
-export function schoolWeekTask():ModelTask<EnvironmentModelResult>{return {name:'school_week',prompt:prompts.school_week,schema:z.toJSONSchema(schoolWeekSchema),parse:raw=>schoolWeekSchema.parse(raw)};}
+export function schoolWeekTask(input?:SchoolExpansionInput):ModelTask<EnvironmentModelResult>{return {name:'school_week',prompt:prompts.school_week,schema:z.toJSONSchema(schoolWeekSchema),parse:raw=>{const result=schoolWeekSchema.parse(raw);if(input)validateWeekCoverage(result,input);return result;}};}

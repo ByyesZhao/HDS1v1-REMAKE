@@ -4,14 +4,16 @@ import {ModelFormatError,ModelRequestError} from '../model/client';
 import {addMs} from '../time';
 import {ensureEnvironmentBatch,localDate} from './scheduler';
 import {resolveSchoolUpstream,applySchoolChanges} from '../school/changes';
+import {schoolExpansionInput,resolveSchoolWeek} from '../school/calendar';
 import type {EnvironmentChangeSet,EnvironmentGenerator,EnvironmentModelResult,EnvironmentStep,EnvironmentStepInput} from './types';
 export function environmentInput(d:Dependencies,step:EnvironmentStep):EnvironmentStepInput {
+ if(step.stage==='school_week')return {stage:step.stage,batchId:step.batchId,at:d.clock.now(),context:{...schoolExpansionInput(d.storage,d.clock.now(),d.config.timezone),appointments:d.storage.all('tasks').filter(t=>t.status==='pending'&&t.kind==='appointment'),timezone:d.config.timezone}};
  const owner=step.stage==='school_campus'?'campus':step.stage==='school_group'?'group':null;
- return {stage:step.stage,batchId:step.batchId,at:d.clock.now(),context:{background:d.config.background,worldSetting:d.config.worldSetting,schoolSetting:d.config.schoolSetting,timezone:d.config.timezone,events:d.storage.all('events').filter(e=>e.status==='active'&&e.kind==='world'),plans:d.schoolStore.plans().filter(p=>!owner||p.owner===owner),items:d.schoolStore.items().filter(i=>!owner||i.owner===owner),...(step.stage==='school_week'?{instances:d.schoolStore.instances(),notices:d.schoolStore.notices()}:{}),...(step.stage==='school_group'?{progress:d.schoolStore.progress(),campusTiming:d.schoolStore.items().filter(i=>i.owner==='campus').map(i=>({id:i.id,title:i.title,timing:i.timing}))}:{})}};
+ return {stage:step.stage,batchId:step.batchId,at:d.clock.now(),context:{background:d.config.background,worldSetting:d.config.worldSetting,schoolSetting:d.config.schoolSetting,timezone:d.config.timezone,events:d.storage.all('events').filter(e=>e.status==='active'&&e.kind==='world'),plans:d.schoolStore.plans().filter(p=>!owner||p.owner===owner),items:d.schoolStore.items().filter(i=>!owner||i.owner===owner),...(step.stage==='school_group'?{progress:d.schoolStore.progress(),campusTiming:d.schoolStore.items().filter(i=>i.owner==='campus').map(i=>({id:i.id,title:i.title,timing:i.timing}))}:{})}};
 }
-function resolveResult(d:Dependencies,result:EnvironmentModelResult):EnvironmentChangeSet {
+function resolveResult(d:Dependencies,result:EnvironmentModelResult,input:EnvironmentStepInput):EnvironmentChangeSet {
  if(result.stage==='world')return {...result,changes:result.changes.map(c=>c.action==='create'?{...c,id:randomUUID()}:c)};
- if(result.stage==='school_week'){if(result.instanceChanges.length||result.noticeCandidates.length||result.weekChanges.length)throw new ModelFormatError('school week resolver not assembled');return {stage:result.stage,instances:[],notices:[],weeks:[]};}
+ if(result.stage==='school_week')return resolveSchoolWeek(d.storage,result,input.context as import("../school/types").SchoolExpansionInput,d.clock.now());
  return resolveSchoolUpstream(d.storage,result,d.clock.now());
 }
 export async function runEnvironmentStep(d:Dependencies,stepId:string,generate:EnvironmentGenerator):Promise<void> {
@@ -24,7 +26,7 @@ export async function runEnvironmentStep(d:Dependencies,stepId:string,generate:E
   step={...step,status:'running',attempt:step.attempt+(isNew?1:0),startedAt:step.startedAt??d.clock.now(),retryAt:null,inputSnapshot:step.inputSnapshot??environmentInput(d,step)};
   d.environmentStore.saveStep(step);
   let frozen:EnvironmentChangeSet;
-  try{const raw=await generate(step.inputSnapshot!);if(raw.stage!==step.stage)throw new ModelFormatError('environment result stage mismatch');frozen=resolveResult(d,raw);}catch(error){
+  try{const raw=await generate(step.inputSnapshot!);if(raw.stage!==step.stage)throw new ModelFormatError('environment result stage mismatch');frozen=resolveResult(d,raw,step.inputSnapshot!);}catch(error){
    if(!(error instanceof ModelFormatError||error instanceof ModelRequestError))throw error;
    if(localDate(d.clock.now(),batch.timezone)!==batch.localDate){ensureEnvironmentBatch(d.storage,d.config,d.clock.now());return;}
    d.environmentStore.saveStep({...step,status:'pending',retryAt:addMs(d.clock.now(),d.config.environmentRetryMs),lastError:error.message});return;
