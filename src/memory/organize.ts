@@ -1,3 +1,4 @@
+import {activityContextMessages} from '../dialogue/activity-context';
 import { stageInput } from '../model/context-views';
 import type { MemoryResult, TurnRecord, TurnCandidate } from '../types';
 import type { Dependencies } from '../app';
@@ -21,6 +22,7 @@ export async function organizeMemory(d: Dependencies, turn: TurnRecord): Promise
   const sourceIds = [...c.experiences.map(e => e.id), ...visibleMessages.map(m => m.id), ...outgoing.map(m => m.id)];
   const query = [...c.experiences.map(e => e.description), ...visibleMessages.map(m => m.content), ...outgoing.map(m => m.content)].join('\n');
   const builder=new ContextBuilder(d.storage,d.retrieval),base=makeRetrievalRequest(query,turn.at,'memory',d.config.historyBudget,sourceIds);
+  base.dialogueWindowVersion=turn.dialogueWindowVersion??1;
   const context = await builder.buildForMemory(base);
   const memories = context.retrieved;
   const shortIds=memories.filter(m=>m.ownerType==='short').map(m=>m.id);
@@ -29,7 +31,7 @@ export async function organizeMemory(d: Dependencies, turn: TurnRecord): Promise
   function includeLookupIds(result:unknown){if(!result||typeof result!=='object'||!('retrieved' in result)||!Array.isArray(result.retrieved))return;for(const row of result.retrieved){const ids=row.kind==='short'?shortIds:longIds;if(['short','long','learned'].includes(row.kind)&&!ids.includes(row.id))ids.push(row.id);}}
   includeLookupIds(options.web?.snapshot().checkpoint?.privateLookupResult);
   return d.models.runModel(memoryTask(sourceIds,longIds,shortIds,selfWebReadSources.map(s=>s.id)), stageInput('memory',{
-    at: turn.at, background: d.config.background, experiences: c.experiences, visibleMessages, reconsiderMessages, outgoing,
+    dialogueWindowVersion:turn.dialogueWindowVersion??1,currentActivityMessages:turn.dialogueWindowVersion===2?activityContextMessages(d.storage,turn.activityContext,'memory',c.visibleMessageIds):[],at: turn.at, background: d.config.background, experiences: c.experiences, visibleMessages, reconsiderMessages, outgoing,
     school:personalSchoolContext(d.storage,c.schoolObservations??[],query),
     arrangementsAndIntent: { plan: c.nextState.plan, tasks: c.taskChanges, outline: c.narrative && 'outline' in c.narrative ? c.narrative.outline : null },
     ...(c.narrative && 'simulatedUserActions' in c.narrative ? { sharedPublicExperience: {

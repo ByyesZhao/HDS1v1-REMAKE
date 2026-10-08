@@ -262,11 +262,11 @@
 
 **Interfaces:** 实现细化selectActivityContext/activityContextMessages；StageBusinessSnapshot新增currentActivityMessages?:Message[]，ModelRoles新增currentActivityMessageIds?:string[]。在runTurn保存阶段持久化活动选择；模型投影消费授权后原文。生产MemoryRetrieval的recent改用ChatEpisodes，旧windowVersion=1恢复显式选择旧路径，模型DTO仍contextVersion=1。
 
-- [ ] 写`active_activity_all_authorized_messages`：超过4段／30条的本场全部授权消息仍提供；recentIds只普通，活动不占四段，池内每个ID正文一次、多用途标签保留。
-- [ ] 写`offtopic_activity_kept_in_active_context`、`other_activity_not_in_current_pool`、`unselected_arrival_not_added_on_repair_or_resume`、`narrative_private_unread_gate_preserved`、`world_school_no_private_transcript`。
-- [ ] 写`final_turn_keeps_context_after_state_end`、`next_normal_turn_has_no_finished_activity_fulltext`、`pending_activity_message_visible_without_full_history`；表达投影不因专用白名单漏掉当前活动。
-- [ ] 跑`npm test -- tests/activity-context.test.ts tests/prompt-context-views.test.ts tests/expression-context-view.test.ts`确认红灯；实现固定选择与阶段授权，HTTP补查／修补沿同一活动身份集合。
-- [ ] 同组及`npm test -- tests/memory-v3-retrieval.test.ts tests/memory-capacity-retrieval.test.ts tests/turn.test.ts tests/model-call-context.test.ts`、类型检查通过；日志记录四段与活动roles相互独立，提交任务17。
+- [x] 写`active_activity_all_authorized_messages`：超过4段／30条的本场全部授权消息仍提供；recentIds只普通，活动不占四段，池内每个ID正文一次、多用途标签保留。
+- [x] 写`offtopic_activity_kept_in_active_context`、`other_activity_not_in_current_pool`、`unselected_arrival_not_added_on_repair_or_resume`、`narrative_private_unread_gate_preserved`、`world_school_no_private_transcript`。
+- [x] 写`final_turn_keeps_context_after_state_end`、`next_normal_turn_has_no_finished_activity_fulltext`、`pending_activity_message_visible_without_full_history`；表达投影不因专用白名单漏掉当前活动。
+- [x] 跑`npm test -- tests/activity-context.test.ts tests/prompt-context-views.test.ts tests/expression-context-view.test.ts`确认红灯；实现固定选择与阶段授权，HTTP补查／修补沿同一活动身份集合。
+- [x] 同组及`npm test -- tests/memory-v3-retrieval.test.ts tests/memory-capacity-retrieval.test.ts tests/turn.test.ts tests/model-call-context.test.ts`、类型检查通过；日志记录四段与活动roles相互独立，提交任务17。
 
 ### 任务18：活动逐轮多记忆、结束后统一召回
 

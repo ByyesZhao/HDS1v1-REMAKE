@@ -23,7 +23,7 @@ export function projectOwner(row:MemoryCandidate,purpose:OwnerViewPurpose):Model
 export function purposeFor(stage:PromptStage):OwnerViewPurpose{return stage.startsWith('narrative')?'narrative':stage.startsWith('personal')?'personal':stage==='memory'?'memory':stage.startsWith('memory_')?'maintenance':stage==='expression'?'expression':'narrative';}
 export function buildStageModelInput(stage:PromptStage,snapshot:StageInputSnapshot):StageModelInput {
  const input=snapshot.input,pool=new ResourcePool(),roles:ModelRoles={},purpose=purposeFor(stage);
- const {recent,visibleMessages,reconsiderMessages,outgoing,tasks,dueTasks,details,retrieved,shortTerm,longTerm,learned,detailHistory,snapshot:owners,history,selfWebReadSources,selfWebReadMaterials,sharedPublicExperience,...context}=input;
+ const {currentActivityMessages,dialogueWindowVersion,recent,visibleMessages,reconsiderMessages,outgoing,tasks,dueTasks,details,retrieved,shortTerm,longTerm,learned,detailHistory,snapshot:owners,history,selfWebReadSources,selfWebReadMaterials,sharedPublicExperience,...context}=input;
  const state=context.state as import('../types').CharacterState|undefined;
  if(context.sharedMeta&&state?.scene.shared){
   const shared=state.scene.shared;context.outline=context.outline??shared.outline;
@@ -31,8 +31,8 @@ export function buildStageModelInput(stage:PromptStage,snapshot:StageInputSnapsh
  }
  const h=(history??{}) as Partial<RetrievedContext>;
  const permitted=(m:import('../types').Message)=>stage!=='narrative'||m.direction==='outgoing'||m.seenTurnId!==null;
- const addMessages=(field:'recentIds'|'visibleIds'|'reconsiderIds',rows:import('../types').Message[]|undefined)=>{if(rows)roles[field]=unique(rows.filter(permitted).map(m=>pool.message(m)));};
- addMessages('recentIds',h.recent??recent);if(stage!=='narrative')addMessages('visibleIds',visibleMessages);addMessages('reconsiderIds',reconsiderMessages);
+ const addMessages=(field:'recentIds'|'visibleIds'|'reconsiderIds'|'currentActivityMessageIds',rows:import('../types').Message[]|undefined)=>{if(rows)roles[field]=unique(rows.filter(permitted).map(m=>pool.message(m)));};
+ addMessages('recentIds',(h.recent??recent)?.filter(m=>dialogueWindowVersion!==2||!m.sharedActivityId));if(['narrative_shared','personal_shared','expression','memory'].includes(stage))addMessages('currentActivityMessageIds',currentActivityMessages);if(stage!=='narrative')addMessages('visibleIds',visibleMessages);addMessages('reconsiderIds',reconsiderMessages);
  if(dueTasks)roles.dueTaskIds=unique(dueTasks.map(t=>pool.task(t)));if(tasks)roles.pendingTaskIds=unique(tasks.map(t=>pool.task(t)));
  const ownerGroups:{field:'detailRefs'|'shortRefs'|'longRefs'|'learnedRefs';rows:MemoryCandidate[]}[]=[{field:'detailRefs',rows:[...h.details??[],...details??[]]},{field:'shortRefs',rows:[...h.shortTerm??[],...shortTerm??[]]},{field:'longRefs',rows:[...h.longTerm??[],...longTerm??[]]},{field:'learnedRefs',rows:[...h.learned??[],...learned??[]]}];
  for(const r of [...retrieved??[],...owners??[]])ownerGroups.find(g=>g.field===(r.kind==='detail'?'detailRefs':r.kind==='short'?'shortRefs':r.kind==='long'?'longRefs':'learnedRefs'))!.rows.push(r);
@@ -56,7 +56,7 @@ export function stageInput(stage:PromptStage,input:unknown):StageModelInput {
 export function buildExpressionView(snapshot:Extract<StageInputSnapshot,{stage:'expression'}>):StageModelInput {
  const input=snapshot.input,state=input.state as import('../types').CharacterState|undefined;
  const expressionState=state?{emotions:state.emotions,energy:state.energy,scene:{mode:state.scene.mode,description:state.scene.description,activity:state.scene.activity?{description:state.scene.activity.description}:null,shared:state.scene.shared?{title:state.scene.shared.title,progress:state.scene.shared.progress,lastPublicNode:state.scene.shared.lastPublicNode}:null}}:undefined;
- return buildStageModelInput('expression',{stage:'expression',input:{intent:input.intent,mode:input.mode,state:expressionState,school:input.school,visibleMessages:input.visibleMessages,history:input.history,chatExamples:input.chatExamples,style:input.style,background:input.background}});
+ return buildStageModelInput('expression',{stage:'expression',input:{currentActivityMessages:input.currentActivityMessages,dialogueWindowVersion:input.dialogueWindowVersion,intent:input.intent,mode:input.mode,state:expressionState,school:input.school,visibleMessages:input.visibleMessages,history:input.history,chatExamples:input.chatExamples,style:input.style,background:input.background}});
 }
 
 export function buildEnvironmentView(input:import('../environment/types').EnvironmentStepInput):StageModelInput {

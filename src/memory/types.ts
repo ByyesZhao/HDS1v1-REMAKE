@@ -38,7 +38,7 @@ export interface ContextLimits {
 export const defaultContextLimits: ContextLimits = {historyBudget:null,alwaysIncludeCharactersLimit:null,candidateItemsPerRoute:null,detailItemsLimit:null,shortItemsLimit:null,longItemsLimit:null,recentDialogueSegments:4,dialogueIdleMinutes:15};
 export interface RetrievalStats {semanticSkipped?:number;semanticSkipReasons?:Record<string,number>; queries:number; cacheHits:number; remoteRequests:number; timeouts:number; failures:number; lexicalFallbacks:number; startedAt:string }
 export interface RetrievalPermissions { allowArchive:boolean; allowDetailHistory:boolean; visibleSourceIds:string[] }
-export interface RetrievalRequest { query:string; at:string; phase:string; scope:'current'|'archive'; includeDetailHistory:boolean; permissions:RetrievalPermissions; budget:number|null }
+export interface RetrievalRequest {dialogueWindowVersion?:1|2; query:string; at:string; phase:string; scope:'current'|'archive'; includeDetailHistory:boolean; permissions:RetrievalPermissions; budget:number|null }
 export type LookupRequest = string | {query:string; scope:'current'|'archive'; includeDetailHistory:boolean};
 export interface RetrievedContext { recent:Message[]; detailHistory:DetailHistory[]; details:MemoryCandidate[]; shortTerm:MemoryCandidate[]; longTerm:MemoryCandidate[]; learned:MemoryCandidate[] }
 export interface AwakeningInput { id:string; turnId:string; at:string; sourceIds:string[]; reason:string; allowedIds:string[]; allowedSourceIds:string[] }
