@@ -1,4 +1,6 @@
 import { afterEach, expect, it } from 'vitest';
+import { DialogueEpisodes } from '../src/dialogue/episodes';
+import { DialogueStore } from '../src/dialogue/store';
 import { Storage } from '../src/storage';
 import { MemoryStore } from '../src/memory/store';
 import { MemoryRetrieval, makeRetrievalRequest } from '../src/memory/retrieval';
@@ -47,9 +49,9 @@ it('shares one optional long limit across ordinary and on-demand learned records
   const {store,retrieval}=create({longItemsLimit:2});owner(store,'l','long');owner(store,'m','long');owner(store,'learned','learned');owner(store,'always','learned',{alwaysInclude:true,learnedKind:'stable_understanding',content:'认识'.repeat(600)});
   const c=await retrieval.build(request());expect(c.longTerm.length+c.learned.filter(x=>!x.alwaysInclude).length).toBe(2);expect(c.learned.some(x=>x.id==='always')).toBe(true);
 });
-it('keeps recent original messages at thirty, budgets only complete records, and organizer ignores unused recent history',async()=>{
-  const {storage,store,retrieval}=create();for(let i=0;i<31;i++)storage.save('messages',`m${i}`,{id:`m${i}`,content:'已看原文'.repeat(300),direction:'outgoing',receivedAt:addMs(NOW,i),platformMessageIds:[],batchId:null,seenTurnId:null,turnId:'old',outboxSeq:i});
-  owner(store,'l','long',{content:'手机正文完整尾部'});const builder=new ContextBuilder(storage,retrieval);const c=await builder.build(request());expect(c.recent.map(x=>x.id)).toEqual(Array.from({length:30},(_,i)=>`m${i+1}`));
+it('keeps complete recent dialogue episodes, budgets only complete records, and organizer ignores unused recent history',async()=>{
+  const {storage,store,retrieval}=create();for(let i=0;i<31;i++)new DialogueEpisodes(new DialogueStore(storage)).acceptMessage({id:`m${i}`,content:'已看原文'.repeat(300),direction:'outgoing',receivedAt:addMs(NOW,i),platformMessageIds:[],batchId:null,seenTurnId:null,turnId:'old',outboxSeq:i});
+  owner(store,'l','long',{content:'手机正文完整尾部'});const builder=new ContextBuilder(storage,retrieval);const c=await builder.build(request());expect(c.recent.map(x=>x.id)).toEqual(Array.from({length:31},(_,i)=>`m${i}`));
   const organized=await builder.buildForMemory({...request(),budget:2000});expect(organized.retrieved[0].content).toBe('手机正文完整尾部');
   const limited=await builder.build({...request(),budget:1});expect(limited.longTerm).toEqual([]);expect(c.longTerm[0].content).toBe('手机正文完整尾部');
 });

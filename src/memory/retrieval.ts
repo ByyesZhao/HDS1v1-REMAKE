@@ -1,6 +1,8 @@
 import { countVisibleCharacters } from '../output/qq';
 import type { ContextLimits, LookupRequest, MemoryCandidate, RetrievedContext, RetrievalRequest } from './types';
 import { defaultContextLimits,memoryOwnerData } from './types';
+import { DialogueEpisodes } from '../dialogue/episodes';
+import { DialogueStore } from '../dialogue/store';
 import { MemoryStore } from './store';
 import { MemoryIndex } from './index';
 import { lexicalCoverage } from './lexical';
@@ -52,7 +54,7 @@ export class MemoryRetrieval {
     const long=cap(ranked.filter(r=>r.ownerType==='long'||r.ownerType==='learned'),this.limits.longItemsLimit);
     const details=cap(ranked.filter(r=>r.ownerType==='detail'),this.limits.detailItemsLimit);
     const detailKeys=new Set(details.map(r=>r.key));
-    const result:RetrievedContext={recent:this.store.storage.messages().filter(m=>m.direction==='outgoing'||m.seenTurnId!==null).slice(-(this.limits.recentMessagesLimit??30)),
+    const result:RetrievedContext={recent:new DialogueEpisodes(new DialogueStore(this.store.storage),this.limits.dialogueIdleMinutes).recent(request.phase,request.at,this.limits.recentDialogueSegments,request.permissions.visibleSourceIds).messages,
       details:details.map(publicRow),shortTerm:cap(ranked.filter(r=>r.ownerType==='short'),this.limits.shortItemsLimit).map(publicRow),
       longTerm:long.filter(r=>r.ownerType==='long').map(publicRow),learned:[...long.filter(r=>r.ownerType==='learned'),...stable].map(publicRow),
       detailHistory:request.includeDetailHistory?this.store.storage.all('detail_history').filter(h=>detailKeys.has(h.key)):[]};
