@@ -53,7 +53,7 @@
 
 1. Important：正常迟读使输入段已关闭，合法binding={episodeId:null,holdReply:false}在失败恢复时被当损坏。新增late_read_closed_episode_with_null_binding_can_resume_after_model_failure先失败，再区分缺失／非法hold／应保持当前关联，合法空绑定可resume，不重开旧段。
 2. Important：lookup真实RetrievedContext顶层shortTerm/longTerm/learned未被投影，完整存储owner和重复正文绕过池。新增实际形状回归先失败，再统一projectOwner和版本ref；detailHistory、两种网页材料字段也保留引用。
-3. Minor：历史安全警告未记录运行日志。新增失败回归后，start/resume经统一checkDialogue将安全ID／原因送onWarning，Koishi logger.warn落日志，不含消息正文；不阻挡正常启动。
+3. Reviewer标Minor：历史安全警告未记录运行日志。按细化§4.3已有“安全历史问题只告警”的交付要求，实施者将日志可见性按必需行为处理。新增失败回归后，start/resume经统一checkDialogue将安全ID／原因送onWarning，Koishi logger.warn落日志，不含消息正文；不阻挡正常启动。
 
 修复后主代理指定回归、类型检查、构建及完整测试通过。未新增防御编程体系，也未再开启第二轮独立审核。
 
@@ -63,4 +63,6 @@
 
 基线83文件473项；本次最终98文件536项，typecheck/build通过。dc68d4d已本地fast-forward合入main；主目录typecheck/build及98文件536项再次通过，离线demo通过。Start-HDSI.cmd --check与Start-SnowLuma.cmd --check均返回0，服务进程核对为0；正式库只读检查version=1且canApply=true。无远程push或PR。任务1～11提交依次f352dc9、bf0eb2d、f4f463a、3a338fc、604623b、59735b4、a9f570c、67d4fc9、6e98876、d2df815、e7f6894；任务12提交dc68d4d；本地合入记录见Git。
 
-执行账本的全部裁定：中文“任务”标题不匹配技能bash提取器，采用Python／PowerShell等价提取、逐任务简报和日志，并人工逐项核对源计划；没有降低需求或略过测试。逐任务账本存本地runtime/data/prompt-context-process-20261008/worktree-process（54文件哈希核对一致），主目录最终全套输出在上级main-suite.log，本文与实施日志为可提交的复盘入口。DSH审阅建议看两份权威文档＋实施日志＋本文＋BACKGROUND_VIEW_MAPPING_20261008.md；历史方案／rebuttal按需追溯。
+执行账本的全部裁定：中文“任务”标题不匹配技能bash提取器，采用Python／PowerShell等价提取、逐任务简报和日志，并人工逐项核对源计划；第二项裁定是将reviewer标Minor的历史告警日志按细化§4.3已有要求纳入交付；若判断过严，成本仅为可选日志回调，不改消息／来源／段行为。没有降低需求或略过测试。逐任务账本存本地runtime/data/prompt-context-process-20261008/worktree-process（54文件哈希核对一致），主目录最终全套输出在上级main-suite.log，本文与实施日志为可提交的复盘入口。DSH审阅建议看两份权威文档＋实施日志＋本文＋BACKGROUND_VIEW_MAPPING_20261008.md；历史方案／rebuttal按需追溯。
+
+本次开发worktree已由Codex工具归档，Git提交和54份过程材料均保留；主目录没有未提交的本次tracked变更。用户原有未跟踪review文件未改动或纳入提交。
