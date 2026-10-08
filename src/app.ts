@@ -1,5 +1,6 @@
 import { ModelRequestError } from './model/client';
 import { DialogueEpisodes } from './dialogue/episodes';
+import {ChatEpisodes} from './dialogue/chat-episodes';
 import { DialogueStore } from './dialogue/store';
 import { runEnvironmentStep } from './environment/runtime';
 import type {EnvironmentGenerator} from './environment/types';
@@ -25,10 +26,10 @@ import { hasValidSharedScene } from './host/shared';
 import {narrativeSchoolContext,personalSchoolContext,personalEnvironmentEvents} from './school/context';
 import {prepareSchoolCommits} from './school/progress';
 
-export interface Dependencies { dialogue?:DialogueEpisodes; generateEnvironment?:EnvironmentGenerator; environmentStore:EnvironmentStore;schoolStore:SchoolStore; storage: Storage; clock: Clock; random: Random; models: ModelRunner; config: AppConfig; sender: Sender; wait(ms: number): Promise<void>; web?:import('./web/service').WebSearchService; memoryStore?:import('./memory/store').MemoryStore; memoryLifecycle?:import('./memory/lifecycle').MemoryLifecycle; memoryCapacity?:import('./memory/capacity').MemoryCapacity;memoryIdle?:import('./memory/idle').MemoryIdle;memoryCleanup?:import('./memory/cleanup').MemoryCleanup;retrieval?:MemoryRetrieval; maintenance?:import('./memory/maintenance').MemoryMaintenance; stickers?: { findSticker(query: string): Promise<string> }; getSelfWebReadSources?(turnId:string):import('./memory/types').SelfWebReadSource[] }
+export interface Dependencies { chat?:ChatEpisodes;dialogue?:DialogueEpisodes; generateEnvironment?:EnvironmentGenerator; environmentStore:EnvironmentStore;schoolStore:SchoolStore; storage: Storage; clock: Clock; random: Random; models: ModelRunner; config: AppConfig; sender: Sender; wait(ms: number): Promise<void>; web?:import('./web/service').WebSearchService; memoryStore?:import('./memory/store').MemoryStore; memoryLifecycle?:import('./memory/lifecycle').MemoryLifecycle; memoryCapacity?:import('./memory/capacity').MemoryCapacity;memoryIdle?:import('./memory/idle').MemoryIdle;memoryCleanup?:import('./memory/cleanup').MemoryCleanup;retrieval?:MemoryRetrieval; maintenance?:import('./memory/maintenance').MemoryMaintenance; stickers?: { findSticker(query: string): Promise<string> }; getSelfWebReadSources?(turnId:string):import('./memory/types').SelfWebReadSource[] }
 export class HdsiApp {
   private busy = false;
-  constructor(public readonly dependencies: Dependencies) { dependencies.dialogue??=new DialogueEpisodes(new DialogueStore(dependencies.storage)); }
+  constructor(public readonly dependencies: Dependencies) { dependencies.dialogue??=new DialogueEpisodes(new DialogueStore(dependencies.storage));dependencies.chat??=new ChatEpisodes(new DialogueStore(dependencies.storage),dependencies.retrieval?.limits.dialogueIdleMinutes??15); }
   async runTurn(request: TurnRequest): Promise<void> {
     if (this.busy || this.dependencies.storage.unfinishedTurn()) throw new Error('finish the previous turn first');
     const d = this.dependencies;
@@ -46,7 +47,7 @@ export class HdsiApp {
       sharedMeta: request.sharedMeta ?? null,
       schoolNoticeRefs:request.schoolNoticeRefs??[],
     };
-    d.storage.transaction(()=>{turn.dialogueBinding=d.dialogue!.bindTurn(turn);d.storage.save('turns',turn.id,turn);});
+    d.storage.transaction(()=>{turn.dialogueWindowVersion=d.storage.runtime().dialogueContextVersion===2?2:1;if(turn.dialogueWindowVersion===2)turn.chatBinding=d.chat!.bindTurn(turn);else turn.dialogueBinding=d.dialogue!.bindTurn(turn);d.storage.save('turns',turn.id,turn);});
     await this.execute(turn);
   }
   async resumeUnfinishedTurn(): Promise<void> {

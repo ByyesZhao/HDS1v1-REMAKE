@@ -1,4 +1,5 @@
 import { DialogueEpisodes } from '../dialogue/episodes';
+import {ChatEpisodes} from '../dialogue/chat-episodes';
 import { DialogueStore } from '../dialogue/store';
 import { randomUUID } from 'node:crypto';
 import type { IncomingMessage, InputAcceptance } from '../types';
@@ -16,8 +17,8 @@ export function incomingMessageId(session:{platform?:string;selfId?:string;userI
 }
 
 export class InputBuffer {
-  private readonly dialogue:DialogueEpisodes;
-  constructor(private readonly storage: Storage,private readonly idle?:MemoryIdle,dialogue?:DialogueEpisodes) {this.dialogue=dialogue??new DialogueEpisodes(new DialogueStore(storage));}
+  private readonly dialogue:DialogueEpisodes|ChatEpisodes;
+  constructor(private readonly storage: Storage,private readonly idle?:MemoryIdle,dialogue?:DialogueEpisodes,chat?:ChatEpisodes) {this.dialogue=storage.runtime().dialogueContextVersion===2?chat??new ChatEpisodes(new DialogueStore(storage)):dialogue??new DialogueEpisodes(new DialogueStore(storage));}
   async acceptInput(message: IncomingMessage): Promise<InputAcceptance> {
     return this.storage.transaction(() => {
       const existing=this.storage.read('messages',message.id),control=this.storage.read('control_requests',message.id);
@@ -50,6 +51,7 @@ export class InputBuffer {
         batchId, sharedActivityId: null, seenTurnId: null, turnId: null, outboxSeq: null,
       });
       runtime.activeDialogueEpisodeId=this.storage.runtime().activeDialogueEpisodeId;
+      runtime.activeChatEpisodeId=this.storage.runtime().activeChatEpisodeId;
       runtime.openBatch = { id: batchId, readyAt: addMs(message.receivedAt, 15_000) };
       this.storage.set('runtime', runtime);
       return { kind: 'message', systemReply: null };

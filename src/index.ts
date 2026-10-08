@@ -15,6 +15,7 @@ import { assembleMemory } from './deployment/memory-runtime';
 import {inspectMemoryCapacity} from './deployment/memory-capacity-upgrade';
 import { assembleWeb } from './deployment/web-runtime';
 import { DialogueEpisodes } from './dialogue/episodes';
+import {ChatEpisodes} from './dialogue/chat-episodes';
 import { DialogueStore } from './dialogue/store';
 import { inspectDialogueUpgrade,ensureDialogueVersion } from './deployment/dialogue-upgrade';
 import { inspectSharedUpgrade, ensureSharedActivityVersion } from './deployment/shared-upgrade';
@@ -96,7 +97,7 @@ export function apply(ctx: Context, config: Config): void {
     async sendError(message) { await bot().sendPrivateMessage(config.userId, message); },
   };
   const app = new HdsiApp({
-    dialogue:new DialogueEpisodes(new DialogueStore(storage),settings.memory.contextLimits.dialogueIdleMinutes),environmentStore:new EnvironmentStore(storage),schoolStore:new SchoolStore(storage),storage, clock, random, models, config: options, sender, stickers,web,memoryStore:memory.store,memoryLifecycle:memory.lifecycle,memoryCapacity:memory.capacity,memoryIdle:memory.idle,memoryCleanup:memory.cleanup,retrieval:memory.retrieval,maintenance:memory.maintenance,
+    chat:new ChatEpisodes(new DialogueStore(storage),settings.memory.contextLimits.dialogueIdleMinutes),dialogue:new DialogueEpisodes(new DialogueStore(storage),settings.memory.contextLimits.dialogueIdleMinutes),environmentStore:new EnvironmentStore(storage),schoolStore:new SchoolStore(storage),storage, clock, random, models, config: options, sender, stickers,web,memoryStore:memory.store,memoryLifecycle:memory.lifecycle,memoryCapacity:memory.capacity,memoryIdle:memory.idle,memoryCleanup:memory.cleanup,retrieval:memory.retrieval,maintenance:memory.maintenance,
     wait: ms => new Promise(resolve => setTimeout(resolve, ms)),
   });
   app.dependencies.generateEnvironment=input=>generateEnvironmentStep(app.dependencies,input);

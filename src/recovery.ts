@@ -13,7 +13,7 @@ export function freezeTurn(d: Dependencies, turn: TurnRecord, candidate: TurnCan
     autonomousIntervalMinutes: turn.autonomousIntervalMinutes === undefined ? candidate.autonomousIntervalMinutes : turn.autonomousIntervalMinutes };
   d.storage.transaction(() => {
     d.storage.save('turns', turn.id, updated);
-    if(items.length===0){d.dialogue?.releaseReply(turn.id,d.clock.now());updated.dialogueBinding=d.storage.read('turns',turn.id)!.dialogueBinding;}
+    if(items.length===0){if((turn.dialogueWindowVersion??1)===1)d.dialogue?.releaseReply(turn.id,d.clock.now());if(d.storage.runtime().dialogueContextVersion===2)d.chat?.releaseReply(turn.id,d.clock.now());const saved=d.storage.read('turns',turn.id)!;updated.dialogueBinding=saved.dialogueBinding;updated.chatBinding=saved.chatBinding;}
     items.forEach((item, index) => d.storage.saveOutbox({ ...item, notBefore: index === 0 ? d.clock.now() : null }));
     d.storage.save('post_jobs', turn.id, { turnId: turn.id, result: null });
   });
@@ -43,11 +43,12 @@ export async function sendFrozen(d: Dependencies, turn: TurnRecord): Promise<voi
         direction: 'outgoing', seenTurnId: null, batchId: null, turnId: turn.id, outboxSeq: item.seq,
         sharedActivityId: turn.sharedMeta?.activityId ?? turn.frozenResult!.nextState.scene.shared?.activityId ?? null,
       };
-      if(d.dialogue)d.dialogue.confirmOutput(turn,message);else d.storage.save('messages',id,message);
+      if((turn.dialogueWindowVersion??1)===1&&d.dialogue)d.dialogue.confirmOutput(turn,message);else d.storage.save('messages',id,message);
+      if(d.storage.runtime().dialogueContextVersion===2)d.chat?.confirmOutput(turn,message);
       recordSharedOutput(d.storage, turn, item, confirmedAt);
       const publicChange=turn.frozenResult!.personal?.sharedChange;
       const activityId=turn.sharedMeta?.activityId??turn.frozenResult!.nextState.scene.shared?.activityId;
-      if(activityId&&message.dialogueEpisodeId){if(publicChange?.action==='start'&&item.seq===0&&item.kind==='narration')d.dialogue?.recordActivity(activityId,message.dialogueEpisodeId,'start',confirmedAt);if(publicChange?.action==='end'&&item.kind==='narration'&&index===items.length-1)d.dialogue?.recordActivity(activityId,message.dialogueEpisodeId,'end',confirmedAt);}
+      if((turn.dialogueWindowVersion??1)===1&&activityId&&message.dialogueEpisodeId){if(publicChange?.action==='start'&&item.seq===0&&item.kind==='narration')d.dialogue?.recordActivity(activityId,message.dialogueEpisodeId,'start',confirmedAt);if(publicChange?.action==='end'&&item.kind==='narration'&&index===items.length-1)d.dialogue?.recordActivity(activityId,message.dialogueEpisodeId,'end',confirmedAt);}
       d.memoryIdle?.record('output',confirmedAt);
       const change=turn.frozenResult!.personal?.sharedChange;
       if(change?.action==='start'&&item.seq===0||change?.action==='end'&&item.seq===items.length-1)d.memoryIdle?.record('activity',confirmedAt);
@@ -57,7 +58,8 @@ export async function sendFrozen(d: Dependencies, turn: TurnRecord): Promise<voi
       } else {
         const current = d.storage.read('turns', turn.id)!;
         d.storage.save('turns', turn.id, { ...current, outputComplete: true });
-        d.dialogue?.releaseReply(turn.id,confirmedAt);
+        if((turn.dialogueWindowVersion??1)===1)d.dialogue?.releaseReply(turn.id,confirmedAt);
+        if(d.storage.runtime().dialogueContextVersion===2)d.chat?.releaseReply(turn.id,confirmedAt);
       }
     });
   }
@@ -90,7 +92,7 @@ export async function finishPostprocessing(d: Dependencies, turn: TurnRecord): P
       d.storage.save('messages',id,{...m,seenTurnId:m.seenTurnId??turn.id});
     });
     if (!turn.environmentKind) {
-      finishSharedTurn(d.storage, current, completedAt);
+      finishSharedTurn(d.storage, current, completedAt,d.storage.runtime().dialogueContextVersion===2?d.chat:undefined);
       const state = d.storage.character();
       if (isSleeping(state, completedAt)) state.nextAutonomousAt = null;
       else if (c.autonomousIntervalMinutes !== null) state.nextAutonomousAt = addMs(completedAt, c.autonomousIntervalMinutes * 60_000);
@@ -111,7 +113,7 @@ export async function finishPostprocessing(d: Dependencies, turn: TurnRecord): P
     d.storage.save('turns', turn.id, { ...current, done: true, completedAt, frozenResult: null });
     const completedPost=d.storage.read('post_jobs',turn.id)!;d.storage.save('post_jobs',turn.id,{...completedPost,result:null});
     d.web?.compactOwnerCheckpoint('turn',turn.id);
-    d.dialogue?.closeDue(completedAt);
+    if(d.storage.runtime().dialogueContextVersion===2)d.chat?.closeDue(completedAt);else d.dialogue?.closeDue(completedAt);
   });
   d.web?.releaseOwner('turn',turn.id);
 }

@@ -74,7 +74,7 @@ export function recordSharedOutput(storage: Storage, turn: TurnRecord, item: Out
 }
 
 /** Applies only activity-owned data; caller already saved the candidate and marked visible inputs. */
-export function finishSharedTurn(storage: Storage, turn: TurnRecord, completedAt: string): void {
+export function finishSharedTurn(storage: Storage, turn: TurnRecord, completedAt: string,chat?:import('../dialogue/chat-episodes').ChatEpisodes): void {
   const candidate = turn.frozenResult!, change = candidate.personal?.sharedChange, meta = turn.sharedMeta;
   if (!meta && change?.action !== 'start') return;
   const state = storage.character(), runtime = storage.runtime();
@@ -90,7 +90,7 @@ export function finishSharedTurn(storage: Storage, turn: TurnRecord, completedAt
   if (change?.action === 'start') {
     const transferred = storage.messages().filter(m => m.direction === 'incoming' && m.seenTurnId === null && m.batchId !== null);
     const batches = new Set(transferred.map(m => m.batchId!));
-    transferred.forEach(m => storage.save('messages', m.id, { ...m, sharedActivityId: activityId, batchId: null }));
+    transferred.forEach(m => {const moved={...m,sharedActivityId:activityId,batchId:null};if(chat)chat.acceptMessage(moved);else storage.save('messages',m.id,moved);});
     runtime.pendingBatchIds = runtime.pendingBatchIds.filter(id => !batches.has(id));
     if (runtime.openBatch && batches.has(runtime.openBatch.id)) runtime.openBatch = null;
     const clock = runtime.sharedClock;
@@ -113,6 +113,7 @@ export function finishSharedTurn(storage: Storage, turn: TurnRecord, completedAt
     if (runtime.sharedClock?.activityId === activityId) runtime.sharedClock = null;
     if (state.sleep && milliseconds(state.sleep.wakeAt) <= milliseconds(completedAt)) state.sleep = null;
   }
+  if(chat)runtime.activeChatEpisodeId=storage.runtime().activeChatEpisodeId;
   storage.set('character', state); storage.set('runtime', runtime);
   if (change?.action !== 'end') refreshSharedStep(storage, completedAt);
 }

@@ -250,11 +250,11 @@
 
 **Interfaces:** Dependencies新增chat:ChatEpisodes；新轮持久化dialogueWindowVersion=2及chatBinding。入站／outbox确认事务消费任务14；Host timer用chat.nextDeadline。旧windowVersion缺失的轮保留原版本1恢复，确认事务同步普通新索引或活动身份，不重算policy／冻结输入。
 
-- [ ] 写`activity_offtopic_and_actions_excluded`、`start_end_do_not_refresh_chat`、`opening_releases_ordinary_invitation_hold`、`confirmed_opening_and_ending_have_activity_identity`、`advance_no_chat_record`、`short_activity_keeps_ordinary_deadline`。
-- [ ] 写`transfer_to_activity_recomputes_chat_anchor_no_empty_episode`、`activity_unread_batch_transfer_keeps_activity_identity`；启动之前真实预约仍普通，已确认活动的结束项仍属活动。
-- [ ] 写`incoming_chat_failure_rolls_back`、`confirmation_chat_failure_rolls_back_receipt`、`duplicate_input_no_refresh`、`sending_failure_pause_resume_keeps_chat_binding`、`postprocessing_does_not_hold_chat`。失败发送超过15分钟仍在原普通绑定确认，不自动重试；无声活动可关闭普通段而继续推进。
-- [ ] 跑`npm test -- tests/chat-flow.test.ts tests/chat-recovery.test.ts`确认红灯；依细化§13.4接入。同事务更新，不把chatEpisodeId=null当“不需要活动开始／结束确认”。
-- [ ] 同组及`npm test -- tests/input.test.ts tests/recovery.test.ts tests/shared-v3-recovery.test.ts tests/memory-idle-recovery.test.ts tests/dialogue-flow.test.ts tests/dialogue-recovery.test.ts`、类型检查通过；旧测试若描述混合窗口须明确标为版本1兼容夹具，不能删掉真实恢复断言；日志及提交任务16。
+- [x] 写`activity_offtopic_and_actions_excluded`、`start_end_do_not_refresh_chat`、`opening_releases_ordinary_invitation_hold`、`confirmed_opening_and_ending_have_activity_identity`、`advance_no_chat_record`、`short_activity_keeps_ordinary_deadline`。
+- [x] 写`transfer_to_activity_recomputes_chat_anchor_no_empty_episode`、`activity_unread_batch_transfer_keeps_activity_identity`；启动之前真实预约仍普通，已确认活动的结束项仍属活动。
+- [x] 写`incoming_chat_failure_rolls_back`、`confirmation_chat_failure_rolls_back_receipt`、`duplicate_input_no_refresh`、`sending_failure_pause_resume_keeps_chat_binding`、`postprocessing_does_not_hold_chat`。失败发送超过15分钟仍在原普通绑定确认，不自动重试；无声活动可关闭普通段而继续推进。
+- [x] 跑`npm test -- tests/chat-flow.test.ts tests/chat-recovery.test.ts`确认红灯；依细化§13.4接入。同事务更新，不把chatEpisodeId=null当“不需要活动开始／结束确认”。
+- [x] 同组及`npm test -- tests/input.test.ts tests/recovery.test.ts tests/shared-v3-recovery.test.ts tests/memory-idle-recovery.test.ts tests/dialogue-flow.test.ts tests/dialogue-recovery.test.ts`、类型检查通过；旧测试若描述混合窗口须明确标为版本1兼容夹具，不能删掉真实恢复断言；日志及提交任务16。
 
 ### 任务17：完整活动上下文与模型单池用途
 

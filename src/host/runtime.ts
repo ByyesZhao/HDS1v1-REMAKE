@@ -14,9 +14,14 @@ export class SerialHost {
   private readonly input: InputBuffer;
   private readonly scheduler: Scheduler;
   constructor(private app: HdsiApp, private options: { timers?: boolean; onError?: (error: unknown) => void; onWarning?: (warning:string)=>void; yieldToEvents?:()=>Promise<void> } = {}) {
-    this.input = new InputBuffer(app.dependencies.storage,app.dependencies.memoryIdle,app.dependencies.dialogue); this.scheduler = new Scheduler(app.dependencies.storage,app.dependencies.config);
+    this.input = new InputBuffer(app.dependencies.storage,app.dependencies.memoryIdle,app.dependencies.dialogue,app.dependencies.chat); this.scheduler = new Scheduler(app.dependencies.storage,app.dependencies.config);
   }
-  private checkDialogue():void {const report=this.app.dependencies.dialogue?.checkConsistency();if(report?.blockingIssues.length)throw new Error(`dialogue 对话段索引不一致: ${report.blockingIssues.join('; ')}`);for(const warning of report?.historicalWarnings??[])this.options.onWarning?.(warning);}
+  private checkDialogue():void {
+    const d=this.app.dependencies;
+    // Full version2 protection-range checking is assembled in task19 before enabling production defaults.
+    if(d.storage.runtime().dialogueContextVersion===2){const id=d.storage.runtime().activeChatEpisodeId;if(id&&d.chat?.store.chatEpisode(id)?.status!=='open')throw Error('chat 对话段索引不一致');return;}
+    const report=d.dialogue?.checkConsistency();if(report?.blockingIssues.length)throw new Error(`dialogue 对话段索引不一致: ${report.blockingIssues.join('; ')}`);for(const warning of report?.historicalWarnings??[])this.options.onWarning?.(warning);
+  }
   async start(): Promise<void> {this.checkDialogue();this.recover=true;await this.wake();}
   async acceptInput(message: IncomingMessage): Promise<InputAcceptance> {
     const accepted = await this.input.acceptInput(message);
@@ -42,7 +47,7 @@ export class SerialHost {
     while (!this.stopped) {
       this.requested = false;
       this.input.closeReady(d.clock.now());
-      d.storage.transaction(()=>d.dialogue?.closeDue(d.clock.now()));
+      d.storage.transaction(()=>d.storage.runtime().dialogueContextVersion===2?d.chat?.closeDue(d.clock.now()):d.dialogue?.closeDue(d.clock.now()));
       if (d.storage.runtime().paused || this.stopped) break;
       if (d.storage.unfinishedTurn()) {
         if (!this.recover) break;
@@ -74,7 +79,7 @@ export class SerialHost {
     const d=this.app.dependencies,front=await this.scheduler.nextDeadline(d.clock.now());
     const back=d.storage.runtime().paused||d.storage.runtime().openBatch||d.storage.unfinishedTurn()?null:d.maintenance?.nextDeadline(d.clock.now());
     const cleanup=d.memoryCleanup?.nextDeadline(d.clock.now());
-    return [front,back,cleanup,d.dialogue?.nextDeadline(d.clock.now())].filter((at):at is string=>!!at).sort((a,b)=>milliseconds(a)-milliseconds(b))[0]??null;
+    return [front,back,cleanup,(d.storage.runtime().dialogueContextVersion===2?d.chat?.nextDeadline(d.clock.now()):d.dialogue?.nextDeadline(d.clock.now()))].filter((at):at is string=>!!at).sort((a,b)=>milliseconds(a)-milliseconds(b))[0]??null;
   }
   async pause(): Promise<void> {
     const d = this.app.dependencies;

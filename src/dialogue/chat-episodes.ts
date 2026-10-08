@@ -14,7 +14,7 @@ export class ChatEpisodes {
   if(message.sharedActivityId){const previous=message.chatEpisodeId??s.read('messages',message.id)?.chatEpisodeId;message.chatEpisodeId=null;s.save('messages',message.id,message);if(previous)this.reconcile(previous,message.receivedAt);return null;}
   const r=s.runtime();let episode=r.activeChatEpisodeId?this.store.chatEpisode(r.activeChatEpisodeId):null;
   if(!episode||episode.status==='closed')episode={id:`chat:${randomUUID()}`,openedAt:message.receivedAt,lastInteractionAt:message.receivedAt,status:'open',closedAt:null,closeReason:null};
-  episode.lastInteractionAt=new Date(Math.max(time(episode.lastInteractionAt),time(message.receivedAt))).toISOString();
+  if(time(message.receivedAt)>time(episode.lastInteractionAt))episode.lastInteractionAt=message.receivedAt;
   message.chatEpisodeId=episode.id;this.store.saveChatEpisode(episode);s.save('messages',message.id,message);s.set('runtime',{...s.runtime(),activeChatEpisodeId:episode.id});return episode.id;
  }
  private reconcile(id:string,at:string):void {
@@ -33,7 +33,7 @@ export class ChatEpisodes {
   const s=this.store.storage,current=s.read('turns',turn.id)??turn;
   if(message.sharedActivityId){this.acceptMessage(message);s.save('turns',turn.id,{...current,chatBinding:{episodeId:null,holdReply:false}});turn.chatBinding={episodeId:null,holdReply:false};this.closeDue(message.receivedAt);return null;}
   const binding=current.chatBinding,e=binding?.holdReply&&binding.episodeId?this.store.chatEpisode(binding.episodeId):null;
-  if(e?.status==='open'){message.chatEpisodeId=e.id;e.lastInteractionAt=new Date(Math.max(time(e.lastInteractionAt),time(message.receivedAt))).toISOString();this.store.saveChatEpisode(e);s.save('messages',message.id,message);}else this.acceptMessage(message);
+  if(e?.status==='open'){message.chatEpisodeId=e.id;if(time(message.receivedAt)>time(e.lastInteractionAt))e.lastInteractionAt=message.receivedAt;this.store.saveChatEpisode(e);s.save('messages',message.id,message);}else this.acceptMessage(message);
   const chatBinding={episodeId:message.chatEpisodeId!,holdReply:true};s.save('turns',turn.id,{...current,chatBinding});turn.chatBinding=chatBinding;return message.chatEpisodeId!;
  }
  releaseReply(turnId:string,at:string):void{const s=this.store.storage,t=s.read('turns',turnId);if(t?.chatBinding)s.save('turns',t.id,{...t,chatBinding:{...t.chatBinding,holdReply:false}});this.closeDue(at);}
