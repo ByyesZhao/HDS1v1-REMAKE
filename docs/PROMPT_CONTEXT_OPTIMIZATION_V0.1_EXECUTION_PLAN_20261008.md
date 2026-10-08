@@ -1,20 +1,23 @@
 # 提示词与上下文优化 V0.1 执行计划
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. 若用户明确选择子代理执行，再使用 superpowers:subagent-driven-development。任务1～12已实施，复选框记录本次交付；证据见实施日志及验收记录。
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. 若用户明确选择子代理执行，再使用 superpowers:subagent-driven-development。任务1～12为原交付历史；本次执行任务13～20，当前全部待实施，不启动正式服务。
 
-**Goal:** 保持有效事实、来源和模型职责，消除同次请求副本，并以4个完整对话段替换30条消息原文窗口。
+**Goal:** 在原提示／资料池交付基础上修复已确认缺口，把4段窗口改成独立普通聊天窗口；活动中提供完整本场原文、结束后统一记忆召回。
 
-**Architecture:** 沿单串行Host及SQLite事务保存显式段索引，消息正文留在原表。Host完整快照与轻量模型DTO分开；Client每次请求合并资料、选择适用提示。第二批单独收窄表达／背景／环境，并把周计划机械输出移交程序。
+**Architecture:** 沿单串行Host及SQLite事务新增普通聊天轻量索引，与活动归属分开，消息正文仍在原表。模型单一资料池使用普通recentIds及独立currentActivityMessageIds；Host来源集合／冻结恢复不由资料角色反推。旧混合段保留审计和旧轮兼容，新窗口采用版本2显式升级。
 
 **Tech Stack:** 现有TypeScript、Node.js、SQLite、Zod、Vitest；不新增运行依赖。
 
-**Spec:** [实施细化](PROMPT_CONTEXT_OPTIMIZATION_V0.1_IMPLEMENTATION_20261008.md)。设计审阅基线`6ed66e2`；本次实施起点`f891c48`，设计／审核已确认。
+**Spec:** [实施细化](PROMPT_CONTEXT_OPTIMIZATION_V0.1_IMPLEMENTATION_20261008.md)。原设计审阅基线`6ed66e2`；原任务1～12实施起点`f891c48`，设计／审核已确认。
+
+**本次增量：** 2026-10-09整合，参考代码`177561e`；直接执行任务13～20，以细化§13～14为目标合同。任务1～12的勾选保留原实施过程，不保证每个约定测试名都有同名现有用例；本次任务20补准确证据映射，不重用旧通过数。REVIEW22／23和已确认rebuttal意见均已并入，没有待决产品选择。
 
 [REVIEW21](../DSH-review/DSH_REVIEW21_PROMPT_CONTEXT_V0.1_PLAN_20261008.md)已整合，具体取舍见细化§12。用户选择B：无必需通知时，即使有日程冲突也不额外调用周模型；角色自由处理自己真正知道的安排。
 
 ## 全局约束
 
-- 固定默认`recentDialogueSegments=4`、`dialogueIdleMinutes=15`；段内完整，不叠加旧30条。
+- 固定默认`recentDialogueSegments=4`、`dialogueIdleMinutes=15`；仅普通段计容量，关闭不等于出窗，不叠加旧30条。
+- 活动期间双方全部消息（含题外话）及公开动作／旁白／起止均归活动；活动不刷新／保持普通段。当前活动提供完整已授权原文，结束后统一检索记忆，允许多条短期。
 - 周计划无必需通知则免调用，有冲突仍保存程序冲突及覆盖；个人导演决定参加、请假或协调，不由周模型自动改日程。
 - 不增加输入字数／token预算和默认检索条数限制；超限报错，不自动删减，不增加手动脱困命令。
 - Host完整snapshot／readSet／版本不精简；原消息ID、来源、可见权限、记忆周期和容量制度不改。
@@ -185,8 +188,126 @@
 - [x] 汇总前后资料ID／字段映射、去重数量、实际调用数、迁移与恢复报告、测试结果和已知限制；不默认公开私聊、背景全文或密钥。
 - [x] 同步本次文档为已实施状态及日志入口，逐文件复核差异并提交最终交付。服务继续停止，由用户运行已有cmd。
 
-## 完成标准与审阅入口
+## 原任务1～12完成标准与审阅入口（历史）
 
 任务1～8和9～12分别形成可审核交付；所有必需行为能指向测试／恢复报告，语义质量能指向隔离验收记录。未进行真实验收或未批准背景映射时如实记录，不把相应项目标成完成。
 
 本次已按任务1～12完成代码、回归和隔离语义验收。复核入口为本文、实施细化、[实施日志](PROMPT_CONTEXT_OPTIMIZATION_V0.1_IMPLEMENTATION_LOG_20261008.md)和[验收与代码复核记录](PROMPT_CONTEXT_OPTIMIZATION_V0.1_DELIVERY_REVIEW_20261008.md)。方案／review／rebuttal用于追溯；未增加自动裁剪、手动脱困或新模型任务。
+
+## 第三批：REVIEW22／23修复与普通／活动窗口分离（待实施）
+
+按13→14→15→16→17→18→19→20顺序执行；任务14定义共享类型，15负责迁移，16接写路径，17接模型视图，18核对记忆，19接启动检查，20作最终装配与验收。中间提交不代表可启动正式服务；直到版本门禁、恢复及装配全部完成后才交付。
+
+### 增量复核重点
+
+| 输入／状态 | 必须结果 | 所属任务 |
+| --- | --- | --- |
+| 20:00普通聊天后，20:05～20:40共同活动，期间聊题外话 | 普通段20:15关闭但不被活动挤出；20:41普通输入另开段 | 14、16 |
+| 某段含已看旧输入和不可见新输入，其他段全未读，旁边还有缺归属消息 | 排名按阶段可见普通正文；无法证明缺归属不影响时阻挡 | 14、19 |
+| 活动end已确认，基础提取尚未完成，还有活动内未读消息 | 本轮收尾保留资料；补读直接输入不丢；后续普通不自动带全场 | 17、18 |
+| 普通分段发送失败，暂停超过15分钟后resume | 保留冻结输出／普通绑定；最终确认后释放，不自动重试 | 16 |
+| 非默认30分钟迁移，旧v0周合同／ready及补查新学校版本同时存在 | check/apply一致；v0路径正确／程序冲突保留；新版本不误去重；ready不重跑 | 13、15、20 |
+
+### 任务13：已确认的HTTP与学校兼容修复
+
+**Files:** 改`src/model/resource-pool.ts`、`context-views.ts`、`context-types.ts`、`src/school/calendar.ts`、`src/deployment/prompt-context-acceptance.ts`；扩`tests/prompt-context-transport.test.ts`、`prompt-context-integration.test.ts`（统计字段更名）、`environment-context-view.test.ts`、`school-week-contract-recovery.test.ts`、`school-week-text-contract.test.ts`、`prompt-context-errors.test.ts`。
+
+**Interfaces:** `buildCompletionEnvelope`沿原签名，在lookupResult新增contextRefs；仅对白名单school/detailHistory确定相等块引用`input.context.<key>`。`buildEnvironmentView`仍返回StageModelInput版本1；school v0投影单层，Host冻结inputSnapshot不变。`resolveSchoolWeek`仍返回原EnvironmentChangeSet。
+
+- [ ] 写`lookup_identical_school_once`、`lookup_new_school_version_kept`、`lookup_different_detail_history_kept`、`different_message_ids_same_text_preserved`；用受控标记检查整份envelope，断言原lookup/input深相等未修改。
+- [ ] 写`v0_school_context_flat_and_contract_unchanged`、`v0_repair_continuation_uses_flat_input`、`v0_empty_notes_keep_program_conflicts`、`old_ready_no_reparse`；新增`v1_cancel_timezone_historical_reminders_preserved`组合夹具，取消及after投影仍保留已发布历史通知／提醒。
+- [ ] 为维护、环境各写`background_errors_not_front_failure`，确证后台错误不设置前台lastFailure；把已存在的通知安全断言记入名称映射，不为改名字重复造测试。
+- [ ] 跑`npm test -- tests/prompt-context-transport.test.ts tests/environment-context-view.test.ts tests/school-week-contract-recovery.test.ts tests/school-week-text-contract.test.ts tests/prompt-context-errors.test.ts`，记录新增用例的实际失败；只修上述确定问题。
+- [ ] 重跑同组及`npm run typecheck`；统计名称改为uniqueMessageIds，记录每条意见→实际用例／断言；续写实施日志并提交任务13。无必需通知时仍不调用周模型，不改已正确的policy冻结链。
+
+### 任务14：普通聊天独立索引与状态机
+
+**Files:** 新`src/dialogue/chat-episodes.ts`、`tests/chat-episodes.test.ts`；改`src/dialogue/types.ts`、`store.ts`、`src/types.ts`、`storage.ts`及`tests/storage.test.ts`。
+
+**Interfaces:** 消费细化§13.2字段；新增chat_episodes及chat_index_metadata、ChatEpisode、ChatTurnBinding、ChatRecent、ActivityContextSelection及Runtime.activeChatEpisodeId。`DialogueStore.chatEpisodes():ChatEpisode[]`、`chatEpisode(id:string):ChatEpisode|null`、`saveChatEpisode(row:ChatEpisode):void`供新服务消费。ChatEpisodes实现acceptMessage/bindTurn/confirmOutput/releaseReply/closeDue/nextDeadline/recent精确签名。旧DialogueEpisodes／旧表兼容保留，新库版本2，旧库缺字段不自动升级。
+
+- [ ] 写`activity_never_anchors_or_holds_chat`、`closed_chat_still_eligible_until_four_newer`、`short_activity_can_continue_chat_before_idle`、`silent_life_has_no_chat_episode`、`ordinary_proactive_confirm_opens_chat`。
+- [ ] 写`visible_interaction_orders_mixed_seen_unread_episode`、`invisible_current_does_not_take_fourth_slot`、`forty_messages_in_chat_not_trimmed`；最近可见普通消息排序不改持久化锚点。
+- [ ] 用固定时钟断言20:00普通、20:05活动、20:40结束：普通截止仍20:15；关闭后recent仍包含该段，20:41普通建立新段。活动消息明确chatEpisodeId=null，不能建立空普通段。
+- [ ] 跑`npm test -- tests/chat-episodes.test.ts tests/storage.test.ts`确认新增红灯，再实现普通独立读写及保持逻辑；写方法不自行嵌套事务。
+- [ ] 同组及类型检查通过，日志记录版本1／2与模型DTO版本不同，提交任务14；暂不把正式库升级或生产Host切到不完整装配。
+
+### 任务15：迁移实际参数及普通索引版本2升级
+
+**Files:** 新`src/deployment/chat-upgrade.ts`、`tests/chat-upgrade.test.ts`；改`src/deployment/dialogue-upgrade.ts`、`scripts/migrate-dialogue.ts`、`src/index.ts`的启动前检查及`tests/dialogue-upgrade.test.ts`。
+
+**Interfaces:** `DialogueUpgradeParameters={idleMinutes:number,targetVersion:1|2}`；`inspectDialogueUpgrade(path:string,parameters:DialogueUpgradeParameters):DialogueUpgradeReport`与`upgradeDialogue(path:string,now:string,options:DialogueUpgradeParameters & {stopped:boolean,backupDirectory:string}):DialogueUpgradeReport`共享计划参数。报告增加targetVersion、idleMinutes、配置来源及普通／活动统计。chat-upgrade生成纯目标2计划供原入口分派；`ensureDialogueVersion`目标2，并保留旧在途兼容核对入口。CLI默认目标2，读取公开配置，不加载密钥。
+
+- [ ] 写`nondefault_idle_same_check_and_apply`：30分钟配置下20分钟间隔同普通段；check与apply统计／归属一致，不能从state默认15读取。明确参数覆盖及配置来源进入报告。
+- [ ] 写`v1_mixed_history_rebuilds_pure_chat`、`activity_does_not_bridge_old_chat_gap`、`old_ordinary_reply_hold_maps_but_shared_hold_does_not`、`missing_active_activity_evidence_blocks_apply`、`closed_old_chat_not_forced_out`。
+- [ ] 写`check_no_business_writes`、`apply_backup_then_transaction`、`reapply_v2_idempotent`、`failed_plan_rolls_back`、`parameter_change_not_silent_rebuild`；证明消息ID／正文／时间／已读／记忆／确认outbox及旧混合索引未改，仅新增明确索引与归属。
+- [ ] 跑`npm test -- tests/chat-upgrade.test.ts tests/dialogue-upgrade.test.ts`确认红灯；实现check/apply同计划、目标版本分派及旧在途映射，未知当前归属不按【】猜测。
+- [ ] 同组及类型检查通过，日志保存隔离报告与备份演练证据，提交任务15。正式库检查／apply留到任务20，不因之前空库假定学校步骤为空。
+
+### 任务16：输入、起止、确认发送和恢复接普通索引
+
+**Files:** 新`tests/chat-flow.test.ts`、`tests/chat-recovery.test.ts`；改`src/app.ts`、`recovery.ts`、`host/input.ts`、`host/shared.ts`、`host/runtime.ts`、`index.ts`、`tests/helpers.ts`。
+
+**Interfaces:** Dependencies新增chat:ChatEpisodes；新轮持久化dialogueWindowVersion=2及chatBinding。入站／outbox确认事务消费任务14；Host timer用chat.nextDeadline。旧windowVersion缺失的轮保留原版本1恢复，确认事务同步普通新索引或活动身份，不重算policy／冻结输入。
+
+- [ ] 写`activity_offtopic_and_actions_excluded`、`start_end_do_not_refresh_chat`、`opening_releases_ordinary_invitation_hold`、`confirmed_opening_and_ending_have_activity_identity`、`advance_no_chat_record`、`short_activity_keeps_ordinary_deadline`。
+- [ ] 写`transfer_to_activity_recomputes_chat_anchor_no_empty_episode`、`activity_unread_batch_transfer_keeps_activity_identity`；启动之前真实预约仍普通，已确认活动的结束项仍属活动。
+- [ ] 写`incoming_chat_failure_rolls_back`、`confirmation_chat_failure_rolls_back_receipt`、`duplicate_input_no_refresh`、`sending_failure_pause_resume_keeps_chat_binding`、`postprocessing_does_not_hold_chat`。失败发送超过15分钟仍在原普通绑定确认，不自动重试；无声活动可关闭普通段而继续推进。
+- [ ] 跑`npm test -- tests/chat-flow.test.ts tests/chat-recovery.test.ts`确认红灯；依细化§13.4接入。同事务更新，不把chatEpisodeId=null当“不需要活动开始／结束确认”。
+- [ ] 同组及`npm test -- tests/input.test.ts tests/recovery.test.ts tests/shared-v3-recovery.test.ts tests/memory-idle-recovery.test.ts tests/dialogue-flow.test.ts tests/dialogue-recovery.test.ts`、类型检查通过；旧测试若描述混合窗口须明确标为版本1兼容夹具，不能删掉真实恢复断言；日志及提交任务16。
+
+### 任务17：完整活动上下文与模型单池用途
+
+**Files:** 新`src/dialogue/activity-context.ts`、`tests/activity-context.test.ts`；改`src/model/context-types.ts`、`context-views.ts`、`src/memory/retrieval.ts`、`context.ts`、`types.ts`、`src/app.ts`、`src/output/expression.ts`及对应DTO／表达测试。
+
+**Interfaces:** 实现细化selectActivityContext/activityContextMessages；StageBusinessSnapshot新增currentActivityMessages?:Message[]，ModelRoles新增currentActivityMessageIds?:string[]。在runTurn保存阶段持久化活动选择；模型投影消费授权后原文。生产MemoryRetrieval的recent改用ChatEpisodes，旧windowVersion=1恢复显式选择旧路径，模型DTO仍contextVersion=1。
+
+- [ ] 写`active_activity_all_authorized_messages`：超过4段／30条的本场全部授权消息仍提供；recentIds只普通，活动不占四段，池内每个ID正文一次、多用途标签保留。
+- [ ] 写`offtopic_activity_kept_in_active_context`、`other_activity_not_in_current_pool`、`unselected_arrival_not_added_on_repair_or_resume`、`narrative_private_unread_gate_preserved`、`world_school_no_private_transcript`。
+- [ ] 写`final_turn_keeps_context_after_state_end`、`next_normal_turn_has_no_finished_activity_fulltext`、`pending_activity_message_visible_without_full_history`；表达投影不因专用白名单漏掉当前活动。
+- [ ] 跑`npm test -- tests/activity-context.test.ts tests/prompt-context-views.test.ts tests/expression-context-view.test.ts`确认红灯；实现固定选择与阶段授权，HTTP补查／修补沿同一活动身份集合。
+- [ ] 同组及`npm test -- tests/memory-v3-retrieval.test.ts tests/memory-capacity-retrieval.test.ts tests/turn.test.ts tests/model-call-context.test.ts`、类型检查通过；日志记录四段与活动roles相互独立，提交任务17。
+
+### 任务18：活动逐轮多记忆、结束后统一召回
+
+**Files:** 新`tests/activity-memory-context.test.ts`；改`src/memory/organize.ts`、必要的app／model视图接入、`tests/memory.test.ts`、`tests/prompt-context-call-skip.test.ts`及相关提示说明。
+
+**Interfaces:** 保留MemoryResultV3、每轮基础提取与MemoryRetrieval合同；currentActivityMessageIds只辅助理解，currentSourceIds仍由本轮合法来源计算。不得新增结束总结任务或独立活动记忆检索分支。
+
+- [ ] 写`one_activity_multiple_short_memories_with_current_sources`：同场两轮生成不同事件／细节／感受记忆，至少一个本轮来源；可返回多条，也可合法无新记忆，不强制重复历史。
+- [ ] 写`activity_history_not_new_source_or_awaken_candidate`、`silent_public_narration_still_extracts`、`activity_offtopic_fact_can_be_remembered`、`ending_extracts_current_closure_without_extra_summary_call`。
+- [ ] 写`post_end_recall_uses_normal_memory_retrieval`、`ended_activity_unread_first_visible_extracts`、`old_reconsider_not_first_visible_source`、`failed_end_postprocessing_restores_without_reopen_full_history`；检索相关短／长期，与其他记忆用相同规则，无activity alwaysInclude。
+- [ ] 跑`npm test -- tests/activity-memory-context.test.ts tests/memory.test.ts tests/prompt-context-call-skip.test.ts`确认红灯；实现必要投影／来源接线，未改变部分用集成断言验证，不为制造代码差异另写流程。
+- [ ] 同组及`npm test -- tests/web-memory-sources.test.ts tests/review17-identities.test.ts tests/review17-promotion-audit.test.ts tests/memory-capacity-retrieval.test.ts`、类型检查通过；日志分别列工作原文、直接输入、新来源和检索记忆，提交任务18。
+
+### 任务19：按实际窗口检查保护范围
+
+**Files:** 新`src/dialogue/window-consistency.ts`、`tests/chat-consistency.test.ts`；改`src/dialogue/types.ts`、`host/runtime.ts`及新升级检查接线。
+
+**Interfaces:** 实现细化checkWindowConsistency及WindowConsistencyReport；消费任务14实际阶段ChatRecent、任务17当前活动选择及原未读／复议／在途／来源集合。Host在输入／恢复前核对，版本1旧在途另按兼容合同，不把版本2活动null关联误当孤立普通消息。
+
+- [ ] 写`phase_visible_older_episode_protected_against_global_cutoff`：五段只有最旧可见，附近缺归属已看消息必须blocking；不拿全库最新4段判断。
+- [ ] 写`missing_association_not_filtered_to_prove_safe`、`closed_visible_episode_protected`、`current_activity_and_unread_reconsider_sources_protected`、`modern_missing_chat_association_blocks`、`proven_irrelevant_old_history_warning_only`；段数设2／4证明使用实际配置。
+- [ ] 写`legacy_inflight_and_modern_activity_null_are_distinguished`；未知影响始终阻挡，真正窗外无引用历史只警告、不删不并。
+- [ ] 跑`npm test -- tests/chat-consistency.test.ts`确认红灯；实现保护证明与Host门禁，不引入固定天数豁免或自动历史修复。
+- [ ] 同组及`npm test -- tests/chat-recovery.test.ts tests/dialogue-recovery.test.ts tests/recovery.test.ts`、类型检查通过；日志列每种warning／blocking依据，提交任务19。
+
+### 任务20：集成、实际库检查与增量交付
+
+**Files:** 扩`scripts/validate-prompt-context.ts`、`src/deployment/prompt-context-acceptance.ts`、`tests/prompt-context-integration.test.ts`；更新本文、实施细化、既有实施日志／验收记录、`README.md`、`docs/IMPLEMENTATION_HANDOFF_20261007.md`、`docs/DOCUMENT_AUDIT.md`及相关现状说明。
+
+**Interfaces:** 验收仍单请求默认300秒、隔离库、同一Host夹具；报告uniqueMessageIds与真正envelope副本断言分别列。正式检查含故事与学校步骤／checkpoint，不启动服务。实施起点重查Git和适用AGENTS，用户未要求新聊天或子代理时按既有内联方式执行。
+
+- [ ] 扩集成用例覆盖普通4段→活动含题外话／动作→无台词公开代写→提前收尾→收尾记忆恢复→普通追问检索；明确活动全文只在活动工作阶段、角色输入／来源权限完整、可生成多条短期。
+- [ ] 新增集成用例先确认红灯，再装配；通过`npm test -- tests/prompt-context-integration.test.ts`。将`notification_contains_stage_no_body_or_key`等约定名称映射到真实文件／用例／断言，缺失项目不能用历史勾选代替。
+- [ ] 跑`npm run typecheck`、`npm run build`、`npm test`并记录本次实际数量；逐文件复核同ID引用、未读门禁、v0/v1学校、版本1在途与版本2恢复。已正确policy链只验证，不追加冻结层。
+- [ ] 在已有授权范围内进行隔离真实多轮质量验收：授权背景／测试剧情，无正式聊天或图片、不连QQ；检查活动完整连续、结束后相关召回、多条记忆事件／感受、学校通知及角色已知冲突自由处理。报告实际HTTP／embedding数及失败，不把Schema通过或一场一次成功当稳定语义保证。
+- [ ] 服务停止情况下只读检查正式库与学校running/ready；确认索引、参数、在途映射明确后备份并显式升级目标2；如存在阻挡则保留报告，不强制清库／丢轮。check不改业务数据，不能承诺SQLite旁文件绝无变化。
+- [ ] 核对根目录REMAKE、记忆／共同活动／部署现状说明：当前普通4段与活动完整／结束记忆合同一致；历史review／日志数字不改成当前证据。记录备份、回退所需代码版本及已知限制，不在正式记录写密钥／完整私聊。
+- [ ] 更新任务13～20状态，形成增量验收记录并提交；由用户双击现有cmd运行，开发验收不自动启动HDSI／SnowLuma。
+
+## 本次完成标准与计划自检
+
+实施参考只有[实施细化§13～14](PROMPT_CONTEXT_OPTIMIZATION_V0.1_IMPLEMENTATION_20261008.md)与本文任务13～20；历史任务及review/rebuttal只供追溯。准备阶段尚未修改代码、运行模型／测试或升级正式库。
+
+计划已对照源码和REVIEW23自检：独立普通锚点／新索引，阶段可见排序，活动全场授权原文，结束保留本轮处理，未读直接输入不丢，多记忆不扩大来源，lookup新版本不误删，旧学校合同／ready兼容，实际参数升级，保护范围和失败恢复均有明确任务／验证入口。没有新的待用户决定项；实施完成才可把本批checkbox勾选并写“通过”。

@@ -1,10 +1,12 @@
 # 提示词与上下文优化 V0.1 实施细化
 
-日期：2026-10-08。设计源码基线 `6ed66e2`，实施起点 `f891c48`。状态：任务1～12已实施；停服空库升级及经批准本地配置已同步，证据见实施日志及交付验收记录。
+日期：2026-10-08；本次整合：2026-10-09。设计源码基线 `6ed66e2`，首批实施起点 `f891c48`；补充实施参考基线 `177561e`。状态：任务1～12为已交付历史；REVIEW22／23与新活动窗口规则已整合，任务13～20待实施，当前程序仍为旧混合窗口，尚未启用普通聊天独立索引。
 
 实施参考**本文＋[执行计划](PROMPT_CONTEXT_OPTIMIZATION_V0.1_EXECUTION_PLAN_20261008.md)**。[方案](PROMPT_CONTEXT_OPTIMIZATION_V0.1_PROPOSAL_20261008.md)、[REVIEW20](../DSH-review/DSH_REVIEW20_PROMPT_CONTEXT_V0.1_20261008.md)及[已确认回应（含后续补充）](../DSH-review/CODEX_REBUTTAL_PROMPT_CONTEXT_V0.1_20261008.md)用于追溯，其已同意的规则在本文集中落实，无需实施者另行拼接。
 
 [REVIEW21](../DSH-review/DSH_REVIEW21_PROMPT_CONTEXT_V0.1_PLAN_20261008.md)已按用户决定合并，逐项口径见§12；不再另建rebuttal。无必需通知时即使有冲突也不额外调用周模型，采用B，冲突由程序保留，角色在已知安排基础上自行选择。
+
+[交付回应](../DSH-review/CODEX_REBUTTAL_PROMPT_CONTEXT_V0.1_DELIVERY_20261008.md)及[REVIEW23](../DSH-review/DSH_REVIEW23_PROMPT_CONTEXT_V0.1_SUPPLEMENT_20261008.md)已整合至§13～14，不再新建rebuttal。**本次实施直接参考本文及执行计划任务13～20。§3～4及§9保留版本1的交付／恢复合同；新的普通窗口以§13为准，不继续使用活动保持或活动结束加15分钟的旧规则。** 既有记录和已完成复选框不代表新增规则已经实现。
 
 ## 1. 范围与不变的业务规则
 
@@ -12,7 +14,7 @@
 
 - 不新增生成模型阶段，不合并主叙事、个人导演、表达和记忆提取，不用额外LLM概括总上下文。
 - 不增加人为字符／token预算，检索条数上限继续默认不限；相关性、权限、最近原文窗口继续有效。
-- 默认最近4段，当前段计入4段之内；空闲15分钟划段。共同活动60秒推进、约10轮收尾、最多20轮及既有代写权限不变。
+- 默认最近4个普通对话段，当前普通段计入4段之内；普通交互空闲15分钟划段。共同活动整体不占名额，进行中提供本场完整已授权原文，结束后统一检索记忆，允许一场多条短期记忆。共同活动60秒推进、约10轮收尾、最多20轮及既有代写权限不变。
 - 短期7天、长期90天及既有唤醒／晋升制度不变；容量目标短期100、长期1000、归档500不变。基础提取仍按故事轮，深度整理仍按现有独立15分钟门禁。
 - 超限报错，不自动减少段数、裁条目、摘要或跳轮；按用户最新决定，**不增加强制关段／清空／手动脱困命令**。恢复原轮可能再次报错，不保证等待15分钟即可解决。
 - 所有任务保留原模型配置键及思考强度，默认flash仍允许改pro。`memory_audit`仍使用`memory_consolidation`连接；不重新选模型。
@@ -63,7 +65,9 @@ buildPromptPolicy(stage: PromptStage, facts: PromptFacts): PromptPolicy;
 
 阶段context保留适用的现有业务字段，消息／任务／owner全文替换成roles引用。narrative保留from/at/background/state/events/school；personal保留at/background/state/experiences/events/school及冻结资格；memory保留at/background/experiences/arrangementsAndIntent/school及来源说明；maintenance保留kind/cutoff和预计算候选。environment把原`EnvironmentStepInput.context`内资料投影到新context，并保留stage/batchId/at，不把整份原input再套一层重复context；相应提示字段路径同步。sticker保留图片和专用描述资料。
 
-## 3. 对话段数据与配置
+## 3. 对话段数据与配置（版本1交付基线）
+
+本节索引为旧混合段。新增普通索引及版本2运行门禁见§13.2；配置§3.2继续有效。
 
 ### 3.1 持久化字段
 
@@ -90,7 +94,9 @@ buildPromptPolicy(stage: PromptStage, facts: PromptFacts): PromptPolicy;
 
 旧值30不换算成段数。未提供新值时明确使用4／15；显式新值优先。示例、本地配置和测试夹具同步，其他可选预算字段仍默认null。不叠加30条裁剪，不悄悄激活历史预算。
 
-## 4. 计时、事务与恢复
+## 4. 计时、事务与恢复（版本1交付／旧在途兼容）
+
+本节记录旧行为；版本2的普通计时、阶段排序、活动完整上下文和保护范围分别由§13.3～13.7替代。版本1已冻结轮的权限及输出恢复仍保留，不重新选用户消息或改代写授权。
 
 ### 4.1 分段规则
 
@@ -145,7 +151,7 @@ buildPromptPolicy(stage: PromptStage, facts: PromptFacts): PromptPolicy;
 
 资料池包括messages、tasks、owners及阶段本人网页材料；消息用原ID，任务用原ID，owner用类型＋ID＋revision/stateVersion确认身份，网页用materialId。同ID不同版本不合并：Host保留版本映射，模型用不透明`ref`区分，返回业务ID仍经过原任务校验；查到新版本不静默覆盖已展示的旧认识。
 
-`roles`固定为适用子集：`recentIds/visibleIds/reconsiderIds`、`dueTaskIds/pendingTaskIds`、`detailRefs/shortRefs/longRefs/learnedRefs`、`currentSourceIds`、`sharedPublicOutgoingIds`、`selfReadSources`。不适用角色不创建假来源。相同资料有多个角色时正文仍一份。
+`roles`固定为适用子集：`recentIds/visibleIds/reconsiderIds`、`currentActivityMessageIds`、`dueTaskIds/pendingTaskIds`、`detailRefs/shortRefs/longRefs/learnedRefs`、`currentSourceIds`、`sharedPublicOutgoingIds`、`selfReadSources`。`recentIds`在版本2仅指普通聊天；活动用途与来源资格见§13.5～13.6。不适用角色不创建假来源。相同资料有多个角色时正文仍一份。
 
 投影的输入`StageInputSnapshot`按stage形成判别联合，直接消费当前app／organize／maintenance已有资料；`PromptStage`覆盖方案全部任务，审核用`memory_audit`区分提示，但连接名称仍为`memory_consolidation`。内部快照不是HTTP序列化对象。
 
@@ -179,6 +185,8 @@ detail的content与value确定相同时只给value；long.content确定等于eve
 网页所有可用正文每次请求各一份，`webResults`改为materialIds及原计数、失败、请求／取得页数、“结果不足”、停止原因。续请求不能只发新材料。本人网页输入和公共网页集合重叠也在最终HTTP层按materialId去重。
 
 lookup返回新资料合并到本次模型池；应用侧仍在原路径追加可写／唤醒ID。相同ID＋版本去重，不同版本保持区别。旧checkpoint内完整materials不直接再次序列化。修补保留待修响应和错误，不能为追求正文出现次数删掉原响应中必要文字；“正文一份”验收针对资料池，待修响应原样证据单独标识。
+
+lookup业务context的确定去重见§13.8：只对白名单内完全相同的块作引用，不能整体丢掉同名字段或新增版本；不对不同ID消息做全局文本去重。
 
 图片入口同步适配新视图：Transport从stage context取得imageDataUrl，生成现有image_url内容块，并在HTTP文本的只读副本中移除data URL；不能因原检测只找input顶层字段而丢图片，也不把base64同时再发进JSON。旧图片工具输入沿兼容路径处理；日志只记图片数量，不记data URL。
 
@@ -231,7 +239,7 @@ lookup返回新资料合并到本次模型池；应用侧仍在原路径追加�
 
 保持原未完成轮、已确认输出及显式resume，不自动恢复或减载。模拟接口超限验证上述状态；另验证后处理失败时已发剧情仍保留。环境步骤的独立retry制度和维护后台隔离不改成前台一律暂停。
 
-## 9. 升级与旧恢复数据
+## 9. 升级与旧恢复数据（版本1基线；本次升级见§13.9）
 
 新库直接初始化dialogue版本1。旧库启动只检查版本，缺失时要求显式升级，不由Storage构造器偷偷回建。
 
@@ -312,4 +320,147 @@ interface SchoolWeekTextResult {
 | §3.2 硬失败／历史降级 | 收窄后采纳，§4.3／任务3按影响范围分blockingIssues/historicalWarnings；不按记录类别跳过未知的近期、未读、复议或在途消息。正常原子事务回滚不造成已提交孤立消息 |
 | §3.3 自动关闭措辞 | 采纳，§4.3明确closeDue／releaseReply保留，不新增QQ操作命令；停服升级CLI仍按计划提供 |
 
-上述内容已成为本文及执行计划的一部分，没有新增待用户决定项。该句描述整合审阅当时状态。现已完成任务1～12，代码／测试／停服迁移和隔离模型证据见[实施日志](PROMPT_CONTEXT_OPTIMIZATION_V0.1_IMPLEMENTATION_LOG_20261008.md)及[验收记录](PROMPT_CONTEXT_OPTIMIZATION_V0.1_DELIVERY_REVIEW_20261008.md)；正式服务仍未启动。
+上述内容已成为本文及执行计划的一部分，没有新增待用户决定项。该句描述整合审阅当时状态。任务1～12的历史代码／测试／停服迁移和隔离模型证据见[实施日志](PROMPT_CONTEXT_OPTIMIZATION_V0.1_IMPLEMENTATION_LOG_20261008.md)及[验收记录](PROMPT_CONTEXT_OPTIMIZATION_V0.1_DELIVERY_REVIEW_20261008.md)；任务13～20的证据必须另行记录，不能引用旧结果冒充本次通过。正式服务仍未启动。
+
+## 13. 本次补充实施合同：普通四段与活动工作上下文
+
+### 13.1 归属由程序确定
+
+| 内容 | 普通4段 | 活动中 | 活动结束后的普通任务 |
+| --- | --- | --- | --- |
+| 非活动中的双方真实聊天、普通用户动作输入、实际确认的主动联系 | 计入 | 普通窗口仍可提供 | 普通窗口及相关记忆 |
+| 活动期间双方聊天，包括与活动无关的题外话 | 不计入 | 本场完整已授权原文 | 相关记忆；未读／复议另按直接输入处理 |
+| 活动中的用户动作、角色动作、公开旁白／代写、公开开始与结束项 | 不计入 | 本场完整已授权原文及进度／outline | 相关记忆 |
+| 自主生活的未公开经历 | 不计入 | 本轮职责所需经历／状态 | 相关记忆 |
+| 控制【推进】、系统提示／报错、后台作业 | 不计入 | 必要控制状态 | 不作为聊天原文 |
+
+活动归属取现有入站路由的`sharedActivityId`、冻结`turn.sharedMeta`以及已确认的公开start/end变更，不根据内容是否“像活动”或是否带【】让模型判定。活动中聊“我妈刚打电话来”也属活动，不刷新普通锚点；有记忆价值可正常提取。
+
+活动开始前的预约／邀请仍属普通聊天；已确认的公开开场及其后按活动路由接纳的内容属活动。结束项仍属活动，结束后的新输入属普通。生成期间新到达消息沿当时接纳／转移规则；未选择消息不能加入本轮冻结上下文。现有结束转移未读消息的批次路由可改变，但**既有活动归属不因转入普通待处理批次而被清空**。后续补读仍可成为直接输入，不重新归入普通历史。
+
+### 13.2 独立索引、冻结选择与接口
+
+新增`chat_episodes`，只保存普通段的轻量索引，结构沿`DialogueEpisode`，类型名`ChatEpisode`。**不用旧混合段删掉活动正文来冒充普通段。** 消息正文仍在原messages，旧`dialogue_episodes/dialogue_activity_links`保留历史及旧轮恢复，不删除、合并或改写旧段ID。
+
+| 字段 | 目标合同 |
+| --- | --- |
+| `Runtime.dialogueContextVersion` | 扩为`1\|2\|null`；新库初始化2，现有1库须显式升级；2指普通独立窗口，不是模型DTO版本 |
+| `Runtime.activeChatEpisodeId` | 新增`string\|null`；与旧`activeDialogueEpisodeId`分开，不由活动link保持 |
+| `Message.chatEpisodeId` | 新增`string\|null`可选兼容字段；现代普通消息必须是有效普通段ID，活动消息明确为null且有可靠活动归属 |
+| `TurnRecord.dialogueWindowVersion` | 新轮写2；旧缺失视为1，恢复不静默换窗口或重选已冻结输入 |
+| `TurnRecord.chatBinding` | 新增`ChatTurnBinding={episodeId:string\|null,holdReply:boolean}`；只有普通回复可保持普通段；活动轮可合法`null/false` |
+| `TurnRecord.activityContext` | 可选`ActivityContextSelection={activityId:string,at:string,messageIds:string[]}`；本轮第一次生成前持久化选择身份，恢复使用同一选择 |
+| `ChatRecent` | `{episodeIds:string[],messages:Message[]}`；阶段授权后的普通窗口 |
+| `ModelRoles.currentActivityMessageIds` | 新增可选`string[]`；只表示当前活动工作原文，不自动具有新来源资格 |
+
+升级计划同时保存普通索引元数据`chat_index_metadata={id:'chat-index',idleMinutes:number}`，用于报告采用的参数及识别参数变化；不保存密钥／背景，不把元数据写成每次启动自动回建授权。`DialogueStore.chatEpisodes/chatEpisode/saveChatEpisode`只访问新表；旧表访问接口不改名以维持版本1恢复。
+
+新模块`src/dialogue/chat-episodes.ts`、`activity-context.ts`分别负责普通生命周期、活动原文选择。旧`DialogueEpisodes`保留版本1兼容；`Dependencies.chat`接入新服务，生产检索在版本2消费ChatRecent；旧轮显式沿版本1视图恢复。`StageModelInput.contextVersion`继续1，资料池结构不变，不把窗口版本误当学校合同／网页checkpoint版本。
+
+固定接口（写方法仍由调用者持有事务）：
+
+```ts
+ChatEpisodes.acceptMessage(message: Message): string | null;
+ChatEpisodes.bindTurn(turn: TurnRecord): ChatTurnBinding;
+ChatEpisodes.confirmOutput(turn: TurnRecord, message: Message): string | null;
+ChatEpisodes.releaseReply(turnId: string, at: string): void;
+ChatEpisodes.closeDue(at: string): void;
+ChatEpisodes.nextDeadline(at: string): string | null;
+ChatEpisodes.recent(phase: string, at: string, count: number,
+  visibleIds?: string[]): ChatRecent;
+selectActivityContext(storage: Storage, turn: TurnRecord): ActivityContextSelection | null;
+activityContextMessages(storage: Storage, selection: ActivityContextSelection,
+  stage: PromptStage, visibleIds: string[]): Message[];
+checkWindowConsistency(storage: Storage,
+  options: { idleMinutes: number; recentSegments: number }): WindowConsistencyReport;
+```
+
+`WindowConsistencyReport`固定字段为`version:1|2|null`、`ordinaryAssociationErrors:string[]`（含指针问题）、`activityErrors:string[]`、`legacyInflightErrors:string[]`、`blockingIssues:string[]`、`historicalWarnings:string[]`、`protectedMessageIds:string[]`；默认只输出身份与原因。`selectActivityContext`是只读选择，不自行保存turn；调用者在保存轮的事务内保存选择。没有当前活动返回null，不能从“上次活动”自动取得全文。
+
+### 13.3 普通计时与窗口排序
+
+仅普通真实入站／确认出站更新普通锚点。活动开始、期间任意消息、结束、无声自主生活和基础提取均不刷新、不保持普通段，也不在结束后加15分钟。与普通回复有关的生成／发送保持仍有效，合法不回复或最终确认完成释放；发送失败／暂停保留，显式resume继续，不能自动重试或拆开冻结分段回复。
+
+例：20:00最后普通消息，20:05活动开始，20:40结束。普通段逻辑关闭时间是20:15；20:41普通消息创建新段。**20:15关闭的段仍是普通历史候选，关闭不等于出窗**，仅在更新的合资格普通段超过4个时退出。若活动很短、结束后新普通消息仍在旧普通锚点15分钟内，则可延续旧段；不是每次活动结束都强制另开。
+
+Host单timer加入`chat.nextDeadline`；到期只关索引，不调用模型。活动仍运行时也可关闭普通段；仍被普通回复保持的到期段不排零延时循环。
+
+选择顺序固定：先按普通归属排除活动→按原阶段权限过滤→去掉没有可见普通正文的段→按**该阶段可见普通消息的最近交互时间**、段openedAt、ID字面序排序取末4→旧到新输出完整段。排序值只存在视图，不覆盖持久化lastInteractionAt，不改消息时间／seenTurnId。只有不可见输入的当前段不挤占主叙事历史名额；混合段也不能被不可见的新内容抬高排名。
+
+### 13.4 原子写入与旧轮恢复
+
+| 入口 | 版本2写入规则 |
+| --- | --- |
+| 接纳入站 | 去重后按已确定路由写message＋活动归属或chatEpisodeId＋普通锚点／Runtime；同事务回滚 |
+| 保存新轮 | 写windowVersion=2、chatBinding及activityContext；绑定只取本轮已选普通输入／普通回复，活动不取旧link的episodeId |
+| 公开开场／结束确认 | 保持原共享确认事务；记录活动身份，活动正文chatEpisodeId=null；不更新普通锚点。开场确认时释放已转为纯活动输出的普通回复保持，不能让邀请轮的旧普通绑定继续保持整场活动 |
+| 确认出站 | outbox确认、outgoing及普通绑定／锚点或活动归属同事务；活动返回null时不能因旧`message.dialogueEpisodeId`条件漏掉起止处理 |
+| 输入转入活动 | 只调整现有明确转移的输入；移除其普通索引资格，同事务重算受影响普通段锚点／指针；无普通正文的段删除轻量索引，不删消息，不能残留空候选 |
+| 活动结束转入待处理批次 | 保留原活动身份与chatEpisodeId=null；本轮首次可见／复议输入仍明确供模型消费 |
+| 最后发送／合法无输出 | 释放普通chatBinding；仅剩后处理不保持，实际发送失败保留 |
+
+版本1未完成轮保留旧dialogueBinding、checkpoint、policy、已确认输出及选择身份。升级时可基于可靠普通输入／输出建立独立chatBinding供新普通索引恢复，旧活动保持不映射为普通保持。旧轮续发仍完成原版本1恢复，同时在同一确认事务记录新普通索引或活动归属；不能用新窗口重新生成已确认输出。无法可靠映射的活跃／在途情况拒绝升级，报告具体身份。版本2新轮不再为所有消息写旧混合段，新一致性检查也不能拿旧“每条消息都有dialogueEpisodeId”的条件误拒绝它们。
+
+### 13.5 活动完整工作上下文
+
+活动轮第一次生成前，从同activityId的已持久化原文及本轮已选输入确定`activityContext`；不得把此前另一场活动、未来到达的新输入、未确认草稿或内部experiences伪装成公开原文。各阶段从固定ID集合按现有授权取可见正文，补查／修补／恢复沿用选择，不重新扩大权限。
+
+shared主叙事、共同个人导演及其表达使用本场完整已授权原文，不限轮数或字符数、不挤普通4段；同时保留当前progress、outline及lastPublicNode等不同语义字段。消息正文只在`resources.messages`出现一次，`currentActivityMessageIds/visibleIds/reconsiderIds/sharedPublicOutgoingIds`允许多标签共指同ID。普通`recentIds`不得夹入活动。世界／学校阶段不因新角色标签获得私人聊天；普通catch-up主叙事仍遵守未读私聊门禁。
+
+本轮确认的新公开收尾／输出可按原路径供表达／基础提取使用，与冻结的历史选择分开标明；不重新抓取生成期间其他输入。即使应用的下一状态已退出shared，**本轮收尾处理所需活动资料继续保留**。下一次普通聊天任务不再自动填整场activityContext；跨结束尚未读到的消息或延期复议仍按本轮直接用途进入，不把整场历史一起重新开放。
+
+### 13.6 活动记忆与召回
+
+继续每轮基础提取，不等待活动结束才记录。模型可把一场活动拆成多条有来源的短期记忆，例如见面／游玩事件、值得记住的细节、情绪反应、结尾约定；不是强制一轮一条，也不强制一场一条总摘要。结束轮正常提取收尾，不额外新增活动总结LLM阶段。
+
+历史活动原文仅提供理解上下文，不能整体追加到`currentSourceIds`或可新增／唤醒集合。新来源仍是本轮经历、首次可见输入、实际确认outgoing和允许的本人网页来源；历史／旧复议／outline不冒充新来源。基础提取失败沿原后处理恢复，不能跳过失败轮直接宣称整场记忆已完成。
+
+活动结束后与其他记忆共用`MemoryRetrieval`相关性、权限、词法／兼容embedding、版本和唤醒规则。没有“活动结束自动alwaysInclude”、没有全旧活动原文检索或常驻全文。活动内真实获知的手机等事实可按既有detail合同更新，不因原文退出普通窗口而禁止记住。短期7天／长期90天／容量100、1000、500及归档先真实重谈恢复后才可晋升保持不变。
+
+### 13.7 一致性保护范围
+
+版本2启动／恢复先检查版本与关联，普通窗口和活动资料不能互相替代。保护范围取**各实际前台阶段可见普通窗口的并集**、当前活动授权原文、未读输入、待复议消息、未完成轮／待发送项及当前合法来源／记忆来源引用；使用实际配置段数，不固定写死4。已关闭段也可能仍在窗口内。
+
+缺归属的消息不能先过滤掉，再以“没有选中”证明不影响。历史警告必须依据可靠身份、已完成状态和每个阶段足够数量的更新合资格普通段，证明它不可能进入当前窗口，且未被上述集合引用；候选不足4或证据不够时按阻挡项。活动归属未知而可能属于当前活动也阻挡。版本2事务产生的新消息缺必要关联是错误，不走历史豁免。
+
+不以全库最新4个混合段cutoff、固定天数或迁移时间替代证明。保留原记录，不自动把孤立消息并入最近段，不重叠合并，不增加历史修复后台任务。
+
+### 13.8 已接受的交付修复
+
+1. **lookup业务块**：在`buildCompletionEnvelope`内对白名单`school/detailHistory`做只读确定去重。完全相同的块保留input.context版本，lookup.context移除该副本并在`lookupResult.contextRefs`记录对应`input.context.<key>`路径；结构比较仅忽略对象键顺序，不忽略数组次序、实体身份／版本或字段差异。不同学校已知快照、新detail版本或补充内容完整提供。其他字段不因同名自动删除；以后扩白名单须有合同和测试。Host原lookup/checkpoint不改。不同消息ID即使正文相同仍保留；修补原响应独立保留。
+2. **v0周计划输入**：`buildEnvironmentView`明确展开旧冻结context，实际模型路径为`input.context.sourceItems`等，而非`input.context.context.sourceItems`；保留modelContractVersion=0、原Host快照及checkpoint，旧ready直接提交。
+3. **v0程序冲突**：新解析结果的模型weekNotes与程序input.conflicts取确定字符串并集，空数组不能擦除程序冲突；不重解析旧ready、不通过回填改变历史通知。v1继续保留程序`SchoolWeek.conflictNotes`；无通知时用户B选择不变。
+4. **保持／失败回归**：发送失败、暂停超过15分钟、显式resume继续同普通绑定；维护及环境失败不设置前台lastFailure；通知含阶段、无正文／key的现有断言写入准确映射，不仅对齐名字。
+5. **验收统计**：将仅检查消息ID唯一的`uniqueMessageBodies`改为准确名称`uniqueMessageIds`，另用受控唯一标记验证整份HTTP中的同身份副本；同一Host夹具才可比较前后体量。字符数不作预算、不换算未经核实token／费用。
+
+不修复已撤回的“策略重复／续调用重算业务事实”，不额外增加自动冲突通知、未证实的HTTP状态硬名单或无证据的全表扫描重构。
+
+### 13.9 显式升级与参数
+
+延续`dialogue:migrate`入口，扩展`--target-version 1|2`，本次默认目标2；check报告当前／目标版本、采用的idleMinutes／配置来源、普通／活动消息及段计数、模糊归属、在途映射与canApply。`--config <path>`只读取并归一化所需公开配置项，不为读索引要求加载密钥／模型连接；默认取项目实际配置，未设置值才15。显式`--idle-minutes <value>`优先并在报告显示；check与apply均向同一计划函数传相同参数，不能再从state猜配置，也不修改运行配置。
+
+新增`src/deployment/chat-upgrade.ts`生成目标2计划，由原upgrade入口分派。普通历史只对可确定非活动消息按真实时间和已确认发送划段，不跨活动延长空闲。可靠活动身份优先消息原字段，再核对冻结turn／公开确认；不能凭【】内容或把所有活动跨度内消息一律当活动回填。旧含糊跨度保存证据，不冒充精确起止；影响窗口、当前活动或在途的含糊归属必须阻挡。
+
+从版本1升级保留旧混合索引和旧绑定，新普通表及chatEpisodeId独立建立；尚未迁移库可通过同一检查制定先1后2的确定计划，不执行隐式启动迁移。目标2已完成的库再次apply幂等；不能为了修复旧默认15分钟参数，无条件重做已正确升级库。兼容性签名记录采用的分段参数，参数变化需显式报告，不能再次apply静默回建。
+
+正式apply依旧要求停服、DB/WAL/SHM备份，事务内复核并提交；不改消息ID、正文、receivedAt、seenTurnId、记忆及已确认outbox。SQLite只读check承诺不修改业务数据、不建表／迁移／创建业务备份，不承诺WAL读取绝无旁文件变化。当前仅准备文档，正式库是否有学校running/ready步骤须实施时实际检查，不能用此前故事在途为0推断。
+
+## 14. REVIEW22／23整合与实施入口
+
+| 意见 | 最终处理 | 待实施任务 |
+| --- | --- | --- |
+| REVIEW22 §5.1 参数来自错误位置 | 采纳；check/apply同参数、实际配置／报告 | 15 |
+| §5.2 不可见消息影响窗口排序 | 收窄；保留真实锚点，按阶段可见普通消息排序 | 14、17 |
+| §5.3 历史警告保护范围不足 | 采纳；实际窗口／当前活动／来源并集，未知影响阻挡 | 19 |
+| §5.4 lookup业务块重复 | 采纳；明确白名单及完全相等引用，不删新版本 | 13 |
+| §5.5 失败即释放保持 | 撤回；保留暂停与保持，新增恢复回归 | 16 |
+| §5.6 策略重复／重算 | 撤回；原selectedTask链已正确，不重复修复 | 20复核已有断言 |
+| §5.7、§5.8 v0路径及冲突 | 采纳；只改投影和新解析，ready不重跑 | 13 |
+| §5.10 测试映射／缺失组合 | 现有安全通知断言映射；补后台失败与v1取消／时区／历史提醒 | 13、20 |
+| 字符数跨夹具对照 | 撤回不成立比较；统计身份及同夹具真实载荷 | 20 |
+| REVIEW23 §4.1 独立普通索引 | 采纳；不能仅过滤旧活动正文 | 14～16 |
+| §4.2 活动不保持／刷新普通段 | 采纳；校正“关闭即永久出窗”，关闭仍参与最新4段选择 | 14、16 |
+| §4.3 活动期间题外话 | 明确整体活动归属，由程序路由，不作语义拆段 | 16、18 |
+| §4.4 currentActivityMessageIds | 采纳；同池多用途，收尾本轮保留、后续普通不再带全文 | 17、18 |
+
+没有新增待用户决定的问题，也不需要下一份rebuttal。本次仅完成细化／计划整合，代码、数据库、模型请求与服务均未在本轮改变。开始实施时顺序执行[执行计划任务13～20](PROMPT_CONTEXT_OPTIMIZATION_V0.1_EXECUTION_PLAN_20261008.md)，过程续写既有实施日志，新增证据与任务1～12历史区分。交付再次审核这两份主文档、增量日志及增量验收记录即可。
