@@ -17,13 +17,13 @@
 
 | 入口 | 实际证据 |
 | --- | --- |
-| 全量 | [主目录日志](logs/main-full-suite.log)：137/776，87.86秒；[前次隔离日志](../../../archive/records/current-audit-improvements-20261009/logs/full-suite-final.log)：136/761 |
+| 全量 | [主目录日志](logs/main-full-suite.log)：137/776，87.86秒；[前次隔离日志](logs/full-suite-final.log)：136/761 |
 | 类型／构建 | [类型](logs/main-types.log)、[构建](logs/main-build.log) |
 | 演示／插件 | [演示](logs/main-demo.log)、[双场景smoke](logs/main-smoke.log) |
 | 普通窗口／清理 | [benchmark.json](benchmark.json)；check-current-audit-workload.cjs，6样本；[最终输出](logs/review-fix-workload.log) |
 | 环境／学校 | [工作量JSON](scheduling-query-results.json)；check-scheduling-queries.cjs，32样本；[最终输出](logs/review-fix-scheduling.log) |
-| 原交付时文档检查 | [原检查快照](../../../archive/records/current-audit-improvements-20261009/document-link-check.json)：当时22文档209本地链接；本次整理的检查另见[整理记录](../document-organization-20261009/README.md) |
-| 各任务RED/GREEN／兼容 | [过程](IMPLEMENTATION_LOG.md)及[归档原始日志](../../../archive/records/current-audit-improvements-20261009/logs/)；原基线成本红测保留 |
+| 原交付时文档检查 | [原检查快照](document-link-check.json)：当时22文档209本地链接；本次整理的检查另见[整理记录](../../../v0.5/records/document-organization-20261009/README.md) |
+| 各任务RED/GREEN／兼容 | [过程](IMPLEMENTATION_LOG.md)及[归档原始日志](logs/)；原基线成本红测保留 |
 
 固定4段各41条消息，在H=1000/10000/50000历史下，每次解码164条完整消息＋4段，rank候选4行，写入0；原生EXPLAIN确认排名不从messages主表取data列。SQL仍扫描合格历史索引标量；热样本中位数约5.0/41.2/278.2ms只是此次观测，不是保证或验收阈值。
 

@@ -1,0 +1,55 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/environment-async-tools.test.ts
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/environment-async-e/HDSI-remake
+
+ ❯ tests/environment-async-tools.test.ts (3 tests | 2 failed) 38ms
+   × confirmed web reads and failed operations survive stale generations without fresh quota 20ms
+   × interrupted web operation resumes same ID and confirms a page only once 6ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/environment-async-tools.test.ts > confirmed web reads and failed operations survive stale generations without fresh quota
+AssertionError: expected Error: cannot start a transaction within … { …(3) } to be undefined
+
+- Expected:
+undefined
+
++ Received:
+Error {
+  "message": "cannot start a transaction within a transaction",
+  "code": "ERR_SQLITE_ERROR",
+  "errcode": 1,
+  "errstr": "SQL logic error",
+}
+
+ ❯ tests/environment-async-tools.test.ts:17:24
+     15|  dep.generateEnvironment=(input,options)=>generateEnvironmentStep(dep,…
+     16|  const p=new EnvironmentPreparation(dep);p.startOne(step.id,NOW);await…
+     17|  expect(p.takeError()).toBeUndefined();expect(d.environmentStore.step(…
+       |                        ^
+     18|  expect(d.web.store.snapshot(ref.runId).counters.successReads).toBe(1);
+     19|  d.config.worldSetting+=' 更新';expect(p.applyReady(step.id,NOW)).toBe('…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/environment-async-tools.test.ts > interrupted web operation resumes same ID and confirms a page only once
+AssertionError: expected null to be truthy
+
+- Expected:
+true
+
++ Received:
+null
+
+ ❯ tests/environment-async-tools.test.ts:29:33
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 1 passed (3)
+   Start at  17:44:43
+   Duration  562ms (transform 61%, import 30%, tests 9%, worker 1%)
+

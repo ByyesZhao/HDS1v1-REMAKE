@@ -1,0 +1,90 @@
+{
+  "synthetic": true,
+  "temporaryDirectory": "C:\\Users\\<user>\\AppData\\Local\\Temp\\hdsi-env-cli-p7Y5b1",
+  "records": [
+    {
+      "args": [
+        "--check"
+      ],
+      "status": 0,
+      "report": {
+        "version": 1,
+        "targetVersion": 2,
+        "legacyUnfinished": 0,
+        "unstarted": 4,
+        "asyncUnfinished": 0,
+        "canUpgrade": true,
+        "reasons": [],
+        "backupPaths": []
+      }
+    },
+    {
+      "args": [
+        "--apply",
+        "--stopped",
+        "--backup-dir",
+        "C:\\Users\\<user>\\AppData\\Local\\Temp\\hdsi-env-cli-p7Y5b1\\backups"
+      ],
+      "status": 0,
+      "report": {
+        "version": 2,
+        "targetVersion": 2,
+        "legacyUnfinished": 0,
+        "unstarted": 4,
+        "asyncUnfinished": 4,
+        "canUpgrade": true,
+        "reasons": [],
+        "backupPaths": [
+          "C:\\Users\\<user>\\AppData\\Local\\Temp\\hdsi-env-cli-p7Y5b1\\backups\\environment-async-bf320b9c-d29f-4914-807e-4871b1a41995\\synthetic.sqlite",
+          "C:\\Users\\<user>\\AppData\\Local\\Temp\\hdsi-env-cli-p7Y5b1\\backups\\environment-async-bf320b9c-d29f-4914-807e-4871b1a41995\\synthetic.sqlite-wal",
+          "C:\\Users\\<user>\\AppData\\Local\\Temp\\hdsi-env-cli-p7Y5b1\\backups\\environment-async-bf320b9c-d29f-4914-807e-4871b1a41995\\synthetic.sqlite-shm"
+        ]
+      }
+    },
+    {
+      "args": [
+        "--check",
+        "--target-version",
+        "1"
+      ],
+      "status": 1,
+      "report": {
+        "version": 2,
+        "targetVersion": 1,
+        "legacyUnfinished": 0,
+        "unstarted": 4,
+        "asyncUnfinished": 4,
+        "canUpgrade": false,
+        "reasons": [
+          "nonterminal asynchronous steps must complete or be superseded before downgrade"
+        ],
+        "backupPaths": []
+      }
+    },
+    {
+      "args": [
+        "--apply",
+        "--stopped",
+        "--backup-dir",
+        "C:\\Users\\<user>\\AppData\\Local\\Temp\\hdsi-env-cli-p7Y5b1\\backups",
+        "--target-version",
+        "1"
+      ],
+      "status": 0,
+      "report": {
+        "version": 1,
+        "targetVersion": 1,
+        "legacyUnfinished": 0,
+        "unstarted": 0,
+        "asyncUnfinished": 0,
+        "canUpgrade": true,
+        "reasons": [],
+        "backupPaths": [
+          "C:\\Users\\<user>\\AppData\\Local\\Temp\\hdsi-env-cli-p7Y5b1\\backups\\environment-async-6290e043-a14a-4f40-8161-637658111da4\\synthetic.sqlite",
+          "C:\\Users\\<user>\\AppData\\Local\\Temp\\hdsi-env-cli-p7Y5b1\\backups\\environment-async-6290e043-a14a-4f40-8161-637658111da4\\synthetic.sqlite-wal",
+          "C:\\Users\\<user>\\AppData\\Local\\Temp\\hdsi-env-cli-p7Y5b1\\backups\\environment-async-6290e043-a14a-4f40-8161-637658111da4\\synthetic.sqlite-shm"
+        ]
+      }
+    }
+  ]
+}

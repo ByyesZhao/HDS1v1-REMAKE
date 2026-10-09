@@ -52,4 +52,4 @@ RED3规模因缺实例Set失败；增加四类Set，首次内容/顺序和对象
 
 ## 2026-10-09资料归类补充
 
-本过程中的RED/GREEN原执行路径是当时路径；旧过程日志和任务簿现在收于[归档记录](../../../archive/records/current-audit-improvements-20261009/)。本目录只保留最新最终日志及工作量输出。ASTRA最终独立复核已支持关闭，见[报告](../../reviews/post-t1-t9-20261009/REVIEW.md)。目录整理未重新执行上述业务测试，详见[整理清单](../document-organization-20261009/README.md)。
+本过程中的RED/GREEN原执行路径是当时路径；旧过程日志和任务簿现在收于[归档记录](./)。本目录只保留最新最终日志及工作量输出。ASTRA最终独立复核已支持关闭，见[报告](../../reviews/post-t1-t9-20261009/REVIEW.md)。目录整理未重新执行上述业务测试，详见[整理清单](../../../v0.5/records/document-organization-20261009/README.md)。

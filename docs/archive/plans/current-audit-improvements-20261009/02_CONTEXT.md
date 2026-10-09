@@ -1,6 +1,6 @@
 # 上下文读取与资料池实施计划（T3／T4／T8）
 
-实施状态补充：T1～T9现已实施，实际结果见[交付](../../../v0.5/records/current-audit-improvements-20261009/DELIVERY.md)。下文复选项与“待实施”措辞保留原方案合同及当时状态，不代替完成证据；E1～E5独立后续尚未实施。
+实施状态补充：T1～T9现已实施，实际结果见[交付](../../records/current-audit-improvements-20261009/DELIVERY.md)。下文复选项与“待实施”措辞保留原方案合同及当时状态，不代替完成证据；E1～E5独立后续尚未实施。
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development or superpowers:executing-plans to implement this plan task-by-task. 以下复选项均为待实施，不是已完成结果。
 

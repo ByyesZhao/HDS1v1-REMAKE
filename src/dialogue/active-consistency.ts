@@ -8,7 +8,7 @@ export type WindowOptions={idleMinutes:number;recentSegments:number};
 const checked=new WeakMap<Storage,WindowOptions>();
 const empty:ActiveWindowScope={touchedMessageIds:[],requiredMessageIds:[],sourceIds:[],touchedEpisodeIds:[]};
 export function windowOptions(storage:Storage):WindowOptions{return checked.get(storage)??{idleMinutes:storage.read('chat_index_metadata','chat-index')?.idleMinutes??15,recentSegments:4};}
-export function checkActiveWindowConsistency(storage:Storage,options:WindowOptions,scope:ActiveWindowScope):WindowConsistencyReport{
+export function checkActiveWindowConsistency(storage:Storage,options:WindowOptions,scope:ActiveWindowScope,metadataOnly=false):WindowConsistencyReport{
  const store=new DialogueStore(storage),inflight=storage.unfinishedTurns(),episodes=new Map(store.openChatEpisodes().map(e=>[e.id,e]));
  const messages=new Map<string,Message>(),required=new Set(scope.requiredMessageIds),sources=new Set(scope.sourceIds);
  const add=(rows:Message[])=>rows.forEach(m=>messages.set(m.id,m));
@@ -22,7 +22,7 @@ export function checkActiveWindowConsistency(storage:Storage,options:WindowOptio
  const result=storage.read('post_jobs',t.id)?.result;for(const change of [...result?.shortTermChanges??[],...result?.longTermChanges??[],...result?.detailChanges??[]])for(const id of change.sourceIds??[])sources.add(id);
  if(t.chatBinding?.episodeId){const e=store.chatEpisode(t.chatBinding.episodeId);if(e)episodes.set(e.id,e);}
  }
- add(storage.messagesByIds([...required,...sources,...scope.touchedMessageIds]));
+ add(metadataOnly?storage.messageMetadataByIds([...required,...sources,...scope.touchedMessageIds]):storage.messagesByIds([...required,...sources,...scope.touchedMessageIds]));
  for(const id of [...scope.touchedEpisodeIds,...[...messages.values()].flatMap(m=>m.chatEpisodeId?[m.chatEpisodeId]:[])])if(!episodes.has(id)){const e=store.chatEpisode(id);if(e)episodes.set(id,e);}
  const turns=new Map(inflight.map(t=>[t.id,t])),legacyIds=new Set<string>();
  for(const t of inflight)if(t.dialogueBinding?.episodeId&&store.episode(t.dialogueBinding.episodeId))legacyIds.add(t.dialogueBinding.episodeId);
@@ -45,4 +45,14 @@ export function assertRoutineWindow(storage:Storage,options:WindowOptions):void{
 export function assertMessageSources(storage:Storage,ids:readonly string[]):void{
  if(storage.runtime().dialogueContextVersion!==2||!ids.length)return;
  const actual=storage.messagesByIds(ids);if(actual.length)assertActiveWindow(storage,{sourceIds:actual.map(m=>m.id)});
+}
+
+// The same audit kernel checks provenance associations without loading historical bodies.
+export function captureMessageSourceValidity(storage:Storage,ids:readonly string[]):string[]{
+ if(storage.runtime().dialogueContextVersion!==2||!ids.length)return [];
+ const actual=storage.messageMetadataByIds(ids);if(!actual.length)return [];
+ const report=checkActiveWindowConsistency(storage,windowOptions(storage),{...empty,sourceIds:actual.map(m=>m.id)},true);
+ const bad=actual.filter(m=>report.blockingIssues.some(reason=>reason.includes('message '+m.id+':'))).map(m=>m.id);
+ const global=report.blockingIssues.some(reason=>!bad.some(id=>reason.includes('message '+id+':')));
+ return global?actual.map(m=>m.id):bad;
 }

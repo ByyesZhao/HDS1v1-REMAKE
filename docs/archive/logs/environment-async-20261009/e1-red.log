@@ -1,0 +1,27 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/environment-async-upgrade.test.ts
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/environment-async-e/HDSI-remake
+
+ ❯ tests/environment-async-upgrade.test.ts (0 test)
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/environment-async-upgrade.test.ts [ tests/environment-async-upgrade.test.ts ]
+Error: Cannot find module '../src/deployment/environment-async-upgrade' imported from C:/Users/<user>/.codex/worktrees/environment-async-e/HDSI-remake/tests/environment-async-upgrade.test.ts
+ ❯ tests/environment-async-upgrade.test.ts:6:1
+      4| import {join} from 'node:path';
+      5| import {Storage} from '../src/storage';
+      6| import {inspectEnvironmentAsyncUpgrade,upgradeEnvironmentAsync} from '…
+       | ^
+      7| import {ensureEnvironmentBatch} from '../src/environment/scheduler';
+      8| import {defaultConfig} from '../src/config';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  17:25:07
+   Duration  160ms (worker 92%, environment 8%)
+

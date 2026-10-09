@@ -4,7 +4,7 @@
 
 | 当前执行包 | 状态与用途 |
 | --- | --- |
-| [当前审核改进执行包](current-audit-improvements-20261009/README.md) | T1～T9已实施，见[交付](../../v0.5/records/current-audit-improvements-20261009/DELIVERY.md)；E1～E5仍为独立后续环境异步方案。原任务清单保留接口与验收合同，不当作实际完成证据 |
+| [当前审核改进执行包](current-audit-improvements-20261009/README.md) | T1～T9已实施，见[交付](../records/current-audit-improvements-20261009/DELIVERY.md)；E1～E5仍为独立后续环境异步方案。原任务清单保留接口与验收合同，不当作实际完成证据 |
 
 以下是**此前已完成**的计划，不是等待再次执行的开发清单：
 

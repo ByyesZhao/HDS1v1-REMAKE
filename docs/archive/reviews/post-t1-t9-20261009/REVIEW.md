@@ -14,7 +14,7 @@
 
 ## 1. 对照材料与方法
 
-对照[统一计划](../../../archive/plans/current-audit-improvements-20261009/README.md)及三个 T 阶段细化文件、[SOL 交付](../../records/current-audit-improvements-20261009/DELIVERY.md)、[实施过程](../../records/current-audit-improvements-20261009/IMPLEMENTATION_LOG.md)、[上一轮关闭记录](../../records/current-audit-improvements-20261009/REVIEW_CLOSURE.md)，直接检查提交差异及当前源码／测试。
+对照[统一计划](../../plans/current-audit-improvements-20261009/README.md)及三个 T 阶段细化文件、[SOL 交付](../../records/current-audit-improvements-20261009/DELIVERY.md)、[实施过程](../../records/current-audit-improvements-20261009/IMPLEMENTATION_LOG.md)、[上一轮关闭记录](../../records/current-audit-improvements-20261009/REVIEW_CLOSURE.md)，直接检查提交差异及当前源码／测试。
 
 记忆、上下文、调度查询分别作独立审阅；主审检查清理／回收工具、实施过程及整体验证。除重新运行现有验证，还增加未直接依赖新测试期望值的 SQL／旧选择器差分、真实中断恢复和组合场景探针。全部使用离线模型、内存 SQLite 或测试临时库，不读取私有配置或正式故事数据。
 
@@ -73,7 +73,7 @@ T1／T2 的现有测试有些断言未逐项复刻计划清单，本次针对截
 
 ## 6. 下一步交接
 
-可以从 `b8299b2` 开始，按[环境异步 E1～E5 方案](../../plans/environment-async/04_ENVIRONMENT_ASYNC.md)另开一个实施批次。T 阶段无需先增加产品修复任务。
+可以从 `b8299b2` 开始，按[环境异步 E1～E5 方案](../../plans/environment-async-20261009/04_ENVIRONMENT_ASYNC.md)另开一个实施批次。T 阶段无需先增加产品修复任务。
 
 优先落下 E1 的持久版本／旧任务兼容和 E2 的真正只读快照，再接准备槽／ready 串行提交。T5 元数据 API、T3 检索通道和本批回归可直接作为新基线；不要并发整个 runTurn，也不要在异步回调中提交故事。E 阶段仍需自己的在途输入、lookup 中断、累计网页额度、跨日／时区、科研依据变化、停止／重开验收，不能拿本次 776 项通过替代。
 

@@ -1,0 +1,45 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/environment-async-tools.test.ts
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/environment-async-e/HDSI-remake
+
+ ❯ tests/environment-async-tools.test.ts (3 tests | 2 failed) 47ms
+   × confirmed web reads and failed operations survive stale generations without fresh quota 24ms
+   × interrupted web operation resumes same ID and confirms a page only once 7ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/environment-async-tools.test.ts > confirmed web reads and failed operations survive stale generations without fresh quota
+AssertionError: expected +0 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/environment-async-tools.test.ts:17:64
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/environment-async-tools.test.ts > interrupted web operation resumes same ID and confirms a page only once
+AssertionError: expected null to be truthy
+
+- Expected:
+true
+
++ Received:
+null
+
+ ❯ tests/environment-async-tools.test.ts:28:33
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 1 passed (3)
+   Start at  17:44:15
+   Duration  591ms (transform 61%, import 28%, tests 10%, worker 1%)
+

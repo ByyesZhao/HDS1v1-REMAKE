@@ -1,0 +1,27 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/environment-async-boundaries.test.ts
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/environment-async-e/HDSI-remake
+
+ ❯ tests/environment-async-boundaries.test.ts (14 tests | 1 failed) 340ms
+   × pause at midnight after ready callback still supersedes old batch 7ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/environment-async-boundaries.test.ts > pause at midnight after ready callback still supersedes old batch
+AssertionError: expected 'active' to be 'superseded' // Object.is equality
+
+Expected: "superseded"
+Received: "active"
+
+ ❯ tests/environment-async-boundaries.test.ts:41:218
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 13 passed (14)
+   Start at  17:39:57
+   Duration  873ms (tests 44%, transform 38%, import 17%)
+

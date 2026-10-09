@@ -1,0 +1,29 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/environment-async-host.test.ts
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/environment-async-e/HDSI-remake
+
+ ❯ tests/environment-async-host.test.ts (1 test | 1 failed) 5010ms
+   × chat formally commits while environment HTTP is unresolved; ready waits for foreground boundary 5009ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/environment-async-host.test.ts > chat formally commits while environment HTTP is unresolved; ready waits for foreground boundary
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/environment-async-host.test.ts:9:1
+      7| import {ensureEnvironmentBatch} from '../src/environment/scheduler';
+      8| import {setImmediate} from 'node:timers/promises';
+      9| it('chat formally commits while environment HTTP is unresolved; ready …
+       | ^
+     10|  const base=setup(),web=new WebSearchService(new WebSearchStore(base.s…
+     11|  d.storage.set('runtime',{...d.storage.runtime(),environmentPlanningVe…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  17:31:58
+   Duration  5.61s (tests 91%, transform 6%, import 3%)
+

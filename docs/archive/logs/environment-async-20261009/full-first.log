@@ -1,0 +1,68 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 test
+npm notice run vitest run
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/environment-async-e/HDSI-remake
+
+ ❯ tests/scheduling-query-workload.test.ts (1 test | 1 failed) 17ms
+   × fixed active collections keep returned and decoded query rows independent of unrelated history 16ms
+ ❯ tests/environment-queries.test.ts (2 tests | 1 failed) 28ms
+   × metadata selection keeps frozen payloads and stage retry/ready barriers 24ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/environment-queries.test.ts > metadata selection keeps frozen payloads and stage retry/ready barriers
+AssertionError: expected [ 'attempt', 'batchId', 'id', …(7) ] to deeply equal [ 'batchId', 'id', 'retryAt', …(2) ]
+
+- Expected
++ Received
+
+  [
++   "attempt",
+    "batchId",
+    "id",
++   "preparationGeneration",
++   "preparationVersion",
+    "retryAt",
+    "stage",
++   "staleReason",
++   "startedAt",
+    "status",
+  ]
+
+ ❯ tests/environment-queries.test.ts:10:182
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/scheduling-query-workload.test.ts > fixed active collections keep returned and decoded query rows independent of unrelated history
+AssertionError: Expected values to be strictly equal:
+
+2 !== 1
+
+
+- Expected
++ Received
+
+- 1
++ 2
+
+ ❯ runProbes scripts/check-scheduling-queries.cjs:31:12
+ ❯ tests/scheduling-query-workload.test.ts:10:15
+      8| const {runProbes}=require('../scripts/check-scheduling-queries.cjs');
+      9| it('fixed active collections keep returned and decoded query rows inde…
+     10|  const result=await runProbes({Storage,EnvironmentStore,SchoolStore,ru…
+       |               ^
+     11| },20000);
+     12|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed | 142 passed (144)
+      Tests  2 failed | 798 passed (800)
+   Start at  17:46:29
+   Duration  88.41s (tests 79%, import 18%, transform 3%, worker 1%)
+
+    Isolate  144 workers spawned · ~93ms startup each (spawn + environment, per file)
+             at least ~13.30s faster with isolate: false — reuses workers across files instead of one per file
+

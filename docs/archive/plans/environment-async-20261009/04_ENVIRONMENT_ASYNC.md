@@ -1,6 +1,6 @@
 # E1～E5：环境异步准备与串行提交
 
-日期：2026-10-09。状态：**独立后续方案，未实施**。返回[任务入口](README.md)。前置：第一阶段 T1～T9 完成，尤其复用 T3／T4 的检索和 T5 的环境轻量查询；本篇不阻塞前一阶段交付。
+日期：2026-10-09。状态：**已实施，修复验收完成；正式库未升级**。返回[任务入口](README.md)。前置：第一阶段 T1～T9 完成，尤其复用 T3／T4 的检索和 T5 的环境轻量查询；本篇不阻塞前一阶段交付。
 
 ## 1. 目标与选择
 
@@ -187,38 +187,38 @@ Host 每次串行迭代依旧先处理恢复及现有 foreground／学校通知�
 
 ### E1：协议与兼容入口
 
-- [ ] 新建 `tests/environment-async-upgrade.test.ts`，先覆盖 version 1 中四种存量步骤及重复升级；确认当前代码缺少新协议而失败。补目标1降级：新非终态任务存在时只读检查拒绝；都已终态时备份、降级可由原version1检查器打开，业务行及nextEnvironmentAt不变。
-- [ ] 增加上述可选字段、runtime version 2、检查／升级脚本与 package script；更新生产入口版本检查、新库默认值以及相关状态／迁移测试。
-- [ ] 保留旧输入版本 0 的周合同及旧 ready 结果复用；不把 `modelContractVersion` 与 preparationVersion 混成同一字段。
-- [ ] 命令：`npx vitest run tests/environment-async-upgrade.test.ts tests/world-school-state.test.ts tests/world-school-upgrade.test.ts tests/school-week-contract-recovery.test.ts`。
+- [x] 新建 `tests/environment-async-upgrade.test.ts`，先覆盖 version 1 中四种存量步骤及重复升级；确认当前代码缺少新协议而失败。补目标1降级：新非终态任务存在时只读检查拒绝；都已终态时备份、降级可由原version1检查器打开，业务行及nextEnvironmentAt不变。
+- [x] 增加上述可选字段、runtime version 2、检查／升级脚本与 package script；更新生产入口版本检查、新库默认值以及相关状态／迁移测试。
+- [x] 保留旧输入版本 0 的周合同及旧 ready 结果复用；不把 `modelContractVersion` 与 preparationVersion 混成同一字段。
+- [x] 命令：`npx vitest run tests/environment-async-upgrade.test.ts tests/world-school-state.test.ts tests/world-school-upgrade.test.ts tests/school-week-contract-recovery.test.ts`。
 
 ### E2：冻结只读依据与解析／lookup 复用
 
-- [ ] 新建 `tests/environment-preparation-snapshot.test.ts`：冻结后修改实时计划，解析仍使用冻结版本；模型没有请求 lookup 时不调用在线检索，请求时所有候选和 recent 来自冻结状态。
-- [ ] 提取学校 parse／resolve 所需只读接口，提供 live 包装与 snapshot 实现；加入 `freezeEnvironmentRetrieval` 和共享排名内核，避免两套算法漂移。
-- [ ] 核对 empty school_week 仍能直接构造结果而不调用模型，业务字段齐全；冻结结果创建 ID 保持稳定。
-- [ ] 命令：`npx vitest run tests/environment-preparation-snapshot.test.ts tests/world-school-models.test.ts tests/world-school-review14-contracts.test.ts tests/school-week-text-contract.test.ts tests/environment-context-view.test.ts tests/memory-v3-retrieval.test.ts`。
+- [x] 新建 `tests/environment-preparation-snapshot.test.ts`：冻结后修改实时计划，解析仍使用冻结版本；模型没有请求 lookup 时不调用在线检索，请求时所有候选和 recent 来自冻结状态。
+- [x] 提取学校 parse／resolve 所需只读接口，提供 live 包装与 snapshot 实现；加入 `freezeEnvironmentRetrieval` 和共享排名内核，避免两套算法漂移。
+- [x] 核对 empty school_week 仍能直接构造结果而不调用模型，业务字段齐全；冻结结果创建 ID 保持稳定。
+- [x] 命令：`npx vitest run tests/environment-preparation-snapshot.test.ts tests/world-school-models.test.ts tests/world-school-review14-contracts.test.ts tests/school-week-text-contract.test.ts tests/environment-context-view.test.ts tests/memory-v3-retrieval.test.ts`。
 
 ### E3：准备槽、ready 与串行 Host
 
-- [ ] 新建 `tests/environment-async-host.test.ts`，使用手控 deferred Promise：环境未返回时，先让一条新聊天完成正式提交，然后再 resolve 环境；该顺序断言在旧实现上应失败。
-- [ ] 实现 preparation 类、信号传递、Host 择机准备／应用、scheduler 跳过 in-flight、完成唤醒和无忙循环 deadline；保留前台 busy／unfinished gate。
-- [ ] 同一批最多一个准备；上一步 pending／running／ready 时后一步不冻结；上一步 committed 后下一快照能读到其提交值。
-- [ ] 兼容直接 `runEnvironmentStep` 的离线调用：preparationVersion 0 保留原路径；preparationVersion 1 使用同一冻结／准备／应用原语组成串行包装，显式等待该准备然后应用，供单元测试使用。需要持久工具会话的新模式测试按第5节装配关闭provider的服务；产品 Host 的新模式不能绕回这个等待包装。
-- [ ] 命令：`npx vitest run tests/environment-async-host.test.ts tests/world-school-batch.test.ts tests/environment.test.ts tests/shared-v3-scheduler.test.ts tests/memory-idle-host.test.ts`。
+- [x] 新建 `tests/environment-async-host.test.ts`，使用手控 deferred Promise：环境未返回时，先让一条新聊天完成正式提交，然后再 resolve 环境；该顺序断言在旧实现上应失败。
+- [x] 实现 preparation 类、信号传递、Host 择机准备／应用、scheduler 跳过 in-flight、完成唤醒和无忙循环 deadline；保留前台 busy／unfinished gate。
+- [x] 同一批最多一个准备；上一步 pending／running／ready 时后一步不冻结；上一步 committed 后下一快照能读到其提交值。
+- [x] 兼容直接 `runEnvironmentStep` 的离线调用：preparationVersion 0 保留原路径；preparationVersion 1 使用同一冻结／准备／应用原语组成串行包装，显式等待该准备然后应用，供单元测试使用。需要持久工具会话的新模式测试按第5节装配关闭provider的服务；产品 Host 的新模式不能绕回这个等待包装。
+- [x] 命令：`npx vitest run tests/environment-async-host.test.ts tests/world-school-batch.test.ts tests/environment.test.ts tests/shared-v3-scheduler.test.ts tests/memory-idle-host.test.ts`。
 
 ### E4：变化、停止、重开与工具身份
 
-- [ ] 新建 `tests/environment-async-recovery.test.ts`，补下节验收矩阵；在真实文件临时库重开，不只测同一对象的 ready。
-- [ ] 实现业务 read basis、原子提交／stale、跨日及时取消、旧／新 preparation 分支、稳定网页身份与已用 lookup 请求刷新。
-- [ ] 校验 ready 应用失败后复用结果，未终态不压缩 checkpoint；stop 中断／晚到响应不能把 ready/committed/superseded 复活或回退。
-- [ ] 命令：`npx vitest run tests/environment-async-recovery.test.ts tests/world-school-review14-environment.test.ts tests/world-school-review14-calendar.test.ts tests/world-school-review14-time.test.ts tests/memory-maintenance-checkpoint.test.ts`。
+- [x] 新建 `tests/environment-async-recovery.test.ts`，补下节验收矩阵；在真实文件临时库重开，不只测同一对象的 ready。
+- [x] 实现业务 read basis、原子提交／stale、跨日及时取消、旧／新 preparation 分支、稳定网页身份与已用 lookup 请求刷新。
+- [x] 校验 ready 应用失败后复用结果，未终态不压缩 checkpoint；stop 中断／晚到响应不能把 ready/committed/superseded 复活或回退。
+- [x] 命令：`npx vitest run tests/environment-async-recovery.test.ts tests/world-school-review14-environment.test.ts tests/world-school-review14-calendar.test.ts tests/world-school-review14-time.test.ts tests/memory-maintenance-checkpoint.test.ts`。
 
 ### E5：工作量、响应顺序、文档与交付
 
-- [ ] 运行下表及统一计划的全套离线检查，分别保存冻结／等待／提交耗时、前台开始与完成时间及模型调用次数；不把 fake HTTP 延迟当真实供应商性能。
-- [ ] 更新导演、调度、恢复、网页、实现映射和根 README：新流程、显式升级、旧恢复例外、快照日期及 lookup 刷新语义；修改旧“环境请求必须等完”的测试，保留原串行模式的兼容断言。
-- [ ] 新建 `docs/v0.5/records/environment-async-20261009/` 交付／过程／日志；独立声明 E 阶段完成，不改写第一阶段交付的当时状态。
+- [x] 运行下表及统一计划的全套离线检查，分别保存冻结／等待／提交耗时、前台开始与完成时间及模型调用次数；不把 fake HTTP 延迟当真实供应商性能。
+- [x] 更新导演、调度、恢复、网页、实现映射和根 README：新流程、显式升级、旧恢复例外、快照日期及 lookup 刷新语义；修改旧“环境请求必须等完”的测试，保留原串行模式的兼容断言。
+- [x] 新建 `docs/v0.5/records/environment-async-20261009/` 交付／过程／日志；独立声明 E 阶段完成，不改写第一阶段交付的当时状态。
 
 ## 8. 必需验收矩阵
 

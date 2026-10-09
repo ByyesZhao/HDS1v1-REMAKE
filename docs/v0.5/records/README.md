@@ -4,8 +4,7 @@
 
 | 记录 | 状态 |
 | --- | --- |
-| [T1～T9交付](current-audit-improvements-20261009/DELIVERY.md)与[实施过程](current-audit-improvements-20261009/IMPLEMENTATION_LOG.md) | 已交付，源码5b5e068～7ae5bae，文档提交b8299b2；主目录137文件776项验证保留 |
-| [整分支复核关闭](current-audit-improvements-20261009/REVIEW_CLOSURE.md) | 两项验收矩阵缺口和计时口径已补齐 |
-| [本次目录整理](document-organization-20261009/README.md) | 文档和本地历史资料归类，不改产品代码 |
+| [环境异步E1～E5](environment-async-20261009/README.md) | 已交付，146文件／804项；附过程、离线工作量、升级CLI与复核关闭 |
+| [目录整理](document-organization-20261009/README.md) | 前批文档和本地历史资料整理，只表示当时整理范围 |
 
-最新的独立结论另见[ASTRA复核](../reviews/post-t1-t9-20261009/REVIEW.md)。旧的ASTRA/R1交付、早期V0.5重写／检查、REVIEW24／26记录和本批过程红绿日志均归在[历史记录](../../archive/records/)。当前留存的log仅为最近最终验收和最终工作量工具输出，仍是执行时证据，不代表实时运行监控。
+[本批独立复核](../reviews/environment-async-20261009/INDEPENDENT_REVIEW.md)与实施者关闭说明分别保留。T1～T9及更早交付在[历史记录](../../archive/records/)；本批早期红绿日志在[历史日志](../../archive/logs/environment-async-20261009/)。日志表示记录时执行，不是实时运行监控。

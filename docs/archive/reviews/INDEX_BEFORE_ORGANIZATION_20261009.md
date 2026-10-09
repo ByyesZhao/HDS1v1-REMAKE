@@ -4,7 +4,7 @@
 
 | 材料 | 基线及当前解释 |
 | --- | --- |
-| [当前代码／文档再审](current-audit-20261009/README.md)、[CODEX核验与方案范围](CODEX_RESPONSE_CURRENT_AUDIT_20261009.md) | 基于 `c9e4599` 及当前文档；确认B1／B2；本次T1～T9已完成，见[新交付](../../v0.5/records/current-audit-improvements-20261009/DELIVERY.md)及[复核关闭](../../v0.5/records/current-audit-improvements-20261009/REVIEW_CLOSURE.md)。E1～E5仍未实施 |
+| [当前代码／文档再审](current-audit-20261009/README.md)、[CODEX核验与方案范围](CODEX_RESPONSE_CURRENT_AUDIT_20261009.md) | 基于 `c9e4599` 及当前文档；确认B1／B2；本次T1～T9已完成，见[新交付](../records/current-audit-improvements-20261009/DELIVERY.md)及[复核关闭](../records/current-audit-improvements-20261009/REVIEW_CLOSURE.md)。E1～E5仍未实施 |
 | [ASTRA初审](ASTRA_REVIEW_20261009.md)、[证据与复现](AUDIT_EVIDENCE_20261009.md) | 针对 `73774bf`；F1～F8、D1已由T1～T13处理。原缺陷复现断言不能直接当成当前绿色回归 |
 | [CODEX核验回复](CODEX_RESPONSE_ASTRA_REVIEW_20261009.md) | 当时确认问题及修复范围，后续已实施；读回复中的“尚未实施”时需结合交付时间 |
 | [实施后独立复核](ASTRA_POST_IMPLEMENTATION_REVIEW_20261009.md) | 针对 `eb5b29e`，主要修复成立，发现R1；原§1～5保留，后续关闭补充说明R1已修复 |

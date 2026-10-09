@@ -102,6 +102,11 @@ export class Storage {
     for(let i=0;i<unique.length;i+=500){const chunk=unique.slice(i,i+500);rows.push(...this.db.prepare('SELECT rowid,data FROM messages WHERE id IN ('+chunk.map(()=>'?').join(',')+')').all(...chunk));}
     return rows.sort((a,b)=>Number(a.rowid)-Number(b.rowid)).map(r=>JSON.parse(String(r.data)) as Message).sort((a,b)=>Date.parse(a.receivedAt)-Date.parse(b.receivedAt));
   }
+  messageMetadataByIds(ids:readonly string[]):Message[]{
+    const unique=[...new Set(ids)],rows:Array<Record<string,unknown>>=[];
+    for(let i=0;i<unique.length;i+=500){const chunk=unique.slice(i,i+500);rows.push(...this.prepare("SELECT rowid,json_remove(data,'$.content','$.platformMessageIds') AS metadata FROM messages WHERE id IN ("+chunk.map(()=>'?').join(',')+")").all(...chunk));}
+    return rows.sort((a,b)=>Number(a.rowid)-Number(b.rowid)).map(r=>({...JSON.parse(String(r.metadata)),content:'',platformMessageIds:[]}) as Message);
+  }
   recentChatSnapshot(options:ChatWindowQuery):ChatWindowSnapshot{return recentChatSnapshot(this,options);}
   unreadMessages(): Message[] {
     const open=this.runtime().openBatch?.id;

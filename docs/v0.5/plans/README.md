@@ -1,11 +1,7 @@
 # V0.5 待实施计划
 
-返回[版本索引](../README.md)。此目录只保存未实施或正在进行的开发合同。
+返回[版本索引](../README.md)。此处只保留未实施或进行中的合同。
 
-| 任务 | 状态与入口 |
-| --- | --- |
-| 环境异步E1～E5 | **未实施，当前暂停开发**；[任务入口](environment-async/README.md)、[设计与执行细化](environment-async/04_ENVIRONMENT_ASYNC.md) |
+目前没有待执行计划。环境异步E1～E5已完成，接受的[实施合同](../../archive/plans/environment-async-20261009/README.md)归档，最新[交付](../records/environment-async-20261009/DELIVERY.md)和[关闭说明](../records/environment-async-20261009/REVIEW_CLOSURE.md)保留在当前版本。正式库升级是部署动作，未在开发验收中执行。
 
-T1～T9已关闭，ASTRA T1～T13及R1也已完成；其原计划收纳在[历史合同](../../archive/plans/)，不再放在待执行目录。历史勾选框和当时“尚未实施”措辞不能代表今天状态。
-
-未来新增计划放`plans/<任务>/`，注明基线、前置和状态；完成后同步当前规则，再归档合同，保留交付证据。规则见[目录原则](../../DIRECTORY_POLICY.md)。
+以后按[目录原则](../../DIRECTORY_POLICY.md)创建任务目录，写明状态和基线；关闭后同步功能说明，再归档合同。历史勾选框或旧“待实施”文字不表示今天仍待做。

@@ -123,4 +123,4 @@ flowchart TD
 | [网页搜索](../subsystems/REMAKE_V0.5_WEB_SEARCH.md) | 20／40独立计数、缓存、恢复与本人查阅 |
 | [报错与恢复](../subsystems/REMAKE_V0.5_RECOVERY.md) | 修补、暂停、生成／发送／提交及环境／后台恢复 |
 
-实现和验收限制见[对应清单](../reference/V0.5_IMPLEMENTATION_MAP_20261009.md)，完整阅读顺序见[当前索引](../README.md)。最近T1～T9已获[ASTRA最终复核](../reviews/post-t1-t9-20261009/REVIEW.md)关闭；本轮仅归类资料，没有改系统规则。旧修订／检查记录在[历史归档](../../archive/README.md)，目录原则见[文档规范](../../DIRECTORY_POLICY.md)。
+实现和验收限制见[对应清单](../reference/V0.5_IMPLEMENTATION_MAP_20261009.md)，完整阅读顺序见[当前索引](../README.md)。最近T1～T9已获[ASTRA最终复核](../../archive/reviews/post-t1-t9-20261009/REVIEW.md)关闭；本轮仅归类资料，没有改系统规则。旧修订／检查记录在[历史归档](../../archive/README.md)，目录原则见[文档规范](../../DIRECTORY_POLICY.md)。

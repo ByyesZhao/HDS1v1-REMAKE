@@ -1,0 +1,255 @@
+{
+  "date": "2026-10-09",
+  "reason": "E delivery closed; raw evidence unchanged",
+  "moves": [
+    {
+      "from": "docs/v0.5/plans/environment-async/04_ENVIRONMENT_ASYNC.md",
+      "to": "docs/archive/plans/environment-async-20261009/04_ENVIRONMENT_ASYNC.md"
+    },
+    {
+      "from": "docs/v0.5/plans/environment-async/README.md",
+      "to": "docs/archive/plans/environment-async-20261009/README.md"
+    },
+    {
+      "from": "docs/v0.5/records/current-audit-improvements-20261009/benchmark.json",
+      "to": "docs/archive/records/current-audit-improvements-20261009/benchmark.json"
+    },
+    {
+      "from": "docs/v0.5/records/current-audit-improvements-20261009/DELIVERY.md",
+      "to": "docs/archive/records/current-audit-improvements-20261009/DELIVERY.md"
+    },
+    {
+      "from": "docs/v0.5/records/current-audit-improvements-20261009/IMPLEMENTATION_LOG.md",
+      "to": "docs/archive/records/current-audit-improvements-20261009/IMPLEMENTATION_LOG.md"
+    },
+    {
+      "from": "docs/v0.5/records/current-audit-improvements-20261009/REVIEW_CLOSURE.md",
+      "to": "docs/archive/records/current-audit-improvements-20261009/REVIEW_CLOSURE.md"
+    },
+    {
+      "from": "docs/v0.5/records/current-audit-improvements-20261009/scheduling-query-results.json",
+      "to": "docs/archive/records/current-audit-improvements-20261009/scheduling-query-results.json"
+    },
+    {
+      "from": "docs/v0.5/records/current-audit-improvements-20261009/logs/main-build.log",
+      "to": "docs/archive/records/current-audit-improvements-20261009/logs/main-build.log"
+    },
+    {
+      "from": "docs/v0.5/records/current-audit-improvements-20261009/logs/main-demo.log",
+      "to": "docs/archive/records/current-audit-improvements-20261009/logs/main-demo.log"
+    },
+    {
+      "from": "docs/v0.5/records/current-audit-improvements-20261009/logs/main-full-suite.log",
+      "to": "docs/archive/records/current-audit-improvements-20261009/logs/main-full-suite.log"
+    },
+    {
+      "from": "docs/v0.5/records/current-audit-improvements-20261009/logs/main-smoke.log",
+      "to": "docs/archive/records/current-audit-improvements-20261009/logs/main-smoke.log"
+    },
+    {
+      "from": "docs/v0.5/records/current-audit-improvements-20261009/logs/main-types.log",
+      "to": "docs/archive/records/current-audit-improvements-20261009/logs/main-types.log"
+    },
+    {
+      "from": "docs/v0.5/records/current-audit-improvements-20261009/logs/review-fix-scheduling.log",
+      "to": "docs/archive/records/current-audit-improvements-20261009/logs/review-fix-scheduling.log"
+    },
+    {
+      "from": "docs/v0.5/records/current-audit-improvements-20261009/logs/review-fix-workload.log",
+      "to": "docs/archive/records/current-audit-improvements-20261009/logs/review-fix-workload.log"
+    },
+    {
+      "from": "docs/v0.5/reviews/post-t1-t9-20261009/build.log",
+      "to": "docs/archive/reviews/post-t1-t9-20261009/build.log"
+    },
+    {
+      "from": "docs/v0.5/reviews/post-t1-t9-20261009/context-probe.cjs",
+      "to": "docs/archive/reviews/post-t1-t9-20261009/context-probe.cjs"
+    },
+    {
+      "from": "docs/v0.5/reviews/post-t1-t9-20261009/context-probe.json",
+      "to": "docs/archive/reviews/post-t1-t9-20261009/context-probe.json"
+    },
+    {
+      "from": "docs/v0.5/reviews/post-t1-t9-20261009/context-probe.log",
+      "to": "docs/archive/reviews/post-t1-t9-20261009/context-probe.log"
+    },
+    {
+      "from": "docs/v0.5/reviews/post-t1-t9-20261009/demo.log",
+      "to": "docs/archive/reviews/post-t1-t9-20261009/demo.log"
+    },
+    {
+      "from": "docs/v0.5/reviews/post-t1-t9-20261009/memory-probe.cjs",
+      "to": "docs/archive/reviews/post-t1-t9-20261009/memory-probe.cjs"
+    },
+    {
+      "from": "docs/v0.5/reviews/post-t1-t9-20261009/memory-probe.log",
+      "to": "docs/archive/reviews/post-t1-t9-20261009/memory-probe.log"
+    },
+    {
+      "from": "docs/v0.5/reviews/post-t1-t9-20261009/queries-probe.cjs",
+      "to": "docs/archive/reviews/post-t1-t9-20261009/queries-probe.cjs"
+    },
+    {
+      "from": "docs/v0.5/reviews/post-t1-t9-20261009/queries-probe.log",
+      "to": "docs/archive/reviews/post-t1-t9-20261009/queries-probe.log"
+    },
+    {
+      "from": "docs/v0.5/reviews/post-t1-t9-20261009/rerun-workload.json",
+      "to": "docs/archive/reviews/post-t1-t9-20261009/rerun-workload.json"
+    },
+    {
+      "from": "docs/v0.5/reviews/post-t1-t9-20261009/REVIEW.md",
+      "to": "docs/archive/reviews/post-t1-t9-20261009/REVIEW.md"
+    },
+    {
+      "from": "docs/v0.5/reviews/post-t1-t9-20261009/smoke.log",
+      "to": "docs/archive/reviews/post-t1-t9-20261009/smoke.log"
+    },
+    {
+      "from": "docs/v0.5/reviews/post-t1-t9-20261009/summary.json",
+      "to": "docs/archive/reviews/post-t1-t9-20261009/summary.json"
+    },
+    {
+      "from": "docs/v0.5/reviews/post-t1-t9-20261009/tests-full.log",
+      "to": "docs/archive/reviews/post-t1-t9-20261009/tests-full.log"
+    },
+    {
+      "from": "docs/v0.5/reviews/post-t1-t9-20261009/tests.log",
+      "to": "docs/archive/reviews/post-t1-t9-20261009/tests.log"
+    },
+    {
+      "from": "docs/v0.5/reviews/post-t1-t9-20261009/typecheck.log",
+      "to": "docs/archive/reviews/post-t1-t9-20261009/typecheck.log"
+    },
+    {
+      "from": "docs/v0.5/reviews/post-t1-t9-20261009/v1-recovery-probe.cjs",
+      "to": "docs/archive/reviews/post-t1-t9-20261009/v1-recovery-probe.cjs"
+    },
+    {
+      "from": "docs/v0.5/reviews/post-t1-t9-20261009/v1-recovery-probe.json",
+      "to": "docs/archive/reviews/post-t1-t9-20261009/v1-recovery-probe.json"
+    },
+    {
+      "from": "docs/v0.5/reviews/post-t1-t9-20261009/v1-recovery-probe.log",
+      "to": "docs/archive/reviews/post-t1-t9-20261009/v1-recovery-probe.log"
+    },
+    {
+      "from": "docs/v0.5/reviews/post-t1-t9-20261009/workload.json",
+      "to": "docs/archive/reviews/post-t1-t9-20261009/workload.json"
+    },
+    {
+      "from": "docs/v0.5/reviews/post-t1-t9-20261009/workload.log",
+      "to": "docs/archive/reviews/post-t1-t9-20261009/workload.log"
+    },
+    {
+      "from": "docs/v0.5/records/environment-async-20261009/logs/baseline.log",
+      "to": "docs/archive/logs/environment-async-20261009/baseline.log"
+    },
+    {
+      "from": "docs/v0.5/records/environment-async-20261009/logs/demo.log",
+      "to": "docs/archive/logs/environment-async-20261009/demo.log"
+    },
+    {
+      "from": "docs/v0.5/records/environment-async-20261009/logs/e1-green.log",
+      "to": "docs/archive/logs/environment-async-20261009/e1-green.log"
+    },
+    {
+      "from": "docs/v0.5/records/environment-async-20261009/logs/e1-red.log",
+      "to": "docs/archive/logs/environment-async-20261009/e1-red.log"
+    },
+    {
+      "from": "docs/v0.5/records/environment-async-20261009/logs/e1-types.log",
+      "to": "docs/archive/logs/environment-async-20261009/e1-types.log"
+    },
+    {
+      "from": "docs/v0.5/records/environment-async-20261009/logs/e2-green.log",
+      "to": "docs/archive/logs/environment-async-20261009/e2-green.log"
+    },
+    {
+      "from": "docs/v0.5/records/environment-async-20261009/logs/e2-red.log",
+      "to": "docs/archive/logs/environment-async-20261009/e2-red.log"
+    },
+    {
+      "from": "docs/v0.5/records/environment-async-20261009/logs/e2-types.log",
+      "to": "docs/archive/logs/environment-async-20261009/e2-types.log"
+    },
+    {
+      "from": "docs/v0.5/records/environment-async-20261009/logs/e3-green.log",
+      "to": "docs/archive/logs/environment-async-20261009/e3-green.log"
+    },
+    {
+      "from": "docs/v0.5/records/environment-async-20261009/logs/e3-red.log",
+      "to": "docs/archive/logs/environment-async-20261009/e3-red.log"
+    },
+    {
+      "from": "docs/v0.5/records/environment-async-20261009/logs/e3-types.log",
+      "to": "docs/archive/logs/environment-async-20261009/e3-types.log"
+    },
+    {
+      "from": "docs/v0.5/records/environment-async-20261009/logs/e4-all.log",
+      "to": "docs/archive/logs/environment-async-20261009/e4-all.log"
+    },
+    {
+      "from": "docs/v0.5/records/environment-async-20261009/logs/e4-boundaries-red.log",
+      "to": "docs/archive/logs/environment-async-20261009/e4-boundaries-red.log"
+    },
+    {
+      "from": "docs/v0.5/records/environment-async-20261009/logs/e4-first.log",
+      "to": "docs/archive/logs/environment-async-20261009/e4-first.log"
+    },
+    {
+      "from": "docs/v0.5/records/environment-async-20261009/logs/e4-green.log",
+      "to": "docs/archive/logs/environment-async-20261009/e4-green.log"
+    },
+    {
+      "from": "docs/v0.5/records/environment-async-20261009/logs/e4-phases.log",
+      "to": "docs/archive/logs/environment-async-20261009/e4-phases.log"
+    },
+    {
+      "from": "docs/v0.5/records/environment-async-20261009/logs/e4-tools-diagnostic.log",
+      "to": "docs/archive/logs/environment-async-20261009/e4-tools-diagnostic.log"
+    },
+    {
+      "from": "docs/v0.5/records/environment-async-20261009/logs/e4-tools-green.log",
+      "to": "docs/archive/logs/environment-async-20261009/e4-tools-green.log"
+    },
+    {
+      "from": "docs/v0.5/records/environment-async-20261009/logs/e4-tools.log",
+      "to": "docs/archive/logs/environment-async-20261009/e4-tools.log"
+    },
+    {
+      "from": "docs/v0.5/records/environment-async-20261009/logs/e4-types.log",
+      "to": "docs/archive/logs/environment-async-20261009/e4-types.log"
+    },
+    {
+      "from": "docs/v0.5/records/environment-async-20261009/logs/e5-query-green.log",
+      "to": "docs/archive/logs/environment-async-20261009/e5-query-green.log"
+    },
+    {
+      "from": "docs/v0.5/records/environment-async-20261009/logs/e5-slots.log",
+      "to": "docs/archive/logs/environment-async-20261009/e5-slots.log"
+    },
+    {
+      "from": "docs/v0.5/records/environment-async-20261009/logs/e5-workload.log",
+      "to": "docs/archive/logs/environment-async-20261009/e5-workload.log"
+    },
+    {
+      "from": "docs/v0.5/records/environment-async-20261009/logs/final-review-green.log",
+      "to": "docs/archive/logs/environment-async-20261009/final-review-green.log"
+    },
+    {
+      "from": "docs/v0.5/records/environment-async-20261009/logs/final-review-red.log",
+      "to": "docs/archive/logs/environment-async-20261009/final-review-red.log"
+    },
+    {
+      "from": "docs/v0.5/records/environment-async-20261009/logs/full-first.log",
+      "to": "docs/archive/logs/environment-async-20261009/full-first.log"
+    },
+    {
+      "from": "docs/v0.5/records/environment-async-20261009/logs/plugin-smoke.log",
+      "to": "docs/archive/logs/environment-async-20261009/plugin-smoke.log"
+    }
+  ],
+  "markdownFilesRebased": 16
+}

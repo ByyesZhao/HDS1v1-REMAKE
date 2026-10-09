@@ -4,11 +4,11 @@
 
 V0.5整理当前实现：普通最近4个完整对话段、活动完整授权原文和结束后记忆召回；7／90／3／30记忆周期及100／1000／500容量；每日06:00世界／校园／课题组／周增量链；普通15秒合批、共同60秒或全文`【推进】`，约10轮软收尾、20轮硬上限；冻结发送与按阶段恢复。
 
-这是架构文档版本。现有npm包元数据仍为0.2.0，数据库各子系统版本保持原协议，本批实现日期、选批、上下文／调度查询及清理优化，正式配置和数据协议不变。
+这是架构文档版本。现有npm包元数据仍为0.2.0，数据库各子系统版本保持原协议，本批新增环境异步协议2，新库默认启用；旧库须显式升级。正式配置和数据库未修改。
 
 ## 1. 当前状态
 
-最新交付为[当前审核改进T1～T9](docs/v0.5/records/current-audit-improvements-20261009/DELIVERY.md)。此前REVIEW26的107／620、ASTRA T1～T13的121／681和R1的122／693保留各批历史含义。ASTRA随后已独立重跑137文件776项并[确认关闭](docs/v0.5/reviews/post-t1-t9-20261009/REVIEW.md)。现已按独立E1～E5方案实施环境异步准备，过程与验收见[本批记录](docs/v0.5/records/environment-async-20261009/README.md)。旧证据仍按原批次解释。
+前批交付为[当前审核改进T1～T9](docs/archive/records/current-audit-improvements-20261009/DELIVERY.md)。此前REVIEW26的107／620、ASTRA T1～T13的121／681和R1的122／693保留各批历史含义。ASTRA随后已独立重跑137文件776项并[确认关闭](docs/archive/reviews/post-t1-t9-20261009/REVIEW.md)。最新交付为环境异步E1～E5，修复后146文件804项及类型／构建／演示／双场景插件离线验收通过，过程与验收见[本批记录](docs/v0.5/records/environment-async-20261009/README.md)。旧证据仍按原批次解释。
 
 67项旧图库的图片、说明、标签和1024维向量已在新项目复用；运行不依赖旧HDSI目录。角色背景和用途映射已批准启用，故事阶段完整背景保留，未迁移作者事实或覆盖已有细节。
 
@@ -154,7 +154,7 @@ npm run stickers -- rebuild - config.local.json runtime/data/hdsi-remake.sqlite
 
 ## 8. 当前文档与复盘
 
-[V0.5总架构](docs/v0.5/architecture/REMAKE_V0.5.md)＋其8份子系统＋[实现对应](docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md)是当前说明。最近实现证据在[当前审核交付](docs/v0.5/records/current-audit-improvements-20261009/DELIVERY.md)；本轮重写过程在[文档修订日志](docs/archive/records/V0.5_DOCUMENT_REWRITE_LOG_20261009.md)。
+[V0.5总架构](docs/v0.5/architecture/REMAKE_V0.5.md)＋其8份子系统＋[实现对应](docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md)是当前说明。最近实现证据在[当前审核交付](docs/archive/records/current-audit-improvements-20261009/DELIVERY.md)；本轮重写过程在[文档修订日志](docs/archive/records/V0.5_DOCUMENT_REWRITE_LOG_20261009.md)。
 
 文档分类与新建原则见[文档总入口](docs/README.md)和[目录原则](docs/DIRECTORY_POLICY.md)。当前说明、最新交付和最终复核在docs/v0.5；过期说明、已完成合同、旧审核和过程日志在docs/archive。进行中的计划单独保留在当前plans，完成后按目录原则移入历史合同；最新交付见V0.5索引。
 

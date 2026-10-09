@@ -1,0 +1,27 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/environment-preparation-snapshot.test.ts
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/environment-async-e/HDSI-remake
+
+ ❯ tests/environment-preparation-snapshot.test.ts (0 test)
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/environment-preparation-snapshot.test.ts [ tests/environment-preparation-snapshot.test.ts ]
+Error: Cannot find module '../src/environment/snapshot' imported from C:/Users/<user>/.codex/worktrees/environment-async-e/HDSI-remake/tests/environment-preparation-snapshot.test.ts
+ ❯ tests/environment-preparation-snapshot.test.ts:4:1
+      2| import {setup} from './helpers';
+      3| import {schoolPlan,schoolItem} from './world-school-fixture';
+      4| import {freezeEnvironmentSnapshot,frozenSchoolView,lookupFrozenEnviron…
+       | ^
+      5| import {schoolCampusTask} from '../src/school/contracts';
+      6| import {MemoryRetrieval} from '../src/memory/retrieval';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  17:28:29
+   Duration  369ms (worker 95%, environment 5%)
+

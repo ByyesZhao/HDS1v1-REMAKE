@@ -1,0 +1,14 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/environment-preparation-snapshot.test.ts tests/world-school-models.test.ts tests/world-school-review14-contracts.test.ts tests/school-week-text-contract.test.ts tests/environment-context-view.test.ts tests/memory-v3-retrieval.test.ts
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/environment-async-e/HDSI-remake
+
+
+ Test Files  6 passed (6)
+      Tests  39 passed (39)
+   Start at  17:30:28
+   Duration  2.72s (tests 50%, import 30%, transform 20%, worker 1%)
+
+    Isolate  6 workers spawned · ~90ms startup each (spawn + environment, per file)
+             at least ~450ms faster with isolate: false — reuses workers across files instead of one per file
+

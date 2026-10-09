@@ -11,10 +11,11 @@ import type {MemoryCandidate,LookupRequest,RetrievedContext,RetrievalRequest} fr
 import {DialogueStore} from '../dialogue/store';
 import {ChatEpisodes} from '../dialogue/chat-episodes';
 import {DialogueEpisodes} from '../dialogue/episodes';
-import {assertMessageSources} from '../dialogue/active-consistency';
+import {captureMessageSourceValidity} from '../dialogue/active-consistency';
 export interface EnvironmentSchoolRows {school_plans:SchoolPlan[];school_plan_items:SchoolPlanItem[];school_instances:SchoolInstance[];school_notices:SchoolNotice[];school_weeks:SchoolWeek[];school_knowledge:SchoolKnowledge[];school_progress:SchoolProgress[]}
-export interface EnvironmentLookupBasis {owners:Array<Pick<MemoryCandidate,'ownerType'|'ownerId'|'revision'|'stateVersion'|'status'>>;messageIds:string[]}
-export interface FrozenEnvironmentRetrieval {request:RetrievalRequest;candidates:Array<Omit<MemoryCandidate,'normalizedVector'>&{normalizedVector?:number[]}>;recent:Message[];sourceMessages:Message[];invalidSourceIds:string[];signature:string}
+export interface EnvironmentSourcePresence {table:'messages'|'experiences'|'self_web_read_sources';id:string}
+export interface EnvironmentLookupBasis {owners:Array<Pick<MemoryCandidate,'ownerType'|'ownerId'|'revision'|'stateVersion'|'status'>>;messageIds:string[];sources:EnvironmentSourcePresence[]}
+export interface FrozenEnvironmentRetrieval {request:RetrievalRequest;candidates:Array<Omit<MemoryCandidate,'normalizedVector'>&{normalizedVector?:number[]}>;recent:Message[];sourcePresence:EnvironmentSourcePresence[];invalidSourceIds:string[];signature:string}
 export interface EnvironmentPreparationSnapshot {version:1;at:string;timezone:string;input:EnvironmentStepInput;school:EnvironmentSchoolRows;businessBasis:string;retrieval:FrozenEnvironmentRetrieval;usedBasis:EnvironmentLookupBasis|null}
 export function digest(value:unknown):string {
  const stable=(v:any):any=>Array.isArray(v)?v.map(stable):v&&typeof v==='object'?Object.fromEntries(Object.keys(v).sort().map(k=>[k,stable(v[k])])):v;
@@ -37,14 +38,22 @@ export function environmentBusinessBasis(d:Dependencies,stage:EnvironmentStage):
  return digest({events:stage==='school_week'?undefined:sorted(events),school,background:d.config.background,backgroundViews:d.config.backgroundViews,worldSetting:d.config.worldSetting,schoolSetting:d.config.schoolSetting,timezone:d.config.timezone});
 }
 export function retrievalFor(d:Dependencies):MemoryRetrieval{return d.retrieval??new MemoryRetrieval(d.memoryStore??new MemoryStore(d.storage));}
+function captureSourcePresence(d:Dependencies,ids:readonly string[]):EnvironmentSourcePresence[]{
+ const unique=[...new Set(ids)].sort(),result:EnvironmentSourcePresence[]=[];
+ for(const table of ['messages','experiences','self_web_read_sources'] as const)for(let i=0;i<unique.length;i+=500){
+ const chunk=unique.slice(i,i+500);
+ const rows=d.storage.prepare('SELECT id FROM '+table+' WHERE id IN ('+chunk.map(()=>'?').join(',')+') ORDER BY id').all(...chunk);
+ for(const row of rows)result.push({table,id:String(row.id)});
+ }
+ return result;
+}
 export function freezeEnvironmentRetrieval(d:Dependencies,stage:EnvironmentStage,at:string):FrozenEnvironmentRetrieval{
  const retrieval=retrievalFor(d),query=stage==='world'?d.config.worldSetting:d.config.schoolSetting,request=makeRetrievalRequest(query,at,stage,d.config.historyBudget);
  const candidates=retrieval.store.selectCandidates(request);
  const recent=new (d.storage.runtime().dialogueContextVersion===2?ChatEpisodes:DialogueEpisodes)(new DialogueStore(d.storage),retrieval.limits.dialogueIdleMinutes).recent(stage,at,retrieval.limits.recentDialogueSegments,[]).messages;
- const sourceMessages=d.storage.messagesByIds([...new Set([...candidates.flatMap(c=>c.sourceIds),...recent.map(m=>m.id)])]);
- const invalidSourceIds:string[]=[];
- for(const m of sourceMessages)try{assertMessageSources(d.storage,[m.id]);}catch{invalidSourceIds.push(m.id);}
- return {request,candidates:candidates.map(({normalizedVector,...row})=>({...row,...(normalizedVector?{normalizedVector:Array.from(normalizedVector)}:{})})),recent,sourceMessages,invalidSourceIds,signature:digest(retrieval.configuration())};
+ const ids=[...new Set([...candidates.flatMap(c=>c.sourceIds),...recent.map(m=>m.id)])];
+ const sourcePresence=captureSourcePresence(d,ids),invalidSourceIds=captureMessageSourceValidity(d.storage,ids);
+ return {request,candidates:candidates.map(({normalizedVector,...row})=>({...row,...(normalizedVector?{normalizedVector:Array.from(normalizedVector)}:{})})),recent,sourcePresence,invalidSourceIds,signature:digest(retrieval.configuration())};
 }
 export function freezeEnvironmentSnapshot(d:Dependencies,step:EnvironmentStep,at:string):EnvironmentPreparationSnapshot{
  const owner=step.stage==='school_campus'?'campus':'group',week=step.stage==='school_week',upstream=step.stage==='school_campus'||step.stage==='school_group';
@@ -63,11 +72,11 @@ export async function lookupFrozenEnvironment(snapshot:EnvironmentPreparationSna
  const context=retrieval.budget(await retrieval.buildFrozen(resolveLookupRequest(query,frozen.request),candidates,structuredClone(frozen.recent),ids=>{if(ids.some(id=>frozen.invalidSourceIds.includes(id)))throw Error('frozen message source consistency failed');},[],signal),frozen.request.budget??retrieval.limits.historyBudget);
  const owners=[...context.details,...context.shortTerm,...context.longTerm,...context.learned];
  const returned=new Set([...context.recent.map(m=>m.id),...owners.flatMap(o=>o.sourceIds)]);
- return {context,usedBasis:{owners:owners.map(({ownerType,ownerId,revision,stateVersion,status})=>({ownerType,ownerId,revision,stateVersion,status})),messageIds:frozen.sourceMessages.filter(m=>returned.has(m.id)).map(m=>m.id)}};
+ return {context,usedBasis:{owners:owners.map(({ownerType,ownerId,revision,stateVersion,status})=>({ownerType,ownerId,revision,stateVersion,status})),messageIds:frozen.sourcePresence.filter(s=>s.table==='messages'&&returned.has(s.id)).map(s=>s.id),sources:frozen.sourcePresence.filter(s=>returned.has(s.id))}};
 }
 export function lookupBasisCurrent(d:Dependencies,snapshot:EnvironmentPreparationSnapshot):boolean{
  if(digest(retrievalFor(d).configuration())!==snapshot.retrieval.signature)return false;
  const basis=snapshot.usedBasis;if(!basis)return true;
  const store=d.memoryStore??retrievalFor(d).store;
- return basis.owners.every(ref=>{const row=store.owner(ref);return row&&row.revision===ref.revision&&row.stateVersion===ref.stateVersion&&row.status===ref.status;})&&d.storage.messagesByIds(basis.messageIds).length===basis.messageIds.length;
+ return basis.owners.every(ref=>{const row=store.owner(ref);return row&&row.revision===ref.revision&&row.stateVersion===ref.stateVersion&&row.status===ref.status;})&&digest(captureSourcePresence(d,[...new Set(basis.sources.map(s=>s.id))]))===digest(basis.sources);
 }

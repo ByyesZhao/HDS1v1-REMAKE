@@ -1,6 +1,6 @@
 # 当前审核改进：统一设计与执行计划
 
-实施状态补充：T1～T9现已实施，实际结果见[交付](../../../v0.5/records/current-audit-improvements-20261009/DELIVERY.md)。下文复选项与“待实施”措辞保留原方案合同及当时状态，不代替完成证据；E1～E5独立后续尚未实施。
+实施状态补充：T1～T9现已实施，实际结果见[交付](../../records/current-audit-improvements-20261009/DELIVERY.md)。下文复选项与“待实施”措辞保留原方案合同及当时状态，不代替完成证据；E1～E5独立后续尚未实施。
 
 原方案编写日期：2026-10-09。当时状态：**方案已写，所有实施任务尚未执行**。这是交给 SOL 的执行包；本次仅编写方案及更新文档入口，没有修改产品代码、测试、运行配置或故事数据。
 
@@ -21,7 +21,7 @@
 | [01_MEMORY.md](01_MEMORY.md) | T1 日期事实、T2 字符批量与派发刷新、T7 清理／旧载荷兼容 |
 | [02_CONTEXT.md](02_CONTEXT.md) | T3 检索通道／个人阶段按需构造、T4 普通完整四段 SQL、T8 资料池 |
 | [03_SCHEDULING_QUERIES.md](03_SCHEDULING_QUERIES.md) | T5 环境轻量查询、T6 学校活跃候选与知情定向查询 |
-| [04_ENVIRONMENT_ASYNC.md](../../../v0.5/plans/environment-async/04_ENVIRONMENT_ASYNC.md) | E1～E5 环境异步准备，独立设计、兼容、实现和验收 |
+| [04_ENVIRONMENT_ASYNC.md](../environment-async-20261009/04_ENVIRONMENT_ASYNC.md) | E1～E5 环境异步准备，独立设计、兼容、实现和验收 |
 
 文件内的新接口、SQL、测试名及脚本命令是**待实现合同**，不是已经存在的能力。已有文件用链接定位；拟新增路径用代码字体标明。实施者可以调整局部命名，但不能省略断言、兼容分支或把独立阶段合成一次不可拆分的大改动。
 

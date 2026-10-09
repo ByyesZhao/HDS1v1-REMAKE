@@ -1,0 +1,3 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run tsx docs/v0.5/records/environment-async-20261009/evidence/upgrade-cli.ts
+4 CLI scenarios passed; formal database untouched.
