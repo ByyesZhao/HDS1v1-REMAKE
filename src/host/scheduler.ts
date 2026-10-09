@@ -1,6 +1,6 @@
 import { defaultConfig,type AppConfig } from '../config';
 import {releaseSchoolNotices,selectSchoolNotices,schoolNotificationEligible,schoolNoticeDeadline,createSchoolNoticeEvaluationContext} from '../school/notices';
-import {ensureEnvironmentBatch,selectEnvironmentStep,environmentDeadline} from '../environment/scheduler';
+import {ensureEnvironmentBatch,selectEnvironmentStepMetadata,environmentDeadline} from '../environment/scheduler';
 import { randomUUID } from 'node:crypto';
 import { Storage } from '../storage';
 import { InputBuffer } from './input';
@@ -30,7 +30,7 @@ export class Scheduler {
     if (!hasValidSharedScene(state) && !isSleeping(state, now) && runtime.pendingBatchIds.length && !canRead(state, now)) this.stashPending(now);
     if(!runtime.openBatch){
       ensureEnvironmentBatch(this.storage,this.config,now);
-      const step=selectEnvironmentStep(this.storage,now);
+      const step=selectEnvironmentStepMetadata(this.storage,now);
       if(step)return {inputMessageIds:[],taskIds:[],triggerKinds:['environment'],batchIds:[],environmentStepId:step.id,sharedMeta:null};
     }
     if (this.autonomousEligible(now) && due(state.nextAutonomousAt, now)) return {

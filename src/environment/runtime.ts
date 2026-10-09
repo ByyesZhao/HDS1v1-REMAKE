@@ -43,7 +43,7 @@ export async function runEnvironmentStep(d:Dependencies,stepId:string,generate:E
   if(result.stage==='world')for(const change of result.changes){if(change.action==='create')d.storage.save('events',change.id!,{...change.event,id:change.id!,status:'active'});else{const old=d.storage.read('events',change.id);if(!old)throw Error('unknown world event');d.storage.save('events',change.id,change.action==='cancel'?{...old,status:'cancelled'}:{...old,...change.event});}}
   else applySchoolChanges(d.storage,result,d.clock.now());
   d.environmentStore.saveStep({...step,status:'committed',completedAt:d.clock.now(),lastError:null});
-  if(d.environmentStore.steps(batch.id).every(s=>s.status==='committed'))d.environmentStore.saveBatch({...batch,status:'committed',closedAt:d.clock.now()});
+  if(d.environmentStore.stepMetadata(batch.id).every(s=>s.status==='committed'))d.environmentStore.saveBatch({...batch,status:'committed',closedAt:d.clock.now()});
  });
  d.web?.releaseOwner('environment',step.id);
  d.web?.compactOwnerCheckpoint('environment',step.id);

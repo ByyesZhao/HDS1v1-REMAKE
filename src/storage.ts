@@ -33,6 +33,10 @@ export class Storage {
     this.db.exec('CREATE TABLE IF NOT EXISTS state (key TEXT PRIMARY KEY, data TEXT NOT NULL)');
     for (const table of tables) this.db.exec(`CREATE TABLE IF NOT EXISTS ${table} (id TEXT PRIMARY KEY, data TEXT NOT NULL)`);
     this.db.exec(`
+      CREATE INDEX IF NOT EXISTS school_notice_status ON school_notices(json_extract(data,'$.status'));
+      CREATE INDEX IF NOT EXISTS school_knowledge_entity_version ON school_knowledge(json_extract(data,'$.snapshot.entityKind'),json_extract(data,'$.snapshot.entityId'),json_extract(data,'$.snapshot.value.deliveryRevision') DESC,json_extract(data,'$.snapshot.revision') DESC);
+      CREATE INDEX IF NOT EXISTS environment_batch_status ON environment_batches(json_extract(data,'$.status'));
+      CREATE INDEX IF NOT EXISTS environment_step_batch ON environment_steps(json_extract(data,'$.batchId'));
       CREATE INDEX IF NOT EXISTS message_batch ON messages(json_extract(data, '$.batchId'));
       CREATE INDEX IF NOT EXISTS message_unread ON messages(json_extract(data, '$.direction'), json_extract(data, '$.seenTurnId'), json_extract(data, '$.receivedAt'));
       CREATE INDEX IF NOT EXISTS task_due ON tasks(json_extract(data, '$.status'), json_extract(data, '$.at'));

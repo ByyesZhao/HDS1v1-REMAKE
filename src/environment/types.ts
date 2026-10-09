@@ -12,3 +12,5 @@ export type EnvironmentModelResult = {stage:'world';changes:EnvironmentChange[]}
 export type EnvironmentChangeSet = {stage:'world';changes:EnvironmentChange[]}|{stage:'school_campus'|'school_group';plans:SchoolPlan[];items:SchoolPlanItem[]}|{stage:'school_week';instances:SchoolInstance[];notices:SchoolNotice[];weeks:SchoolWeek[]};
 export interface EnvironmentStep {id:string;batchId:string;stage:EnvironmentStage;status:EnvironmentStepStatus;attempt:number;startedAt:ISOTime|null;completedAt:ISOTime|null;retryAt:ISOTime|null;lastError:string|null;inputSnapshot:EnvironmentStepInput|null;frozenResult:EnvironmentChangeSet|null}
 export type EnvironmentGenerator = (input:EnvironmentStepInput)=>Promise<EnvironmentModelResult>;
+
+export type EnvironmentStepMetadata=Pick<EnvironmentStep,'id'|'batchId'|'stage'|'status'|'retryAt'>;
