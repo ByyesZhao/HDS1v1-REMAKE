@@ -53,7 +53,7 @@ it('marks a silent frozen turn output complete and commits without sending', asy
 });
 it('rolls back the turn and all output rows when freezing the post job fails', async () => {
   const dir = mkdtempSync(join(tmpdir(), 'hdsi-review-')); const path = join(dir, 'story.sqlite');
-  const d = setup(); const initial = d.storage.character(); d.storage.close(); d.storage = new Storage(path);
+  const d = setup(); const initial = d.storage.character(); d.storage.close(); d.storage = new Storage(path); d.storage.set('runtime',{...d.storage.runtime(),dialogueContextVersion:1});
   try {
     d.storage.set('character', initial);
     saveInput(d.storage, 'a', '你好'); output(d); d.storage.save('turns', 'a', turn());
@@ -69,7 +69,7 @@ it('rolls back the turn and all output rows when freezing the post job fails', a
 });
 it('reopens a file database and retries sending while retaining confirmed output and frozen text', async () => {
   const dir = mkdtempSync(join(tmpdir(), 'hdsi-review-')); const path = join(dir, 'story.sqlite');
-  const d = setup(); const initial = d.storage.character(); d.storage.close(); d.storage = new Storage(path);
+  const d = setup(); const initial = d.storage.character(); d.storage.close(); d.storage = new Storage(path); d.storage.set('runtime',{...d.storage.runtime(),dialogueContextVersion:1});
   try {
     d.storage.set('character', initial); saveInput(d.storage, 'a', '你好'); output(d);
     const r = await generateTurn(d, { inputMessageIds: ['a'], taskIds: [], triggerKinds: ['input'] }, 'a');
@@ -78,7 +78,7 @@ it('reopens a file database and retries sending while retaining confirmed output
     d.storage.saveOutbox({ ...items[0], status: 'confirmed', confirmedAt: NOW, platformMessageIds: ['already-sent'] });
     d.storage.save('messages', 'a:out:0', { id: 'a:out:0', direction: 'outgoing', content: '第一段', receivedAt: NOW, platformMessageIds: ['already-sent'], seenTurnId: null, batchId: null, turnId: 'a', outboxSeq: 0 });
     d.storage.saveOutbox({ ...items[1], status: 'sending' });
-    d.storage.close(); d.storage = new Storage(path);
+    d.storage.close(); d.storage = new Storage(path); d.storage.set('runtime',{...d.storage.runtime(),dialogueContextVersion:1});
     const persistedStatuses: string[] = []; const save = d.storage.saveOutbox.bind(d.storage);
     d.storage.saveOutbox = item => { save(item); persistedStatuses.push(d.storage.outbox('a')[1].status); };
     d.models.calls = []; d.models.outputs.expression = { parts: [{ kind: 'text', content: '不能重新生成' }] };

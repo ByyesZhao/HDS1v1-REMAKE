@@ -1,3 +1,4 @@
+import {assertActiveWindow,assertMessageSources} from './dialogue/active-consistency';
 import type { Dependencies } from './app';
 import type { TurnRecord, TurnCandidate, OutboxItem, MemoryResult } from './types';
 import { displayText, nextItemDelay } from './output/qq';
@@ -16,6 +17,7 @@ export function freezeTurn(d: Dependencies, turn: TurnRecord, candidate: TurnCan
     if(items.length===0){if((turn.dialogueWindowVersion??1)===1)d.dialogue?.releaseReply(turn.id,d.clock.now());if(d.storage.runtime().dialogueContextVersion===2)d.chat?.releaseReply(turn.id,d.clock.now());const saved=d.storage.read('turns',turn.id)!;updated.dialogueBinding=saved.dialogueBinding;updated.chatBinding=saved.chatBinding;}
     items.forEach((item, index) => d.storage.saveOutbox({ ...item, notBefore: index === 0 ? d.clock.now() : null }));
     d.storage.save('post_jobs', turn.id, { turnId: turn.id, result: null });
+    assertActiveWindow(d.storage,{requiredMessageIds:[...candidate.visibleMessageIds,...candidate.reconsiderMessageIds]});
   });
   return updated;
 }
@@ -61,6 +63,7 @@ export async function sendFrozen(d: Dependencies, turn: TurnRecord): Promise<voi
         if((turn.dialogueWindowVersion??1)===1)d.dialogue?.releaseReply(turn.id,confirmedAt);
         if(d.storage.runtime().dialogueContextVersion===2)d.chat?.releaseReply(turn.id,confirmedAt);
       }
+      assertActiveWindow(d.storage,{requiredMessageIds:[id]});
     });
   }
 }
@@ -72,6 +75,7 @@ export async function finishPostprocessing(d: Dependencies, turn: TurnRecord): P
   if (result === null) {
     result = turn.environmentKind || !turn.frozenResult!.narrative ? { schemaVersion:3,shortTermChanges: [], longTermChanges: [], detailChanges: [] } : await organizeMemory(d, turn);
     let createIndex=0;const memoryIds:Record<string,string>={};for(const c of result.shortTermChanges)if(c.action==='create')memoryIds[c.clientRef]=`${turn.id}:short:${createIndex++}`;
+    assertMessageSources(d.storage,[...result.shortTermChanges,...result.longTermChanges,...result.detailChanges].flatMap(c=>c.sourceIds));
     d.storage.save('post_jobs', turn.id, { ...post, result,memoryIds,selfWebReadSources:currentSelfWebReads(d,turn.id) });
   }
   const memoryResult = result;
@@ -81,6 +85,7 @@ export async function finishPostprocessing(d: Dependencies, turn: TurnRecord): P
     const c = current.frozenResult!;
     const completedAt = d.clock.now();
     const beforeState=d.storage.character();
+    assertMessageSources(d.storage,[...memoryResult.shortTermChanges,...memoryResult.longTermChanges,...memoryResult.detailChanges].flatMap(c=>c.sourceIds));
     if (!turn.environmentKind) applyMemory(d, turn.id, memoryResult, turn.at);
     if(!turn.environmentKind&&d.memoryCapacity){const restored=memoryResult.longTermChanges.map(c=>d.memoryCapacity!.store.canonical(c.id)?.id).filter((id):id is string=>!!id);d.memoryCapacity.normalize(completedAt,restored);}
     c.experiences.forEach(e => d.storage.save('experiences', e.id, e));
@@ -114,6 +119,7 @@ export async function finishPostprocessing(d: Dependencies, turn: TurnRecord): P
     const completedPost=d.storage.read('post_jobs',turn.id)!;d.storage.save('post_jobs',turn.id,{...completedPost,result:null});
     d.web?.compactOwnerCheckpoint('turn',turn.id);
     if(d.storage.runtime().dialogueContextVersion===2)d.chat?.closeDue(completedAt);else d.dialogue?.closeDue(completedAt);
+    assertActiveWindow(d.storage,{requiredMessageIds:c.visibleMessageIds});
   });
   d.web?.releaseOwner('turn',turn.id);
 }

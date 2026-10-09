@@ -1,3 +1,4 @@
+import {assertMessageSources} from '../dialogue/active-consistency';
 import { countVisibleCharacters } from '../output/qq';
 import type { ContextLimits, LookupRequest, MemoryCandidate, RetrievedContext, RetrievalRequest } from './types';
 import { defaultContextLimits,memoryOwnerData } from './types';
@@ -66,6 +67,7 @@ export class MemoryRetrieval {
       details:details.map(publicRow),shortTerm:cap(ranked.filter(r=>r.ownerType==='short'),this.limits.shortItemsLimit).map(publicRow),
       longTerm:long.filter(r=>r.ownerType==='long').map(publicRow),learned:[...long.filter(r=>r.ownerType==='learned'),...stable].map(publicRow),
       detailHistory:request.includeDetailHistory?this.store.storage.all('detail_history').filter(h=>detailKeys.has(h.key)):[]};
+    assertMessageSources(this.store.storage,[...result.details,...result.shortTerm,...result.longTerm,...result.learned,...result.detailHistory].flatMap(r=>r.sourceIds));
     this.metrics.selected=result.details.length+result.shortTerm.length+result.longTerm.length+result.learned.length;
     this.metrics.excludedByLimits=ranked.length+always.length-this.metrics.selected;
     return result;

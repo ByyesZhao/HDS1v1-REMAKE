@@ -1,3 +1,4 @@
+import {assertFullWindow,assertRoutineWindow} from '../dialogue/active-consistency';
 import {renderWebStatus} from '../web/status';
 import {checkWindowConsistency} from '../dialogue/window-consistency';
 import type { IncomingMessage, InputAcceptance } from '../types';
@@ -20,14 +21,14 @@ export class SerialHost {
   constructor(private app: HdsiApp, private options: { timers?: boolean; onError?: (error: unknown) => void; onWarning?: (warning:string)=>void; yieldToEvents?:()=>Promise<void> } = {}) {
     this.input = new InputBuffer(app.dependencies.storage,app.dependencies.memoryIdle,app.dependencies.dialogue,app.dependencies.chat); this.scheduler = new Scheduler(app.dependencies.storage,app.dependencies.config);
   }
-  private checkDialogue():void {
+  private checkDialogue(full=true):void {
     const d=this.app.dependencies;
-    if(d.storage.runtime().dialogueContextVersion===2){const report=checkWindowConsistency(d.storage,{idleMinutes:d.retrieval?.limits.dialogueIdleMinutes??d.chat?.idleMinutes??15,recentSegments:d.retrieval?.limits.recentDialogueSegments??4});if(report.blockingIssues.length)throw Error(`chat 对话段索引不一致: ${report.blockingIssues.join('; ')}`);for(const warning of report.historicalWarnings)this.options.onWarning?.(warning);return;}
+    if(d.storage.runtime().dialogueContextVersion===2){const opts={idleMinutes:d.retrieval?.limits.dialogueIdleMinutes??d.chat?.idleMinutes??15,recentSegments:d.retrieval?.limits.recentDialogueSegments??4};if(full){const report=assertFullWindow(d.storage,opts);for(const warning of report.historicalWarnings)this.options.onWarning?.(warning);}else assertRoutineWindow(d.storage,opts);return;}
     const report=d.dialogue?.checkConsistency();if(report?.blockingIssues.length)throw new Error(`dialogue 对话段索引不一致: ${report.blockingIssues.join('; ')}`);for(const warning of report?.historicalWarnings??[])this.options.onWarning?.(warning);
   }
   async start(): Promise<void> {this.checkDialogue();this.recover=true;await this.wake();}
   async acceptInput(message: IncomingMessage): Promise<InputAcceptance> {
-    this.checkDialogue();
+    this.checkDialogue(false);
     const accepted = await this.input.acceptInput(message);
     void this.wake();
     return accepted;

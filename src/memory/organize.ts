@@ -1,3 +1,4 @@
+import {assertActiveWindow,assertMessageSources} from '../dialogue/active-consistency';
 import {activityContextMessages} from '../dialogue/activity-context';
 import { stageInput } from '../model/context-views';
 import type { MemoryResult, TurnRecord, TurnCandidate } from '../types';
@@ -14,6 +15,7 @@ export function currentSelfWebReads(d:Dependencies,turnId:string) {return (d.web
 
 export async function organizeMemory(d: Dependencies, turn: TurnRecord): Promise<MemoryResult> {
   const c = turn.frozenResult!;
+  assertActiveWindow(d.storage,{requiredMessageIds:[...c.visibleMessageIds,...c.reconsiderMessageIds]});
   const visibleMessages=c.visibleMessageIds.map(id=>d.storage.read('messages',id)!).filter(m=>m.seenTurnId===null||m.seenTurnId===turn.id);
   const reconsiderMessages = c.reconsiderMessageIds.map(id => d.storage.read('messages', id)!);
   const outgoing = d.storage.messagesByTurn(turn.id).filter(m => m.direction === 'outgoing');
@@ -59,6 +61,7 @@ export function applyTasks(d: Dependencies, candidate: TurnCandidate): void {
     const old = d.storage.read('tasks', id);
     if (old && !explicit.has(id)) d.storage.save('tasks', id, { ...old, status: 'completed' });
   }
+  assertMessageSources(d.storage,candidate.taskChanges.flatMap(c=>c.action==='cancel'?[]:c.task.messageIds??[]));
   candidate.taskChanges.forEach(change => {
     if (change.action === 'create') {
       d.storage.save('tasks', change.id!, { ...change.task, id: change.id!, status: 'pending' });

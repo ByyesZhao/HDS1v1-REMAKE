@@ -1,3 +1,4 @@
+import {assertRoutineWindow,windowOptions,assertActiveWindow} from '../dialogue/active-consistency';
 import { DialogueEpisodes } from '../dialogue/episodes';
 import {ChatEpisodes} from '../dialogue/chat-episodes';
 import { DialogueStore } from '../dialogue/store';
@@ -20,6 +21,7 @@ export class InputBuffer {
   private readonly dialogue:DialogueEpisodes|ChatEpisodes;
   constructor(private readonly storage: Storage,private readonly idle?:MemoryIdle,dialogue?:DialogueEpisodes,chat?:ChatEpisodes) {this.dialogue=storage.runtime().dialogueContextVersion===2?chat??new ChatEpisodes(new DialogueStore(storage)):dialogue??new DialogueEpisodes(new DialogueStore(storage));}
   async acceptInput(message: IncomingMessage): Promise<InputAcceptance> {
+    if(this.storage.runtime().dialogueContextVersion===2)assertRoutineWindow(this.storage,windowOptions(this.storage));
     return this.storage.transaction(() => {
       const existing=this.storage.read('messages',message.id),control=this.storage.read('control_requests',message.id);
       if(existing||control)return {kind:control?'advance':'message',systemReply:null};
@@ -54,6 +56,7 @@ export class InputBuffer {
       runtime.activeChatEpisodeId=this.storage.runtime().activeChatEpisodeId;
       runtime.openBatch = { id: batchId, readyAt: addMs(message.receivedAt, 15_000) };
       this.storage.set('runtime', runtime);
+      assertActiveWindow(this.storage,{requiredMessageIds:[message.id]});
       return { kind: 'message', systemReply: null };
     });
   }

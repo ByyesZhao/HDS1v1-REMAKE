@@ -13,3 +13,5 @@ export interface WindowConsistencyReport {version:1|2|null;ordinaryAssociationEr
 
 export type ChatEligibility='ordinary_narrative'|'with_visible_inputs';
 export interface ChatWindowSnapshot {messages:readonly Message[];episodes:readonly ChatEpisode[]}
+
+export interface ActiveWindowScope {touchedMessageIds:readonly string[];requiredMessageIds:readonly string[];sourceIds:readonly string[];touchedEpisodeIds:readonly string[]}

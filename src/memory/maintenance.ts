@@ -1,3 +1,4 @@
+import {assertMessageSources} from '../dialogue/active-consistency';
 import { stageInput } from '../model/context-views';
 import { randomUUID } from 'node:crypto';
 import type { Clock,ModelRunner } from '../types';
@@ -180,6 +181,7 @@ export class MemoryMaintenance {
     }
   }
   private applyUnit(unit:MaintenanceUnit,job:MaintenanceJob,now:string):void {
+    assertMessageSources(this.store.storage,unit.sourceIds);
     const rows=unit.ids.map(id=>job.snapshot.find(r=>r.id===id)).filter((r):r is MemoryCandidate=>!!r).map(r=>this.store.owner(r)).filter((r):r is MemoryCandidate=>!!r);
     if(unit.action==='merge_short'){
       const shorts=rows.filter(r=>r.kind==='short');const merged=this.lifecycle.mergeShort(shorts.map(r=>r.id),unit.canonicalShortId!,unit.content!,unit.eventSummary!,unit.feelingSummary!,unit.sourceIds,now);

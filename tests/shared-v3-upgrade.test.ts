@@ -43,7 +43,7 @@ it.each(['preparation', 'environment'] as const)('version_one_unfinished_%s_is_n
       request = { inputMessageIds: [], taskIds: [], triggerKinds: ['environment'], environmentKind: 'world' };
     }
     const turn: TurnRecord = { id: 'current', at: NOW, inputMessageIds: request.inputMessageIds, triggerTaskIds: [], triggerKinds: request.triggerKinds,
-      batchIds: [], entryMode: d.storage.character().scene.mode, sharedMeta: null, completedAt: null, frozenResult: null, outputComplete: false, done: false, environmentKind: request.environmentKind };
+      batchIds: [], dialogueWindowVersion:2,chatBinding:{episodeId:null,holdReply:false}, entryMode: d.storage.character().scene.mode, sharedMeta: null, completedAt: null, frozenResult: null, outputComplete: false, done: false, environmentKind: request.environmentKind };
     const generated = kind==='environment'?{candidate:{visibleMessageIds:[],reconsiderMessageIds:[],narrative:null,personal:null,expression:null,experiences:[],nextState:d.storage.character(),taskChanges:[],completedTaskIds:[],probability:{contactMisses:0,stickerMisses:0},autonomousIntervalMinutes:null,environmentChanges:[]},items:[]}:await generateTurn(d, request, turn.id); freezeTurn(d, turn, generated.candidate, generated.items); d.storage.close(); closed = true;
     const before = readFileSync(path), tables = schema(path);
     const { inspectSharedUpgrade, upgradeSharedActivity } = await import('../src/deployment/shared-upgrade.js');

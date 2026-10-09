@@ -1,3 +1,4 @@
+import {assertMessageSources} from '../dialogue/active-consistency';
 import { Storage } from '../storage';
 import { addMs, milliseconds, nextDaily } from '../time';
 import type { Awakening, IndexJob, MemoryCandidate, MemoryOwnerRef, OwnerVersion, RetentionGrant, RetrievalRequest,MemoryDirtyOwner,MemoryAuditReport,MaintenanceJob,MaintenanceUnit } from './types';
@@ -118,6 +119,7 @@ export class MemoryStore {
   allOwners():MemoryCandidate[]{return ['memories','details','learned_background'].flatMap(table=>this.storage.prepare(`SELECT data FROM ${table} ORDER BY id`).all().map(r=>memoryOwnerData(JSON.parse(String(r.data)))));}
   archivedLongs(now:string):MemoryCandidate[]{return this.storage.prepare(`SELECT data FROM memories WHERE (${archiveStartSql()}) IS NOT NULL ORDER BY id`).all(now).map(r=>memoryOwnerData(JSON.parse(String(r.data))));}
   saveOwner(owner:MemoryCandidate):void {
+    assertMessageSources(this.storage,owner.sourceIds);
     const table=owner.ownerType==='detail'?'details':owner.ownerType==='learned'?'learned_background':'memories';
     const data=memoryOwnerData(owner);
     this.storage.prepare(`INSERT INTO ${table}(id,data) VALUES(?,?) ON CONFLICT(id) DO UPDATE SET data=excluded.data`).run(owner.ownerId,JSON.stringify(data));

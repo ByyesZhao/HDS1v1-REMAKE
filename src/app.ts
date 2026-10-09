@@ -1,3 +1,4 @@
+import {assertActiveWindow} from './dialogue/active-consistency';
 import { ModelRequestError } from './model/client';
 import { DialogueEpisodes } from './dialogue/episodes';
 import {selectActivityContext,activityContextMessages,ActivityContextError} from './dialogue/activity-context';
@@ -48,7 +49,7 @@ export class HdsiApp {
       sharedMeta: request.sharedMeta ?? null,
       schoolNoticeRefs:request.schoolNoticeRefs??[],
     };
-    d.storage.transaction(()=>{turn.dialogueWindowVersion=d.storage.runtime().dialogueContextVersion===2?2:1;if(turn.dialogueWindowVersion===2){turn.chatBinding=d.chat!.bindTurn(turn);turn.activityContext=selectActivityContext(d.storage,turn);}else turn.dialogueBinding=d.dialogue!.bindTurn(turn);d.storage.save('turns',turn.id,turn);});
+    d.storage.transaction(()=>{turn.dialogueWindowVersion=d.storage.runtime().dialogueContextVersion===2?2:1;if(turn.dialogueWindowVersion===2){turn.chatBinding=d.chat!.bindTurn(turn);turn.activityContext=selectActivityContext(d.storage,turn);}else turn.dialogueBinding=d.dialogue!.bindTurn(turn);d.storage.save('turns',turn.id,turn);assertActiveWindow(d.storage,{requiredMessageIds:turn.inputMessageIds});});
     await this.execute(turn);
   }
   async resumeUnfinishedTurn(): Promise<void> {
@@ -105,6 +106,7 @@ export async function generateTurn(d: Dependencies, request: TurnRequest, turnId
   }
   const savedTurn=d.storage.read('turns',turnId),dialogueWindowVersion=savedTurn?savedTurn.dialogueWindowVersion??1:runtime.dialogueContextVersion===2?2:1;
   const activityContext=dialogueWindowVersion===2?(savedTurn?.activityContext!==undefined?savedTurn.activityContext:selectActivityContext(d.storage,{id:turnId,at,inputMessageIds:request.inputMessageIds,entryMode,sharedMeta:request.sharedMeta} as TurnRecord)):null;
+  assertActiveWindow(d.storage,{requiredMessageIds:request.inputMessageIds});
   const messages = request.inputMessageIds.map(id => d.storage.read('messages', id)!);
   const allTasks = d.storage.all('tasks').filter(t => t.status === 'pending');
   const tasks = allTasks.filter(t => request.taskIds.includes(t.id));

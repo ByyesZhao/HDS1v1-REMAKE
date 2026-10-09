@@ -36,6 +36,7 @@ export class Storage {
       CREATE INDEX IF NOT EXISTS turn_unfinished ON turns(json_extract(data, '$.done'));
       CREATE INDEX IF NOT EXISTS memory_time ON memories(json_extract(data, '$.kind'), json_extract(data, '$.createdAt'));
       CREATE UNIQUE INDEX IF NOT EXISTS outbox_sequence ON outbox(json_extract(data, '$.turnId'), json_extract(data, '$.seq'));
+      CREATE INDEX IF NOT EXISTS turn_active_work ON turns(json_extract(data,'$.done')) WHERE COALESCE(json_extract(data,'$.done'),0)=0 AND COALESCE(json_extract(data,'$.legacyDisposition'),'')!='superseded';
       CREATE INDEX IF NOT EXISTS message_turn ON messages(json_extract(data,'$.turnId'));
       CREATE INDEX IF NOT EXISTS message_chat ON messages(json_extract(data,'$.chatEpisodeId'));
       CREATE INDEX IF NOT EXISTS message_activity ON messages(json_extract(data,'$.sharedActivityId'));

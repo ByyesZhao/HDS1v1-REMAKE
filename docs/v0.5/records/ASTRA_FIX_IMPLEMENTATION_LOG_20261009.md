@@ -38,3 +38,20 @@ T6: complete — 历史汇总SQL、3任务各6阶段，2048网页展示，精确
 
 T7/T8: complete — 空闲前无快照，t5更新重置后t20仅一次新版整理；已开始/unknown输入保留；精确版本释放。r1/r2/r3仅编码r3，stateVersion-only可应用，服务前保持队位、服务后让给B，25项失效任务分20+5续调度且后台请求为0。T7指定8文件42项；T8指定加T7共8文件35项；完整116文件657项通过（59.12s），类型检查通过。日志t7-red/green/types，t8-red/targets/types，t78-suite。测试DTO去重content时改用content或eventSummary断言，未更改生产格式。
 T9/T10: complete — 全检messages读取由6次降至1次，chat_episodes/turns各1次；纯窗口两资格、42条整段、outbox/时区次序通过。SQL显式null/缺失/open无值/旧活动残留/done兼容与旧JS oracle相等，热查询不调用all解码历史。T9指定5文件44项，T10指定8文件38项；完整118文件661项通过（59.84s）；typecheck通过。查询计划将在T13合成探针保存，仍不宣称全检O(1)。日志t9-count-red/green、t10-red/green/types、t910-suite。
+
+T11: complete — 首次/启动/恢复全检，普通输入使用当前工作集；满1k/10k/50k合法已读历史，输入不调用all(messages/turns/chat_episodes)，JSON.parse次数完全相同。14项新增回归覆盖旧orphan重新成为task/memory/detail/learned/visible/reconsider/post来源、required缺失、全部unfinished、confirmed opening、事务回滚、控制及重复输入、迁空段full fallback。指定10文件73项后新增3项通过；首次全回归发现旧夹具版本/绑定与关闭时钟不全，已按真实状态补齐，原ActivityContextError保留。完整121文件677项通过（65.99s），类型检查通过。
+
+| T11边界 | 真实接入函数 |
+| --- | --- |
+| 输入 | SerialHost.checkDialogue(false)、InputBuffer.acceptInput、ChatEpisodes.acceptMessage |
+| 新轮/冻结 | HdsiApp.runTurn、generateTurn、freezeTurn |
+| 活动全文/恢复 | selectActivityContext、activityContextMessages；finishSharedTurn迁移经ChatEpisodes.reconcile完整fallback |
+| 输出/hold | sendFrozen事务末、ChatEpisodes.confirmOutput/releaseReply |
+| task/post | applyTasks、finishPostprocessing 保存结果前及B事务内 |
+| memory/details/learned | MemoryStore.saveOwner覆盖MemoryLifecycle/MemoryMaintenance所有owner写入；applyUnit显式来源复核 |
+| recent/lookup | ChatEpisodes.recent、MemoryRetrieval.build |
+
+来源只针对实际messages记录，经历/self-web-read不误当缺失消息；冻结required IDs仍必须存在。参数改变首次重新全检；旧V1不切换此路径。工作集不截断未读、活动全文或未完成轮。稀有迁移后段窗口证明可能失效，保留full检查。外部升级/数据库修改后的进入必须start/resume全检，不支持监视外部数据库的缓存。
+证据t11-cost-red/expanded/cost-green/regression-green/types-final；t1112-suite。
+
+T12: complete — 同次collectReady/nextDeadline只建一次known/items/instances只读Map，不缓存notice状态。15个个人提醒的school_knowledge读取15→1，发布后select即时见available，直接调用结果相同；指定5文件17项通过，联合全量121文件677项通过，typecheck通过。日志t12-count-red/green/types、t1112-suite。

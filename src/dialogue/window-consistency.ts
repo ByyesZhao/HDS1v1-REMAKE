@@ -3,22 +3,27 @@ import {recentFromSnapshot} from './chat-window';
 import {DialogueStore} from './store';
 import type {WindowConsistencyReport} from './types';
 import type {Message} from '../types';
+export interface WindowAuditSnapshot {messages:Message[];episodes:import('./types').ChatEpisode[];turns:import('../types').TurnRecord[];legacyIds:Set<string>;protectedSourceIds:string[];active?:boolean}
 export function checkWindowConsistency(storage:Storage,options:{idleMinutes:number;recentSegments:number}):WindowConsistencyReport {
- const r=storage.runtime(),store=new DialogueStore(storage),episodes=store.chatEpisodes(),episodeIds=new Set(episodes.map(e=>e.id)),messages=storage.messages(),turns=storage.all('turns'),inflight=turns.filter(isUnfinishedTurn);
+ const store=new DialogueStore(storage),protectedSourceIds:string[]=[];
+ for(const task of storage.all('tasks').filter(t=>t.status==='pending'))protectedSourceIds.push(...task.messageIds??[]);
+ for(const table of ['memories','details','learned_background'] as const)if(storage.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name=?").get(table))for(const row of storage.prepare(`SELECT data FROM ${table}`).all())protectedSourceIds.push(...JSON.parse(String(row.data)).sourceIds??[]);
+ return auditWindowSnapshot(storage,options,{messages:storage.messages(),episodes:store.chatEpisodes(),turns:storage.all('turns'),legacyIds:new Set(store.episodes().map(e=>e.id)),protectedSourceIds});
+}
+export function auditWindowSnapshot(storage:Storage,options:{idleMinutes:number;recentSegments:number},snapshot:WindowAuditSnapshot):WindowConsistencyReport {
+ const r=storage.runtime(),{messages,episodes,turns,legacyIds}=snapshot,episodeIds=new Set(episodes.map(e=>e.id)),inflight=turns.filter(isUnfinishedTurn);
  const messageById=new Map(messages.map(m=>[m.id,m])),turnById=new Map(turns.map(t=>[t.id,t])),episodeById=new Map(episodes.map(e=>[e.id,e]));
  const report:WindowConsistencyReport={version:r.dialogueContextVersion??null,ordinaryAssociationErrors:[],activityErrors:[],legacyInflightErrors:[],blockingIssues:[],historicalWarnings:[],protectedMessageIds:[]};
- const block=(reason:string)=>report.blockingIssues.push(reason),protectedIds=new Set<string>();
+ const block=(reason:string)=>report.blockingIssues.push(reason),protectedIds=new Set<string>(snapshot.protectedSourceIds);
+ if(snapshot.active)messages.forEach(m=>protectedIds.add(m.id));
  if(report.version!==2)block('chat version requires explicit migration');
  if(storage.read('chat_index_metadata','chat-index')?.idleMinutes!==options.idleMinutes)block('chat idle parameter requires explicit migration');
  const open=episodes.filter(e=>e.status==='open');
  if(open.length>1||open.length===1&&open[0].id!==r.activeChatEpisodeId||r.activeChatEpisodeId&&!open.some(e=>e.id===r.activeChatEpisodeId)){report.ordinaryAssociationErrors.push('activeChatEpisodeId');block('active chat episode conflict');}
  const visibleIds=[...new Set(inflight.flatMap(t=>t.inputMessageIds)),...messages.filter(m=>m.direction==='incoming'&&m.seenTurnId===null).map(m=>m.id)];
- const windows=(['ordinary_narrative','with_visible_inputs'] as const).map(eligibility=>recentFromSnapshot({messages,episodes},{eligibility,count:options.recentSegments,visibleIds:new Set(visibleIds)}));
+ const windows=snapshot.active?[]:(['ordinary_narrative','with_visible_inputs'] as const).map(eligibility=>recentFromSnapshot({messages,episodes},{eligibility,count:options.recentSegments,visibleIds:new Set(visibleIds)}));
  windows.flatMap(w=>w.messages).forEach(m=>protectedIds.add(m.id));
  messages.filter(m=>m.direction==='incoming'&&m.seenTurnId===null||r.sharedClock?.status==='active'&&m.sharedActivityId===r.sharedClock.activityId).forEach(m=>protectedIds.add(m.id));
- for(const task of storage.all('tasks').filter(t=>t.status==='pending'))for(const id of task.messageIds??[])protectedIds.add(id);
- for(const table of ['memories','details','learned_background'] as const)if(storage.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name=?").get(table))for(const row of storage.prepare(`SELECT data FROM ${table}`).all()){const memory=JSON.parse(String(row.data));for(const id of memory.sourceIds??[])protectedIds.add(id);}
- const legacyIds=new Set(store.episodes().map(e=>e.id));
  for(const t of inflight){
   for(const id of [...t.inputMessageIds,...t.activityContext?.messageIds??[],...t.frozenResult?.visibleMessageIds??[],...t.frozenResult?.reconsiderMessageIds??[]]){protectedIds.add(id);if(!messageById.get(id))block(`turn ${t.id}: message ${id} missing`);}
   for(const m of messages.filter(m=>m.turnId===t.id))protectedIds.add(m.id);
