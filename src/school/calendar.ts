@@ -1,3 +1,6 @@
+import {schoolItemOccurrences,weekStart} from './timing';
+export {weekStart} from './timing';
+const day=(date:string,offset:number)=>new Date(Date.parse(date+'T12:00:00Z')+offset*86400000).toISOString().slice(0,10);
 import {selectKnownSchoolSnapshots} from './knowledge';
 import {createHash} from 'node:crypto';
 import type {Storage} from '../storage';
@@ -7,27 +10,10 @@ import type {EnvironmentModelResult,EnvironmentChangeSet} from '../environment/t
 import type {SchoolExpansionInput,SchoolPlanItem,RequiredOccurrence,RequiredNotice,SchoolEntitySnapshot,SchoolInstance,SchoolNotice,SchoolWeek} from './types';
 import {ModelFormatError} from '../model/client';
 export function stableId(kind:string,tuple:unknown):string{return `${kind}:${createHash('sha256').update(JSON.stringify(tuple)).digest('hex')}`;}
-const day=(date:string,offset:number)=>new Date(Date.parse(date+'T12:00:00Z')+offset*86400000).toISOString().slice(0,10);
-export function weekStart(at:string,timezone:string){const date=localDate(at,timezone),weekday=new Date(date+'T12:00:00Z').getUTCDay()||7;return day(date,1-weekday);}
-function dateClock(date:string,clock:string,timezone:string){const [y,m,d]=date.split('-').map(Number),[h,min]=clock.split(':').map(Number);return localTime(y,m,d,h*60+min,timezone);}
 export function knownSchoolSnapshots(storage:Storage):SchoolEntitySnapshot[]{
  return selectKnownSchoolSnapshots(storage.all('school_knowledge'));
 }
 function related(notice:SchoolNotice,itemId:string){return notice.sourceItemId===itemId||notice.payload.snapshots.some(s=>s.entityKind==='plan_item'?s.entityId===itemId:s.value.sourceItemId===itemId);}
-function occurrences(item:SchoolPlanItem,weeks:string[],now:string,timezone:string):RequiredOccurrence[]{
- const t=item.timing;if(t.kind==='tentative')return [];
- if(t.kind==='once'||t.kind==='deadline'){
-  const start=t.kind==='once'?t.startsAt:t.at;if(!start)return [];const end=t.kind==='once'?t.endsAt:null;
-  if(milliseconds(end??start)<milliseconds(now))return [];
-  return [{occurrenceKey:JSON.stringify([item.id,t.kind==='once'?'once':'deadline']),sourceItemId:item.id,weekStart:null,startsAt:start,endsAt:end,status:'active'}];
- }
- return weeks.flatMap(week=>t.slots.flatMap(slot=>{
-  const date=day(week,slot.weekday-1);if(date<t.startsOn||t.endsOn&&date>t.endsOn)return [];
-  const startsAt=dateClock(date,slot.start,timezone),endsAt=dateClock(day(date,slot.end<=slot.start?1:0),slot.end,timezone);
-  if(milliseconds(endsAt)<milliseconds(now))return [];
-  return [{occurrenceKey:JSON.stringify([item.id,slot.slotKey,week]),sourceItemId:item.id,weekStart:week,startsAt,endsAt,status:'active' as const}];
- }));
-}
 function anchorOccurrence(o:RequiredOccurrence,existing:SchoolInstance[],now:string):RequiredOccurrence|null {
  const base=o.occurrenceKey,family=existing.filter(i=>(i.baseOccurrenceKey??i.occurrenceKey)===base);
  const future=family.find(i=>i.status==='active'&&milliseconds(i.startsAt)>milliseconds(now));
@@ -63,10 +49,10 @@ export function schoolExpansionInput(storage:Storage,now:string,timezone:string)
    for(const old of existingInstances.filter(i=>i.sourceItemId===item.id&&i.status==='active'&&milliseconds(i.startsAt)>milliseconds(now)))requiredOccurrences.push({occurrenceKey:old.occurrenceKey,baseOccurrenceKey:old.baseOccurrenceKey??old.occurrenceKey,sourceItemId:item.id,weekStart:old.weekStart,startsAt:old.startsAt,endsAt:old.endsAt,status:'cancelled'});
    continue;
   }
-  const expanded=occurrences(item,weekStarts,now,timezone).map(o=>anchorOccurrence(o,existingInstances,now)).filter((o):o is RequiredOccurrence=>o!==null);allOccurrences.push(...expanded);
+  const expanded=schoolItemOccurrences(item,weekStarts,now,timezone).map(o=>anchorOccurrence(o,existingInstances,now)).filter((o):o is RequiredOccurrence=>o!==null);allOccurrences.push(...expanded);
   for(const old of existingInstances.filter(i=>i.sourceItemId===item.id&&i.status==='active'&&milliseconds(i.startsAt)>milliseconds(now))){
    const base=old.baseOccurrenceKey??old.occurrenceKey;
-   const supported=occurrences(item,old.weekStart?[old.weekStart]:[],now,timezone).some(o=>o.occurrenceKey===base);
+   const supported=schoolItemOccurrences(item,old.weekStart?[old.weekStart]:[],now,timezone).some(o=>o.occurrenceKey===base);
    if(!supported)requiredOccurrences.push({occurrenceKey:old.occurrenceKey,baseOccurrenceKey:base,sourceItemId:item.id,weekStart:old.weekStart,startsAt:old.startsAt,endsAt:old.endsAt,status:'cancelled'});
   }
   for(const occurrence of expanded){

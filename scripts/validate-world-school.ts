@@ -121,7 +121,7 @@ async function main(){
   const mondayCourse=schoolStore.instances().find(i=>i.sourceItemId==='course'&&i.weekStart==='2026-10-12')!;assert(mondayCourse);
   // Simulate the host rescan at publication, then allow real elapsed reading
   // time. Publishing only at the final instant gives no prior reading interval.
-  storage.transaction(()=>releaseSchoolNotices(storage,now));
+  storage.transaction(()=>releaseSchoolNotices(storage,now,cfg.timezone));
   await story('read-initial-notices',15);
   const initialKnown=personalSchoolContext(storage,[],'').knownSnapshots;assert(!initialKnown.some(s=>s.entityId==='draft'));
   // The old-read prerequisite must come from actual observed knowledge.
@@ -135,7 +135,7 @@ async function main(){
   const oldMeeting=personalSchoolContext(storage,[],'meeting').knownSnapshots.find(s=>s.entityKind==='plan_item'&&s.entityId==='meeting')!;
   const mondayCourse=schoolStore.instances().find(i=>i.sourceItemId==='course'&&i.weekStart==='2026-10-12')!;
   await week('issued-reschedule-future-draft');
-  releaseSchoolNotices(storage,now);
+  releaseSchoolNotices(storage,now,cfg.timezone);
   assert(schoolStore.notices().some(n=>n.sourceItemId==='meeting'&&n.kind==='change'&&n.status==='available'));
   assert(schoolStore.notices().some(n=>n.sourceItemId==='research'&&n.kind==='change'&&n.status==='available'));
   assert(schoolStore.notices().filter(n=>n.sourceItemId==='draft'&&n.status!=='invalidated').every(n=>n.status==='scheduled'));

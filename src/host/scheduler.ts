@@ -14,7 +14,7 @@ export class Scheduler {
   async collectReady(now: string): Promise<TurnRequest | null> {
     new InputBuffer(this.storage).closeReady(now);
     if (this.storage.runtime().paused || this.storage.unfinishedTurn()) return null;
-    this.storage.transaction(()=>releaseSchoolNotices(this.storage,now));
+    this.storage.transaction(()=>releaseSchoolNotices(this.storage,now, this.config.timezone));
     const state = this.storage.character();
     if (isSleeping(state, now)) {
       this.storage.transaction(() => {
@@ -24,8 +24,8 @@ export class Scheduler {
     }
     const runtime = this.storage.runtime();
     const front = this.foreground(now);
-    if (front) return {...front,schoolNoticeRefs:selectSchoolNotices(this.storage,now)};
-    if(schoolNotificationEligible(this.storage,now))return {inputMessageIds:[],taskIds:[],triggerKinds:['school_notification'],batchIds:[],sharedMeta:null,schoolNoticeRefs:selectSchoolNotices(this.storage,now)};
+    if (front) return {...front,schoolNoticeRefs:selectSchoolNotices(this.storage,now, this.config.timezone)};
+    if(schoolNotificationEligible(this.storage,now, this.config.timezone))return {inputMessageIds:[],taskIds:[],triggerKinds:['school_notification'],batchIds:[],sharedMeta:null,schoolNoticeRefs:selectSchoolNotices(this.storage,now, this.config.timezone)};
     if (!hasValidSharedScene(state) && !isSleeping(state, now) && runtime.pendingBatchIds.length && !canRead(state, now)) this.stashPending(now);
     if(!runtime.openBatch){
       ensureEnvironmentBatch(this.storage,this.config,now);
@@ -33,7 +33,7 @@ export class Scheduler {
       if(step)return {inputMessageIds:[],taskIds:[],triggerKinds:['environment'],batchIds:[],environmentStepId:step.id,sharedMeta:null};
     }
     if (this.autonomousEligible(now) && due(state.nextAutonomousAt, now)) return {
-      inputMessageIds: this.storage.unreadMessages().map(m => m.id), taskIds: [], triggerKinds: ['autonomous'], batchIds: [], sharedMeta: null,schoolNoticeRefs:selectSchoolNotices(this.storage,now) };
+      inputMessageIds: this.storage.unreadMessages().map(m => m.id), taskIds: [], triggerKinds: ['autonomous'], batchIds: [], sharedMeta: null,schoolNoticeRefs:selectSchoolNotices(this.storage,now, this.config.timezone) };
     return null;
   }
 
@@ -104,7 +104,7 @@ export class Scheduler {
       }
     }
     if(!runtime.openBatch){const env=environmentDeadline(this.storage,now);if(env)candidates.push(env);}
-    const notice=schoolNoticeDeadline(this.storage,now);if(notice)candidates.push(notice);
+    const notice=schoolNoticeDeadline(this.storage,now, this.config.timezone);if(notice)candidates.push(notice);
 
     return candidates.sort((a, b) => milliseconds(a) - milliseconds(b))[0] ?? null;
   }

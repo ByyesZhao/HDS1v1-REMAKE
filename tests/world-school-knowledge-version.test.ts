@@ -17,7 +17,7 @@ import {runEnvironmentStep} from '../src/environment/runtime';
  const expandAt=(at:string)=>{const input=schoolExpansionInput(d.storage,at,d.config.timezone);applySchoolChanges(d.storage,resolveSchoolWeekText(d.storage,{stage:'school_week',noticeTexts:input.requiredNoticeKeys.map(n=>({key:n.id,text:'课程安排'})),weekNotes:[]},input,at),at);};
  d.storage.save('school_plan_items',item.id,item);expandAt(early);
  const ongoing=d.schoolStore.instances()[0];
- applySchoolChanges(d.storage,{stage:'school_campus',plans:[],items:[{...item,revision:2,deliveryRevision:2,location:'下次起用新教室'}]},correctionAt);expandAt(correctionAt);releaseSchoolNotices(d.storage,readAt);
+ applySchoolChanges(d.storage,{stage:'school_campus',plans:[],items:[{...item,revision:2,deliveryRevision:2,location:'下次起用新教室'}]},correctionAt);expandAt(correctionAt);releaseSchoolNotices(d.storage,readAt, 'Asia/Shanghai');
  const notice=d.schoolStore.notices().find(n=>n.kind==='change')!;
  d.storage.set('character',{...d.storage.character(),narratedUntil:correctionAt});
  const readExperience={id:'read-e',happenedAt:readAt,description:'读到课程更正，今后用新教室',relatedEventIds:[]};

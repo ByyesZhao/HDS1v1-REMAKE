@@ -13,7 +13,7 @@ it('personal_keeps_old_known_revision_related_id_not_read_proof_and_explicit_fut
  const known=personalSchoolContext(d.storage,[],'meeting').knownSnapshots;expect(known[0].value).toMatchObject({location:'学院',revision:1});expect(personalSchoolContext(d.storage,[],'大班会 2026-10-09').knownSnapshots).toHaveLength(1);d.storage.close();
 });
 it('late_notice_not_read_in_past_week_digest_only_declared_entities_known',()=>{
- const d=setup();d.storage.save('school_plan_items','meeting',schoolItem());expand(d);releaseSchoolNotices(d.storage,NOW);const n=d.schoolStore.notices().find(n=>n.kind==='issue')!;
+ const d=setup();d.storage.save('school_plan_items','meeting',schoolItem());expand(d);releaseSchoolNotices(d.storage,NOW, 'Asia/Shanghai');const n=d.schoolStore.notices().find(n=>n.kind==='issue')!;
  const turn:any={id:'t',at:NOW,schoolNoticeRefs:[{noticeId:n.id,deliveryRevision:n.deliveryRevision}]};
  const e={id:'e',happenedAt:NOW,description:'看了学院通知',relatedEventIds:[]},r={...narrative,experiences:[e],schoolObservations:[{via:'notice' as const,sourceId:n.id,experienceIndex:0}]};
  const prepared=prepareSchoolCommits(d.storage,turn,r,[e]);expect(prepared.visibleSnapshots).toHaveLength(1);expect(d.schoolStore.knowledge()).toEqual([]);
@@ -29,7 +29,7 @@ it('progress_requires_actual_experience_and_research_known_task',()=>{
  d.storage.transaction(()=>applySchoolCommits(d.storage,{schoolObservations:prepared.observations,schoolProgress:prepared.progress,experiences:[e]} as any,'t'));expect(d.schoolStore.progress()).toHaveLength(1);expect(d.schoolStore.progress()[0].experienceId).toBe('e');expect(d.storage.read('school_plan_items',task.id)?.status).toBe('open');d.storage.close();
 });
 it('end_of_turn_awake_does_not_allow_reading_while_previously_sleeping',()=>{
- const d=setup(),earlier='2026-10-07T09:00:00+08:00';d.storage.save('school_plan_items','meeting',schoolItem({issuedAt:earlier}));expand(d,earlier);releaseSchoolNotices(d.storage,earlier);const n=d.schoolStore.notices().find(n=>n.kind==='issue')!;
+ const d=setup(),earlier='2026-10-07T09:00:00+08:00';d.storage.save('school_plan_items','meeting',schoolItem({issuedAt:earlier}));expand(d,earlier);releaseSchoolNotices(d.storage,earlier, 'Asia/Shanghai');const n=d.schoolStore.notices().find(n=>n.kind==='issue')!;
  d.storage.set('character',{...d.storage.character(),narratedUntil:earlier,sleep:{sleepAt:'2026-10-07T09:30:00+08:00',wakeAt:NOW}});
  const e={id:'e',happenedAt:'2026-10-07T09:50:00+08:00',description:'声称睡着时读到通知',relatedEventIds:[]};
  expect(()=>prepareSchoolCommits(d.storage,{id:'t',at:NOW,schoolNoticeRefs:[{noticeId:n.id,deliveryRevision:1}]} as any,{...narrative,experiences:[e],schoolObservations:[{via:'notice',sourceId:n.id,experienceIndex:0}]},[e])).toThrow(/readable/);d.storage.close();
