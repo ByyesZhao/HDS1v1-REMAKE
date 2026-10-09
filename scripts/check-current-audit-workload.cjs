@@ -5,10 +5,10 @@ const args=process.argv.slice(2);if(args.length!==2||args[0]!=='--output')throw 
 const at='2026-10-08T02:00:00Z',results=[];
 for(const H of [1000,10000,50000]){
  const s=new Storage(':memory:');try{s.transaction(()=>{for(let i=0;i<H+4;i++){const id='e'+i,t=new Date(Date.UTC(2026,0,1)+i*1200000).toISOString();s.save('chat_episodes',id,{id,openedAt:t,lastInteractionAt:t,status:'closed',closedAt:t,closeReason:'idle'});for(let j=0;j<(i>=H?41:1);j++){const m=id+':'+j;s.save('messages',m,{id:m,content:'完整正文'+j,receivedAt:t,direction:'outgoing',seenTurnId:null,turnId:null,outboxSeq:null,batchId:null,platformMessageIds:[],chatEpisodeId:id,sharedActivityId:null});}}});
- const observed=captureQueries(s,()=>s.recentChatSnapshot({eligibility:'ordinary_narrative',count:4,visibleIds:[]}));assert.equal(observed.value.messages.length,164);assert.equal(observed.value.episodes.length,4);assert.equal(observed.queries.reduce((n,q)=>n+q.jsonRows,0),168);
+ const firstStart=performance.now(),observed=captureQueries(s,()=>s.recentChatSnapshot({eligibility:'ordinary_narrative',count:4,visibleIds:[]})),firstMs=performance.now()-firstStart;assert.equal(observed.value.messages.length,164);assert.equal(observed.value.episodes.length,4);assert.equal(observed.queries.reduce((n,q)=>n+q.jsonRows,0),168);
  const rank=observed.queries[0],ops=s.prepare('EXPLAIN '+rank.sql).all(...rank.args),messageRoot=s.prepare("SELECT rootpage FROM sqlite_master WHERE name='messages'").get().rootpage,messageCursors=ops.filter(o=>o.opcode==='OpenRead'&&o.p2===messageRoot).map(o=>o.p1),bodyColumns=ops.filter(o=>o.opcode==='Column'&&messageCursors.includes(o.p1)&&o.p2===1);assert.equal(bodyColumns.length,0);
- const samples=[];for(let i=0;i<6;i++){const start=performance.now();s.recentChatSnapshot({eligibility:'ordinary_narrative',count:4,visibleIds:[]});samples.push(performance.now()-start);}
- results.push({kind:'chatWindow',H,selectedEpisodes:4,fullMessages:164,queries:observed.queries,plans:plans(s,observed.queries),rankMessageBodyColumnOperations:bodyColumns.length,firstMs:samples[0],hotMs:samples.slice(1),medianMs:samples.slice(1).sort((a,b)=>a-b)[2]});
+ const samples=[];for(let i=0;i<5;i++){const start=performance.now();s.recentChatSnapshot({eligibility:'ordinary_narrative',count:4,visibleIds:[]});samples.push(performance.now()-start);}
+ results.push({kind:'chatWindow',H,selectedEpisodes:4,fullMessages:164,queries:observed.queries,plans:plans(s,observed.queries),rankMessageBodyColumnOperations:bodyColumns.length,firstMs,hotMs:samples,medianMs:[...samples].sort((a,b)=>a-b)[2]});
  }finally{s.close();}
 }
 for(const H of [0,1000,5000]){
