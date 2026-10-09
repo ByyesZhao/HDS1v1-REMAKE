@@ -1,0 +1,19 @@
+{
+  "kind": "planning-revision-code-scope-check",
+  "checkedAt": "2026-10-09T14:51:48.3904234Z",
+  "sourceBaseline": "4fe090c0e2acfe2b137854db7a55de86afcc9036",
+  "paths": [
+    "src",
+    "tests",
+    "runtime",
+    "scripts",
+    "examples",
+    "package.json",
+    "package-lock.json",
+    ".gitignore",
+    "README.md"
+  ],
+  "trackedProductChanges": [],
+  "untrackedProductChanges": [],
+  "note": "Read-only Git check in PowerShell; Node child-process Git spawning returned EPERM in this environment."
+}

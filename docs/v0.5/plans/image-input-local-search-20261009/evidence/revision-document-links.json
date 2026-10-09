@@ -1,0 +1,642 @@
+{
+  "kind": "documentation-link-check",
+  "sourceBaseline": "4fe090c0e2acfe2b137854db7a55de86afcc9036",
+  "checkedAt": "2026-10-09T14:51:48.475Z",
+  "files": 9,
+  "links": 126,
+  "missing": [],
+  "formatting": [],
+  "productChanges": [],
+  "checks": [
+    {
+      "file": "docs/v0.5/plans/image-input-local-search-20261009/README.md",
+      "target": "../../reviews/image-input-local-search-20261009/PLAN_REVIEW.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/plans/image-input-local-search-20261009/README.md",
+      "target": "EXECUTION_GUIDE.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/plans/image-input-local-search-20261009/README.md",
+      "target": "EXECUTION_GUIDE.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/plans/image-input-local-search-20261009/README.md",
+      "target": "DESIGN.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/plans/image-input-local-search-20261009/README.md",
+      "target": "IMAGE_INPUT_PLAN.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/plans/image-input-local-search-20261009/README.md",
+      "target": "LOCAL_SEARCH_PLAN.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/plans/image-input-local-search-20261009/README.md",
+      "target": "../../reviews/image-input-local-search-20261009/PLAN_REVIEW.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/plans/image-input-local-search-20261009/README.md",
+      "target": "../../../../references/legacy-web-search/README.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/plans/image-input-local-search-20261009/README.md",
+      "target": "evidence/revision-self-review.json",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/plans/image-input-local-search-20261009/README.md",
+      "target": "evidence/revision-document-links.json",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/plans/image-input-local-search-20261009/README.md",
+      "target": "evidence/public-http-probe.json",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/plans/image-input-local-search-20261009/README.md",
+      "target": "evidence/plan-self-review.json",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/plans/image-input-local-search-20261009/README.md",
+      "target": "evidence/document-link-check.json",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/plans/image-input-local-search-20261009/README.md",
+      "target": "../../../DIRECTORY_POLICY.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/plans/image-input-local-search-20261009/DESIGN.md",
+      "target": "../../reviews/image-input-local-search-20261009/evidence/baseline.json",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/plans/image-input-local-search-20261009/DESIGN.md",
+      "target": "README.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/plans/image-input-local-search-20261009/DESIGN.md",
+      "target": "../../reviews/image-input-local-search-20261009/PLAN_REVIEW.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/plans/image-input-local-search-20261009/DESIGN.md",
+      "target": "EXECUTION_GUIDE.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/plans/image-input-local-search-20261009/DESIGN.md",
+      "target": "EXECUTION_GUIDE.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/plans/image-input-local-search-20261009/DESIGN.md",
+      "target": "IMAGE_INPUT_PLAN.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/plans/image-input-local-search-20261009/DESIGN.md",
+      "target": "LOCAL_SEARCH_PLAN.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/plans/image-input-local-search-20261009/IMAGE_INPUT_PLAN.md",
+      "target": "DESIGN.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/plans/image-input-local-search-20261009/IMAGE_INPUT_PLAN.md",
+      "target": "EXECUTION_GUIDE.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/plans/image-input-local-search-20261009/IMAGE_INPUT_PLAN.md",
+      "target": "EXECUTION_GUIDE.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/plans/image-input-local-search-20261009/LOCAL_SEARCH_PLAN.md",
+      "target": "DESIGN.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/plans/image-input-local-search-20261009/LOCAL_SEARCH_PLAN.md",
+      "target": "EXECUTION_GUIDE.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/plans/image-input-local-search-20261009/LOCAL_SEARCH_PLAN.md",
+      "target": "EXECUTION_GUIDE.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/plans/image-input-local-search-20261009/EXECUTION_GUIDE.md",
+      "target": "../../reviews/image-input-local-search-20261009/PLAN_REVIEW.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/plans/image-input-local-search-20261009/EXECUTION_GUIDE.md",
+      "target": "README.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/plans/image-input-local-search-20261009/EXECUTION_GUIDE.md",
+      "target": "DESIGN.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/plans/image-input-local-search-20261009/EXECUTION_GUIDE.md",
+      "target": "evidence/revision-self-review.json",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/plans/image-input-local-search-20261009/EXECUTION_GUIDE.md",
+      "target": "../../subsystems/REMAKE_V0.5_CONTEXT.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/plans/image-input-local-search-20261009/EXECUTION_GUIDE.md",
+      "target": "../../subsystems/REMAKE_V0.5_EXPRESSION_STICKERS.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/plans/image-input-local-search-20261009/EXECUTION_GUIDE.md",
+      "target": "../../subsystems/REMAKE_V0.5_MEMORY.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/plans/image-input-local-search-20261009/EXECUTION_GUIDE.md",
+      "target": "../../subsystems/REMAKE_V0.5_RECOVERY.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/plans/image-input-local-search-20261009/EXECUTION_GUIDE.md",
+      "target": "../../subsystems/REMAKE_V0.5_WEB_SEARCH.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/plans/image-input-local-search-20261009/EXECUTION_GUIDE.md",
+      "target": "../../reference/V0.5_IMPLEMENTATION_MAP_20261009.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/plans/image-input-local-search-20261009/EXECUTION_GUIDE.md",
+      "target": "../../reference/MODEL_CALLS_AND_WEB_OPTIONS_20261009.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "target": "records/reply-guidance-20261009/DELIVERY.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "target": "records/environment-async-20261009/REVIEW_CLOSURE.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "target": "reviews/environment-async-20261009/post-delivery/REVIEW.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "target": "records/environment-post-delivery-fixes-20261009/DELIVERY.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "target": "../DIRECTORY_POLICY.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "target": "architecture/REMAKE_V0.5.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "target": "subsystems/REMAKE_V0.5_DIRECTORS.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "target": "subsystems/REMAKE_V0.5_SCHEDULING.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "target": "subsystems/REMAKE_V0.5_MEMORY.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "target": "subsystems/REMAKE_V0.5_SHARED_ACTIVITY.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "target": "subsystems/REMAKE_V0.5_CONTEXT.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "target": "subsystems/REMAKE_V0.5_EXPRESSION_STICKERS.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "target": "subsystems/REMAKE_V0.5_WEB_SEARCH.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "target": "subsystems/REMAKE_V0.5_RECOVERY.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "target": "reference/V0.5_IMPLEMENTATION_MAP_20261009.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "target": "reference/BACKGROUND_VIEW_MAPPING_20261008.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "target": "../../README.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "target": "records/document-model-audit-20261009/README.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "target": "reference/MODEL_CALLS_AND_WEB_OPTIONS_20261009.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "target": "records/document-model-audit-20261009/README.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "target": "records/reply-guidance-20261009/DELIVERY.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "target": "records/environment-post-delivery-fixes-20261009/DELIVERY.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "target": "reviews/environment-async-20261009/post-delivery/FIX_DIFF_REVIEW.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "target": "reviews/environment-async-20261009/post-delivery/REVIEW.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "target": "records/environment-async-20261009/DELIVERY.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "target": "records/environment-async-20261009/IMPLEMENTATION_LOG.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "target": "reviews/environment-async-20261009/INDEPENDENT_REVIEW.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "target": "records/environment-async-20261009/REVIEW_CLOSURE.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "target": "records/environment-async-20261009/evidence/workload-final.json",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "target": "records/document-organization-20261009/README.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "target": "records/environment-post-delivery-fixes-20261009/evidence/formal-upgrade-summary.json",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "target": "records/environment-post-delivery-fixes-20261009/evidence/formal-postcheck.json",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "target": "../archive/records/",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "target": "../archive/reviews/",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "target": "plans/README.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "target": "records/README.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "target": "reviews/README.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "target": "../archive/README.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "target": "../../runtime/archive/README.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "target": "../DIRECTORY_POLICY.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "target": "records/environment-async-20261009/evidence/document-moves.json",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/plans/README.md",
+      "target": "../README.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/plans/README.md",
+      "target": "image-input-local-search-20261009/README.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/plans/README.md",
+      "target": "image-input-local-search-20261009/EXECUTION_GUIDE.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/plans/README.md",
+      "target": "../reviews/image-input-local-search-20261009/PLAN_REVIEW.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/plans/README.md",
+      "target": "../../archive/plans/environment-async-20261009/README.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/plans/README.md",
+      "target": "../records/environment-async-20261009/DELIVERY.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/plans/README.md",
+      "target": "../records/environment-async-20261009/REVIEW_CLOSURE.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/plans/README.md",
+      "target": "../records/environment-post-delivery-fixes-20261009/DELIVERY.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/plans/README.md",
+      "target": "../../DIRECTORY_POLICY.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/reviews/README.md",
+      "target": "../README.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/reviews/README.md",
+      "target": "image-input-local-search-20261009/PLAN_REVIEW.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/reviews/README.md",
+      "target": "../plans/image-input-local-search-20261009/README.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/reviews/README.md",
+      "target": "environment-async-20261009/post-delivery/REVIEW.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/reviews/README.md",
+      "target": "environment-async-20261009/post-delivery/FIX_DIFF_REVIEW.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/reviews/README.md",
+      "target": "../records/environment-post-delivery-fixes-20261009/DELIVERY.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/reviews/README.md",
+      "target": "environment-async-20261009/INDEPENDENT_REVIEW.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/reviews/README.md",
+      "target": "../records/environment-async-20261009/REVIEW_CLOSURE.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/reviews/README.md",
+      "target": "../../archive/reviews/post-t1-t9-20261009/REVIEW.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/reviews/README.md",
+      "target": "../../archive/reviews/",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/reviews/README.md",
+      "target": "../../archive/dsh-review/",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/reviews/README.md",
+      "target": "../README.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/reviews/README.md",
+      "target": "../../DIRECTORY_POLICY.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/reviews/image-input-local-search-20261009/PLAN_REVIEW.md",
+      "target": "evidence/baseline.json",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/reviews/image-input-local-search-20261009/PLAN_REVIEW.md",
+      "target": "../../plans/image-input-local-search-20261009/DESIGN.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/reviews/image-input-local-search-20261009/PLAN_REVIEW.md",
+      "target": "../../plans/image-input-local-search-20261009/IMAGE_INPUT_PLAN.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/reviews/image-input-local-search-20261009/PLAN_REVIEW.md",
+      "target": "../../plans/image-input-local-search-20261009/LOCAL_SEARCH_PLAN.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/reviews/image-input-local-search-20261009/PLAN_REVIEW.md",
+      "target": "../../../../src/app.ts",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/reviews/image-input-local-search-20261009/PLAN_REVIEW.md",
+      "target": "../../../../src/memory/retrieval.ts",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/reviews/image-input-local-search-20261009/PLAN_REVIEW.md",
+      "target": "../../../../src/model/context-views.ts",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/reviews/image-input-local-search-20261009/PLAN_REVIEW.md",
+      "target": "../../../../src/model/resource-pool.ts",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/reviews/image-input-local-search-20261009/PLAN_REVIEW.md",
+      "target": "../../../../src/index.ts",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/reviews/image-input-local-search-20261009/PLAN_REVIEW.md",
+      "target": "evidence/koishi-inject-probe.cjs",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/reviews/image-input-local-search-20261009/PLAN_REVIEW.md",
+      "target": "evidence/koishi-inject-probe-result.json",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/reviews/image-input-local-search-20261009/PLAN_REVIEW.md",
+      "target": "../../../../references/legacy-web-search/source/public-web-reader.ts",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/reviews/image-input-local-search-20261009/PLAN_REVIEW.md",
+      "target": "evidence/legacy-probe.cjs",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/reviews/image-input-local-search-20261009/PLAN_REVIEW.md",
+      "target": "evidence/legacy-probe-result.json",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/reviews/image-input-local-search-20261009/PLAN_REVIEW.md",
+      "target": "../../../../references/legacy-web-search/source/web-page.ts",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/reviews/image-input-local-search-20261009/PLAN_REVIEW.md",
+      "target": "evidence/legacy-probe-result.json",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/reviews/image-input-local-search-20261009/PLAN_REVIEW.md",
+      "target": "../../../../src/web/service.ts",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/reviews/image-input-local-search-20261009/PLAN_REVIEW.md",
+      "target": "../../../../src/web/store.ts",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/reviews/image-input-local-search-20261009/PLAN_REVIEW.md",
+      "target": "../../../../src/model/prompts.ts",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/reviews/image-input-local-search-20261009/PLAN_REVIEW.md",
+      "target": "../../../../src/output/stickers.ts",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/reviews/image-input-local-search-20261009/PLAN_REVIEW.md",
+      "target": "../../../../runtime/check.cjs",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/reviews/image-input-local-search-20261009/PLAN_REVIEW.md",
+      "target": "../../plans/image-input-local-search-20261009/DESIGN.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/reviews/image-input-local-search-20261009/PLAN_REVIEW.md",
+      "target": "../../plans/image-input-local-search-20261009/IMAGE_INPUT_PLAN.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/reviews/image-input-local-search-20261009/PLAN_REVIEW.md",
+      "target": "../../plans/image-input-local-search-20261009/LOCAL_SEARCH_PLAN.md",
+      "exists": true
+    },
+    {
+      "file": "docs/v0.5/reviews/image-input-local-search-20261009/PLAN_REVIEW.md",
+      "target": "../../plans/image-input-local-search-20261009/EXECUTION_GUIDE.md",
+      "exists": true
+    }
+  ]
+}

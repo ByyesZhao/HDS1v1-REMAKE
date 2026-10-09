@@ -1,0 +1,93 @@
+{
+  "kind": "implementation-plan-revision-self-review",
+  "date": "2026-10-09",
+  "status": "documentation-ready-for-SOL; product-not-implemented",
+  "codeBaseline": "4fe090c0e2acfe2b137854db7a55de86afcc9036",
+  "previousReview": "docs/v0.5/reviews/image-input-local-search-20261009/PLAN_REVIEW.md",
+  "checks": {
+    "scope": "Keep image-first I1-I6 and S1-S5, with early S5a after S2a.",
+    "specificationCoverage": "R1-R5 plus ordering, pause, terminal unknown, asset recovery, isolated check, and early browser feasibility mapped in EXECUTION_GUIDE section 5.",
+    "taskSteps": "Each implementation unit identifies files, interfaces, failing behavior, red/green commands, and commit boundary.",
+    "typeConsistency": "Frozen pending imageAssetRef and recognizerVersion pinned; readFrozenForTurn resolves terminal bodies; browser lifecycle factory returns ManagedBrowserProvider.",
+    "dependencyOrder": "I5b before isolated runtime check; I6 provides image fixture generator; S4 extends search mode; S1 plus S2a precede S5a.",
+    "reviewFocus": "Every focus entry maps to named task tests, including real Context, on-disk reopen, and actual envelope assertions.",
+    "proportion": "Contracts, assertions and interfaces are specified; implementation function bodies are not prewritten.",
+    "documentState": "Current feature rules remain unchanged until implementation; original review probes and old evidence retain their baseline."
+  },
+  "productTestsExecuted": false,
+  "productImplementationPerformed": false,
+  "dependenciesInstalled": false,
+  "formalConfigOrDatabaseModified": false,
+  "formalServicesStartedOrStopped": false,
+  "onlineModelCallsMade": false,
+  "publicBrowserAcceptanceExecuted": false,
+  "sourceVerification": "Reviewed current source integration points and official Readability/Koishi/Puppeteer documentation; this is planning evidence only.",
+  "externalReferences": [
+    "https://github.com/mozilla/readability",
+    "https://koishi.chat/zh-CN/guide/plugin/service",
+    "https://puppeteer.koishi.chat/api.html"
+  ],
+  "openImplementationGates": [
+    "Execute I1-I6 and required new regression tests.",
+    "Execute S1, S2a and real S5a public-browser feasibility before complete integration.",
+    "Execute S2b-S5b, real resource drain and service-lifecycle verification.",
+    "Report real image/model quality and formal deployment separately; do not infer them from offline tests."
+  ],
+  "verifiedAt": "2026-10-09T14:51:48.475Z",
+  "documentManifest": [
+    {
+      "path": "docs/v0.5/plans/image-input-local-search-20261009/README.md",
+      "sha256": "e843e4dd4e7b27000bd211a0fe5b0d0b579628e27bca3b84d4b4d10c90dddb02",
+      "lines": 23
+    },
+    {
+      "path": "docs/v0.5/plans/image-input-local-search-20261009/DESIGN.md",
+      "sha256": "f10533f3f2e0dd72b827daf6d242fc2ea54ff3d80604e3ff0a305b3c9dd7ebc4",
+      "lines": 332
+    },
+    {
+      "path": "docs/v0.5/plans/image-input-local-search-20261009/IMAGE_INPUT_PLAN.md",
+      "sha256": "0057b14be6d59651a9a0b45dd3af5ca28932d8fe0fe8504b4b5f2ec15fe730f7",
+      "lines": 186
+    },
+    {
+      "path": "docs/v0.5/plans/image-input-local-search-20261009/LOCAL_SEARCH_PLAN.md",
+      "sha256": "88f90fe9cf949627026b38ea93dc69c135ba4d87522c2bd6d79ce43e219a2194",
+      "lines": 159
+    },
+    {
+      "path": "docs/v0.5/plans/image-input-local-search-20261009/EXECUTION_GUIDE.md",
+      "sha256": "db82ae4a39c86d970b0f1eb4ef8ca5af400c7c572886fe2a6a7556595e4314b9",
+      "lines": 160
+    },
+    {
+      "path": "docs/v0.5/README.md",
+      "sha256": "6f0c44ce5865fae64f1bc1bf3831624fb8fa44f935cb1406f3ca841c94013ce0",
+      "lines": 64
+    },
+    {
+      "path": "docs/v0.5/plans/README.md",
+      "sha256": "8c78f529bc8d7ded23d92fcb4bf443d79b213ae1b83574881f7524af06257f2e",
+      "lines": 9
+    },
+    {
+      "path": "docs/v0.5/reviews/README.md",
+      "sha256": "fc67d17bc7e0875f7e5c6e202582ea074b830a6216255c12688b34e57bde536d",
+      "lines": 13
+    },
+    {
+      "path": "docs/v0.5/reviews/image-input-local-search-20261009/PLAN_REVIEW.md",
+      "sha256": "f4b7754494f1341fb868eccda0109014957a936ba769818aae882e52d5eff605",
+      "lines": 160
+    }
+  ],
+  "hashMode": "SHA256 over UTF-8 document text normalized to LF",
+  "linkCheck": {
+    "files": 9,
+    "links": 126,
+    "missing": 0,
+    "formattingErrors": 0
+  },
+  "productFilesChanged": [],
+  "codeCheckEvidence": "revision-code-check.json"
+}

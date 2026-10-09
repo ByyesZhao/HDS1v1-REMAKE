@@ -1,0 +1,20 @@
+{
+  "head": "4fe090c0e2acfe2b137854db7a55de86afcc9036",
+  "declaredPlanBaseline": "ddde663",
+  "scope": "Plan review against current source and offline reference probes; no production implementation or deployment",
+  "date": "2026-10-09",
+  "files": [
+    {
+      "path": "docs/v0.5/plans/image-input-local-search-20261009/DESIGN.md",
+      "sha256": "C8F0D068892859BF9B2FDF8475A92597A0C9EACD252CAB4BF35040FF1C25AF37"
+    },
+    {
+      "path": "docs/v0.5/plans/image-input-local-search-20261009/IMAGE_INPUT_PLAN.md",
+      "sha256": "4B5AA9D8B38EAEA7916F35295A1DA5EE6F6546D57B43BD74AB11FA0600453DC1"
+    },
+    {
+      "path": "docs/v0.5/plans/image-input-local-search-20261009/LOCAL_SEARCH_PLAN.md",
+      "sha256": "A62437865C7AD95DB6F059B5E2F6882E3102371B360B201FB99E990BD900D1B4"
+    }
+  ]
+}

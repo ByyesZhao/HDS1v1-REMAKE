@@ -1,0 +1,14 @@
+{
+  "networkRequests": 0,
+  "usesRealInstalledKoishiContext": true,
+  "beforeService": [
+    {
+      "browserAvailable": false
+    }
+  ],
+  "afterService": [
+    {
+      "browserAvailable": false
+    }
+  ]
+}

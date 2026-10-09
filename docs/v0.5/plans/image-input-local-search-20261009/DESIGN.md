@@ -1,48 +1,25 @@
-# 图片输入与本地搜索设计
+# 图片输入与本地搜索设计（审核修订版）
 
-日期：2026-10-09。状态：待审，未实施。返回[计划入口](README.md)。
+日期：2026-10-09。状态：**设计已细化，功能未实施**。源码基线 `4fe090c`（产品代码沿用 `b9d5514`）。本文件替代同路径原待审稿；原稿由该提交及 [review 基线](../../reviews/image-input-local-search-20261009/evidence/baseline.json)追溯。返回[入口](README.md)。
 
-## 1. 已核实的现状
+## 1. 范围与裁决
 
-### 1.1 图片确实缺少输入接线
+保留“独立图片观察 → 文字资料池”和“本地浏览器 → 现有 WebSearchProvider”两条路线，先图片、后搜索，分别交付。图片识别与用户意图判断分开：观察任务识别画面，个人导演结合消息语境决定反应。
 
-`src/index.ts`把img／image／face／mface转为“用户发送…未识别内容”，只保存`hasVisualAttachment`。附件地址、表情ID与画面没有交给模型。第四条表情语境提示只能约束回应方式，不能凭空识别doge、图片文字或内容。
+- 当前图片入口只有占位和 hasVisualAttachment；发送层已有单图 image_url 能力。新图片任务复用现有 Flash／high 连接，不改任何已有模型、强度、输出模式或嵌入连接。
+- 当前网页工具的阶段身份、20 成功正文／40 失败、B 口径缓存、checkpoint 和本人查阅规则继续使用；新增底层 provider，不重写工具框架。
+- 图片开关默认 false；搜索开关默认 false。已知原生表情名称可在图片关闭时使用；关闭时不下载陌生图片、不调用视觉模型。
+- 本批不做图片相似度检索、图片自动入发送图库、多图一次模型调用、GIF 抽帧、搜索 RSS、跨引擎自动回退或 SearXNG 部署。
+- 不增加正文／观察字符裁剪，不把 HTTP200、搜索摘要、旧图库用途描述当已识别事实。
+- 原始消息 15 秒／共同活动 60 秒收件节奏、四段原文窗口、睡眠与暂停合同不变；暂停只挡新故事轮，已开始的前台轮继续完成。
 
-`src/model/client.ts`已经能把`imageDataUrl`变为真实`image_url`块；`src/output/sticker-description.ts`仅用于导入图库，不消费实时用户消息。Flash官方支持图片输入，现有模型无需更换。[官方Vision说明](https://api-docs.deepseek.com/guides/vision/)
+[原审核](../../reviews/image-input-local-search-20261009/PLAN_REVIEW.md)的 R1～R5 均纳入以下合同。[执行指南](EXECUTION_GUIDE.md)给出依赖、验证顺序与交接要求；它与两份实施计划共同使用。
 
-已有67项图库的向量编码描述／标签，不是图像向量。不能直接把收到的图片拿去与这些文本向量比相似度就宣称识别成功。
+## 2. 图片：数据及接收合同
 
-### 1.2 “搜索模块”指当前重制版的工具框架
+### 2.1 统一类型
 
-当前`src/web/`实现阶段会话、JSON工具请求、正文缓存、20／40、结果不足、引用和checkpoint；`WebSearchProvider`需要提供`search(query)`与`read(url)`。目前只有Unconfigured实现，正式入口无条件拒绝启用尚未装配的供应商。
-
-这里的供应商可以是本地浏览器适配器，并非一定是付费API；原生DeepSeek搜索和HDSI程序执行网页操作是两条不同路径。
-
-### 1.3 旧项目存在可迁移的浏览能力
-
-已核对旧本地增强仓库，以及本地保存的作者`1.0.1-rc28`参考源码。两者都有Koishi Puppeteer：按搜索模板打开公开结果页、提取链接、再访问页面正文。旧默认模板是DuckDuckGo轻量HTML；增强版还判断Bing／DuckDuckGo结果项和登录／验证码壳，并处理Bing公开RSS搜索页。
-
-它不是自建互联网索引，仍借用外部搜索网站；不支付搜索API请求费，仍消耗本机浏览器资源、网络和后续DeepSeek输入／续调用费用。可迁移的是底层页面能力，不是旧故事调度、20／20计数、截断预算或旧数据库。
-
-需要用到的源码已复制到[新项目参考目录](../../../../references/legacy-web-search/README.md)，不复制旧运行配置。旧运行环境安装了Puppeteer插件；新runtime未安装，计划阶段未安装或启动它。
-
-## 2. 图片方案取舍
-
-| 方案 | 特点 | 本次选择 |
-| --- | --- | --- |
-| 每次把图直接给个人导演 | 少一次独立请求，个人导演可结合场景看图；需扩展主阶段多图／原图恢复，各次重试可能重发 | 保留为后续可选方向 |
-| 独立观察→文字给故事阶段 | 初次多一个请求；可固定识别结果、按内容缓存，各阶段不反复看原图 | **选择**：复用现有Flash／high看图连接，采用独立提示 |
-| 只匹配图库或QQ表情名称 | 成本低，但只能识别已知表情，无法理解陌生图片 | 作为前置免调用路径，不代替看图 |
-
-建议管线：消息立即落库→保存附件→已知QQ表情映射／图片字节精确缓存→未知图片Flash／high观察→个人导演结合整批文字判断→表达遵循现有语境规则→记忆沿原消息来源提取。
-
-不自动把所有用户图片收录进“角色可发送的表情图库”。理解缓存与发送素材库分开。
-
-## 3. 图片合同与接口
-
-### 3.1 类型和持久化
-
-建议新建`src/input-media/`，类型如下；名称供两个任务边界使用，实现时保持一致。
+定义在新增 `src/input-media/types.ts`。以下是跨任务合同，辅助实现类型可局部增加，但不得出现另一套字段含义。
 
 ```ts
 type IncomingAttachment = {
@@ -51,111 +28,305 @@ type IncomingAttachment = {
   sourceUrl?: string; platformFile?: string;
   platformAssetId?: string; faceId?: string; semanticLabel?: string;
 };
+type MessageContentPart =
+  | { kind: 'text'; start: number; end: number }
+  | { kind: 'attachment'; attachmentId: string; start: number; end: number };
 type ImageObservation = {
-  description: string; visibleText: string[];
-  possibleTone: string | null; uncertain: boolean;
+  description: string;
+  visibleText: string[];
+  possibleTone: string | null;
+  uncertain: boolean;
 };
 type PreparedAttachment = {
-  attachmentId: string; status: 'ready' | 'unrecognized';
+  messageId: string; attachmentId: string; order: number;
+  status: 'ready' | 'unrecognized';
   origin: 'platform' | 'library' | 'cache' | 'vision' | 'unavailable';
-  observationRef: string | null; observation: ImageObservation | null;
+  observationRef: string | null;
+  recognizerVersion: string | null;
+  observation: ImageObservation | null;
 };
+type FrozenAttachment =
+  | {
+      messageId: string; attachmentId: string; order: number;
+      status: 'pending'; imageAssetRef: string | null; phaseKey: string;
+      recognizerVersion: string;
+    }
+  | Omit<PreparedAttachment, 'observation'>;
+type TurnVisualContext = { version: 1; entries: FrozenAttachment[] };
 ```
 
-`message_attachments`按稳定附件ID保存接收引用、下载状态及文件指纹；`image_observations`按观察ref保存结果及识别器版本，不放图片二进制。文件存`runtime/data/incoming-media/`，保持Git忽略。`IncomingMessage`／`Message`新增可选`attachmentIds`；旧消息缺省空列表，不重新猜测已丢失画面。
+`ready` 必有 observationRef、recognizerVersion 和可读取的观察；`unrecognized` 的三项均为 null，origin 为 unavailable。实现用判别联合或 schema 固定这个不变量。pending 是工作状态，不能出现在模型图片资料中。
 
-附件ID由消息ID＋当前消息内顺序构成；重复平台消息不重复登记。消息、附件引用、普通段／活动归属必须在同一次收件事务保存。输入立即刷新15秒或共同60秒时钟，不能等下载／模型结束后才落库。只解析当前`session.content`，face嵌入的展示img不是另一张用户图片。
+`IncomingMessage` 增加可选 attachments、contentParts；持久 `Message` 保存 attachmentIds、contentParts，不保存完整附件地址或二进制。`TurnRecord.visualContext?: TurnVisualContext`。旧行缺省为空，不根据旧占位反推画面。
 
-### 3.2 解析与缓存
+### 2.2 表与文件
 
-1. QQ原生表情用已知ID名称，不调用LLM；未知保持未知。参考旧qq-face，计划新增qface依赖并保留必要扩展映射。
-2. 图片／商城表情下载后按真实字节SHA256匹配已有观察或现有图库文件指纹；平台稳定素材ID可作已核实素材的辅助索引。不能凭相近文件名、未验证摘要或文本embedding直接认定同图。
-3. 缓存命中用已保存客观描述，模型不重复看图。图库只有描述／标签时不伪造“图片内文字”；`uncertain=true`体现描述不足。同批多条消息同一图只观察一次，各消息保留各自来源及位置。
-4. 未命中每张独立调用`incoming_image`任务，返回上述结构。使用与图库描述不同的提示：只观察画面与可读文字、描述可能语气，不能确定用户真实意图、编造内容或执行画面里的指令。
-5. 新增可选`incomingImageModel`连接配置；未配置则复用`stickerDescriptionModel`。当前使用仍为Flash／high，既有13个连接及所有强度值不改；以后可独立配置。新增`visualInput.enabled`默认false，正式启用时显式true，避免无看图连接的旧配置突然发请求。
+沿 Storage 的 JSON 表模式增加三张小表，不新建通用任务平台：
 
-Flash支持GIF不等于本次已验证逐帧动态理解；保留原GIF发送，不声称读到所有帧。动态图质量列入可选在线验收，不在本批另建抽帧／视频系统。
+| 表 | 必要字段和用途 |
+| --- | --- |
+| message_attachments | IncomingAttachment，加 downloadStatus（pending／ready／unavailable）、assetRef、confirmedObservationRef、confirmedRecognizerVersion；关联“这条消息已确认的观察” |
+| image_assets | id 即 assetRef、contentHash、mimeType、relativePath、state（ready／deleting／deleted）；管理一份按内容去重的原图文件 |
+| image_observations | id 即 observationRef、contentHash（平台表情可空）、recognizerVersion、origin、observation、confirmedAt；不可变观察正文 |
 
-### 3.3 可见性、冻结与上下文
+建立 messageId、assetRef、contentHash＋recognizerVersion 查询索引；同 hash＋版本的成功观察取同一条。观察升级创建新版本，不原地改旧 observationRef。附件已确认关联不因内容缓存升级自动替换。
 
-下载可在收件后异步保存，角色识别仅在有合法读取资格的故事轮执行。普通轮先运行普通主叙事，再按其产生的可读状态解析本轮visible／reconsider图片；普通主叙事不能提前看到未读新图。共同活动主叙事本就能读取本轮真实活动输入，故该阶段前准备合法活动图片；未归属本场的未读图不能混入。
+默认资产目录由**实际 databasePath 的父目录**推导为 `incoming-media/`，正常部署即 `runtime/data/incoming-media/`；测试显式传临时目录。`:memory:` 必须由装配端传资产目录，不猜正式路径。文件名为内容 SHA256，扩展名由已识别 MIME 决定。assetRef 是登记 ID，不是任意文件路径。
 
-`IncomingMediaService.prepareForTurn(turnId, messageIds, signal?)`返回按附件ID排列的`PreparedAttachment[]`。允许的messageIds由现有可见性／活动选择代码提供，服务不自行扫描全部未读。结果保存在`TurnRecord.visualContext`，作为本轮固定观察快照。请求在途期间新消息属于后续轮；修补、发送重试、后处理恢复不改当前观察、不重新解释图片。未完成观察可以恢复重新请求，已ready的不重跑；不承诺外部请求在崩溃前后严格只发生一次。
+原图经临时文件完整写入、原子重命名后，才把资产与附件状态存为 ready；崩溃留下的临时文件不会被当成功资产。收件记录中如平台给出 data URL，短暂原始来源只存在该附件的下载元数据中，成功落盘后清除；轮快照、模型 checkpoint 和常规上下文均不含 base64。清理只删除原图文件，保留附件与观察文字。
 
-`generateTurn`中保存观察后，冻结输出必须读取最新持久turn再合并，避免`freezeTurn`用调用前的旧对象覆盖visualContext；`discardUnattempted`也保留已确认观察。图片观察既不追加输入消息，也不修改本轮已有消息／活动绑定。
+读写 Storage 初始化采用新增表／索引的加法方式，旧消息与图库不重写，不变更已存在的环境／记忆／对话版本。只读打开不得建表；读取尚无新表的旧库返回“无媒体记录”。正式部署仍按项目 README 停服备份后进行。
 
-`ModelResourcePool`新增`visualObservations`，每个观察ref正文只放一次；`ModelMessage`保存对应观察ref，按已有消息ID可见范围投影。普通／共同个人、共同主叙事、表达和基础记忆读取各自获准的引用；世界／学校及其他无权限阶段不带用户图或观察。完整原图只发给图片观察任务，常规故事阶段不重复携带base64。
+### 2.3 接收与图文次序
 
-图片任务输入保存`imageAssetRef`，发送层经注入的`resolveImageAsset(ref)`从本轮已缓存文件读取并生成image_url，不把base64放进持久web checkpoint；现有图库imageDataUrl路径继续兼容。图片观察也接既有搜索合同：每附件独立稳定phase `incoming_image:<attachmentId>`，本轮缓存命中不新建模型／搜索请求；搜索关闭时没有该工具。公开补查只能辅助理解，网页内容不能冒充图中可见文字或事实，lookup仍不开放。格式修补与搜索续调用沿用同一图、连接和会话。
+`parseIncomingContent(messageId: string, rawContent: string)` 返回 `{content: string; contentParts: MessageContentPart[]; attachments: IncomingAttachment[]; hasVisualAttachment: boolean}`。
 
-`hasVisualAttachment`仍只依据原始附件类型，第四条语境规则仍由程序选入。单独表情可不回；图后同批有实质文字须整批理解。已知doge可能调侃，但普通狗图不是doge；观察结果不是用户台词或动作，不生成`【推进】`控制请求，不新增代写授权。
+只遍历当前 session.content 的 Koishi h 树；不读可能保留旧元素的 session.elements。原生 face 的内嵌 img 是展示子节点，只产生一个 face 附件；mface 保留平台素材标识及可解析来源。无法解析地址也保留附件占位。
 
-### 3.4 失败、记忆与文件引用
+附件 ID 用 `JSON.stringify([messageId, order])` 生成，order 是本条消息中从 0 开始的数字次序。content 保持可读文本及原有占位语义，contentParts 用最终 content 的 UTF-16 下标 [start,end) 保留图文交错位置：text 指向原文字，attachment 指向对应占位，不复制一份消息全文。下标在最终空白规范化后计算，能直接用 JS slice 还原；不把附件改写成用户新话语。统一次序：**调用者提供的已授权消息顺序 → 消息内 numeric order**；不按 ID 字符串排序。A→B→A 的三个出现位置都保留，只有观察正文去重。
 
-失效图片URL／不可读取附件保存unrecognized，原文字及附件事实继续有效，角色可说明不清楚或追问；不伪称已看到内容。认证、模型格式修补耗尽或接口上下文超限沿现有报错／暂停处理，保留本轮，不偷偷换模型或裁内容。受控附件不可用与模型调用错误分开。
+InputBuffer 在原收件事务中先判重复／推进，再登记附件、消息与普通段／活动归属、刷新时钟。显式从 IncomingMessage 剥离 attachments，不能通过对象展开把临时 URL 写进 Message。纯文本全文“【推进】”沿原规则；带图片或表情的消息不是推进命令，OCR 从不进入控制判定。
 
-基础记忆可从已被角色读取的消息及其观察提取多条记忆，sourceIds仍引用原messageId，不把识别结果捏造成另一个用户发言。未读图不能成为角色记忆；历史缓存命中不证明用户以前给角色发过该图；收到同图的新消息仍是本轮真实来源。
+事务完成后可以启动预下载；该调用不 await 网络或模型。观察仅在合法故事读取阶段发生。重复平台消息不得重复登记或重启已完成下载。
 
-引用中的本地原图不删除；清理只移除不被未完成轮、待看／延后消息及当前原文窗口引用的缓存文件，观察与记忆不因此删掉。无新增记忆容量、输入字符预算或自动图库收集规则。清理可复用既有逐单元让位方式，不能遍历全图库阻挡每次聊天。
+## 3. 图片：文件、缓存与观察
 
-## 4. 搜索方案取舍
-
-| 方案 | 费用与维护 | 选择 |
-| --- | --- | --- |
-| 适配旧Puppeteer公开网页 | 无搜索API计次费用，本机耗资源；搜索网站可能改版或拦截 | **当前优先**，迁移成本与用户成本目标最匹配 |
-| 自建SearXNG＋本地正文读取 | 无SearXNG软件请求费，需独立服务并维护上游引擎；不是自建索引 | 后续替换候选，不作为本批依赖 |
-| Tavily等托管API | 接口稳定易接，按量计费／有免费额度 | 保留provider接口，不自动回退到付费请求 |
-
-SearXNG官方提供`/search?format=json`，需启用JSON格式，公共实例可能关闭；官方提供容器部署。它仍访问上游引擎，不会解决所有验证码或网络限制。[Search API](https://docs.searxng.org/dev/search_api.html)、[部署说明](https://docs.searxng.org/admin/installation-docker.html)
-
-建议当前只实现一个本地browser provider，正文可普通HTTP提取，必要时浏览器渲染；为减少双路径复杂性，首批统一浏览器读取，不另接Jina。若后续搜索维护成本大，再用SearXNG替换候选搜索接口，正文读取和HDSI会话保留。
-
-## 5. 本地搜索合同
-
-### 5.1 端口与配置
-
-新建`src/web/browser/`：`BrowserSearchProvider implements WebSearchProvider`，维持现有search返回URL／标题、read返回完整正文的签名。独立端口把Koishi Puppeteer与纯提取／测试分开：
+### 3.1 文件及免调用路径
 
 ```ts
-type BrowserPageResult = {
-  url: string; title: string; text: string; articleText?: string;
-  searchResultLinks?: Array<{url: string; title: string}>;
-  httpStatus?: number; authenticationRequired?: boolean;
-  verificationRequired?: boolean;
-};
-interface BrowserPagePort {
-  read(url: string, signal?: AbortSignal): Promise<BrowserPageResult>;
-  close(): Promise<void>;
+interface AttachmentResolver {
+  resolve(a: IncomingAttachment, signal?: AbortSignal):
+    Promise<{ bytes: Uint8Array; mimeType: string }>;
 }
-interface BrowserPort { openPage(): Promise<BrowserPagePort>; }
+// IncomingMediaStore
+register(attachments: readonly IncomingAttachment[]): void;
+findObservation(hash: string, version: string): PreparedAttachment['observation'] | null;
+findLibraryObservation(hash: string): ImageObservation | null;
+// 资产服务
+ensureAsset(attachmentId: string, signal?: AbortSignal): Promise<string>;
+resolveImageAsset(ref: string): Promise<string>; // 返回 data URL
 ```
 
-配置建议：`webSearch.provider='browser'`（新增字段默认unconfigured）、`webSearch.browser.searchEngine='bing'`、`navigationTimeoutMs=60000`、`maxConcurrentPages=1`。支持bing与duckduckgo的已知模板和各自解析器，不承诺任意搜索网页都可用。URL模板由引擎配置推导，后续添加引擎需同时添加解析器；搜索域／偏好不是新增模型决策。
+register 在 InputBuffer 的现有事务中调用，不自行开事务或发起 I/O。findObservation 的正文用于查询；服务保存关联前还须取得同一记录的 ref／版本，不可为缓存命中另造一份正文。实现可另设返回完整记录的内部查询。
 
-Koishi声明可选puppeteer注入；运行目录安装并启用`koishi-plugin-puppeteer`，浏览器路径／代理如有需要由该插件配置管理。源码声明可选peer并提供离线mock；不加载旧runtime/node_modules，不把旧配置复制进新Koishi。enabled=false可无Puppeteer启动；enabled=true而provider／浏览器不可用时启动明确报错。
+- HTTP(S)／data 来源由 resolver 解析。OneBot 只给 file token 时，交给当前 bot 的类型化 getImage 桥接；无该能力即 unavailable。不得把 token 当本地路径。保留旧参考中的必要格式适配，不导入其运行模块。
+- SHA256 只取实际字节。平台素材 ID 仅作为已验证 hash 的辅助索引；不能凭文件名、URL 相同或文本 embedding 判同图。
+- qface 已知 ID 生成固定平台观察：description 为已知表情名称，visibleText=[]，possibleTone=null，uncertain=false（只确认平台名称）；未知 ID 不猜。平台映射有自己的版本，不伪称看过原图。
+- 同 hash 的下载落盘／观察在进程内合并在途 Promise；未读消息只能得到文件，不能因此写 confirmedObservationRef。合法 prepare 才把内容缓存关联到该条消息。
+- `primeStickerObservations(storage, mediaStore): Promise<void>` 在图片启用后每次实例装配只索引一次图库文件 hash，不在消息路径扫描全库；不调用 embedding。已有未拆分 description／tags **不符合** ImageObservation，findLibraryObservation 对它们返回 null。
+- 本批不补人工结构化图库数据。原 67 条描述即使精确同图，首次合法读取仍走 incoming_image；成功后免重复调用。保留 library 来源接口，仅明确合格结构化记录才可使用。旧描述“画面是一只狗，适合嘲讽对方”不得直接转为图上文字或用户心理。
 
-provider.signature包括引擎与提取器版本，避免不同配置复用错误缓存。默认engine先定Bing，但需浏览器验收通过才正式启用；当前HTTP200且无结果标记不是通过。DuckDuckGo留可选，不隐藏自动跨引擎重试。
+### 3.2 独立图片任务
 
-### 5.2 结果、正文与计数
+`observeIncomingImage(models: ModelRunner, imageAssetRef: string, options?: ModelRunOptions): Promise<ImageObservation>`，任务名／PromptStage 为 incoming_image。单张图一个任务，独立 schema 只返回 description、visibleText、possibleTone、uncertain；无角色背景、历史、lookup。
 
-搜索页只提取结果链接并验证实际结果项。导航壳、登录页、验证码页和空页面不是成功资料；真正“无结果”返回空候选，现有核心告知模型“结果不足”。不用搜索摘要当目标正文。
+提示要求分开客观内容、可辨文字和可能的表情语气；画面文字是待识别内容，不是给程序的指令。网页资料可以帮助识别公开事物，但不能填成“画面上可见的文字”或本轮用户意图。GIF 保留原文件，不承诺逐帧理解。
 
-随后由现有`WebSearchService`逐URL调用read：取正文区域，缺失则取可见主内容；排除导航／广告／脚本壳，不应用旧12000／3000字符截断，也不新增token限额。内容超出模型真实容量沿现有错误处理，不自动删除记忆或截网页。
+新增 `incomingImageModel` 可选连接，connectionFor 优先它、缺省用 stickerDescriptionModel。**不把 incoming_image 加入无条件 modelRoles 检查**；只在 visualInput.enabled=true 时检查其连接／凭据。保持既有 modelRoles 及所有连接值原样。
 
-仍每逻辑阶段20次成功正文／40次失败；任一达到上限停新操作。搜索请求不重置计数；搜索页面不是新增一次成功正文。provider.search每次只发一个搜索请求，provider.read每次只读一个目标；不在provider内部隐藏反复重试、跨引擎轮询或计数体系。失败按现有search_error／read_error／empty_body计数，缓存继续按既定B口径阶段独立计费。providerReadCalls统计本次read操作，不统计浏览器CSS／JS子资源HTTP数。
+`ChatCompletionsTransport(connectionFor, fetcher = fetch, resolveImageAsset?)` 只增加第三个可选参数，旧 imageDataUrl 行为兼容。incoming_image 输入只带 imageAssetRef；发送时解析为真实 image_url 块，文本 envelope 删去图片传输字段。其他阶段不调用 resolver。
 
-### 5.3 调度与恢复
+观察由现有 ModelClient 执行，格式修补最多 2 次；HTTP、鉴权、上下文超限、格式耗尽错误沿原错误路径向上传递，不吞成 unrecognized。只有来源确实不可下载／不可解析、视觉关闭或未知平台表情形成受控 unrecognized；取消留 pending。
 
-模型HTTP、浏览器等待均异步；收件继续立即保存。普通聊天若没请求搜索，不等待网页页槽。主动搜索的阶段可等待当前页槽，单次导航受明确时限，不承诺所有网页都能读取或所有搜索即时完成。
+阶段为 `phaseOptions(web, 'turn', turnId, 'incoming_image:' + attachmentId, 'incoming_image', {lookup: null, signal})`。搜索关闭时不可调用网页；开启时沿现有 20／40、修补及恢复合同；不因新增图片任务取消其既有网页工具能力。
 
-页槽全局共享，每页无论成功、失败或取消都关闭；已有signal的环境／维护取消时，取消等待／导航并阻止迟到材料提交。前台停止沿现有Host等待在途故事的合同，不在本批新增强制终止已开始前台的规则。Host停止完成后再dispose浏览器适配器，拒绝新页并关闭残留页。现有冻结依据校验、前台串行、web操作持久化／计数去重保持；恢复可能重新读取未确认页面，但已确认材料与计数不重复追加。已started外部浏览请求不保证网络严格只执行一次。
+### 3.3 恢复身份
 
-实际取得的生活个人导演网页仍可按既有本人查阅资格进入短期记忆；世界／学校参考不因此进入角色记忆。收到图片不自动执行网页搜索；若图片观察确需公开补查，沿既有阶段工具与可见范围规则，外部材料不能升级成画面所见或用户表达。
+incoming_image 首版识别合同固定为 `incoming-image:v1`，在 observe.ts 导出 `INCOMING_IMAGE_RECOGNIZER_VERSION` 常量。prepare 在首次模型调用前持久保存 pending 的 imageAssetRef、phaseKey 和 recognizerVersion。已有 pending.imageAssetRef 时直接读落盘资产，不再用源 URL 下载“同一张”图；资产意外丢失则报告可诊断的恢复错误，不能拿变化后的 URL 内容续旧 checkpoint。清理必须保护 pending 引用。
 
-## 6. 本批范围与验收
+ModelClient 会用本次传入值覆盖 checkpoint.input，因此服务恢复时必须重新构造**相同 assetRef**；不靠 checkpoint 自己替实现者保存这个保证。同一次进程中的修补使用同一连接配置；重开时沿当前明确配置解析，不静默换模型。任务及识别合同版本持久化，配置人为改变应在交付／运维记录中体现。
 
-两项各自有完整离线mock验收，不发QQ；公开页面真实浏览与已公开／合成图片看图作为单独在线验收，记录成功／失败与范围，不用正式聊天、私有角色图或旧故事。计划阶段只做公开无认证HTTP探针，证据在[入口](README.md)。
+历史版本无法按原合同继续时明确报版本不支持，不以新合同冒充旧 phase；本批保留 v1。观察成功时在短事务中一起保存 immutable observation、当前附件确认关联、turn 的 ready 条目；不跨网络持有事务。缓存命中也先按权限完成本条消息确认，再形成 ready。
 
-实施不修改任何现有模型或思考强度；允许增加开关、provider配置以及可选图片连接字段。数据库仅增加附件／观察存储，不改旧消息内容、归属、记忆和67项图库；只读检查不能创建表或下载内容。正式启用前停止服务并备份，不自动启动或发测试消息。
+ready 与 unrecognized 都是**本轮终态**，冻结、未尝试输出重生成、发送恢复和后处理都不重判。pending／aborted 才可继续。unrecognized 不进入全局内容成功缓存；后续新消息再次发送同图可重新尝试。图片观察请求在崩溃前后允许外部重复，但已持久结果不能重复调用。
 
-本批不接付费搜索、不建SearXNG服务、不开放登录／验证码绕过、不自动收图作为发送素材，也不更改既有概率、时间窗、睡眠资格、记忆容量或共同活动代写规则。
+## 4. 图片：资格、历史上下文与记忆
+
+### 4.1 服务接口
+
+```ts
+interface IncomingMediaService {
+  prefetchForMessages(messageIds: readonly string[]): void;
+  prepareForTurn(turnId: string, messageIds: readonly string[],
+                 signal?: AbortSignal): Promise<PreparedAttachment[]>;
+  readConfirmedForMessages(messageIds: readonly string[]): PreparedAttachment[];
+  readFrozenForTurn(turnId: string): PreparedAttachment[];
+  cleanupOne(now: string): Promise<'applied' | 'none'>;
+  stop(): Promise<void>;
+}
+```
+
+prepare 只处理传入消息，不扫全部未读；优先本轮终态，再该附件已有确认关联，再按合法读取使用缓存／平台映射／模型。每完成一个附件即保存。readFrozenForTurn 只读取本轮 terminal 条目及其不可变观察，pending 不返回。readConfirmed 是**纯读**：只按传入消息的附件确认关联读取，不下载、不调用模型、不查全局同图缓存为其补权限，也不改变 seenTurnId。
+
+| 阶段 | 本轮可新观察 | 允许纯读的历史观察 |
+| --- | --- | --- |
+| 普通 narrative | 无；必须先决定能否读本轮消息 | 现有投影允许的已读 recent／reconsider／lookup 消息 |
+| narrative_shared | 当前轮已绑定的合法活动输入 | 本场活动历史及该阶段本来允许的历史 |
+| personal_chat／life／shared | narrative 后最终 visible、合法 reconsider；共享按本场选择 | 最终 recent、活动历史和 lookup 消息 |
+| expression | 不新发起观察，使用前阶段准备结果 | 该阶段允许的 recent／活动历史 |
+| memory | 不新发起观察，使用已确认结果 | 该阶段原有历史及 lookup，来源资格不扩大 |
+| world／school_*／memory_consolidation／memory_audit／sticker_description | 无 | 不注入用户图片观察 |
+| incoming_image | 只读取本次唯一原图 | 无角色历史 |
+
+睡眠跳过路径不 prepare。共享调用前先按已有 activityContext 选消息；普通轮先 narrative，再按现有 visible／reconsider 选择调用 prepare，之后个人与表达才使用观察。模型等待期间的新消息不追加到已绑定本轮。
+
+### 4.2 明确接线方法
+
+新增 `src/input-media/context.ts`，使用轻量 ModelRunner 包装，不往 Transport 内偷偷查询数据库：
+
+```ts
+hydrateVisualContext(
+  input: StageModelInput,
+  confirmed: readonly PreparedAttachment[],
+  frozen: readonly PreparedAttachment[]
+): StageModelInput;
+
+withTurnVisualContext(
+  models: ModelRunner, media: IncomingMediaService | undefined, turnId: string
+): ModelRunner;
+```
+
+包装器在 director／expression 已构建 StageModelInput **之后**工作，仅对白名单故事阶段装载 input.resources.messages 的 ID，调用 readConfirmedForMessages 与 readFrozenForTurn，再以本轮冻结条目覆盖同 attachmentId（包括 unrecognized）。其余阶段透传。冻结记录所指正文由媒体 store 读取；缺记录是完整性错误，不捏造描述。
+
+narrative、personal、expression 在 app 中使用此轮包装 runner；memory/organize 同样包装。保留 d.models 本体供图片观察、环境及维护使用，避免包装器递归。
+
+lookup：包装器包住原 options.lookup，先让原回调完成检索与来源检查，再 stageInput(stage, rawResult)，最后 hydrate，返回 **StageModelInput**。buildCompletionEnvelope 新增对该类型 lookup 的分支，与原 raw lookup 共用资料池合并及 contextRefs 去重逻辑；旧 raw lookup 兼容。memory/organize 的 includeLookupIds 同时识别 raw.retrieved 与持久化 StageModelInput.resources.owners，以免恢复后丢失可改写记忆 ID。checkpoint 只持久化纯数据，不保存包装器函数。
+
+这个选择避免逐个历史数组随手补字段，也避免 buildExpressionView 的手动白名单丢弃新字段。测试必须检查真实序列化 envelope，而不只检查 service 返回值。
+
+### 4.3 单池与出现位置
+
+ModelResourcePool 增加 `visualObservations: Array<{ref: string; recognizerVersion: string; observation: ImageObservation}>`，正文按 ref 去重。ModelMessage 增加可选 contentParts 和 `visualAttachments`；后者每项仅含 attachmentId、order、status、observationRef，不含 sourceUrl、assetRef、hash 或二进制。
+
+每个图片 occurrence 都留一项；A→B→A 为三个绑定、两个正文。ResourcePool.message 首次已建消息后再从 lookup 合并同 ID 时，应合并缺失的附件绑定，按 attachmentId 去重；同附件冲突不得用后到数据改写本轮终态。老 checkpoint 池没有 visualObservations 时按 [] 处理，不强迫旧夹具手工补字段。
+
+只有最终池中的获准消息能引用图片正文；没有消息引用的观察不注入。正文依然在观察表／资源池，与短长期记忆分开。历史图片未被模型复述或写成记忆也能在窗口内继续读取；退出窗口后不因缓存存在被自动注入。lookup 若按现有规则合法返回该历史消息，可随它装载，不能因有图片而拓宽检索范围。
+
+memory 的 currentSourceIds 沿现有 experiences／本轮 visible／outgoing／合格 self_web_read 生成，不加 attachmentId 或 observationRef。本轮新发送相同图片仍引用新消息 ID；历史上下文不升级为本轮来源。
+
+### 4.4 文件清理与关闭
+
+cleanupOne 每次最多处理一个候选文件，沿现有空闲让位位置调用；不能每次收件递归扫描目录或全量消息。按附件／资产索引及现有窗口、未读／延后、unfinished turn 快照判断保护；任何同 hash 引用受保护都保留原图。已确认观察文字不受文件清理影响。
+
+候选选出后如发生 await，在真正删除前重查当前资格与引用。资产服务统一协调 acquire／delete：标为 deleting 后的新 acquire 等其完成并重新取资产，不能交出正在删除的旧路径。unlink 与 DB 状态更新可恢复；文件已不存在视为幂等删除。未完成图片 phase、在途写入／读文件始终受保护。
+
+正常停机：停止接收新的 HDSI 工作 → await Host.stop（前台完成，环境／维护取消收尾）→ await media.stop → await managedBrowser.dispose → Storage.close。stop 拒绝新预下载，取消并等待本服务已有下载／写入，无关库后写入；暂停不是 stop。
+
+## 5. 搜索：端口、提取与额度
+
+### 5.1 配置与端口
+
+`webSearch` 在原字段上增加 provider（默认 unconfigured，另一值 browser）及 browser：
+`{engine:'bing'|'duckduckgo', navigationTimeoutMs:60000, maxConcurrentPages:1}`。引擎默认 bing，超时／并发可配置正数；navigationTimeoutMs 的含义明确为**整次页面操作总时限**，不是只算 goto。保留原字段名，避免无收益改配置名。
+
+定义在 `src/web/browser/types.ts`：
+
+```ts
+type BrowserProviderConfig = {
+  engine: 'bing' | 'duckduckgo';
+  navigationTimeoutMs: number; maxConcurrentPages: number;
+};
+type BrowserReadRequest =
+  | { kind: 'search'; url: string; engine: 'bing' | 'duckduckgo' }
+  | { kind: 'article'; url: string };
+type BrowserPageResult = {
+  finalUrl: string; title: string;
+  access: 'ok' | 'login_wall' | 'captcha' | 'http_error';
+  search: { state: 'results' | 'empty' | 'unready';
+            links: Array<{url: string; title: string}>;
+            evidence: string | null } | null;
+  main: { text: string; source: 'article' | 'main' | 'readability' } | null;
+};
+interface BrowserPagePort {
+  read(request: BrowserReadRequest, options: {
+    signal: AbortSignal; deadlineAt: number
+  }): Promise<BrowserPageResult>;
+  close(): Promise<void>;
+}
+interface BrowserPort { openPage(): Promise<BrowserPagePort> }
+interface ManagedBrowserProvider {
+  provider: WebSearchProvider;
+  stopAccepting(reason?: Error): void;
+  dispose(): Promise<void>;
+}
+```
+
+deadlineAt 与槽管理器使用同一单调时钟；队列、create、navigation、extract／wait 共用 60,000ms 默认预算。记录各段耗时和 timeout 所在段，不把排队超时当空搜索。关闭资源可能超出请求时限，见 §6。
+
+`BrowserPageSlots.read(request, signal?): Promise<BrowserPageResult>` 拥有 openPage、读取、close 的完整流程；不再使用允许调用方随意忘记 close 的旧 `run(work)` 形状。`createManagedBrowserProvider(port: BrowserPort, config: BrowserProviderConfig): ManagedBrowserProvider` 在 provider.ts 定义，一个 HDSI 实例所有阶段共用同一槽管理器。
+
+### 5.2 页面证据与就绪
+
+Koishi port 只打开 HTTP(S) 公开网页，沿已选旧参考的公开地址约束，不做登录或验证码绕过。一次 read 只导航一次；不隐藏重试、翻页或跨引擎回退。
+
+DOMContentLoaded 后观察 DOM，就绪条件是：明确访问阻挡，或搜索的结果／专属空态，或正文主体。通过 DOM 变化等待至 deadline；不得用一次 DOMContentLoaded 快照就认定动态页为空，也不得给等待另起 60 秒。
+
+搜索提取分引擎：
+
+- Bing 的结果项从 `#b_results .b_algo h2 a` 起步；DDG HTML 从 `.result__a` 起步，正式以 S5a 保存的实际 DOM 夹具校准。
+- 空态必须是该引擎**结果容器内可见的专属空态元素**及匹配的引擎提示，不是查询框、title 或 body 全文出现“无结果／no results”。选择器和样本一起版本化。
+- 有合法外链返回 results；有专属空态返回 empty；仅导航、未加载、结构不认识为 unready，等待至截止后抛不可读／超时。
+- 相对地址按 finalUrl 解析；已知 Bing 跳转参数按明确公开编码解码到 HTTP(S) 目标，失败项跳过。过滤引擎导航、广告控制项和重复地址；不为解码偷偷额外导航。无空态但结果全被过滤不能伪称引擎确认“无结果”。
+
+正文按顺序：可见 article → 可见 main／role=main → Mozilla Readability 对当前文档克隆提取。语义容器优先取其中实际主体；排除 nav、header、footer、aside、表单、隐藏节点。候选需含非导航文本内容块，不能仅因存在空 main 就判成功。无语义容器的文章走明确的 Readability 回退；Readability 返回 null 就无正文，**永不回退整个 document.body.innerText**。
+
+Readability 使用项目本地安装的 `@mozilla/readability` 浏览器脚本，在克隆文档上运行并取完整 textContent，不从 CDN 注入，不另装服务器端 DOM 框架。其默认算法阈值是主体判断而非输出裁剪；本批不另设字符上限，不以 isProbablyReaderable 预检拒绝短而有效的 article／main。该库允许浏览器脚本加载及克隆文档解析，见 [官方说明](https://github.com/mozilla/readability)。
+
+direct webRead 打开已知搜索引擎结果页时也标 search，拒绝把摘要送入 main。正文谈论“登录”“验证码”并不等于访问墙；access 判断用可见阻挡 DOM／表单及主体缺失证据，不能使用全文关键词即封杀。
+
+`extractSearchCandidates(page, engine)` 只接受 access=ok 且 results／empty；empty 返回 []。`extractReadablePage(page)` 只接受 access=ok、非搜索页且 main 有正文；保留完整正文。原始整页文字如用于诊断，不进入 WebMaterial。
+
+### 5.3 核心工具合同不变
+
+WebSearchProvider 仍是 search(query, signal?) → links，read(url, signal?) → {title,body}，signature 包含引擎和提取器版本（Readability 锁定版本也计入）。页面端口的证据字段不要求改模型工具 schema。
+
+核心 WebSearchService 继续负责候选逐页读取、正文缓存、20／40、operation step 幂等和 checkpoint：
+
+- 搜索页不计成功；一次有效目标正文才计成功。
+- search_error、read_error、empty_body、no_candidates 保持既有失败语义；真正空候选本来就累计 1 次失败。
+- 同阶段重复正文不重复计；公共缓存跨阶段按现有 B 口径，各阶段首次取用计 1。
+- 外部 AbortSignal 取消不提交迟到材料；适配器自身 timeout 且上层未取消按原失败路径记账。
+- 个人生活“本人查阅”资格保持；世界／学校公共参考不会自动成为角色已知事实。
+
+首批只做 Bing／DDG HTML，旧 RSS 所需 feed 解析器不在本批范围。
+
+## 6. 搜索：页槽与 Koishi 生命周期
+
+### 6.1 槽是实际页面资源名额
+
+排队 FIFO；仅排队取消不占槽。从开始调用 openPage 起占一个 reservation，直到建出的页面 close **实际完成**才释放。正常结束也要等 close 后才允许下个 openPage；不是只记录 close 被调用。
+
+请求取消／超时可先结束调用方 Promise，但资源跟踪 Promise 保留：
+
+1. factory 未返回：不释放 reservation；迟到页面禁止导航，立即 close 并等待。
+2. 页面已返回：通知 read 取消并关闭；旧 read 结果不得继续产生材料；关闭确认前不复用名额。
+3. close／factory 不结算或 close 抛错且不能证明页面已关闭：进入 draining／unhealthy，拒绝继续分配，保留未决资源记录。不能“超时即清零”并无限建替代页。
+
+dispose 幂等，先 stopAccepting、取消本实例的排队／活动请求，再等待所有在途创建与关闭结算。dispose resolve 仅表示本实例已无未决资源；浏览器已断开／页面已销毁的可验证证据可作为结算，无法确认时保持阻塞并报告原因。不得为让停机好看而谎报排空；新 HDSI 实例也不能越过该阻挡。不得调用共享 ctx.puppeteer.stop 或关闭其他插件页面。
+
+### 6.2 服务就绪与实例串行替换
+
+用 `src/deployment/plugin-runtime.ts` 承接从 index 抽出的“单实例创建与关闭”，`src/deployment/browser-runtime.ts` 管理服务就绪与串行替换；这两个模块只分离生命周期，不重构故事逻辑。
+
+- webSearch.enabled=false：直接走无 browser 实例，绝不要求 Puppeteer。
+- enabled=true＋provider=unconfigured：明确配置错误，未建库前失败。
+- enabled=true＋browser：外层做配置和依赖预检；内部 `ctx.inject(['puppeteer'], inner => ...)` 等服务。使用 inner 管注册的副作用，不在 apply 中一次同步检测 ctx.puppeteer 后报“缺失”。
+- required 服务出现后，捕获这一代 page 工厂；创建／关闭都经过外层单一 Promise 链和 generation。旧实例 close 完成并再确认 generation 仍有效，才打开新 Storage／启动新 Host。
+- 服务移除立刻使旧 provider.stopAccepting，停用本实例收件入口，然后按 §4.4 收尾；不得继续从旧工厂新建页。重新出现只排队请求替换，不与旧 Host 重叠。
+- 普通 HDSI 关闭先等正在执行的前台轮，随后 dispose provider；“浏览器服务已经失去”则先禁止旧 factory，再等 Host 收尾。两种情形不要混为同一调用顺序。
+
+诊断按证据分层：runtime/check 检查模块是否安装以及所指定 Koishi 配置是否启用 Puppeteer；缺少／禁用明确报错。运行时服务未就绪显示 waiting，不误判未安装；服务启动自身错误保留 Koishi 原始异常及 waiting 状态，未到 running 就不称启动成功。HDSI 不新增随意的服务启动倒计时。使用程序化 Context、没有配置文件的测试直接通过生命周期状态／原始错误证明 waiting 与 failed，不能假装静态检查能够证明浏览器启动成功。
+
+运行时状态至少能区分 waiting／starting／running／stopping／failed；真实 Context 测试覆盖两种注册顺序、服务启动拒绝、移除再注册及最终整体 dispose。不存在“两个 Storage 都先打开，等 start 时再去排他”的窗口。
+
+## 7. 验证、发布与证据
+
+全部执行细节、命令和 review 对照见[执行指南](EXECUTION_GUIDE.md)、[图片 I1～I6](IMAGE_INPUT_PLAN.md)、[搜索 S1～S5](LOCAL_SEARCH_PLAN.md)。核心验收顺序固定为 build → typecheck → test → demo → 指定隔离路径的 runtime check → 离线 smoke；每批单独完成。
+
+runtime/check 必须接受 configPath、databasePath，搜索配置检查还接受 koishiConfigPath。所有分支（旧版本检查、图库、媒体、模型）统一使用显式路径；默认正式启动器路径保持不变。check 只读，不打开浏览器、下载图片、建表或请求模型。测试缺失路径不得静默回退正式文件。
+
+搜索在 S1 与 S2 最小 DOM 提取完成后先做 S5a 公开可行性验收，再进入工具／插件完整集成。真实浏览器要实际返回一个固定查询的候选并读取其中一篇正文，原直连 HTTP 探针不能代替。失败保留证据、搜索默认 false，不自动换付费服务。
+
+图片在线质量、搜索真实浏览器、离线工具闭环、正式运行是不同验收层；未执行的层写清未执行。本次修订只准备文档，未实施上述任何接口、安装依赖或运行新功能。
+
+外部能力依据：[DeepSeek Vision](https://api-docs.deepseek.com/guides/vision/)、[Koishi 服务依赖](https://koishi.chat/zh-CN/guide/plugin/service)、[Puppeteer API](https://puppeteer.koishi.chat/api.html)。浏览器／依赖版本以执行时锁文件及公开验收记录为准，不复制旧 node_modules。

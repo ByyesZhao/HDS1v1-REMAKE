@@ -1,0 +1,19 @@
+{
+  "referenceOnly": true,
+  "networkRequests": 0,
+  "checks": {
+    "navigationOnlyVisit": {
+      "status": "success",
+      "text": "首页\n产品\n关于我们\n联系我们\n版权说明"
+    },
+    "queryContainsNoResults": {
+      "status": "success",
+      "text": "no results error\nAll\nImages\nVideos\nNews\nPrivacy"
+    }
+  },
+  "lifecycle": {
+    "slotLimit": 1,
+    "maximumOpen": 2,
+    "pagesStillOpenAfterReads": 2
+  }
+}
