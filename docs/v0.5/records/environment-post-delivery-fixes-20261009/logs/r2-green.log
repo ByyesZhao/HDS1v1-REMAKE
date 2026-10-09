@@ -1,0 +1,11 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/environment-async-upgrade.test.ts
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/environment-post-delivery/HDSI-remake
+
+
+ Test Files  1 passed (1)
+      Tests  16 passed (16)
+   Start at  19:31:18
+   Duration  8.15s (tests 95%, transform 3%, import 1%)
+

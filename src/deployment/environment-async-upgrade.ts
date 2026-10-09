@@ -4,6 +4,7 @@ import {basename,join} from 'node:path';
 import {randomUUID} from 'node:crypto';
 import type {EnvironmentStep} from '../environment/types';
 export interface EnvironmentAsyncUpgradeReport {version:number|null;targetVersion:1|2;legacyUnfinished:number;unstarted:number;asyncUnfinished:number;canUpgrade:boolean;reasons:string[];backupPaths:string[]}
+function hasStartedPreparation(step:EnvironmentStep):boolean{return !!step.inputSnapshot||step.status==='running'||step.status==='ready'||step.attempt>0;}
 export function inspectEnvironmentAsyncUpgrade(path:string,targetVersion:1|2=2):EnvironmentAsyncUpgradeReport{
  const db=new DatabaseSync(path,{readOnly:true});
  try{
@@ -16,7 +17,7 @@ export function inspectEnvironmentAsyncUpgrade(path:string,targetVersion:1|2=2):
  const reasons:string[]=[];
  if(version!==1&&version!==2)reasons.push('requires environment version 1 or 2; run the legacy environment migration first');
  if(targetVersion===1&&version===2&&asyncUnfinished)reasons.push('nonterminal asynchronous steps must complete or be superseded before downgrade');
- return {version,targetVersion,legacyUnfinished:unfinished.filter(s=>s.inputSnapshot||s.status==='running'||s.status==='ready').length,unstarted:unfinished.filter(s=>s.status==='pending'&&!s.inputSnapshot&&!s.attempt).length,asyncUnfinished,canUpgrade:!reasons.length,reasons,backupPaths:[]};
+ return {version,targetVersion,legacyUnfinished:unfinished.filter(s=>s.preparationVersion===0||s.preparationVersion===undefined&&hasStartedPreparation(s)).length,unstarted:unfinished.filter(s=>s.status==='pending'&&!s.inputSnapshot&&!s.attempt).length,asyncUnfinished,canUpgrade:!reasons.length,reasons,backupPaths:[]};
  }finally{db.close();}
 }
 export function upgradeEnvironmentAsync(path:string,options:{stopped:boolean;backupDir:string;targetVersion?:1|2}):EnvironmentAsyncUpgradeReport{
@@ -30,7 +31,7 @@ export function upgradeEnvironmentAsync(path:string,options:{stopped:boolean;bac
  try{db.exec('BEGIN IMMEDIATE');try{
  if(target===2)for(const row of db.prepare('SELECT id,data FROM environment_steps').all()){
  const s=JSON.parse(String(row.data)) as EnvironmentStep;if(s.status==='committed'||s.status==='superseded')continue;
- const legacy=!!s.inputSnapshot||s.status==='running'||s.status==='ready'||s.attempt>0;
+ const legacy=hasStartedPreparation(s);
  db.prepare('UPDATE environment_steps SET data=? WHERE id=?').run(JSON.stringify({...s,preparationVersion:legacy?0:1}),String(row.id));
  }
  const row=db.prepare("SELECT data FROM state WHERE key='runtime'").get()!,runtime=JSON.parse(String(row.data));

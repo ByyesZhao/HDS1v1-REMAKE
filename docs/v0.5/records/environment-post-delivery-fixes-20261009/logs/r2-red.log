@@ -1,0 +1,159 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/environment-async-upgrade.test.ts
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/environment-post-delivery/HDSI-remake
+
+ ❯ tests/environment-async-upgrade.test.ts (16 tests | 6 failed) 6390ms
+   × normal version2 ready is async only and inspection leaves bytes unchanged 265ms
+   × normal version2 running is async only and inspection leaves bytes unchanged 254ms
+   × upgrade inspection classifies missing attempted pending 178ms
+   × upgrade inspection classifies explicit legacy pending 187ms
+   × upgrade inspection classifies async running 189ms
+   × mixed unfinished count excludes terminal async and retains explicit legacy 193ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/environment-async-upgrade.test.ts > normal version2 ready is async only and inspection leaves bytes unchanged
+AssertionError: expected { legacy: 1, async: 4, unstarted: 3 } to deeply equal { legacy: +0, async: 4, unstarted: 3 }
+
+- Expected
++ Received
+
+  {
+    "async": 4,
+-   "legacy": 0,
++   "legacy": 1,
+    "unstarted": 3,
+  }
+
+ ❯ tests/environment-async-upgrade.test.ts:46:100
+     44|   expect(d.environmentStore.step(step.id)!.status).toBe(status);
+     45|   const bytes=readFileSync(path),report=inspectEnvironmentAsyncUpgrade…
+     46|   expect({legacy:report.legacyUnfinished,async:report.asyncUnfinished,…
+       |                                                                                                    ^
+     47|   expect(readFileSync(path)).toEqual(bytes);expect(inspectEnvironmentA…
+     48|  }finally{finish();await prep.stop();d.storage.close();rmSync(dir,{rec…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  tests/environment-async-upgrade.test.ts > normal version2 running is async only and inspection leaves bytes unchanged
+AssertionError: expected { legacy: 1, async: 4, unstarted: 3 } to deeply equal { legacy: +0, async: 4, unstarted: 3 }
+
+- Expected
++ Received
+
+  {
+    "async": 4,
+-   "legacy": 0,
++   "legacy": 1,
+    "unstarted": 3,
+  }
+
+ ❯ tests/environment-async-upgrade.test.ts:46:100
+     44|   expect(d.environmentStore.step(step.id)!.status).toBe(status);
+     45|   const bytes=readFileSync(path),report=inspectEnvironmentAsyncUpgrade…
+     46|   expect({legacy:report.legacyUnfinished,async:report.asyncUnfinished,…
+       |                                                                                                    ^
+     47|   expect(readFileSync(path)).toEqual(bytes);expect(inspectEnvironmentA…
+     48|  }finally{finish();await prep.stop();d.storage.close();rmSync(dir,{rec…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  tests/environment-async-upgrade.test.ts > upgrade inspection classifies missing attempted pending
+AssertionError: expected [ +0, +0, +0 ] to deeply equal [ 1, +0, +0 ]
+
+- Expected
++ Received
+
+  [
+-   1,
++   0,
+    0,
+    0,
+  ]
+
+ ❯ tests/environment-async-upgrade.test.ts:71:62
+     69|   const row=rows[0];s.save('environment_steps',row.id,{...row,preparat…
+     70|   s.close();const bytes=readFileSync(path),r=inspectEnvironmentAsyncUp…
+     71|   expect([r.legacyUnfinished,r.asyncUnfinished,r.unstarted]).toEqual(w…
+       |                                                              ^
+     72|  }finally{rmSync(dir,{recursive:true,force:true});}
+     73| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  tests/environment-async-upgrade.test.ts > upgrade inspection classifies explicit legacy pending
+AssertionError: expected [ +0, +0, 1 ] to deeply equal [ 1, +0, 1 ]
+
+- Expected
++ Received
+
+  [
+-   1,
++   0,
+    0,
+    1,
+  ]
+
+ ❯ tests/environment-async-upgrade.test.ts:71:62
+     69|   const row=rows[0];s.save('environment_steps',row.id,{...row,preparat…
+     70|   s.close();const bytes=readFileSync(path),r=inspectEnvironmentAsyncUp…
+     71|   expect([r.legacyUnfinished,r.asyncUnfinished,r.unstarted]).toEqual(w…
+       |                                                              ^
+     72|  }finally{rmSync(dir,{recursive:true,force:true});}
+     73| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  tests/environment-async-upgrade.test.ts > upgrade inspection classifies async running
+AssertionError: expected [ 1, 1, +0 ] to deeply equal [ +0, 1, +0 ]
+
+- Expected
++ Received
+
+  [
+-   0,
++   1,
+    1,
+    0,
+  ]
+
+ ❯ tests/environment-async-upgrade.test.ts:71:62
+     69|   const row=rows[0];s.save('environment_steps',row.id,{...row,preparat…
+     70|   s.close();const bytes=readFileSync(path),r=inspectEnvironmentAsyncUp…
+     71|   expect([r.legacyUnfinished,r.asyncUnfinished,r.unstarted]).toEqual(w…
+       |                                                              ^
+     72|  }finally{rmSync(dir,{recursive:true,force:true});}
+     73| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+ FAIL  tests/environment-async-upgrade.test.ts > mixed unfinished count excludes terminal async and retains explicit legacy
+AssertionError: expected [ 1, 1, 1 ] to deeply equal [ 2, 1, 1 ]
+
+- Expected
++ Received
+
+  [
+-   2,
++   1,
+    1,
+    1,
+  ]
+
+ ❯ tests/environment-async-upgrade.test.ts:80:107
+     78|   const rows=s.all('environment_steps'),versions=[0,undefined,1,1] as …
+     79|   rows.forEach((row,i)=>s.save('environment_steps',row.id,{...row,prep…
+     80|   const r=inspectEnvironmentAsyncUpgrade(path);expect([r.legacyUnfinis…
+       |                                                                                                           ^
+     81|  }finally{rmSync(dir,{recursive:true,force:true});}
+     82| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  6 failed | 10 passed (16)
+   Start at  19:30:36
+   Duration  6.87s (tests 94%, transform 4%, import 2%)
+
