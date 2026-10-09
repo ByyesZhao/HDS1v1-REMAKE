@@ -1,0 +1,40 @@
+import {it,expect,vi} from 'vitest';
+import {asyncFixture} from './environment-async-fixture';
+import {NOW} from './helpers';
+import {EnvironmentPreparation} from '../src/environment/preparation';
+import {ModelClient,ModelRequestError} from '../src/model/client';
+import {generateEnvironmentStep} from '../src/directors/school';
+import {WebSearchService} from '../src/web/service';
+import {schoolItem,expand} from './world-school-fixture';
+import {setImmediate} from 'node:timers/promises';
+it('confirmed web reads and failed operations survive stale generations without fresh quota',async()=>{
+ const {d,step}=asyncFixture();let searches=0,reads=0;
+ const provider={signature:'fixture',search:async()=>{searches++;return [{url:'https://example.test/a',title:'a'}];},read:async()=>{reads++;return {title:'a',body:'公开正文'};}};
+ d.web=new WebSearchService(d.web.store,provider,d.clock,{enabled:true});
+ const dep={...d,models:new ModelClient({complete:async request=>request.webMaterials?.length?{changes:[]}:{webSearch:{query:'公开资料',requestedPages:1}}})};
+ dep.generateEnvironment=(input,options)=>generateEnvironmentStep(dep,input,options);
+ const p=new EnvironmentPreparation(dep);p.startOne(step.id,NOW);await p.wait();const ref=d.web.store.openStage('environment',step.id,'generation','world');
+ expect(p.takeError()).toBeUndefined();expect(d.environmentStore.step(step.id)?.status).toBe('ready');
+ expect(d.web.store.snapshot(ref.runId).counters.successReads).toBe(1);
+ d.config.worldSetting+=' 更新';expect(p.applyReady(step.id,NOW)).toBe('stale');d.clock.advance(d.config.environmentRetryMs);p.startOne(step.id,d.clock.now());await p.wait();
+ expect(d.web.store.snapshot(ref.runId).counters).toEqual({successReads:1,failures:0});expect(searches).toBe(1);expect(reads).toBe(1);expect(d.web.store.snapshot(ref.runId).checkpoint).not.toBeNull();expect(p.applyReady(step.id,d.clock.now())).toBe('applied');expect(d.web.store.snapshot(ref.runId).checkpoint).toBeNull();await p.stop();d.storage.close();
+});
+it('interrupted web operation resumes same ID and confirms a page only once',async()=>{
+ const {d,step}=asyncFixture();let reads=0,finish!:(v:any)=>void;
+ const provider={signature:'fixture',search:async()=>[{url:'https://example.test/a',title:'a'}],read:async()=>{reads++;if(reads===1)return new Promise<any>(resolve=>finish=resolve);return {title:'a',body:'正文'};}};
+ d.web=new WebSearchService(d.web.store,provider,d.clock,{enabled:true});
+ const dep={...d,models:new ModelClient({complete:async request=>request.webMaterials?.length?{changes:[]}:{webRead:{url:'https://example.test/a'}}})};
+ dep.generateEnvironment=(input,options)=>generateEnvironmentStep(dep,input,options);
+ const p=new EnvironmentPreparation(dep);p.startOne(step.id,NOW);await setImmediate();const ref=d.web.store.openStage('environment',step.id,'generation','world'),old=d.web.store.snapshot(ref.runId).checkpoint!;
+ expect(old.pendingOperationId).toBeTruthy();const stopping=p.stop();finish({title:'late',body:'晚正文'});await stopping;
+ expect(d.web.store.snapshot(ref.runId).counters.successReads).toBe(0);const resumed=new EnvironmentPreparation(dep);resumed.startOne(step.id,NOW);await resumed.wait();
+ const snapshot=d.web.store.snapshot(ref.runId);expect(snapshot.operations).toHaveLength(1);expect(snapshot.operations[0].operationId).toBe(old.pendingOperationId);expect(snapshot.counters.successReads).toBe(1);expect(d.environmentStore.step(step.id)?.attempt).toBe(1);await resumed.stop();d.storage.close();
+});
+it('new frozen week crossing a class start preserves old instance, rebases after and drops missed reminders',async()=>{
+ const {d,step}=asyncFixture('school_week');d.clock.time='2026-10-07T08:00:00+08:00';const item=schoolItem({issuedAt:d.clock.now(),timing:{kind:'once',startsAt:'2026-10-07T09:01:00+08:00',endsAt:'2026-10-07T10:00:00+08:00'}});d.storage.save('school_plan_items',item.id,item);expand(d,d.clock.now());const old=d.schoolStore.instances()[0];
+ d.storage.save('school_plan_items',item.id,{...item,revision:2,deliveryRevision:2,location:'新教室'});d.clock.time='2026-10-07T09:00:00+08:00';
+ d.generateEnvironment=async input=>({stage:'school_week',noticeTexts:(input.context as any).requiredNoticeKeys.map((n:any)=>({key:n.id,text:'变更通知'})),weekNotes:[]});
+ const p=new EnvironmentPreparation(d);p.startOne(step.id,d.clock.now());await p.wait();d.clock.advance(120000);expect(p.applyReady(step.id,d.clock.now())).toBe('applied');
+ expect(d.storage.read('school_instances',old.id)).toEqual(old);const successor=d.schoolStore.instances().find(i=>i.id!==old.id)!;expect(successor.occurrenceKey).toContain('after');expect(successor.sourceSnapshot.location).toBe('新教室');
+ expect(d.schoolStore.notices().filter(n=>n.kind==='reminder'&&n.deliveryRevision===2)).toHaveLength(0);await p.stop();d.storage.close();
+});

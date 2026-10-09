@@ -29,8 +29,8 @@ export class WebSearchStore {
   }
   materialRows(runId:string):MaterialData[]{return this.storage.prepare("SELECT data FROM web_materials WHERE json_extract(data,'$.runId')=? ORDER BY rowid").all(runId).map(r=>JSON.parse(String(r.data)));}
   operation(runId:string,id:string):WebOperationRecord {const op=this.get<WebOperationRecord>('web_operations',id);if(!op||op.runId!==runId)throw new Error('unknown web operation');return op;}
-  beginOperation(runId:string,request:WebOperationRequest):WebOperationRecord {
-    return this.storage.transaction(()=>{const session=this.session(runId),operationId=`${runId}:op:${session.nextOperationOrdinal++}`;
+  beginOperation(runId:string,request:WebOperationRequest,guard?:()=>void):WebOperationRecord {
+    return this.storage.transaction(()=>{guard?.();const session=this.session(runId),operationId=`${runId}:op:${session.nextOperationOrdinal++}`;
       const record:WebOperationRecord={operationId,runId,request,candidateUrls:request.kind==='read'?[request.url]:null,nextCandidateIndex:0,status:'pending',materialIds:[],failures:[],confirmedSteps:[],response:null};
       this.saveOperation(record);this.put('web_sessions',runId,session);return record;});
   }
@@ -48,8 +48,8 @@ export class WebSearchStore {
     this.storage.prepare("UPDATE web_sessions SET data=json_set(data,'$.checkpoint',NULL) WHERE json_extract(data,'$.ref.ownerType')=? AND json_extract(data,'$.ref.ownerId')=? AND json_extract(data,'$.checkpoint') IS NOT NULL").run(ownerType,ownerId);
   }
   incrementMetric(runId:string,metric:keyof WebSessionMetrics):void {const session=this.session(runId);session.metrics[metric]++;this.put('web_sessions',runId,session);}
-  markProvided(runId:string,materialIds:string[]):void {
-    this.storage.transaction(()=>{const session=this.session(runId),rows=this.materialRows(runId);if(materialIds.some(id=>!rows.some(r=>r.material.id===id)))throw new Error('unknown provided web material');
+  markProvided(runId:string,materialIds:string[],guard?:()=>void):void {
+    this.storage.transaction(()=>{guard?.();const session=this.session(runId),rows=this.materialRows(runId);if(materialIds.some(id=>!rows.some(r=>r.material.id===id)))throw new Error('unknown provided web material');
       for(const row of rows.filter(r=>materialIds.includes(r.material.id))){this.put('web_materials',`${runId}:${row.material.id}`,{...row,provided:true});
         if(session.ref.ownerType==='turn'&&session.ref.taskName==='personal_life'){
           const id=`${runId}:self-read:${row.material.id}`;

@@ -19,3 +19,9 @@ RED：冻结模块缺失；GREEN：6文件／39项，类型检查通过。学校
 ## E3
 
 旧实现手控HTTP测试超时（等待环境网络占前台槽）。新Host后台准备后，未释放环境Promise也可完成聊天正式提交；pause下仅持久ready。5文件／25项与类型检查通过。保留直接runEnvironmentStep串行包装用于旧调用和离线测试，产品Host新任务不进入等待包装。
+
+## E4
+
+8项恢复回归先通过；补充边界发现午夜晚回调后active已释放，reconcile提前返回导致旧批次未终结。RED见e4-boundaries-red.log，改为先核对当前批次，GREEN 6文件／45项。
+
+网页实测发现beginOperation/markProvided自身开事务，外层guarded事务嵌套SQLite失败。诊断见e4-tools-diagnostic.log；守卫进入原有工具事务，lookup结果与usedBasis仍同一外层事务。网页恢复GREEN 3文件／8项。补四阶段非空数据、busy/openBatch门禁、应用回滚3项通过。冻结学校view仅捕获本阶段所需领域表；世界不复制学校历史。

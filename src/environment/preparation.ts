@@ -22,6 +22,8 @@ export class EnvironmentPreparation {
  return meta?{stage:meta.stage,mode:meta.preparationVersion===0?'旧任务串行恢复':meta.status==='ready'?'待提交':meta.retryAt?'等待重试':this.inFlight?'准备中':'待准备',attempt:meta.attempt,retryAt:meta.retryAt,staleReason:meta.staleReason??null}:null;
  }
  reconcile(now:string):void{
+ const existing=this.d.environmentStore.firstActiveBatch();
+ if(existing&&(existing.timezone!==this.d.config.timezone||existing.localDate!==localDate(now,existing.timezone)))ensureEnvironmentBatch(this.d.storage,this.d.config,now);
  const active=this.active;if(!active)return;
  const batch=this.d.environmentStore.batch(active.batchId);
  if(!batch||batch.status!=='active'||batch.timezone!==this.d.config.timezone||batch.localDate!==localDate(now,batch.timezone)){
@@ -69,16 +71,16 @@ export class EnvironmentPreparation {
  });
  if(step.status!=='running')return false;
  const execution:Execution={stepId,batchId:step.batchId,generation:step.preparationGeneration!,lease:Symbol(),controller:new AbortController(),promise:Promise.resolve()};
- this.active=execution;execution.promise=this.prepare(execution,step,d.generateEnvironment).finally(()=>{if(this.active?.lease===execution.lease)this.active=null;this.options.onReady?.();});
+ this.active=execution;execution.promise=this.prepare(execution,step,d.generateEnvironment).catch(error=>{if(!this.stopped&&!execution.controller.signal.aborted)this.errors.push(error);}).finally(()=>{if(this.active?.lease===execution.lease)this.active=null;this.options.onReady?.();});
  return true;
  }
  private async prepare(execution:Execution,step:EnvironmentStep,generate:EnvironmentGenerator):Promise<void>{
  const d=this.d,snapshot=step.preparationSnapshot!,signal=execution.controller.signal;
- const ref=d.web!.store.openStage('environment',step.id,'generation',step.stage),session=d.web!.openSession(ref);
+ const ref=d.web!.store.openStage('environment',step.id,'generation',step.stage),session=d.web!.openSession(ref,()=>{if(!this.canPublish(execution)){execution.controller.abort(new DOMException('Environment lease ended','AbortError'));throw execution.controller.signal.reason;}});
  let usedBasis:typeof snapshot.usedBasis=null;
  const options:ModelRunOptions={signal,runRef:ref,lookup:async(request:LookupRequest)=>{
- const result=await lookupFrozenEnvironment(snapshot,request,retrievalFor(d));signal.throwIfAborted();usedBasis=result.usedBasis;return result.context;
- },web:{...session,beginOperation:r=>{signal.throwIfAborted();let value!:ReturnType<typeof session.beginOperation>;this.guarded(execution,()=>{value=session.beginOperation(r);});return value;},markProvided:ids=>this.guarded(execution,()=>session.markProvided(ids)),saveCheckpoint:cp=>this.guarded(execution,current=>{
+ const result=await lookupFrozenEnvironment(snapshot,request,retrievalFor(d),signal);signal.throwIfAborted();usedBasis=result.usedBasis;return result.context;
+ },web:{...session,searchAndRead:(request,operation)=>{signal.throwIfAborted();return session.searchAndRead(request,{...operation,signal});},readPage:(url,operation)=>{signal.throwIfAborted();return session.readPage(url,{...operation,signal});},saveCheckpoint:cp=>this.guarded(execution,current=>{
  session.saveCheckpoint(cp);
  if(usedBasis&&!cp.lookupPending)d.environmentStore.saveStep({...current,preparationSnapshot:{...current.preparationSnapshot!,usedBasis}});
  })}};
@@ -106,11 +108,14 @@ export class EnvironmentPreparation {
  this.d.environmentStore.saveStep({...step,status:'pending',retryAt:addMs(now,this.d.config.environmentRetryMs),preparationGeneration:(step.preparationGeneration??1)+1,preparationSnapshot:null,inputSnapshot:null,frozenResult:null,staleReason:reason});
  }
  applyReady(stepId:string,now:string):'applied'|'stale'|'none'{
- const d=this.d;let outcome:'applied'|'stale'|'none'='none';
+ const d=this.d;
+ const original=d.environmentStore.step(stepId),originalBatch=original?d.environmentStore.batch(original.batchId):null;
+ if(originalBatch?.status==='active'&&(originalBatch.timezone!==d.config.timezone||originalBatch.localDate!==localDate(now,originalBatch.timezone))){ensureEnvironmentBatch(d.storage,d.config,now);return 'stale';}
+ let outcome:'applied'|'stale'|'none'='none';
  d.storage.transaction(()=>{
  const step=d.environmentStore.step(stepId);if(!step||step.status!=='ready'||step.preparationVersion!==1)return;
  const batch=d.environmentStore.batch(step.batchId);
- if(!batch||batch.status!=='active'||batch.timezone!==d.config.timezone||batch.localDate!==localDate(now,batch.timezone)){ensureEnvironmentBatch(d.storage,d.config,now);outcome='stale';return;}
+ if(!batch||batch.status!=='active'||batch.timezone!==d.config.timezone||batch.localDate!==localDate(now,batch.timezone)){outcome='stale';return;}
  if(selectEnvironmentStepMetadata(d.storage,now)?.id!==stepId)return;
  const snapshot=step.preparationSnapshot!;
  let reason=snapshot.businessBasis!==environmentBusinessBasis(d,step.stage)?'environment business basis changed':!lookupBasisCurrent(d,snapshot)?'used lookup basis changed':null;

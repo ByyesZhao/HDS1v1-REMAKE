@@ -47,14 +47,20 @@ export function freezeEnvironmentRetrieval(d:Dependencies,stage:EnvironmentStage
  return {request,candidates:candidates.map(({normalizedVector,...row})=>({...row,...(normalizedVector?{normalizedVector:Array.from(normalizedVector)}:{})})),recent,sourceMessages,invalidSourceIds,signature:digest(retrieval.configuration())};
 }
 export function freezeEnvironmentSnapshot(d:Dependencies,step:EnvironmentStep,at:string):EnvironmentPreparationSnapshot{
- const school:EnvironmentSchoolRows={school_plans:d.schoolStore.plans(),school_plan_items:d.schoolStore.items(),school_instances:d.schoolStore.instances(),school_notices:d.schoolStore.notices(),school_weeks:d.storage.all('school_weeks'),school_knowledge:d.storage.all('school_knowledge'),school_progress:d.schoolStore.progress()};
+ const owner=step.stage==='school_campus'?'campus':'group',week=step.stage==='school_week',upstream=step.stage==='school_campus'||step.stage==='school_group';
+ const school:EnvironmentSchoolRows={
+ school_plans:upstream?d.schoolStore.plans().filter(p=>p.owner===owner):[],
+ school_plan_items:week?d.schoolStore.items():upstream?d.schoolStore.items().filter(i=>i.owner===owner):[],
+ school_instances:week?d.schoolStore.instances():[],school_notices:week?d.schoolStore.notices():[],
+ school_weeks:week?d.storage.all('school_weeks'):[],school_knowledge:week?d.storage.all('school_knowledge'):[],
+ school_progress:step.stage==='school_group'?d.schoolStore.progress():[]};
  return structuredClone({version:1 as const,at,timezone:d.config.timezone,input:environmentInput({...d,clock:{now:()=>at}},step),school,businessBasis:environmentBusinessBasis(d,step.stage),retrieval:freezeEnvironmentRetrieval(d,step.stage,at),usedBasis:null});
 }
-export async function lookupFrozenEnvironment(snapshot:EnvironmentPreparationSnapshot,query:LookupRequest,retrieval:MemoryRetrieval):Promise<{context:RetrievedContext;usedBasis:EnvironmentLookupBasis}>{
+export async function lookupFrozenEnvironment(snapshot:EnvironmentPreparationSnapshot,query:LookupRequest,retrieval:MemoryRetrieval,signal?:AbortSignal):Promise<{context:RetrievedContext;usedBasis:EnvironmentLookupBasis}>{
  if(digest(retrieval.configuration())!==snapshot.retrieval.signature)throw Error('frozen retrieval configuration changed');
  const frozen=snapshot.retrieval;
  const candidates=frozen.candidates.map(({normalizedVector,...row})=>({...row,...(normalizedVector?{normalizedVector:Float32Array.from(normalizedVector)}:{})}));
- const context=retrieval.budget(await retrieval.buildFrozen(resolveLookupRequest(query,frozen.request),candidates,structuredClone(frozen.recent),ids=>{if(ids.some(id=>frozen.invalidSourceIds.includes(id)))throw Error('frozen message source consistency failed');}),frozen.request.budget??retrieval.limits.historyBudget);
+ const context=retrieval.budget(await retrieval.buildFrozen(resolveLookupRequest(query,frozen.request),candidates,structuredClone(frozen.recent),ids=>{if(ids.some(id=>frozen.invalidSourceIds.includes(id)))throw Error('frozen message source consistency failed');},[],signal),frozen.request.budget??retrieval.limits.historyBudget);
  const owners=[...context.details,...context.shortTerm,...context.longTerm,...context.learned];
  const returned=new Set([...context.recent.map(m=>m.id),...owners.flatMap(o=>o.sourceIds)]);
  return {context,usedBasis:{owners:owners.map(({ownerType,ownerId,revision,stateVersion,status})=>({ownerType,ownerId,revision,stateVersion,status})),messageIds:frozen.sourceMessages.filter(m=>returned.has(m.id)).map(m=>m.id)}};

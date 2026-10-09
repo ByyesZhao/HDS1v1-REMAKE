@@ -32,7 +32,7 @@ export class MemoryRetrieval {
     return this.buildFrozen(request,candidates,recent,ids=>assertMessageSources(this.store.storage,ids),request.includeDetailHistory?this.store.storage.all('detail_history'):[]);
   }
   configuration(){return {limits:this.limits,calibration:this.calibration,indexSignature:this.index?.configSignature??null};}
-  async buildFrozen(request:RetrievalRequest,candidates:MemoryCandidate[],recent:RetrievedContext['recent'],assertSources:(ids:string[])=>void,history:RetrievedContext['detailHistory']=[]):Promise<RetrievedContext>{
+  async buildFrozen(request:RetrievalRequest,candidates:MemoryCandidate[],recent:RetrievedContext['recent'],assertSources:(ids:string[])=>void,history:RetrievedContext['detailHistory']=[],signal?:AbortSignal):Promise<RetrievedContext>{
     this.metrics.candidates=candidates.length;
     const threshold=this.calibration.semantic;
     const calibrated=!!threshold&&[threshold.fact,threshold.experience].every(n=>Number.isFinite(n)&&n>=-1&&n<=1);
@@ -41,7 +41,8 @@ export class MemoryRetrieval {
     const reason=!this.index?'no_index':!request.query.trim()?'empty_query':!calibrated?'uncalibrated':threshold!.configSignature!==this.index.configSignature?'signature_mismatch':!compatible?'no_compatible_candidate':null;
     this.metrics.semanticSkipReason=reason;
     if(reason){this.metrics.semanticSkipped++;if(this.index){this.index.stats.semanticSkipped=(this.index.stats.semanticSkipped??0)+1;const reasons=this.index.stats.semanticSkipReasons??{};reasons[reason]=(reasons[reason]??0)+1;this.index.stats.semanticSkipReasons=reasons;}}
-    const vector=reason?null:await this.index!.query(request.query);
+    const vector=reason?null:await this.index!.query(request.query,signal);
+    signal?.throwIfAborted();
     if(!reason&&!vector)this.index!.stats.lexicalFallbacks++;
     const lexical:Array<{row:MemoryCandidate;score:number}>=[],semantic:Array<{row:MemoryCandidate;score:number}>=[],direct:MemoryCandidate[]=[];
     const always=candidates.filter(r=>r.ownerType==='learned'&&r.alwaysInclude);
