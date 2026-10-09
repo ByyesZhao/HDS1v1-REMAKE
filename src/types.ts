@@ -36,7 +36,7 @@ export interface CharacterState {
   sleep: null | { sleepAt: ISOTime; wakeAt: ISOTime };
   nextAutonomousAt: ISOTime | null; plan: string;
 }
-export interface IncomingMessage { id: string; receivedAt: ISOTime; content: string; platformMessageIds?: string[] }
+export interface IncomingMessage { id: string; receivedAt: ISOTime; content: string; platformMessageIds?: string[]; hasVisualAttachment?: boolean }
 export interface Message {
   id: string; platformMessageIds: string[]; direction: 'incoming' | 'outgoing';
   receivedAt: ISOTime; content: string; batchId: string | null; seenTurnId: string | null;
@@ -44,6 +44,7 @@ export interface Message {
   sharedActivityId?: string | null;
   dialogueEpisodeId?: string;
   chatEpisodeId?:string|null;
+  hasVisualAttachment?: boolean;
 }
 export interface Runtime {
   dialogueContextVersion?:1|2|null;activeDialogueEpisodeId?:string|null;activeChatEpisodeId?:string|null;

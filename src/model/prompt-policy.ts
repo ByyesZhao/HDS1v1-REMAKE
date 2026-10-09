@@ -1,14 +1,19 @@
 import type { SharedTurnMeta } from '../types';
 import type { PromptStage,StageModelInput } from './context-types';
 import { isStageModelInput } from './context-types';
-export interface PromptFacts {mode?:string;sharedMeta?:SharedTurnMeta|null;hasCurrentPublicNarration?:boolean;contactEligible?:boolean}
+import { visualReplyRules } from './reply-guidance';
+export interface PromptFacts {mode?:string;sharedMeta?:SharedTurnMeta|null;hasCurrentPublicNarration?:boolean;contactEligible?:boolean;hasVisualInput?:boolean}
 export interface PromptPolicy {version:1;stage:PromptStage;facts:PromptFacts}
 export function buildPromptPolicy(stage:PromptStage,facts:PromptFacts):PromptPolicy {
  const value=structuredClone(facts);if(value.sharedMeta){Object.freeze(value.sharedMeta.controlRequestIds);Object.freeze(value.sharedMeta);}Object.freeze(value);return Object.freeze({version:1,stage,facts:value});
 }
 export function factsFromInput(input:unknown):PromptFacts {
  const context=isStageModelInput(input)?input.context:input&&typeof input==='object'?input as Record<string,unknown>:{};
- return { ...(typeof context.mode==='string'?{mode:context.mode}:{}),...(context.sharedMeta?{sharedMeta:context.sharedMeta as SharedTurnMeta}:{}),...('publicNarration' in context?{hasCurrentPublicNarration:typeof context.publicNarration==='string'&&!!context.publicNarration.trim()}:{}),...(typeof context.contactEligible==='boolean'?{contactEligible:context.contactEligible}:{})};
+ const ids=isStageModelInput(input)?new Set([...input.roles.visibleIds??[],...input.roles.reconsiderIds??[]]):null;
+ const snapshot=context as import('./context-types').StageBusinessSnapshot;
+ const messages=isStageModelInput(input)?input.resources.messages.filter(m=>ids!.has(m.id)):[...snapshot.visibleMessages??[],...snapshot.reconsiderMessages??[]];
+ const hasVisualInput=messages.some(m=>m.direction==='incoming'&&m.hasVisualAttachment===true);
+ return { hasVisualInput,...(typeof context.mode==='string'?{mode:context.mode}:{}),...(context.sharedMeta?{sharedMeta:context.sharedMeta as SharedTurnMeta}:{}),...('publicNarration' in context?{hasCurrentPublicNarration:typeof context.publicNarration==='string'&&!!context.publicNarration.trim()}:{}),...(typeof context.contactEligible==='boolean'?{contactEligible:context.contactEligible}:{})};
 }
 export function policyRules(policy:PromptPolicy|undefined):string {
  if(!policy)return '';const {stage,facts}=policy,meta=facts.sharedMeta,rules:string[]=[];
@@ -16,6 +21,10 @@ export function policyRules(policy:PromptPolicy|undefined):string {
  if(stage==='personal_shared'){if(meta?.phase==='final')rules.push('本轮final必须sharedChange.action=end，依据已有公开收尾；不强制开口。');else if(facts.hasCurrentPublicNarration===false)rules.push('本轮主叙事无公开正文，禁止sharedChange.end；可将收尾意图留到下一轮。');else rules.push('本轮存在公开正文，可依据是否实际公开收尾决定提前end；非空正文不证明活动已结束。');}
  if(stage==='personal_life'&&typeof facts.contactEligible==='boolean'){rules.push(facts.contactEligible===false?'程序已判定本轮无主动联系资格，contact只能为{willing:false}。':'本轮有主动联系资格，仍可contact.willing=false；愿意才提供分享意图和草稿。');}
  if(stage==='expression')rules.push(facts.mode==='shared_offline'?'本轮是线下当面说话，动作输出裸正文，不把话写成发送消息。':'本轮按聊天方式表达，保留既定意图和动作。');
+ if((stage.startsWith('personal_')||stage==='expression')&&facts.hasVisualInput){
+  rules.push(visualReplyRules);
+  rules.push(stage==='expression'?'是否回复已经由个人导演决定；本阶段只润色既定意图，不因收尾建议擅自取消回复或清空parts。':stage==='personal_life'?'是否继续联系由你决定；不愿联系可contact.willing=false，保持本轮主动资格约束。':'是否回复由你决定；不需要回应时可reply.decision=none，不必为收尾表情安排稍后回复。');
+ }
  return rules.join('\n');
 }
 export function applicableResourceRules(input:StageModelInput|undefined,stage:string,webAvailable:boolean,hasMaterials:boolean,hasContextRefs=false):string {

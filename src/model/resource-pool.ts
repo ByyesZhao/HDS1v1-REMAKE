@@ -7,7 +7,7 @@ export class ResourcePool {
  private taskIds=new Set<string>();
  private ownerRefs=new Set<string>();
  private materialIds=new Set<string>();
- message(row:ModelMessage):string {if(!this.messageIds.has(row.id)){this.data.messages.push({id:row.id,direction:row.direction,content:row.content,receivedAt:row.receivedAt});this.messageIds.add(row.id);}return row.id;}
+ message(row:ModelMessage):string {if(!this.messageIds.has(row.id)){this.data.messages.push({id:row.id,direction:row.direction,content:row.content,receivedAt:row.receivedAt,...(row.hasVisualAttachment?{hasVisualAttachment:true}:{})});this.messageIds.add(row.id);}return row.id;}
  task(row:ModelScheduledTask):string{if(!this.taskIds.has(row.id)){const {id,kind,at,description,checkReason,messageIds,sharedActivityId}=row;this.data.tasks.push({id,kind,at,description,...(checkReason?{checkReason}:{}),...(messageIds?{messageIds}:{}),...(sharedActivityId?{sharedActivityId}:{})});this.taskIds.add(row.id);}return row.id;}
  owner(row:ModelOwnerView):string{if(!this.ownerRefs.has(row.ref)){this.data.owners.push(structuredClone(row));this.ownerRefs.add(row.ref);}return row.ref;}
  material(row:WebMaterial):string{if(!this.materialIds.has(row.id)){this.data.materials.push(structuredClone(row));this.materialIds.add(row.id);}return row.id;}

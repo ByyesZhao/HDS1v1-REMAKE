@@ -89,7 +89,7 @@ export function narrativeTask(shared: boolean, from: string, at: string, eventId
   return task;
 }
 
-export function personalTask(kind: 'chat' | 'life' | 'shared', at: string, tasks: ScheduledTask[], mode: string, messageIds: string[], sharedMeta?: SharedTurnMeta | null, publicNarration?: string | null, eligibility:{contactEligible?:boolean}={}): ModelTask<PersonalResult> {
+export function personalTask(kind: 'chat' | 'life' | 'shared', at: string, tasks: ScheduledTask[], mode: string, messageIds: string[], sharedMeta?: SharedTurnMeta | null, publicNarration?: string | null, eligibility:{contactEligible?:boolean;hasVisualInput?:boolean}={}): ModelTask<PersonalResult> {
   sharedMeta=sharedMeta?structuredClone(sharedMeta):sharedMeta;
   const schema=kind==='life'?(eligibility.contactEligible===false?life.extend({contact:z.object({willing:z.literal(false)})}):life):chat;
   const task=modelTask(`personal_${kind}`,schema, (r: PersonalResult) => {

@@ -27,7 +27,7 @@ export class InputBuffer {
       if(existing||control)return {kind:control?'advance':'message',systemReply:null};
       this.idle?.record('input',message.receivedAt);
       const activity = sharedRoutingActivity(this.storage);
-      if (message.content.trim() === '【推进】') {
+      if (!message.hasVisualAttachment && message.content.trim() === '【推进】') {
         this.storage.save('control_requests', message.id, { id: message.id, receivedAt: message.receivedAt,
           platformMessageIds: message.platformMessageIds ?? [], activityId: activity?.activityId ?? null,
           status: activity ? 'pending' : 'cancelled', consumedTurnId: null });

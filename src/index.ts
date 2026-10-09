@@ -108,9 +108,16 @@ export function apply(ctx: Context, config: Config): void {
     if (!isTargetSession(session, config)) return next();
     const rawContent = session.content ?? '';
     if (/^hdsi\.(status|pause|resume)(?:\s|$)/.test(rawContent.trim())) return next();
-    const text = h.parse(rawContent).filter(element => element.type === 'text').map(element => element.attrs.content).join('');
+    let hasVisualAttachment=false;
+    const text = h.parse(rawContent).map(element => {
+      if(element.type==='text')return element.attrs.content;
+      const label=element.type==='img'||element.type==='image'?'图片':element.type==='face'?'表情':element.type==='mface'?'表情包':null;
+      if(!label)return '';
+      hasVisualAttachment=true;
+      return `（用户发送${label}，未识别内容）`;
+    }).join('');
     if (!text.trim()) return;
-    const accepted = await host.acceptInput({ id: incomingMessageId(session), receivedAt: clock.now(), content: text, platformMessageIds: session.messageId ? [session.messageId] : [] });
+    const accepted = await host.acceptInput({ id: incomingMessageId(session), receivedAt: clock.now(), content: text, platformMessageIds: session.messageId ? [session.messageId] : [],...(hasVisualAttachment?{hasVisualAttachment:true}:{}) });
     if (accepted.systemReply) await bot().sendPrivateMessage(config.userId, accepted.systemReply);
   });
   for (const command of ['status', 'pause', 'resume'] as const) {
