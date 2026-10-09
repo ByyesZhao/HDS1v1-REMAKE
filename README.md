@@ -8,7 +8,7 @@ V0.5整理当前实现：普通最近4个完整对话段、活动完整授权原
 
 ## 1. 当前状态
 
-此前活动窗口增量交付105文件588项、类型检查、构建、离线demo及两个启动文件--check通过，正式普通窗口已备份升级2。随后REVIEW24局部修复的本轮验证为106文件612项、类型检查与构建通过；见[最近验收](docs/PROMPT_CONTEXT_OPTIMIZATION_V0.1_DELIVERY_REVIEW_20261008.md)。V0.5纯文档重写与此次代码修复分开记录；此次没有联网、启动服务或改正式库。
+此前活动窗口增量交付105文件588项、类型检查、构建、离线demo及两个启动文件--check通过，正式普通窗口已备份升级2；见[活动验收](docs/PROMPT_CONTEXT_OPTIMIZATION_V0.1_DELIVERY_REVIEW_20261008.md)。随后REVIEW24为106文件612项通过；最新REVIEW26关联记忆create修复为107文件620项、类型检查和构建通过，见[修复记录](docs/v0.5/records/REVIEW26_MEMORY_CREATE_FIX_LOG_20261009.md)。各次代码验证与当前文档核对分开记录；本次只修文档，没有联网、启动服务或改正式库。
 
 67项旧图库的图片、说明、标签和1024维向量已在新项目复用；运行不依赖旧HDSI目录。角色背景和用途映射已批准启用，故事阶段完整背景保留，未迁移作者事实或覆盖已有细节。
 
@@ -65,7 +65,7 @@ SnowLuma登录该机器人，OneBot反向WebSocket对应`ws://127.0.0.1:5141/one
 
 `narrative`、`narrative_shared`、`personal_chat`、`personal_life`、`personal_shared`、`expression`、`memory`、`memory_consolidation`、`world`、`school_campus`、`school_group`、`school_week`。
 
-另有`stickerDescriptionModel`。审核任务memory_audit复用memory_consolidation连接。当前全部Flash；记忆提取／深度整理／新图描述high，其余上述故事与环境任务low。每项可独立改`deepseek-v4-pro`，格式修补及工具续调用继承原连接。强度支持none／low／high／max，具体有效值与Schema默认差别见[对应清单](docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md)。
+另有`stickerDescriptionModel`。固定信息审核使用memory_audit提示／资料投影，实际模型任务名和复用连接均为memory_consolidation。当前全部Flash；记忆提取／深度整理／新图描述high，其余上述故事与环境任务low。每项可独立改`deepseek-v4-pro`，格式修补及工具续调用继承原连接。强度支持none／low／high／max，具体有效值与Schema默认差别见[对应清单](docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md)。
 
 示例（当前支持的本地解码格式）：
 
