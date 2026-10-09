@@ -314,7 +314,7 @@
 
 ## REVIEW24局部修复执行补记（2026-10-09）
 
-不新增完整计划，按已接受回应§5直接执行，合同同步在[细化§15](PROMPT_CONTEXT_OPTIMIZATION_V0.1_IMPLEMENTATION_20261008.md)，过程与最终证据见[修复记录](REVIEW24_DIALOGUE_FIX_LOG_20261009.md)。
+不新增完整计划，按已接受回应§5直接执行，合同同步在[细化§15](PROMPT_CONTEXT_OPTIMIZATION_V0.1_IMPLEMENTATION_20261008.md)，过程与最终证据见[修复记录](v0.5/records/REVIEW24_DIALOGUE_FIX_LOG_20261009.md)。
 
 1. 先补参数重建、V1未知字段、混合版本报告等失败回归，保留真实红灯。
 2. 接入记录／请求参数、原因／原配置诊断及显式`--rebuild-chat-index`；只读check、停服备份、无在途／无活动、原索引核对、事务替换、回滚和幂等验证。

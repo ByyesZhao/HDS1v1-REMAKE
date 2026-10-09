@@ -2,7 +2,7 @@
 
 日期：2026-10-09。本文是当前已实现系统的逻辑总览，以此次核对的实际行为为准。版本0.5统一架构文档口径；不据文档新增模型、改动运行规则或升级数据。
 
-本文只说明系统职责、规则、机制和流程。源码、配置键、数据版本与验证证据集中在[实现对应与现状](docs/V0.5_IMPLEMENTATION_MAP_20261009.md)，部署见[README](README.md)。旧REMAKE_V0.2系列和历次方案、细化、执行计划保留为历史与技术追溯材料。
+本文只说明系统职责、规则、机制和流程。源码、配置键、数据版本与验证证据集中在[实现对应与现状](../reference/V0.5_IMPLEMENTATION_MAP_20261009.md)，部署见[README](../../../README.md)。旧REMAKE_V0.2系列和历次方案、细化、执行计划保留为历史与技术追溯材料。
 
 ## 1. 目标与范围
 
@@ -114,13 +114,13 @@ flowchart TD
 
 | 文档 | 内容 |
 | --- | --- |
-| [导演与环境](REMAKE_V0.5_DIRECTORS.md) | 模型职责、学校持续计划、实际获知与科研 |
-| [调度、状态与生活](REMAKE_V0.5_SCHEDULING.md) | 15秒合批、自主周期、预约、睡眠、情绪／体力和概率 |
-| [记忆与固定信息](REMAKE_V0.5_MEMORY.md) | 7／90／3／30、容量／归档、检索和15分钟空闲整理 |
-| [共同活动](REMAKE_V0.5_SHARED_ACTIVITY.md) | 60秒、公开动作、代写、收尾与活动归属 |
-| [提示与上下文](REMAKE_V0.5_CONTEXT.md) | 各阶段信息范围、背景用途、单池及程序分支 |
-| [表达与表情素材](REMAKE_V0.5_EXPRESSION_STICKERS.md) | 意图保真、分段发送、图库和抽样 |
-| [网页搜索](REMAKE_V0.5_WEB_SEARCH.md) | 20／40独立计数、缓存、恢复与本人查阅 |
-| [报错与恢复](REMAKE_V0.5_RECOVERY.md) | 修补、暂停、生成／发送／提交及环境／后台恢复 |
+| [导演与环境](../subsystems/REMAKE_V0.5_DIRECTORS.md) | 模型职责、学校持续计划、实际获知与科研 |
+| [调度、状态与生活](../subsystems/REMAKE_V0.5_SCHEDULING.md) | 15秒合批、自主周期、预约、睡眠、情绪／体力和概率 |
+| [记忆与固定信息](../subsystems/REMAKE_V0.5_MEMORY.md) | 7／90／3／30、容量／归档、检索和15分钟空闲整理 |
+| [共同活动](../subsystems/REMAKE_V0.5_SHARED_ACTIVITY.md) | 60秒、公开动作、代写、收尾与活动归属 |
+| [提示与上下文](../subsystems/REMAKE_V0.5_CONTEXT.md) | 各阶段信息范围、背景用途、单池及程序分支 |
+| [表达与表情素材](../subsystems/REMAKE_V0.5_EXPRESSION_STICKERS.md) | 意图保真、分段发送、图库和抽样 |
+| [网页搜索](../subsystems/REMAKE_V0.5_WEB_SEARCH.md) | 20／40独立计数、缓存、恢复与本人查阅 |
+| [报错与恢复](../subsystems/REMAKE_V0.5_RECOVERY.md) | 修补、暂停、生成／发送／提交及环境／后台恢复 |
 
-实现和验收限制见[对应清单](docs/V0.5_IMPLEMENTATION_MAP_20261009.md)。V0.5文档重写过程和与用户概括的差异见[修订记录](docs/V0.5_DOCUMENT_REWRITE_LOG_20261009.md)。
+实现和验收限制见[对应清单](../reference/V0.5_IMPLEMENTATION_MAP_20261009.md)。完整阅读顺序见[文档索引](../README.md)。初次重写过程见[修订记录](../records/V0.5_DOCUMENT_REWRITE_LOG_20261009.md)，最新源码对照和归类见[整理记录](../records/V0.5_DOCUMENT_ALIGNMENT_LOG_20261009.md)。

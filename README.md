@@ -1,6 +1,6 @@
 # HDSI 重制版 V0.5
 
-单角色、一对一QQ生活模拟。当前架构入口为[总架构](REMAKE_V0.5.md)，子系统、源码对应与审核材料见[文档索引](docs/DOCUMENT_AUDIT.md)。旧REMAKE_V0.2系列是历史累积说明，当前规则无需再从旧文档和多轮rebuttal拼接。
+单角色、一对一QQ生活模拟。当前架构入口为[总架构](docs/v0.5/architecture/REMAKE_V0.5.md)，子系统、源码对应与审核材料见[文档索引](docs/v0.5/README.md)。旧REMAKE_V0.2系列是历史累积说明，当前规则无需再从旧文档和多轮rebuttal拼接。
 
 V0.5整理当前实现：普通最近4个完整对话段、活动完整授权原文和结束后记忆召回；7／90／3／30记忆周期及100／1000／500容量；每日06:00世界／校园／课题组／周增量链；普通15秒合批、共同60秒或全文`【推进】`，约10轮软收尾、20轮硬上限；冻结发送与按阶段恢复。
 
@@ -65,7 +65,7 @@ SnowLuma登录该机器人，OneBot反向WebSocket对应`ws://127.0.0.1:5141/one
 
 `narrative`、`narrative_shared`、`personal_chat`、`personal_life`、`personal_shared`、`expression`、`memory`、`memory_consolidation`、`world`、`school_campus`、`school_group`、`school_week`。
 
-另有`stickerDescriptionModel`。审核任务memory_audit复用memory_consolidation连接。当前全部Flash；记忆提取／深度整理／新图描述high，其余上述故事与环境任务low。每项可独立改`deepseek-v4-pro`，格式修补及工具续调用继承原连接。强度支持none／low／high／max，具体有效值与Schema默认差别见[对应清单](docs/V0.5_IMPLEMENTATION_MAP_20261009.md)。
+另有`stickerDescriptionModel`。审核任务memory_audit复用memory_consolidation连接。当前全部Flash；记忆提取／深度整理／新图描述high，其余上述故事与环境任务low。每项可独立改`deepseek-v4-pro`，格式修补及工具续调用继承原连接。强度支持none／low／high／max，具体有效值与Schema默认差别见[对应清单](docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md)。
 
 示例（当前支持的本地解码格式）：
 
@@ -109,7 +109,7 @@ npm run dialogue:migrate -- --database runtime/data/hdsi-remake.sqlite --config 
 npm run dialogue:migrate -- --database runtime/data/hdsi-remake.sqlite --config config.local.json --rebuild-chat-index --apply --stopped --backup-dir runtime/data/backups
 ```
 
-check不写业务数据；apply备份并事务重建普通索引，保留原消息与记忆。缺元数据、损坏关联、未完成故事轮或进行中的活动会阻挡，不得仅修改`chat_index_metadata`代替重建。普通窗口段数变化不需要重建。其他升级的前置条件以各自报告为准。修复证据见[REVIEW24记录](docs/REVIEW24_DIALOGUE_FIX_LOG_20261009.md)。
+check不写业务数据；apply备份并事务重建普通索引，保留原消息与记忆。缺元数据、损坏关联、未完成故事轮或进行中的活动会阻挡，不得仅修改`chat_index_metadata`代替重建。普通窗口段数变化不需要重建。其他升级的前置条件以各自报告为准。修复证据见[REVIEW24记录](docs/v0.5/records/REVIEW24_DIALOGUE_FIX_LOG_20261009.md)。
 
 最近普通升级备份位置及配套回退代码见[实施日志任务20](docs/PROMPT_CONTEXT_OPTIMIZATION_V0.1_IMPLEMENTATION_LOG_20261008.md)。回退用配套代码和完整备份，不直接拿新库运行旧门禁。
 
@@ -122,7 +122,7 @@ npm run stickers -- import D:\我的素材 config.local.json runtime/data/hdsi-r
 npm run stickers -- rebuild - config.local.json runtime/data/hdsi-remake.sqlite
 ```
 
-新图描述后再编码；重建沿旧文字／标签，不重识图。更换模型、端点或维度需显式重建图库，素材ID和图片文件保持可用。细节见[素材文档](REMAKE_V0.5_EXPRESSION_STICKERS.md)、[迁移记录](docs/STICKER_MIGRATION.md)。
+新图描述后再编码；重建沿旧文字／标签，不重识图。更换模型、端点或维度需显式重建图库，素材ID和图片文件保持可用。细节见[素材文档](docs/v0.5/subsystems/REMAKE_V0.5_EXPRESSION_STICKERS.md)、[迁移记录](docs/STICKER_MIGRATION.md)。
 
 `npm run check:models`会发固定测试提示及素材测试查询，是显式在线验证；普通启动检查不联网。其他`--online`验收也使用模型与认证，报告有明确数据范围，不能当成离线命令。
 
@@ -136,10 +136,10 @@ npm run stickers -- rebuild - config.local.json runtime/data/hdsi-remake.sqlite
 
 活动控制全文`【推进】`跳过等待，线下`【动作：…】`表示动作尝试。角色能看到也可不回复。
 
-前台模型／发送／基础后处理失败暂停并尽力发安全error；重启不清持久暂停。尚未尝试的候选可重生成，有发送尝试则冻结续发，输出完成只续后处理。已确认项不重发，未确认窗口仍可能重复。接口超限保留报错，不自动删内容、缩窗口或增加关段命令。详见[报错与恢复](REMAKE_V0.5_RECOVERY.md)。
+前台模型／发送／基础后处理失败暂停并尽力发安全error；重启不清持久暂停。尚未尝试的候选可重生成，有发送尝试则冻结续发，输出完成只续后处理。已确认项不重发，未确认窗口仍可能重复。接口超限保留报错，不自动删内容、缩窗口或增加关段命令。详见[报错与恢复](docs/v0.5/subsystems/REMAKE_V0.5_RECOVERY.md)。
 
 ## 8. 当前文档与复盘
 
-[V0.5总架构](REMAKE_V0.5.md)＋其8份子系统＋[实现对应](docs/V0.5_IMPLEMENTATION_MAP_20261009.md)是当前说明。最近实现证据在[交付记录](docs/PROMPT_CONTEXT_OPTIMIZATION_V0.1_DELIVERY_REVIEW_20261008.md)；本轮重写过程在[文档修订日志](docs/V0.5_DOCUMENT_REWRITE_LOG_20261009.md)。
+[V0.5总架构](docs/v0.5/architecture/REMAKE_V0.5.md)＋其8份子系统＋[实现对应](docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md)是当前说明。最近实现证据在[交付记录](docs/PROMPT_CONTEXT_OPTIMIZATION_V0.1_DELIVERY_REVIEW_20261008.md)；本轮重写过程在[文档修订日志](docs/v0.5/records/V0.5_DOCUMENT_REWRITE_LOG_20261009.md)。
 
 详细过程保存在`runtime/data/prompt-activity-context-process-20261009`。旧REMAKE_V0.2、历次细化／计划／review及DSH-review副本保留历史；旧zip不持续更新，不作为V0.5审核包。

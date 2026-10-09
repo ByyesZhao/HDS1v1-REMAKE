@@ -2,7 +2,7 @@
 
 用户提供了既有表情库导出以及正式背景和密钥，并要求把需要引用的旧内容转移到新项目。此次复制资料和图片，旧工程保留；不迁移旧聊天、记忆、经历或人物运行状态。
 
-当前新图描述连接为 DeepSeek Flash、`reasoningEffort: high`，可独立改为 Pro；它生成描述文字，独立的 qwen Embedding 再编码描述和查询。本次直接复用旧描述，尚未在线验证新图视觉描述能力。角色各任务与审核入口见 [README](../README.md) 和 [文档核对清单](DOCUMENT_AUDIT.md)。
+当前新图描述连接为 DeepSeek Flash、`reasoningEffort: high`，可独立改为 Pro；它生成描述文字，独立的 qwen Embedding 再编码描述和查询。本次直接复用旧描述，尚未在线验证新图视觉描述能力。角色各任务与审核入口见 [README](../README.md) 和 [文档核对清单](v0.5/README.md)。
 
 ## 新项目内的文件
 
