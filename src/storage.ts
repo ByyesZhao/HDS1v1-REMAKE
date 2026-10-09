@@ -36,7 +36,7 @@ export class Storage {
       CREATE INDEX IF NOT EXISTS turn_unfinished ON turns(json_extract(data, '$.done'));
       CREATE INDEX IF NOT EXISTS memory_time ON memories(json_extract(data, '$.kind'), json_extract(data, '$.createdAt'));
       CREATE UNIQUE INDEX IF NOT EXISTS outbox_sequence ON outbox(json_extract(data, '$.turnId'), json_extract(data, '$.seq'));
-      CREATE INDEX IF NOT EXISTS turn_active_work ON turns(json_extract(data,'$.done')) WHERE COALESCE(json_extract(data,'$.done'),0)=0 AND COALESCE(json_extract(data,'$.legacyDisposition'),'')!='superseded';
+      CREATE INDEX IF NOT EXISTS turn_active_work ON turns(COALESCE(json_extract(data,'$.done'),0)) WHERE COALESCE(json_extract(data,'$.done'),0)=0 AND COALESCE(json_extract(data,'$.legacyDisposition'),'')!='superseded';
       CREATE INDEX IF NOT EXISTS message_turn ON messages(json_extract(data,'$.turnId'));
       CREATE INDEX IF NOT EXISTS message_chat ON messages(json_extract(data,'$.chatEpisodeId'));
       CREATE INDEX IF NOT EXISTS message_activity ON messages(json_extract(data,'$.sharedActivityId'));
@@ -84,8 +84,8 @@ export class Storage {
   character(): CharacterState { return this.get<CharacterState>('character')!; }
   messages(): Message[] { return this.all('messages').sort((a, b) => Date.parse(a.receivedAt) - Date.parse(b.receivedAt)); }
   private messageQuery(where:string,args:readonly any[]=[]):Message[]{return this.db.prepare('SELECT data FROM messages WHERE '+where+' ORDER BY rowid').all(...args).map(r=>JSON.parse(String(r.data)) as Message).sort((a,b)=>Date.parse(a.receivedAt)-Date.parse(b.receivedAt));}
-  unseenIncomingMessages():Message[]{return this.messageQuery("json_extract(data,'$.direction')='incoming' AND json_type(data,'$.seenTurnId')='null'");}
-  unreadActivityMessages(activityId:string):Message[]{return this.messageQuery("json_extract(data,'$.direction')='incoming' AND json_type(data,'$.seenTurnId')='null' AND json_type(data,'$.batchId')='null' AND json_extract(data,'$.sharedActivityId')=?",[activityId]);}
+  unseenIncomingMessages():Message[]{return this.messageQuery("json_extract(data,'$.direction')='incoming' AND json_type(data,'$.seenTurnId')='null' AND json_extract(data,'$.seenTurnId') IS NULL");}
+  unreadActivityMessages(activityId:string):Message[]{return this.messageQuery("json_extract(data,'$.direction')='incoming' AND json_type(data,'$.seenTurnId')='null' AND json_extract(data,'$.seenTurnId') IS NULL AND json_type(data,'$.batchId')='null' AND json_extract(data,'$.sharedActivityId')=?",[activityId]);}
   messagesByTurn(id:string):Message[]{return this.messageQuery("json_extract(data,'$.turnId')=?",[id]);}
   messagesByChatEpisode(id:string):Message[]{return this.messageQuery("json_extract(data,'$.chatEpisodeId')=?",[id]);}
   messagesByActivity(id:string):Message[]{return this.messageQuery("json_extract(data,'$.sharedActivityId')=?",[id]);}
@@ -96,7 +96,7 @@ export class Storage {
   }
   unreadMessages(): Message[] {
     const open=this.runtime().openBatch?.id;
-    return this.messageQuery("json_extract(data,'$.direction')='incoming' AND json_type(data,'$.seenTurnId')='null' AND NOT (COALESCE(json_extract(data,'$.sharedActivityId'),'')!='' AND COALESCE(json_type(data,'$.batchId')='null',0)) AND "+(open===undefined?"json_type(data,'$.batchId') IS NOT NULL":"json_extract(data,'$.batchId') IS NOT ?"),open===undefined?[]:[open]);
+    return this.messageQuery("json_extract(data,'$.direction')='incoming' AND json_type(data,'$.seenTurnId')='null' AND json_extract(data,'$.seenTurnId') IS NULL AND NOT (COALESCE(json_extract(data,'$.sharedActivityId'),'')!='' AND COALESCE(json_type(data,'$.batchId')='null',0)) AND "+(open===undefined?"json_type(data,'$.batchId') IS NOT NULL":"json_extract(data,'$.batchId') IS NOT ?"),open===undefined?[]:[open]);
   }
   unfinishedTurns():TurnRecord[]{return this.db.prepare("SELECT data FROM turns WHERE COALESCE(json_extract(data,'$.done'),0)=0 AND COALESCE(json_extract(data,'$.legacyDisposition'),'')!='superseded' ORDER BY rowid").all().map(r=>JSON.parse(String(r.data)));}
   unfinishedTurn():TurnRecord|null{const row=this.db.prepare("SELECT data FROM turns WHERE COALESCE(json_extract(data,'$.done'),0)=0 AND COALESCE(json_extract(data,'$.legacyDisposition'),'')!='superseded' ORDER BY rowid LIMIT 1").get();return row?JSON.parse(String(row.data)):null;}

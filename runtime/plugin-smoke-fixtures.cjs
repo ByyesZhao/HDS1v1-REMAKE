@@ -26,5 +26,9 @@ async function waitForEnvironmentBatch(inspect,batchId,deadline){
  }
  throw Error('environment timeout: '+JSON.stringify(inspect(captured)));
 }
+function validatePersistedNotices(frozenKeys,notices){
+ const actual=notices.map(n=>n.id).sort(),expected=[...frozenKeys].sort();
+ if(JSON.stringify(actual)!==JSON.stringify(expected)||!notices.every(n=>n.payload?.text&&n.payload.snapshots?.length))throw Error('persisted notice identity mismatch');
+}
 async function runScenario(scenario){return require('./plugin-smoke.cjs').runScenario(scenario);}
-module.exports={parseEnvelopeRequest,mockEnvironmentResponse,waitForEnvironmentBatch,runScenario};
+module.exports={parseEnvelopeRequest,mockEnvironmentResponse,waitForEnvironmentBatch,validatePersistedNotices,runScenario};

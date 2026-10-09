@@ -1,0 +1,940 @@
+{
+  "node": "v24.21.0",
+  "platform": "win32",
+  "createdAt": "2026-10-09T05:25:13.884Z",
+  "scope": "offline synthetic; no model/QQ/formal DB",
+  "dialogue": [
+    {
+      "size": 1000,
+      "samples": [
+        {
+          "full": {
+            "ms": 5.598000000000013,
+            "queries": 13,
+            "decoded": 3005,
+            "returnedDataRows": 3005
+          },
+          "active": {
+            "ms": 4.203000000000031,
+            "queries": 67,
+            "decoded": 46,
+            "returnedDataRows": 46
+          }
+        },
+        {
+          "full": {
+            "ms": 5.3673,
+            "queries": 13,
+            "decoded": 3005,
+            "returnedDataRows": 3005
+          },
+          "active": {
+            "ms": 3.362099999999998,
+            "queries": 67,
+            "decoded": 46,
+            "returnedDataRows": 46
+          }
+        },
+        {
+          "full": {
+            "ms": 5.84839999999997,
+            "queries": 13,
+            "decoded": 3005,
+            "returnedDataRows": 3005
+          },
+          "active": {
+            "ms": 3.3742000000000303,
+            "queries": 67,
+            "decoded": 46,
+            "returnedDataRows": 46
+          }
+        },
+        {
+          "full": {
+            "ms": 6.03570000000002,
+            "queries": 13,
+            "decoded": 3005,
+            "returnedDataRows": 3005
+          },
+          "active": {
+            "ms": 7.89609999999999,
+            "queries": 67,
+            "decoded": 46,
+            "returnedDataRows": 46
+          }
+        },
+        {
+          "full": {
+            "ms": 8.597100000000012,
+            "queries": 13,
+            "decoded": 3005,
+            "returnedDataRows": 3005
+          },
+          "active": {
+            "ms": 4.277800000000013,
+            "queries": 67,
+            "decoded": 46,
+            "returnedDataRows": 46
+          }
+        }
+      ],
+      "fullReads": [
+        {
+          "tasks": 1,
+          "messages": 1,
+          "chat_episodes": 1,
+          "turns": 1,
+          "dialogue_episodes": 1
+        },
+        {
+          "tasks": 1,
+          "messages": 1,
+          "chat_episodes": 1,
+          "turns": 1,
+          "dialogue_episodes": 1
+        },
+        {
+          "tasks": 1,
+          "messages": 1,
+          "chat_episodes": 1,
+          "turns": 1,
+          "dialogue_episodes": 1
+        },
+        {
+          "tasks": 1,
+          "messages": 1,
+          "chat_episodes": 1,
+          "turns": 1,
+          "dialogue_episodes": 1
+        },
+        {
+          "tasks": 1,
+          "messages": 1,
+          "chat_episodes": 1,
+          "turns": 1,
+          "dialogue_episodes": 1
+        }
+      ],
+      "medianMs": {
+        "full": 5.84839999999997,
+        "active": 4.203000000000031
+      },
+      "queryPlans": [
+        {
+          "name": "unfinished",
+          "sql": "SELECT data FROM turns WHERE COALESCE(json_extract(data,'$.done'),0)=0 AND COALESCE(json_extract(data,'$.legacyDisposition'),'')!='superseded' ORDER BY rowid",
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH turns USING INDEX turn_active_work (<expr>=?)"
+            }
+          ]
+        },
+        {
+          "name": "unread",
+          "sql": "SELECT data FROM messages WHERE json_extract(data,'$.direction')='incoming' AND json_type(data,'$.seenTurnId')='null' AND json_extract(data,'$.seenTurnId') IS NULL ORDER BY rowid",
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 62,
+              "detail": "SEARCH messages USING INDEX message_unread (<expr>=? AND <expr>=?)"
+            },
+            {
+              "id": 18,
+              "parent": 0,
+              "notused": 0,
+              "detail": "USE TEMP B-TREE FOR ORDER BY"
+            }
+          ]
+        },
+        {
+          "name": "chat",
+          "sql": "SELECT data FROM messages WHERE json_extract(data,'$.chatEpisodeId')='probe' ORDER BY rowid",
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH messages USING INDEX message_chat (<expr>=?)"
+            }
+          ]
+        },
+        {
+          "name": "activity",
+          "sql": "SELECT data FROM messages WHERE json_extract(data,'$.sharedActivityId')='synthetic' ORDER BY rowid",
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH messages USING INDEX message_activity (<expr>=?)"
+            }
+          ]
+        },
+        {
+          "name": "open",
+          "sql": "SELECT data FROM chat_episodes WHERE json_extract(data,'$.status')='open' ORDER BY rowid",
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH chat_episodes USING INDEX chat_open (<expr>=?)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "size": 10000,
+      "samples": [
+        {
+          "full": {
+            "ms": 48.035500000000184,
+            "queries": 13,
+            "decoded": 30005,
+            "returnedDataRows": 30005
+          },
+          "active": {
+            "ms": 4.024400000000014,
+            "queries": 67,
+            "decoded": 46,
+            "returnedDataRows": 46
+          }
+        },
+        {
+          "full": {
+            "ms": 49.72260000000006,
+            "queries": 13,
+            "decoded": 30005,
+            "returnedDataRows": 30005
+          },
+          "active": {
+            "ms": 3.261500000000069,
+            "queries": 67,
+            "decoded": 46,
+            "returnedDataRows": 46
+          }
+        },
+        {
+          "full": {
+            "ms": 50.346000000000004,
+            "queries": 13,
+            "decoded": 30005,
+            "returnedDataRows": 30005
+          },
+          "active": {
+            "ms": 3.0239999999998872,
+            "queries": 67,
+            "decoded": 46,
+            "returnedDataRows": 46
+          }
+        },
+        {
+          "full": {
+            "ms": 48.54259999999999,
+            "queries": 13,
+            "decoded": 30005,
+            "returnedDataRows": 30005
+          },
+          "active": {
+            "ms": 4.07529999999997,
+            "queries": 67,
+            "decoded": 46,
+            "returnedDataRows": 46
+          }
+        },
+        {
+          "full": {
+            "ms": 50.01389999999992,
+            "queries": 13,
+            "decoded": 30005,
+            "returnedDataRows": 30005
+          },
+          "active": {
+            "ms": 4.266699999999901,
+            "queries": 67,
+            "decoded": 46,
+            "returnedDataRows": 46
+          }
+        }
+      ],
+      "fullReads": [
+        {
+          "tasks": 1,
+          "messages": 1,
+          "chat_episodes": 1,
+          "turns": 1,
+          "dialogue_episodes": 1
+        },
+        {
+          "tasks": 1,
+          "messages": 1,
+          "chat_episodes": 1,
+          "turns": 1,
+          "dialogue_episodes": 1
+        },
+        {
+          "tasks": 1,
+          "messages": 1,
+          "chat_episodes": 1,
+          "turns": 1,
+          "dialogue_episodes": 1
+        },
+        {
+          "tasks": 1,
+          "messages": 1,
+          "chat_episodes": 1,
+          "turns": 1,
+          "dialogue_episodes": 1
+        },
+        {
+          "tasks": 1,
+          "messages": 1,
+          "chat_episodes": 1,
+          "turns": 1,
+          "dialogue_episodes": 1
+        }
+      ],
+      "medianMs": {
+        "full": 49.72260000000006,
+        "active": 4.024400000000014
+      },
+      "queryPlans": [
+        {
+          "name": "unfinished",
+          "sql": "SELECT data FROM turns WHERE COALESCE(json_extract(data,'$.done'),0)=0 AND COALESCE(json_extract(data,'$.legacyDisposition'),'')!='superseded' ORDER BY rowid",
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH turns USING INDEX turn_active_work (<expr>=?)"
+            }
+          ]
+        },
+        {
+          "name": "unread",
+          "sql": "SELECT data FROM messages WHERE json_extract(data,'$.direction')='incoming' AND json_type(data,'$.seenTurnId')='null' AND json_extract(data,'$.seenTurnId') IS NULL ORDER BY rowid",
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 62,
+              "detail": "SEARCH messages USING INDEX message_unread (<expr>=? AND <expr>=?)"
+            },
+            {
+              "id": 18,
+              "parent": 0,
+              "notused": 0,
+              "detail": "USE TEMP B-TREE FOR ORDER BY"
+            }
+          ]
+        },
+        {
+          "name": "chat",
+          "sql": "SELECT data FROM messages WHERE json_extract(data,'$.chatEpisodeId')='probe' ORDER BY rowid",
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH messages USING INDEX message_chat (<expr>=?)"
+            }
+          ]
+        },
+        {
+          "name": "activity",
+          "sql": "SELECT data FROM messages WHERE json_extract(data,'$.sharedActivityId')='synthetic' ORDER BY rowid",
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH messages USING INDEX message_activity (<expr>=?)"
+            }
+          ]
+        },
+        {
+          "name": "open",
+          "sql": "SELECT data FROM chat_episodes WHERE json_extract(data,'$.status')='open' ORDER BY rowid",
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH chat_episodes USING INDEX chat_open (<expr>=?)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "size": 50000,
+      "samples": [
+        {
+          "full": {
+            "ms": 258.7348000000002,
+            "queries": 13,
+            "decoded": 150005,
+            "returnedDataRows": 150005
+          },
+          "active": {
+            "ms": 4.019100000000435,
+            "queries": 67,
+            "decoded": 46,
+            "returnedDataRows": 46
+          }
+        },
+        {
+          "full": {
+            "ms": 251.23739999999998,
+            "queries": 13,
+            "decoded": 150005,
+            "returnedDataRows": 150005
+          },
+          "active": {
+            "ms": 4.107500000000073,
+            "queries": 67,
+            "decoded": 46,
+            "returnedDataRows": 46
+          }
+        },
+        {
+          "full": {
+            "ms": 262.90810000000056,
+            "queries": 13,
+            "decoded": 150005,
+            "returnedDataRows": 150005
+          },
+          "active": {
+            "ms": 3.2201999999997497,
+            "queries": 67,
+            "decoded": 46,
+            "returnedDataRows": 46
+          }
+        },
+        {
+          "full": {
+            "ms": 259.3854000000001,
+            "queries": 13,
+            "decoded": 150005,
+            "returnedDataRows": 150005
+          },
+          "active": {
+            "ms": 3.0808999999999287,
+            "queries": 67,
+            "decoded": 46,
+            "returnedDataRows": 46
+          }
+        },
+        {
+          "full": {
+            "ms": 258.3681000000006,
+            "queries": 13,
+            "decoded": 150005,
+            "returnedDataRows": 150005
+          },
+          "active": {
+            "ms": 3.241899999999987,
+            "queries": 67,
+            "decoded": 46,
+            "returnedDataRows": 46
+          }
+        }
+      ],
+      "fullReads": [
+        {
+          "tasks": 1,
+          "messages": 1,
+          "chat_episodes": 1,
+          "turns": 1,
+          "dialogue_episodes": 1
+        },
+        {
+          "tasks": 1,
+          "messages": 1,
+          "chat_episodes": 1,
+          "turns": 1,
+          "dialogue_episodes": 1
+        },
+        {
+          "tasks": 1,
+          "messages": 1,
+          "chat_episodes": 1,
+          "turns": 1,
+          "dialogue_episodes": 1
+        },
+        {
+          "tasks": 1,
+          "messages": 1,
+          "chat_episodes": 1,
+          "turns": 1,
+          "dialogue_episodes": 1
+        },
+        {
+          "tasks": 1,
+          "messages": 1,
+          "chat_episodes": 1,
+          "turns": 1,
+          "dialogue_episodes": 1
+        }
+      ],
+      "medianMs": {
+        "full": 258.7348000000002,
+        "active": 3.241899999999987
+      },
+      "queryPlans": [
+        {
+          "name": "unfinished",
+          "sql": "SELECT data FROM turns WHERE COALESCE(json_extract(data,'$.done'),0)=0 AND COALESCE(json_extract(data,'$.legacyDisposition'),'')!='superseded' ORDER BY rowid",
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH turns USING INDEX turn_active_work (<expr>=?)"
+            }
+          ]
+        },
+        {
+          "name": "unread",
+          "sql": "SELECT data FROM messages WHERE json_extract(data,'$.direction')='incoming' AND json_type(data,'$.seenTurnId')='null' AND json_extract(data,'$.seenTurnId') IS NULL ORDER BY rowid",
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 62,
+              "detail": "SEARCH messages USING INDEX message_unread (<expr>=? AND <expr>=?)"
+            },
+            {
+              "id": 18,
+              "parent": 0,
+              "notused": 0,
+              "detail": "USE TEMP B-TREE FOR ORDER BY"
+            }
+          ]
+        },
+        {
+          "name": "chat",
+          "sql": "SELECT data FROM messages WHERE json_extract(data,'$.chatEpisodeId')='probe' ORDER BY rowid",
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH messages USING INDEX message_chat (<expr>=?)"
+            }
+          ]
+        },
+        {
+          "name": "activity",
+          "sql": "SELECT data FROM messages WHERE json_extract(data,'$.sharedActivityId')='synthetic' ORDER BY rowid",
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH messages USING INDEX message_activity (<expr>=?)"
+            }
+          ]
+        },
+        {
+          "name": "open",
+          "sql": "SELECT data FROM chat_episodes WHERE json_extract(data,'$.status')='open' ORDER BY rowid",
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH chat_episodes USING INDEX chat_open (<expr>=?)"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "status": [
+    {
+      "size": 10,
+      "samples": [
+        {
+          "ms": 0.6935999999996056,
+          "queries": 11,
+          "decoded": 18,
+          "returnedDataRows": 6,
+          "webCharacters": 153
+        },
+        {
+          "ms": 0.6378000000004249,
+          "queries": 11,
+          "decoded": 18,
+          "returnedDataRows": 6,
+          "webCharacters": 153
+        },
+        {
+          "ms": 0.469199999999546,
+          "queries": 11,
+          "decoded": 18,
+          "returnedDataRows": 6,
+          "webCharacters": 153
+        },
+        {
+          "ms": 0.3855999999996129,
+          "queries": 11,
+          "decoded": 18,
+          "returnedDataRows": 6,
+          "webCharacters": 153
+        },
+        {
+          "ms": 0.36229999999977736,
+          "queries": 11,
+          "decoded": 18,
+          "returnedDataRows": 6,
+          "webCharacters": 153
+        }
+      ],
+      "medianMs": 0.469199999999546,
+      "summary": {
+        "totals": {
+          "sessions": 40,
+          "owners": 10,
+          "successReads": 0,
+          "failures": 0,
+          "cacheHits": 0,
+          "providerSearchCalls": 0,
+          "providerReadCalls": 0
+        },
+        "currentOwners": [
+          {
+            "ownerType": "turn",
+            "ownerId": "active",
+            "stageCount": 4,
+            "stages": [
+              {
+                "runId": "731eb6a1-a12b-45ab-a438-529be0fc54f8",
+                "stageKey": "stage0",
+                "taskName": "task",
+                "counters": {
+                  "successReads": 0,
+                  "failures": 0
+                },
+                "metrics": {
+                  "cacheHits": 0,
+                  "providerSearchCalls": 0,
+                  "providerReadCalls": 0
+                }
+              },
+              {
+                "runId": "d2b8d49f-9d4c-4d17-83a1-51bbd8a02bf4",
+                "stageKey": "stage1",
+                "taskName": "task",
+                "counters": {
+                  "successReads": 0,
+                  "failures": 0
+                },
+                "metrics": {
+                  "cacheHits": 0,
+                  "providerSearchCalls": 0,
+                  "providerReadCalls": 0
+                }
+              },
+              {
+                "runId": "501b4418-0200-494e-b3c5-e3a88fedd519",
+                "stageKey": "stage2",
+                "taskName": "task",
+                "counters": {
+                  "successReads": 0,
+                  "failures": 0
+                },
+                "metrics": {
+                  "cacheHits": 0,
+                  "providerSearchCalls": 0,
+                  "providerReadCalls": 0
+                }
+              },
+              {
+                "runId": "eb33f59a-7cae-41b0-8c6d-af68e2215555",
+                "stageKey": "stage3",
+                "taskName": "task",
+                "counters": {
+                  "successReads": 0,
+                  "failures": 0
+                },
+                "metrics": {
+                  "cacheHits": 0,
+                  "providerSearchCalls": 0,
+                  "providerReadCalls": 0
+                }
+              }
+            ],
+            "omittedStages": 0
+          }
+        ],
+        "omittedOwners": 0,
+        "enabled": false,
+        "limits": {
+          "successReads": 20,
+          "failures": 40
+        }
+      },
+      "rawHash": "9a9a04d19cf508dc07e4c66a3ecd374156e00140fdad318a5d456019dba7b5d8",
+      "rawUnchanged": true
+    },
+    {
+      "size": 100,
+      "samples": [
+        {
+          "ms": 0.8660999999992782,
+          "queries": 11,
+          "decoded": 18,
+          "returnedDataRows": 6,
+          "webCharacters": 155
+        },
+        {
+          "ms": 0.848599999999351,
+          "queries": 11,
+          "decoded": 18,
+          "returnedDataRows": 6,
+          "webCharacters": 155
+        },
+        {
+          "ms": 0.855199999999968,
+          "queries": 11,
+          "decoded": 18,
+          "returnedDataRows": 6,
+          "webCharacters": 155
+        },
+        {
+          "ms": 0.7433000000000902,
+          "queries": 11,
+          "decoded": 18,
+          "returnedDataRows": 6,
+          "webCharacters": 155
+        },
+        {
+          "ms": 0.7387999999991735,
+          "queries": 11,
+          "decoded": 18,
+          "returnedDataRows": 6,
+          "webCharacters": 155
+        }
+      ],
+      "medianMs": 0.848599999999351,
+      "summary": {
+        "totals": {
+          "sessions": 400,
+          "owners": 100,
+          "successReads": 0,
+          "failures": 0,
+          "cacheHits": 0,
+          "providerSearchCalls": 0,
+          "providerReadCalls": 0
+        },
+        "currentOwners": [
+          {
+            "ownerType": "turn",
+            "ownerId": "active",
+            "stageCount": 4,
+            "stages": [
+              {
+                "runId": "31e38a71-fcf4-4949-aeb1-1acd53f97b5f",
+                "stageKey": "stage0",
+                "taskName": "task",
+                "counters": {
+                  "successReads": 0,
+                  "failures": 0
+                },
+                "metrics": {
+                  "cacheHits": 0,
+                  "providerSearchCalls": 0,
+                  "providerReadCalls": 0
+                }
+              },
+              {
+                "runId": "522a26a1-cc29-401f-8000-da7effc5e542",
+                "stageKey": "stage1",
+                "taskName": "task",
+                "counters": {
+                  "successReads": 0,
+                  "failures": 0
+                },
+                "metrics": {
+                  "cacheHits": 0,
+                  "providerSearchCalls": 0,
+                  "providerReadCalls": 0
+                }
+              },
+              {
+                "runId": "74987127-9bf9-4ca1-9968-502cf27d521e",
+                "stageKey": "stage2",
+                "taskName": "task",
+                "counters": {
+                  "successReads": 0,
+                  "failures": 0
+                },
+                "metrics": {
+                  "cacheHits": 0,
+                  "providerSearchCalls": 0,
+                  "providerReadCalls": 0
+                }
+              },
+              {
+                "runId": "f3bae4fb-5ab2-472b-8656-b3998f5218c5",
+                "stageKey": "stage3",
+                "taskName": "task",
+                "counters": {
+                  "successReads": 0,
+                  "failures": 0
+                },
+                "metrics": {
+                  "cacheHits": 0,
+                  "providerSearchCalls": 0,
+                  "providerReadCalls": 0
+                }
+              }
+            ],
+            "omittedStages": 0
+          }
+        ],
+        "omittedOwners": 0,
+        "enabled": false,
+        "limits": {
+          "successReads": 20,
+          "failures": 40
+        }
+      },
+      "rawHash": "55694b7ed0e688eacbb1c94d39a003928f7ade3684fd758149e49ee05c82fd65",
+      "rawUnchanged": true
+    },
+    {
+      "size": 1000,
+      "samples": [
+        {
+          "ms": 5.581099999999424,
+          "queries": 11,
+          "decoded": 18,
+          "returnedDataRows": 6,
+          "webCharacters": 157
+        },
+        {
+          "ms": 5.127799999998388,
+          "queries": 11,
+          "decoded": 18,
+          "returnedDataRows": 6,
+          "webCharacters": 157
+        },
+        {
+          "ms": 5.065399999999499,
+          "queries": 11,
+          "decoded": 18,
+          "returnedDataRows": 6,
+          "webCharacters": 157
+        },
+        {
+          "ms": 5.58009999999922,
+          "queries": 11,
+          "decoded": 18,
+          "returnedDataRows": 6,
+          "webCharacters": 157
+        },
+        {
+          "ms": 5.066200000001118,
+          "queries": 11,
+          "decoded": 18,
+          "returnedDataRows": 6,
+          "webCharacters": 157
+        }
+      ],
+      "medianMs": 5.127799999998388,
+      "summary": {
+        "totals": {
+          "sessions": 4000,
+          "owners": 1000,
+          "successReads": 0,
+          "failures": 0,
+          "cacheHits": 0,
+          "providerSearchCalls": 0,
+          "providerReadCalls": 0
+        },
+        "currentOwners": [
+          {
+            "ownerType": "turn",
+            "ownerId": "active",
+            "stageCount": 4,
+            "stages": [
+              {
+                "runId": "6270d8f9-d3d7-44bf-a21f-8ce068fc1625",
+                "stageKey": "stage0",
+                "taskName": "task",
+                "counters": {
+                  "successReads": 0,
+                  "failures": 0
+                },
+                "metrics": {
+                  "cacheHits": 0,
+                  "providerSearchCalls": 0,
+                  "providerReadCalls": 0
+                }
+              },
+              {
+                "runId": "cab9f942-fc0b-4125-9f2e-790d33cda2e4",
+                "stageKey": "stage1",
+                "taskName": "task",
+                "counters": {
+                  "successReads": 0,
+                  "failures": 0
+                },
+                "metrics": {
+                  "cacheHits": 0,
+                  "providerSearchCalls": 0,
+                  "providerReadCalls": 0
+                }
+              },
+              {
+                "runId": "65b6e431-e649-482f-a374-79173657000d",
+                "stageKey": "stage2",
+                "taskName": "task",
+                "counters": {
+                  "successReads": 0,
+                  "failures": 0
+                },
+                "metrics": {
+                  "cacheHits": 0,
+                  "providerSearchCalls": 0,
+                  "providerReadCalls": 0
+                }
+              },
+              {
+                "runId": "db0c59a8-b27d-4550-87ac-96a0bc7c8596",
+                "stageKey": "stage3",
+                "taskName": "task",
+                "counters": {
+                  "successReads": 0,
+                  "failures": 0
+                },
+                "metrics": {
+                  "cacheHits": 0,
+                  "providerSearchCalls": 0,
+                  "providerReadCalls": 0
+                }
+              }
+            ],
+            "omittedStages": 0
+          }
+        ],
+        "omittedOwners": 0,
+        "enabled": false,
+        "limits": {
+          "successReads": 20,
+          "failures": 40
+        }
+      },
+      "rawHash": "3d2bb3cd572d7ecc3d3d685b0ad8fe5ca462b34dbc689b11ee154966342340f9",
+      "rawUnchanged": true
+    }
+  ]
+}

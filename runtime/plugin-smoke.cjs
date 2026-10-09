@@ -6,7 +6,7 @@ const {performance}=require('node:perf_hooks');
 const {DatabaseSync}=require('node:sqlite');
 const plugin=require('../lib/index.js');
 const {systemClock}=require('../lib/time.js');
-const {parseEnvelopeRequest,mockEnvironmentResponse,waitForEnvironmentBatch}=require('./plugin-smoke-fixtures.cjs');
+const {parseEnvelopeRequest,mockEnvironmentResponse,waitForEnvironmentBatch,validatePersistedNotices}=require('./plugin-smoke-fixtures.cjs');
 async function runScenario(scenario){
  const workspace=mkdtempSync(join(tmpdir(),'hdsi-plugin-smoke-')),settingsPath=join(workspace,'story.json');
  const sample=JSON.parse(readFileSync(resolve(__dirname,'../examples/story.sample.json'),'utf8'));
@@ -37,7 +37,8 @@ async function runScenario(scenario){
   if(scenario==='empty_week'&&(week.inputSnapshot.context.requiredNoticeKeys.length||week.frozenResult.notices.length))throw Error('empty week generated notices');
   if(scenario==='required_notice'){
    const frozenKeys=week.inputSnapshot.context.requiredNoticeKeys.map(n=>n.id),textKeys=requests.find(r=>r.stage==='school_week').notices.map(n=>n.key);
-   if(!frozenKeys.length||JSON.stringify(frozenKeys)!==JSON.stringify(textKeys)||!rows('school_instances').length||!rows('school_notices').every(n=>frozenKeys.includes(n.id)&&n.payload.text&&n.payload.snapshots.length))throw Error('notice freeze identity mismatch');
+   if(!frozenKeys.length||JSON.stringify(frozenKeys)!==JSON.stringify(textKeys)||!rows('school_instances').length)throw Error('notice freeze identity mismatch');
+   validatePersistedNotices(frozenKeys,rows('school_notices'));
   }
   const indexDeadline=performance.now()+10000;
   while(!inspect.prepare("SELECT 1 FROM memory_index_jobs WHERE json_extract(data,'$.status')='done' AND json_extract(data,'$.completionReason')='applied'").get()&&performance.now()<indexDeadline)await new Promise(resolve=>setImmediate(resolve));

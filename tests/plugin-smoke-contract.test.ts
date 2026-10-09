@@ -5,7 +5,7 @@ import {createRequire} from 'node:module';
 import {performance} from 'node:perf_hooks';
 import {validateWeekText} from '../src/school/calendar';
 import type {SchoolExpansionInput} from '../src/school/types';
-const {parseEnvelopeRequest,mockEnvironmentResponse,waitForEnvironmentBatch}=createRequire(resolve('package.json'))('./runtime/plugin-smoke-fixtures.cjs');
+const {parseEnvelopeRequest,mockEnvironmentResponse,waitForEnvironmentBatch,validatePersistedNotices}=createRequire(resolve('package.json'))('./runtime/plugin-smoke-fixtures.cjs');
 test('real Koishi smoke completes empty and required-notice V1 batches without repairs',{timeout:30000},()=>{
  const result=spawnSync(process.execPath,[resolve('runtime/plugin-smoke.cjs')],{encoding:'utf8',timeout:25000});
  expect(result.error).toBeUndefined();expect(result.status,result.stdout+'\n'+result.stderr).toBe(0);
@@ -35,4 +35,17 @@ test('failure and timeout retain batch and stage diagnostics',async()=>{
  const inspect=()=>({batch:{id:'b',status:'active'},steps:[{stage:'world',status:'pending',attempt:1,retryAt:'later',lastError:'bad shape'}]});
  await expect(waitForEnvironmentBatch(inspect,'b',performance.now()+1000)).rejects.toThrow('bad shape');
  await expect(waitForEnvironmentBatch(inspect,'b',performance.now()-1)).rejects.toThrow('world');
+});
+
+
+test('persisted smoke notices must cover every frozen key exactly once',()=>{
+ const valid=[{id:'a',payload:{text:'notice',snapshots:[{}]}},{id:'b',payload:{text:'notice',snapshots:[{}]}}];
+ expect(()=>validatePersistedNotices(['a','b'],valid)).not.toThrow();
+ for(const invalid of [[],valid.slice(0,1),[valid[0],valid[0]],[...valid,{...valid[0],id:'extra'}]])expect(()=>validatePersistedNotices(['a','b'],invalid)).toThrow('notice');
+});
+
+test('benchmark default output is independent of node executable argv',()=>{
+ const {outputDirectory}=createRequire(resolve('package.json'))('./scripts/bench-chat-status.cjs');
+ expect(outputDirectory(['C:/Node/node.exe','script.cjs'],process.cwd())).toBe(resolve('runtime/astra-fixes-acceptance-20261009'));
+ expect(outputDirectory(['node','script','--output','runtime/custom'],process.cwd())).toBe(resolve('runtime/custom'));
 });

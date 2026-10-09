@@ -6,7 +6,7 @@
 
 ## 执行状态
 
-T1～T13：待执行。仅有对应新证据才标完成。
+T1～T13已完成；最终证据见交付文档。下文按执行时间保留过程，早期in progress不是当前状态。
 
 ## 预检与接口
 
@@ -55,3 +55,22 @@ T11: complete — 首次/启动/恢复全检，普通输入使用当前工作集
 证据t11-cost-red/expanded/cost-green/regression-green/types-final；t1112-suite。
 
 T12: complete — 同次collectReady/nextDeadline只建一次known/items/instances只读Map，不缓存notice状态。15个个人提醒的school_knowledge读取15→1，发布后select即时见available，直接调用结果相同；指定5文件17项通过，联合全量121文件677项通过，typecheck通过。日志t12-count-red/green/types、t1112-suite。
+
+
+## T13 性能探针与独立复核
+
+合成探针使用临时库、固定工作集、预热一次和五次采样，建库/基线恢复不计时；数据规模1k/10k/50k，网页10/100/1000轮。完整审核每表只读一次；普通输入固定67次查询、46条解码和返回data行。最初JS工作量已稳定，但EXPLAIN显示未读只使用direction列、unfinished仍SCAN turns，导致SQL内部历史量成本。为显式null语义补等价IS NULL谓词，partial turn_active_work改用同一COALESCE键；两条真实生产SQL计划回归先失败后通过。调整后普通输入约3.3ms，各规模不随历史线性增长；这不是运行延迟SLA或所有SQL O(1)的证明。原始计划与五样本保存在benchmark.json。
+
+使用superpowers:requesting-code-review做唯一一次新审查；reviewer只读最终差异和三份方案，独立7文件39测试通过，未发现Critical/Important。两项Minor已修：默认--output错误取Node可执行路径；smoke必须精确核验所有持久通知ID，空数组/缺项/重复/额外项均失败。新增回归、实际两场景smoke重新验证。首次helper缺失失败不当作业务RED，另保存旧every规则的失败证明；默认输出的旧行为已有实际进程复现。
+
+Declined-to-judge裁决：
+- 真实模型/QQ/正式旧库和私有部署：按用户与计划范围未访问，不冒充验收；后续部署时单独检查补齐报告。
+- 已被旧代码改错的历史活动ID/已选批次规则：保留计划边界，不自行猜测修复。
+- started/unknown旧pending额外执行旧请求：合同接受的恢复成本；测试保留原冻结输入。
+- 外部写库持续监控、任意JSON损坏/canonical循环：超出本轮正常合同，不增加防御框架。
+- 其他status部分体积、所有SQL总耗时O(1)、真实搜索/semantic质量：未承诺；本轮仅网页展示有界及指定工作量。
+- T13最终证据：由主代理完成后单独记录，不依据独立审查提前宣称通过。
+
+Ruling: superpowers:finishing-a-development-branch要求选择本地合入/推送/保留；用户已要求落实到当前本地项目，按高优先级授权直接集成main，不重复征求菜单确认，不推送远端。保留现有README/审核资料，先合入不触碰其脏文件的实现提交，再同步已审阅文档；native归档worktree前复制忽略的验收日志。
+
+T13: complete — 最终121文件681项全量通过（66.15s），typecheck/build/demo/两场景smoke通过，默认参数合成探针通过；独立Minor已关闭。新SQL计划回归和旧every规则失败证据保留。汇总/原始数据/范围见[交付](ASTRA_FIX_DELIVERY_20261009.md)。本地合入后的build/全回归记录另保存为primary-final-*，不混同隔离工作区数字。

@@ -28,3 +28,15 @@ it('hot queries do not decode unrelated rows and outbox stays ordered',()=>{
  const all=s.all.bind(s);s.all=((table:any)=>{if(['turns','messages','outbox'].includes(table))throw Error('full decode');return all(table);}) as any;
  expect(s.unfinishedTurn()?.id).toBe('only');expect(s.unreadMessages()).toEqual([]);expect(s.outbox('only')).toEqual([]);s.close();
 });
+
+it('unseen predicate uses both columns of existing unread index',()=>{
+ const s=new Storage(':memory:');let sql='';const prepare=s.prepare.bind(s);s.prepare=((query:string)=>{sql=query;return prepare(query);}) as any;
+ // Capture the production query even though Storage uses its direct db connection.
+ const db=(s as any).db,original=db.prepare;db.prepare=function(q:string){sql=q;return original.call(this,q);};s.unseenIncomingMessages();db.prepare=original;
+ const plan=prepare('EXPLAIN QUERY PLAN '+sql).all().map(r=>String(r.detail)).join(';');expect(plan).toContain('<expr>=? AND <expr>=?');s.close();
+});
+
+it('unfinished lookup searches active index rather than scanning completed turns',()=>{
+ const s=new Storage(':memory:'),db=(s as any).db,prepare=db.prepare;let sql='';db.prepare=function(q:string){sql=q;return prepare.call(this,q);};s.unfinishedTurn();db.prepare=prepare;
+ const plan=s.prepare('EXPLAIN QUERY PLAN '+sql).all().map(r=>String(r.detail)).join(';');expect(plan).toContain('SEARCH turns USING INDEX turn_active_work');s.close();
+});
