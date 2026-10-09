@@ -1,6 +1,6 @@
 # HDSI V0.5：文档入口与审核清单
 
-核对日期：2026-10-09。当前包含ASTRA审核后T1～T13源码修复及文档同步，修复起点`73774bf`，本次完整离线验收121文件681项通过。最新[交付记录](records/ASTRA_FIX_DELIVERY_20261009.md)、[实施过程](records/ASTRA_FIX_IMPLEMENTATION_LOG_20261009.md)与[性能原始数据](records/ASTRA_FIX_BENCHMARK_20261009.json)供复核。过去累计核对保存在[历史快照](../DOCUMENT_AUDIT_PRE_V0.5_20261009.md)，旧数字/行为不当当前验收。没有在线模型、正式库或QQ运行验证。
+核对日期：2026-10-09。当前包含ASTRA审核后T1～T13源码修复及文档同步，修复起点`73774bf`，T1～T13完整离线验收121文件681项通过；后续R1补丁验收122文件693项通过，见[补验记录](records/ASTRA_R1_CHECKPOINT_FIX_DELIVERY_20261009.md)。最新[交付记录](records/ASTRA_FIX_DELIVERY_20261009.md)、[实施过程](records/ASTRA_FIX_IMPLEMENTATION_LOG_20261009.md)与[性能原始数据](records/ASTRA_FIX_BENCHMARK_20261009.json)供复核。过去累计核对保存在[历史快照](../DOCUMENT_AUDIT_PRE_V0.5_20261009.md)，旧数字/行为不当当前验收。没有在线模型、正式库或QQ运行验证。
 
 REVIEW26批准的两项修复已完成：引用已有长期记忆的create路径区分真实进展，记忆文档补同事件合并例外，见[修复记录](records/REVIEW26_MEMORY_CREATE_FIX_LOG_20261009.md)。交ASTRA前的文档检查与补充见[交审前检查记录](records/V0.5_PRE_ASTRA_DOCUMENT_CHECK_20261009.md)。
 
@@ -79,3 +79,9 @@ ASTRA 已核对上述回复，接受个人提醒适用路径与“记忆失去�
 | [流程与性能细化](plans/ASTRA_FIX_OPERATIONS_IMPLEMENTATION_20261009.md) | F5～F8：后台冻结与索引合并、读取与检查成本、状态摘要、双场景 smoke |
 
 T1～T13均已执行并逐项记录；三份文件现标明实施状态。先读[交付](records/ASTRA_FIX_DELIVERY_20261009.md)，再按需要查[过程](records/ASTRA_FIX_IMPLEMENTATION_LOG_20261009.md)与对应细化。既有审核与核验继续保留为修复前证据，未重写旧证据中的失败断言。
+
+## 7. 实施后独立复核与R1补验
+
+针对 `eb5b29e` 的结果见[实施后 review](reviews/ASTRA_POST_IMPLEMENTATION_REVIEW_20261009.md)。完整121文件681项及构建、类型、demo、双场景smoke、性能探针独立复跑通过；四项业务修复的主要结论成立。另发现1项P2恢复遗漏：维护准备失败后清除了应保留的阶段checkpoint，当时T7仍需补验，现已按R1计划补齐。该行为在原基线已存在，并非本轮新引入；独立9项复核用例中8项通过、1项复现该缺口。详见报告中的定位、边界与重跑命令。
+
+已实施并补验关闭R1的[checkpoint 修复计划](plans/ASTRA_R1_CHECKPOINT_FIX_PLAN_20261009.md)已补齐：包括具体改动、状态判据、真实恢复测试、执行顺序和验收标准。R1已关闭，源码补丁为`b398699`，仅ready/done压缩checkpoint。正式C1～C6共12项、原独立9项及完整122文件693项通过；见[补验](records/ASTRA_R1_CHECKPOINT_FIX_DELIVERY_20261009.md)和[过程](records/ASTRA_R1_CHECKPOINT_FIX_IMPLEMENTATION_LOG_20261009.md)。原postfix-evidence失败日志保留为修复前历史，本次新日志在reviews/r1-fix-evidence-20261009/。
