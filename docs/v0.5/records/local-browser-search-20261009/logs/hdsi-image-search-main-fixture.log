@@ -1,0 +1,7 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run tsx scripts/prepare-feature-check.ts --mode search --output D:\HDSI-remake\.tmp\image-search-integration-20261010
+{
+  configPath: 'D:\\HDSI-remake\\.tmp\\image-search-integration-20261010\\story.json',
+  databasePath: 'D:\\HDSI-remake\\.tmp\\image-search-integration-20261010\\story.sqlite',
+  koishiConfigPath: 'D:\\HDSI-remake\\.tmp\\image-search-integration-20261010\\koishi.yml'
+}

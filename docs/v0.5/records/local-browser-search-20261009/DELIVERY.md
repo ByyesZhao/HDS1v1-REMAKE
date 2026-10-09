@@ -2,6 +2,8 @@
 
 更新：2026-10-10。独立整批复核3个Important已修，详见[最终关闭](FINAL_REVIEW_CLOSURE.md)。实施基线889805d，S1～S5已完成；代码提交bd298d0、e830285、4b69c24及后续交付提交。先完成[图片批](../image-input-20261009/DELIVERY.md)，再实现搜索；沿用13个既有DeepSeek连接／强度及两套embedding。本批未读写正式库或私有配置，不启动HDSI、SnowLuma或QQ。
 
+主目录最终173文件882项及构建／类型／演示／只读隔离检查／双场景验收全部通过，见[本地整合](INTEGRATION_20261010.md)。
+
 ## 当前能力
 
 本机Puppeteer搜索与正文读取接入原WebSearchService，不新增搜索API费用，不内置付费回退。Bing／DuckDuckGo为可选引擎；当前公网验收Bing成功，DuckDuckGo遇到验证码。每阶段正文成功20／失败40、跨阶段缓存B、checkpoint、生活本人查阅资格保持原合同。

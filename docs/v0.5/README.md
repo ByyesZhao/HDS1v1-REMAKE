@@ -25,6 +25,8 @@
 
 当日[文档与模型连接静态核对](records/document-model-audit-20261009/README.md)已补清调度／预约分工、前后台并发及搜索接入状态；模型列表和待选服务见[模型调用与网页搜索参考](reference/MODEL_CALLS_AND_WEB_OPTIONS_20261009.md)。该记录没有新增产品实现或在线验收，不替代上述代码交付证据。
 
+本批[主目录整合与最终验收](records/local-browser-search-20261009/INTEGRATION_20261010.md)已完成，173文件882项重跑通过；正式两项开关仍关闭。
+
 ## 最新交付与审核
 
 | 材料 | 状态 |
