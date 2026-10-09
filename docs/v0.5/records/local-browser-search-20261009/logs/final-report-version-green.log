@@ -1,0 +1,11 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/local-web-acceptance.test.ts
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/image-local-search/HDSI-remake
+
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  00:20:21
+   Duration  282ms (tests 55%, transform 31%, import 12%, worker 2%)
+

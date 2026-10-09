@@ -1,0 +1,82 @@
+{
+  "mode": "offline",
+  "probe": false,
+  "engine": "bing",
+  "query": "中国气象局",
+  "realNetworkRequests": 0,
+  "passed": true,
+  "drained": true,
+  "pages": [
+    {
+      "kind": "search",
+      "finalUrl": "https://www.bing.com/search?q=%E4%B8%AD%E5%9B%BD%E6%B0%94%E8%B1%A1%E5%B1%80",
+      "access": "ok",
+      "searchState": "results",
+      "bodyCharacters": 0
+    },
+    {
+      "kind": "article",
+      "finalUrl": "https://example.org/article",
+      "access": "ok",
+      "mainSource": "article",
+      "bodyCharacters": 63
+    },
+    {
+      "kind": "search",
+      "finalUrl": "https://www.bing.com/search?q=Mozilla%20Readability",
+      "access": "ok",
+      "searchState": "results",
+      "bodyCharacters": 0
+    },
+    {
+      "kind": "article",
+      "finalUrl": "https://example.org/article",
+      "access": "ok",
+      "mainSource": "article",
+      "bodyCharacters": 63
+    }
+  ],
+  "versions": {
+    "extractor": "dom-v1/readability-0.6.0",
+    "puppeteerPlugin": "3.9.0",
+    "readability": "0.6.0"
+  },
+  "searchMs": 4.525100000000009,
+  "candidateCount": 1,
+  "candidates": [
+    {
+      "url": "https://example.org/article",
+      "title": "Public fixture"
+    }
+  ],
+  "selectedUrl": "https://example.org/article",
+  "readMs": 0.9592000000000098,
+  "bodyCharacters": 63,
+  "articleTitle": "",
+  "bodyHash": "8aa9b590aebd1442c75da64b0e5239abca359d85c86f44ad02265005070666cc",
+  "bodyPreview": "Public synthetic article\nFull fixture body. END_OF_FULL_ARTICLE",
+  "bodyTail": "Public synthetic article\nFull fixture body. END_OF_FULL_ARTICLE",
+  "english": {
+    "query": "Mozilla Readability",
+    "candidateCount": 1,
+    "selectedUrl": "https://example.org/article",
+    "bodyCharacters": 63,
+    "title": "",
+    "durationMs": 0.9515999999999849,
+    "bodyHash": "8aa9b590aebd1442c75da64b0e5239abca359d85c86f44ad02265005070666cc"
+  },
+  "dynamic": {
+    "mode": "static-dom-fixture; timed readiness has separate port regression",
+    "passed": true,
+    "source": "article"
+  },
+  "unreadable": {
+    "mode": "dom-fixture",
+    "access": "login_wall",
+    "rejected": true
+  },
+  "ownedPageOperations": 4,
+  "maximumOwnedPages": 1,
+  "remainingOwnedPages": 0,
+  "durationMs": 161.72770000000003
+}

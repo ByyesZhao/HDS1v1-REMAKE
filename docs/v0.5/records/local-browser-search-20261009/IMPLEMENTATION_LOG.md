@@ -35,6 +35,10 @@ npx tsx scripts/validate-local-web.ts --online --engine bing --report "<absolute
 
 夹具输出目录必须空；复核时换新的临时目录，不覆盖旧证据。online浏览仅公开页面，无密钥、角色背景或聊天。脚本计数是自有页和provider操作；realNetworkRequests=null意为未统计浏览器全部子资源，不是0。原attempt1误报与后续失败JSON按产生时保存，canonical probe由最后实际成功attempt4的副本表示，原HTTP探针仍保留在计划包。
 
+## 独立整批复核修复
+
+一个新上下文审查者提出3个Important，均通过6个新行为回归复现并在一次修复批中转绿；完整173文件882项及公开浏览重跑通过。具体原发现、工具错误、关闭边界见[最终关闭](FINAL_REVIEW_CLOSURE.md)。报告版本字段补验另跑红绿；随后在本地目录做最终整合验收，日志不覆盖隔离初批结果。
+
 ## 执行口径
 
 - Ruling: 入站原文解析文件取parse.ts，等价于计划ingress.ts职责；错误成本为后续改名，接口／测试合同不变。

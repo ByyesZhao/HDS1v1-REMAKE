@@ -1,6 +1,6 @@
 # HDSI V0.5：当前文档与审核入口
 
-更新：2026-10-10。图片输入理解I1～I6与本地浏览器搜索S1～S5已交付；最新全量离线验收171文件／875项，另补1项浏览器服务启动拒绝回归通过。见[图片交付](records/image-input-20261009/DELIVERY.md)与[搜索交付](records/local-browser-search-20261009/DELIVERY.md)。正式两项开关保持关闭。此前实现包含 ASTRA T1～T13、R1、T1～T9、环境异步 E1～E5及回复规则／图片表情分支。该回复规则批离线验收为150文件／840项，见[本批交付](records/reply-guidance-20261009/DELIVERY.md)。环境独立复核提出的两处来源快照问题已修复，详见[关闭说明](records/environment-async-20261009/REVIEW_CLOSURE.md)。
+更新：2026-10-10。图片输入理解I1～I6与本地浏览器搜索S1～S5已交付；最新全量离线验收173文件／882项；独立整批复核3个Important已修，见[最终关闭](records/local-browser-search-20261009/FINAL_REVIEW_CLOSURE.md)。见[图片交付](records/image-input-20261009/DELIVERY.md)与[搜索交付](records/local-browser-search-20261009/DELIVERY.md)。正式两项开关保持关闭。此前实现包含 ASTRA T1～T13、R1、T1～T9、环境异步 E1～E5及回复规则／图片表情分支。该回复规则批离线验收为150文件／840项，见[本批交付](records/reply-guidance-20261009/DELIVERY.md)。环境独立复核提出的两处来源快照问题已修复，详见[关闭说明](records/environment-async-20261009/REVIEW_CLOSURE.md)。
 
 交付后对 `cc963f8` 的[独立复核与修复实施方案](reviews/environment-async-20261009/post-delivery/REVIEW.md)已完成：全量146／804及公开离线验收重跑通过，其确认的P2 Host门禁竞态和P3报告计数错误已修复；独立差异复核无新发现。正式升级后的只读启动检查问题也已修复，详见[修复与正式升级关闭](records/environment-post-delivery-fixes-20261009/DELIVERY.md)。原报告的待修清单属于原基线。
 

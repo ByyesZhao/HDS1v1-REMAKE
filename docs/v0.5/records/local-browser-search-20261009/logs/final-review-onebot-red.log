@@ -1,0 +1,37 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/incoming-media-onebot-review.test.ts
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/image-local-search/HDSI-remake
+
+ ❯ tests/incoming-media-onebot-review.test.ts (2 tests | 2 failed) 310ms
+   × actual installed OneBot token shape reaches platform resolution without fetching a token as URL 5ms
+   × runtime assembly uses bound OneBot internal.getImage and persists downloaded bytes 304ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/incoming-media-onebot-review.test.ts > actual installed OneBot token shape reaches platform resolution without fetching a token as URL
+Error: image source unavailable
+ ❯ AttachmentResolver.resolve src/input-media/assets.ts:23:14
+
+ ❯ tests/incoming-media-onebot-review.test.ts:11:64
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/incoming-media-onebot-review.test.ts > runtime assembly uses bound OneBot internal.getImage and persists downloaded bytes
+AssertionError: expected "vi.fn()" to be called 1 times, but got 0 times
+ ❯ tests/incoming-media-onebot-review.test.ts:25:50
+
+     23|  db=new Storage(join(root,'story.sqlite'));db.set('runtime',{...db.run…
+     24|  const message=await adapted();await middleware({isDirect:true,selfId:…
+     25|  await runtime.close();expect(internal.getImage).toHaveBeenCalledTimes…
+       |                                                  ^
+     26|  }finally{await runtime?.close();db?.close();vi.unstubAllEnvs();rmSync…
+     27| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+   Start at  00:15:11
+   Duration  1.23s (transform 43%, import 29%, tests 28%)
+

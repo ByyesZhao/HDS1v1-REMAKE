@@ -1,6 +1,6 @@
 # 本地浏览器搜索交付
 
-更新：2026-10-10。实施基线889805d，S1～S5已完成；代码提交bd298d0、e830285、4b69c24及后续交付提交。先完成[图片批](../image-input-20261009/DELIVERY.md)，再实现搜索；沿用13个既有DeepSeek连接／强度及两套embedding。本批未读写正式库或私有配置，不启动HDSI、SnowLuma或QQ。
+更新：2026-10-10。独立整批复核3个Important已修，详见[最终关闭](FINAL_REVIEW_CLOSURE.md)。实施基线889805d，S1～S5已完成；代码提交bd298d0、e830285、4b69c24及后续交付提交。先完成[图片批](../image-input-20261009/DELIVERY.md)，再实现搜索；沿用13个既有DeepSeek连接／强度及两套embedding。本批未读写正式库或私有配置，不启动HDSI、SnowLuma或QQ。
 
 ## 当前能力
 
@@ -12,11 +12,12 @@
 
 ## 实际验收
 
-- 完整离线门禁：171文件／875项通过，build、typecheck、demo、双场景插件smoke通过。随后新增浏览器服务自身start拒绝1项通过，未更改产品代码；不冒称该新增项已经包含在875内。
+- 修复后完整离线门禁：173文件／882项通过，build、typecheck、demo、双场景插件smoke通过。初批171／875、服务拒绝补验以及独立复核6项红绿均保留各自产生时日志。
 - search模式独立合成库／配置／YAML通过显式runtime/check；no-network禁止请求；verify确认库和配置指纹不变。未使用默认正式路径。
 - 默认独立脚本：真实网络0，mock DOM验证候选、正文、访问墙及dispose；图片独立离线报告亦保留。
 - [真实公开最小probe](evidence/public-browser-probe-attempt4.json)：中文“中国气象局”10候选，候选百度百科主体2703字符；所有页排空。
-- [真实公开完整浏览](evidence/public-browser-full.json)：中文、英文均取候选正文；合成动态页250ms后出现article、合成密码登录墙被拒绝；自有页最大1、剩余0。报告逐项标明public/synthetic，未连接故事模型或读取正式资料。
+- [初批真实公开完整浏览](evidence/public-browser-full.json)：中文、英文均取候选正文；合成动态页250ms后出现article、合成密码登录墙被拒绝；自有页最大1、剩余0。报告逐项标明public/synthetic，未连接故事模型或读取正式资料。
+- 修复后[公开完整重跑](evidence/public-browser-final.json)亦通过；英文候选正文读取成功不等于相关性质量已验收，仍由上层模型判断是否使用。
 - DuckDuckGo验证码失败及Bing早期失败均保存；attempt1虽然原脚本passed=true，实际上仅230字符版权页脚，已人工拒绝作为验收，并补DOM失败回归后修复。最终以attempt4/full为成功证据。
 - 真实模型搜索续调用质量、QQ适配器持续收发、真实图片观察质量、数月运行未由本批验证。
 

@@ -1,0 +1,122 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/incoming-media-onebot-review.test.ts tests/browser-final-review.test.ts
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/image-local-search/HDSI-remake
+
+ ❯ tests/browser-final-review.test.ts (4 tests | 4 failed) 16ms
+   × navigation links, heading-only menus and structural loading status never establish article readiness 8ms
+   × port keeps polling initial loading shell until actual body using one original deadline 3ms
+   × dispose cannot complete or release reservation before owned popup actually closes 2ms
+   × unknown popup close failure is not swallowed as a successful parent drain 2ms
+ ❯ tests/incoming-media-onebot-review.test.ts (2 tests | 2 failed) 9ms
+   × actual installed OneBot token shape reaches platform resolution without fetching a token as URL 5ms
+   × runtime assembly uses bound OneBot internal.getImage and persists downloaded bytes 2ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/browser-final-review.test.ts > navigation links, heading-only menus and structural loading status never establish article readiness
+AssertionError: expected { text: 'HomeNews', source: 'main' } to be null
+
+- Expected:
+null
+
++ Received:
+{
+  "source": "main",
+  "text": "HomeNews",
+}
+
+ ❯ tests/browser-final-review.test.ts:7:30
+      5| it('navigation links, heading-only menus and structural loading status…
+      6|  for(const html of ['<main><a href="/">Home</a><a href="/news">News</a…
+      7|   expect(extract(html).main).toBeNull();expect(()=>extractReadablePage…
+       |                              ^
+      8|  }
+      9|  expect(extractReadablePage(extract('<main><p>短正文。</p></main>')).body)…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  tests/browser-final-review.test.ts > port keeps polling initial loading shell until actual body using one original deadline
+AssertionError: expected 'Loading article...' to be 'Actual dynamic body.' // Object.is equality
+
+Expected: "Actual dynamic body."
+Received: "Loading article..."
+
+ ❯ tests/browser-final-review.test.ts:14:130
+     12|  let polls=0;const f=fakePage(()=>++polls===1?'<main><div role="status…
+     13|  const p=await createKoishiBrowserPort(async()=>f.page as any).openPag…
+     14|  expect((await p.read({kind:'article',url},{signal:new AbortController…
+       |                                                                                                                                  ^
+     15| });
+     16| it('dispose cannot complete or release reservation before owned popup …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  tests/browser-final-review.test.ts > dispose cannot complete or release reservation before owned popup actually closes
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/browser-final-review.test.ts:22:31
+     20|  const managed=createManagedBrowserProvider(createKoishiBrowserPort(as…
+     21|  const reading=managed.provider.read(url).catch(()=>{});await tick();l…
+     22|  await tick();expect(drained).toBe(false);expect(closed).toBe(false);r…
+       |                               ^
+     23| });
+     24| it('unknown popup close failure is not swallowed as a successful paren…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  tests/browser-final-review.test.ts > unknown popup close failure is not swallowed as a successful parent drain
+AssertionError: promise resolved "{ title: '', body: 'Actual body.' }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "body": "Actual body.",
++   "title": "",
+  }
+
+ ❯ tests/browser-final-review.test.ts:28:42
+     26|  f=fakePage(()=>'<article>Actual body.</article>',()=>f.events.popup(p…
+     27|  const managed=createManagedBrowserProvider(createKoishiBrowserPort(as…
+     28|  await expect(managed.provider.read(url)).rejects.toThrow('popup close…
+       |                                          ^
+     29| });
+     30|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  tests/incoming-media-onebot-review.test.ts > actual installed OneBot token shape reaches platform resolution without fetching a token as URL
+Error: image source unavailable
+ ❯ AttachmentResolver.resolve src/input-media/assets.ts:23:14
+
+ ❯ tests/incoming-media-onebot-review.test.ts:11:64
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+ FAIL  tests/incoming-media-onebot-review.test.ts > runtime assembly uses bound OneBot internal.getImage and persists downloaded bytes
+TypeError: Cannot read properties of undefined (reading 'parse')
+ ❯ tests/incoming-media-onebot-review.test.ts:21:141
+     19|  const sample=JSON.parse(readFileSync('examples/story.sample.json','ut…
+     20|  const ctx={baseDir:root,bots:[{selfId:'b',internal}],logger:()=>({err…
+     21|  runtime=createPluginRuntimeSync(ctx as any,{botId:'b',userId:'u',data…
+       |                                                                                                                                             ^
+     22|  db=new Storage(join(root,'story.sqlite'));db.set('runtime',{...db.run…
+     23|  const message=await adapted();await middleware({isDirect:true,selfId:…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  6 failed (6)
+   Start at  00:14:45
+   Duration  1.20s (transform 52%, import 45%, tests 3%, worker 1%)
+

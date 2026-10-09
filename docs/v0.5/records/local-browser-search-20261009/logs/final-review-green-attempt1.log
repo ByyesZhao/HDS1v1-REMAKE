@@ -1,0 +1,38 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/incoming-media-onebot-review.test.ts tests/browser-final-review.test.ts tests/browser-koishi-port.test.ts tests/browser-page-extraction.test.ts tests/browser-page-slots.test.ts
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/image-local-search/HDSI-remake
+
+ ❯ tests/incoming-media-onebot-review.test.ts (2 tests | 1 failed) 318ms
+   × runtime assembly uses bound OneBot internal.getImage and persists downloaded bytes 313ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/incoming-media-onebot-review.test.ts > runtime assembly uses bound OneBot internal.getImage and persists downloaded bytes
+AssertionError: expected undefined to be 'ready' // Object.is equality
+
+- Expected:
+"ready"
+
++ Received:
+undefined
+
+ ❯ tests/incoming-media-onebot-review.test.ts:26:94
+     24|  const message=await adapted();await middleware({isDirect:true,selfId:…
+     25|  for(let i=0;i<20&&!db.all('image_assets').length;i++)await new Promis…
+     26|  expect(internal.getImage).toHaveBeenCalledTimes(1);expect(db.all('ima…
+       |                                                                                              ^
+     27|  }finally{await runtime?.close();db?.close();vi.unstubAllEnvs();rmSync…
+     28| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 4 passed (5)
+      Tests  1 failed | 14 passed (15)
+   Start at  00:16:19
+   Duration  2.40s (tests 39%, import 33%, transform 27%, worker 1%)
+
+    Isolate  5 workers spawned · ~94ms startup each (spawn + environment, per file)
+             at least ~378ms faster with isolate: false — reuses workers across files instead of one per file
+
