@@ -70,6 +70,8 @@ export class SerialHost {
       }
       const ready = await this.scheduler.collectReady(d.clock.now(),{environmentInFlightStepId:this.environment.inFlightStepId});
       if(ready?.environmentStepId&&d.environmentStore.stepMetadata(d.environmentStore.firstActiveBatch()!.id).find(s=>s.id===ready.environmentStepId)?.preparationVersion===1){
+        const runtime=d.storage.runtime();
+        if(this.stopped||runtime.paused||runtime.openBatch||d.storage.unfinishedTurn())break;
         try{if(d.environmentStore.step(ready.environmentStepId)?.status==='ready')this.environment.applyReady(ready.environmentStepId,d.clock.now());else this.environment.startOne(ready.environmentStepId,d.clock.now());}
         catch(error){d.storage.set('runtime',{...d.storage.runtime(),paused:true,lastError:error instanceof Error?error.message:String(error)});throw error;}
         await (this.options.yieldToEvents??setImmediate)();continue;

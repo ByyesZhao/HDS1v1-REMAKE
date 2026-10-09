@@ -1,0 +1,55 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/environment-async-host-gates.test.ts
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/environment-post-delivery/HDSI-remake
+
+ ❯ tests/environment-async-host-gates.test.ts (6 tests | 5 failed) 67ms
+   × ready rechecks pause after candidate selection and reuses work after reopening 23ms
+   × ready rechecks input after candidate selection and reuses work after reopening 8ms
+   × ready rechecks stop after candidate selection and reuses work after reopening 6ms
+   × pending rechecks pause after candidate selection and reuses work after reopening 6ms
+   × pending rechecks input after candidate selection and reuses work after reopening 9ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/environment-async-host-gates.test.ts > ready rechecks pause after candidate selection and reuses work after reopening
+ FAIL  tests/environment-async-host-gates.test.ts > ready rechecks input after candidate selection and reuses work after reopening
+ FAIL  tests/environment-async-host-gates.test.ts > ready rechecks stop after candidate selection and reuses work after reopening
+AssertionError: expected 'committed' to be 'ready' // Object.is equality
+
+Expected: "ready"
+Received: "committed"
+
+ ❯ tests/environment-async-host-gates.test.ts:32:26
+     30|   await Promise.all([starting,gating]);
+     31|   const blocked=d.environmentStore.step(step.id)!;
+     32|   expect(blocked.status).toBe(initial);expect(d.storage.all('events'))…
+       |                          ^
+     33|   expect(blocked.frozenResult).toEqual(frozen);expect(blocked.preparat…
+     34|   expect(worldCalls).toBe(initial==='ready'?1:0);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  tests/environment-async-host-gates.test.ts > pending rechecks pause after candidate selection and reuses work after reopening
+ FAIL  tests/environment-async-host-gates.test.ts > pending rechecks input after candidate selection and reuses work after reopening
+AssertionError: expected 'ready' to be 'pending' // Object.is equality
+
+Expected: "pending"
+Received: "ready"
+
+ ❯ tests/environment-async-host-gates.test.ts:32:26
+     30|   await Promise.all([starting,gating]);
+     31|   const blocked=d.environmentStore.step(step.id)!;
+     32|   expect(blocked.status).toBe(initial);expect(d.storage.all('events'))…
+       |                          ^
+     33|   expect(blocked.frozenResult).toEqual(frozen);expect(blocked.preparat…
+     34|   expect(worldCalls).toBe(initial==='ready'?1:0);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  5 failed | 1 passed (6)
+   Start at  19:27:44
+   Duration  678ms (transform 62%, import 26%, tests 12%, worker 1%)
+
