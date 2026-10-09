@@ -1,3 +1,4 @@
+import {selectKnownSchoolSnapshots} from './knowledge';
 import type {Storage} from '../storage';
 import type {Scene,EnvironmentEvent} from '../types';
 import type {SchoolEntitySnapshot,SchoolObservationCommit,NarrativeSchoolContext,PersonalSchoolContext} from './types';
@@ -12,9 +13,9 @@ export function narrativeSchoolContext(storage:Storage,from:string,at:string,sce
  return {objectiveInstances,noticeSnapshots,knownSnapshots:knownSchoolSnapshots(storage),eventIds:[...new Set([...objectiveInstances.flatMap(i=>[i.id,...(i.legacyEventId?[i.legacyEventId]:[])]),...noticeSnapshots.flatMap(n=>n.payload.snapshots.map(s=>s.entityId))])]};
 }
 export function personalSchoolContext(storage:Storage,observations:SchoolObservationCommit[],query:string):PersonalSchoolContext {
- const latest=new Map<string,SchoolEntitySnapshot>();
- for(const s of knownSchoolSnapshots(storage))latest.set(JSON.stringify([s.entityKind,s.entityId]),s);
- const observed=new Set<string>();for(const o of [...observations].sort((a,b)=>milliseconds(a.happenedAt)-milliseconds(b.happenedAt)))for(const s of o.snapshots){const key=JSON.stringify([s.entityKind,s.entityId]);latest.set(key,s);observed.add(key);}
+ const observed=new Set(observations.flatMap(o=>o.snapshots.map(s=>JSON.stringify([s.entityKind,s.entityId]))));
+ const snapshots=selectKnownSchoolSnapshots([...storage.all('school_knowledge'),...observations.flatMap(o=>o.snapshots.map(snapshot=>({snapshot,acquiredAt:o.happenedAt})))]);
+ const latest=new Map(snapshots.map(s=>[JSON.stringify([s.entityKind,s.entityId]),s]));
  const terms=queryTerms(query),low=query.toLowerCase();
  return {knownSnapshots:[...latest.entries()].filter(([key,s])=>{
   if(observed.has(key)||!query.trim())return true;

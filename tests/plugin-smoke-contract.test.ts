@@ -5,7 +5,7 @@ import {createRequire} from 'node:module';
 import {performance} from 'node:perf_hooks';
 import {validateWeekText} from '../src/school/calendar';
 import type {SchoolExpansionInput} from '../src/school/types';
-const {parseEnvelopeRequest,mockEnvironmentResponse,waitForEnvironmentBatch}=createRequire(import.meta.url)('../runtime/plugin-smoke-fixtures.cjs');
+const {parseEnvelopeRequest,mockEnvironmentResponse,waitForEnvironmentBatch}=createRequire(resolve('package.json'))('./runtime/plugin-smoke-fixtures.cjs');
 test('real Koishi smoke completes empty and required-notice V1 batches without repairs',{timeout:30000},()=>{
  const result=spawnSync(process.execPath,[resolve('runtime/plugin-smoke.cjs')],{encoding:'utf8',timeout:25000});
  expect(result.error).toBeUndefined();expect(result.status,result.stdout+'\n'+result.stderr).toBe(0);

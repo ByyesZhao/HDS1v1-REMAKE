@@ -1,3 +1,4 @@
+import {selectKnownSchoolSnapshots} from './knowledge';
 import {createHash} from 'node:crypto';
 import type {Storage} from '../storage';
 import {addMs,due,localParts,localTime,milliseconds} from '../time';
@@ -10,9 +11,7 @@ const day=(date:string,offset:number)=>new Date(Date.parse(date+'T12:00:00Z')+of
 export function weekStart(at:string,timezone:string){const date=localDate(at,timezone),weekday=new Date(date+'T12:00:00Z').getUTCDay()||7;return day(date,1-weekday);}
 function dateClock(date:string,clock:string,timezone:string){const [y,m,d]=date.split('-').map(Number),[h,min]=clock.split(':').map(Number);return localTime(y,m,d,h*60+min,timezone);}
 export function knownSchoolSnapshots(storage:Storage):SchoolEntitySnapshot[]{
- const latest=new Map<string,SchoolEntitySnapshot>();
- for(const k of storage.all('school_knowledge').sort((a,b)=>milliseconds(a.acquiredAt)-milliseconds(b.acquiredAt)||a.revision-b.revision))latest.set(JSON.stringify([k.entityKind,k.entityId]),k.snapshot);
- return [...latest.values()];
+ return selectKnownSchoolSnapshots(storage.all('school_knowledge'));
 }
 function related(notice:SchoolNotice,itemId:string){return notice.sourceItemId===itemId||notice.payload.snapshots.some(s=>s.entityKind==='plan_item'?s.entityId===itemId:s.value.sourceItemId===itemId);}
 function occurrences(item:SchoolPlanItem,weeks:string[],now:string,timezone:string):RequiredOccurrence[]{

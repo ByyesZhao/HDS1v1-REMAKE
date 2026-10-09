@@ -204,7 +204,7 @@ select供已合法故事合并全部相关可获知通知；只有available且ne
 
 ## 8. 客观输入、角色知识与研究来源
 
-`SchoolEntitySnapshot`为plan_item／instance判别联合，各含entityId、revision和该版value（SchoolPlanItem或SchoolInstance）。notice.payload含宣告的实体快照集合和公开正文；不能只存最新实体ID。`NarrativeSchoolContext`含objectiveInstances、已发布noticeSnapshots、knownSnapshots、eventIds；`PersonalSchoolContext`含knownSnapshots，来源为旧已知及本轮合法获知，按身份和实际获知时间选版本。接口固定为：
+`SchoolEntitySnapshot`为plan_item／instance判别联合，各含entityId、revision和该版value（SchoolPlanItem或SchoolInstance）。notice.payload含宣告的实体快照集合和公开正文；不能只存最新实体ID。`NarrativeSchoolContext`含objectiveInstances、已发布noticeSnapshots、knownSnapshots、eventIds；`PersonalSchoolContext`含knownSnapshots，来源为旧已知及本轮合法获知，按身份和实际获知时间选版本。该版本选择已由2026-10-09 ASTRA修复替代：仅在实际获知候选中依次比较公开deliveryRevision、记录revision、获知epoch和稳定输入顺序；旧现场快照不得回退已读新计划。历史验收数字保持原记录。接口固定为：
 
 ```ts
 narrativeSchoolContext(storage: Storage, from: ISOTime, at: ISOTime, scene: Scene): NarrativeSchoolContext;
