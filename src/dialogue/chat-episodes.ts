@@ -1,3 +1,4 @@
+import {recentFromSnapshot} from './chat-window';
 import {randomUUID} from 'node:crypto';
 import {isUnfinishedTurn} from '../storage';
 import {DialogueStore} from './store';
@@ -7,7 +8,7 @@ const time=(at:string)=>Date.parse(at);
 const literal=(a:string,b:string)=>a<b?-1:a>b?1:0;
 export class ChatEpisodes {
  constructor(readonly store:DialogueStore,readonly idleMinutes=15){}
- private held(id:string):boolean{return this.store.storage.all('turns').some(t=>isUnfinishedTurn(t)&&!t.outputComplete&&t.chatBinding?.holdReply&&t.chatBinding.episodeId===id);}
+ private held(id:string):boolean{return this.store.storage.unfinishedTurns().some(t=>!t.outputComplete&&t.chatBinding?.holdReply&&t.chatBinding.episodeId===id);}
  private deadline(e:ChatEpisode):string{return new Date(time(e.lastInteractionAt)+this.idleMinutes*60000).toISOString();}
  acceptMessage(message:Message):string|null {
   const s=this.store.storage;this.closeDue(message.receivedAt);
@@ -19,8 +20,8 @@ export class ChatEpisodes {
  }
  private reconcile(id:string,at:string):void {
   const s=this.store.storage,e=this.store.chatEpisode(id);if(!e)return;
-  const rows=s.messages().filter(m=>m.chatEpisodeId===id&&!m.sharedActivityId);
-  if(!rows.length){s.remove('chat_episodes',id);if(s.runtime().activeChatEpisodeId===id)s.set('runtime',{...s.runtime(),activeChatEpisodeId:null});for(const t of s.all('turns').filter(t=>isUnfinishedTurn(t)&&t.chatBinding?.episodeId===id))s.save('turns',t.id,{...t,chatBinding:{episodeId:null,holdReply:false}});return;}
+  const rows=s.messagesByChatEpisode(id).filter(m=>!m.sharedActivityId);
+  if(!rows.length){s.remove('chat_episodes',id);if(s.runtime().activeChatEpisodeId===id)s.set('runtime',{...s.runtime(),activeChatEpisodeId:null});for(const t of s.unfinishedTurns().filter(t=>t.chatBinding?.episodeId===id))s.save('turns',t.id,{...t,chatBinding:{episodeId:null,holdReply:false}});return;}
   e.openedAt=rows[0].receivedAt;e.lastInteractionAt=rows.at(-1)!.receivedAt;if(e.status==='closed')e.closedAt=this.deadline(e);this.store.saveChatEpisode(e);this.closeDue(at);
  }
  bindTurn(turn:TurnRecord):ChatTurnBinding {
@@ -37,12 +38,9 @@ export class ChatEpisodes {
   const chatBinding={episodeId:message.chatEpisodeId!,holdReply:true};s.save('turns',turn.id,{...current,chatBinding});turn.chatBinding=chatBinding;return message.chatEpisodeId!;
  }
  releaseReply(turnId:string,at:string):void{const s=this.store.storage,t=s.read('turns',turnId);if(t?.chatBinding)s.save('turns',t.id,{...t,chatBinding:{...t.chatBinding,holdReply:false}});this.closeDue(at);}
- closeDue(at:string):void{const s=this.store.storage;for(const e of this.store.chatEpisodes().filter(e=>e.status==='open'))if(!this.held(e.id)&&time(at)>=time(this.deadline(e))){this.store.saveChatEpisode({...e,status:'closed',closedAt:this.deadline(e),closeReason:'idle'});if(s.runtime().activeChatEpisodeId===e.id)s.set('runtime',{...s.runtime(),activeChatEpisodeId:null});}}
- nextDeadline(_at:string):string|null{return this.store.chatEpisodes().filter(e=>e.status==='open'&&!this.held(e.id)).map(e=>this.deadline(e)).sort((a,b)=>time(a)-time(b))[0]??null;}
+ closeDue(at:string):void{const s=this.store.storage;for(const e of this.store.openChatEpisodes())if(!this.held(e.id)&&time(at)>=time(this.deadline(e))){this.store.saveChatEpisode({...e,status:'closed',closedAt:this.deadline(e),closeReason:'idle'});if(s.runtime().activeChatEpisodeId===e.id)s.set('runtime',{...s.runtime(),activeChatEpisodeId:null});}}
+ nextDeadline(_at:string):string|null{return this.store.openChatEpisodes().filter(e=>!this.held(e.id)).map(e=>this.deadline(e)).sort((a,b)=>time(a)-time(b))[0]??null;}
  recent(phase:string,_at:string,count:number,visibleIds:string[]=[]):ChatRecent {
-  const allowed=new Set(phase==='narrative'?[]:visibleIds),messages=this.store.storage.messages().filter(m=>!m.sharedActivityId&&!!m.chatEpisodeId&&(m.direction==='outgoing'||m.seenTurnId!==null||allowed.has(m.id)));
-  const ranks=new Map<string,number>();for(const m of messages)ranks.set(m.chatEpisodeId!,Math.max(ranks.get(m.chatEpisodeId!)??-Infinity,time(m.receivedAt)));
-  const episodeIds=this.store.chatEpisodes().filter(e=>ranks.has(e.id)).sort((a,b)=>ranks.get(a.id)!-ranks.get(b.id)!||time(a.openedAt)-time(b.openedAt)||literal(a.id,b.id)).slice(-count).map(e=>e.id),order=new Map(episodeIds.map((id,i)=>[id,i]));
-  return {episodeIds,messages:messages.filter(m=>order.has(m.chatEpisodeId!)).sort((a,b)=>order.get(a.chatEpisodeId!)!-order.get(b.chatEpisodeId!)!||time(a.receivedAt)-time(b.receivedAt)||(a.turnId===b.turnId&&a.outboxSeq!==null&&b.outboxSeq!==null?a.outboxSeq-b.outboxSeq:literal(a.id,b.id)))};
+  return recentFromSnapshot({messages:this.store.storage.messages(),episodes:this.store.chatEpisodes()},{eligibility:phase==='narrative'?'ordinary_narrative':'with_visible_inputs',count,visibleIds:new Set(visibleIds)});
  }
 }

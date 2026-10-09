@@ -37,3 +37,4 @@ T5: complete — 同候选事件依据与结论可召回，旧补齐幂等/不�
 T6: complete — 历史汇总SQL、3任务各6阶段，2048网页展示，精确统计/完整诊断不变；真实environment step无普通turn时显示当前owner，维护owner随prepare清除。10/100/1000轮增长和raw不变验证；指定5文件21项、追加环境测试通过，联合全量114文件649项通过；类型检查通过。日志t6-red/targets/types、t56-extra-green/suite。T5与T6共用Host改动在上一提交一起落入，未混入无关用户资料。
 
 T7/T8: complete — 空闲前无快照，t5更新重置后t20仅一次新版整理；已开始/unknown输入保留；精确版本释放。r1/r2/r3仅编码r3，stateVersion-only可应用，服务前保持队位、服务后让给B，25项失效任务分20+5续调度且后台请求为0。T7指定8文件42项；T8指定加T7共8文件35项；完整116文件657项通过（59.12s），类型检查通过。日志t7-red/green/types，t8-red/targets/types，t78-suite。测试DTO去重content时改用content或eventSummary断言，未更改生产格式。
+T9/T10: complete — 全检messages读取由6次降至1次，chat_episodes/turns各1次；纯窗口两资格、42条整段、outbox/时区次序通过。SQL显式null/缺失/open无值/旧活动残留/done兼容与旧JS oracle相等，热查询不调用all解码历史。T9指定5文件44项，T10指定8文件38项；完整118文件661项通过（59.84s）；typecheck通过。查询计划将在T13合成探针保存，仍不宣称全检O(1)。日志t9-count-red/green、t10-red/green/types、t910-suite。

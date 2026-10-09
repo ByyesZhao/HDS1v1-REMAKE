@@ -16,7 +16,7 @@ export async function organizeMemory(d: Dependencies, turn: TurnRecord): Promise
   const c = turn.frozenResult!;
   const visibleMessages=c.visibleMessageIds.map(id=>d.storage.read('messages',id)!).filter(m=>m.seenTurnId===null||m.seenTurnId===turn.id);
   const reconsiderMessages = c.reconsiderMessageIds.map(id => d.storage.read('messages', id)!);
-  const outgoing = d.storage.messages().filter(m => m.direction === 'outgoing' && m.turnId === turn.id);
+  const outgoing = d.storage.messagesByTurn(turn.id).filter(m => m.direction === 'outgoing');
   const selfWebReadSources=currentSelfWebReads(d,turn.id);
   if(c.experiences.length===0&&visibleMessages.length===0&&outgoing.length===0&&selfWebReadSources.length===0)return {schemaVersion:3,shortTermChanges:[],longTermChanges:[],detailChanges:[]};
   const sourceIds = [...c.experiences.map(e => e.id), ...visibleMessages.map(m => m.id), ...outgoing.map(m => m.id)];
@@ -48,7 +48,7 @@ export async function organizeMemory(d: Dependencies, turn: TurnRecord): Promise
 // Called only inside the same transaction as the story and turn completion.
 export function applyMemory(d: Dependencies, turnId: string, result: MemoryResult, at: string): void {
   const turn=d.storage.read('turns',turnId)!;const candidate=turn.frozenResult!;
-  const sources=[...candidate.experiences.map(e=>e.id),...candidate.visibleMessageIds,...d.storage.messages().filter(m=>m.direction==='outgoing'&&m.turnId===turnId).map(m=>m.id)];
+  const sources=[...candidate.experiences.map(e=>e.id),...candidate.visibleMessageIds,...d.storage.messagesByTurn(turnId).filter(m=>m.direction==='outgoing').map(m=>m.id)];
   const selfSources=d.storage.read('post_jobs',turnId)?.selfWebReadSources??currentSelfWebReads(d,turnId);
   (d.memoryLifecycle??new MemoryLifecycle(d.memoryStore??new MemoryStore(d.storage))).apply(result,turnId,at,sources,selfSources.map(s=>s.id));
 }

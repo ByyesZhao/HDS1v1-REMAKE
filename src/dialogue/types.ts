@@ -10,3 +10,6 @@ export type ChatRecent=DialogueRecent;
 export interface ChatIndexMetadata {id:'chat-index';idleMinutes:number}
 export interface ActivityContextSelection {activityId:string;at:string;messageIds:string[]}
 export interface WindowConsistencyReport {version:1|2|null;ordinaryAssociationErrors:string[];activityErrors:string[];legacyInflightErrors:string[];blockingIssues:string[];historicalWarnings:string[];protectedMessageIds:string[]}
+
+export type ChatEligibility='ordinary_narrative'|'with_visible_inputs';
+export interface ChatWindowSnapshot {messages:readonly Message[];episodes:readonly ChatEpisode[]}

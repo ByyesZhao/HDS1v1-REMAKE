@@ -36,6 +36,10 @@ export class Storage {
       CREATE INDEX IF NOT EXISTS turn_unfinished ON turns(json_extract(data, '$.done'));
       CREATE INDEX IF NOT EXISTS memory_time ON memories(json_extract(data, '$.kind'), json_extract(data, '$.createdAt'));
       CREATE UNIQUE INDEX IF NOT EXISTS outbox_sequence ON outbox(json_extract(data, '$.turnId'), json_extract(data, '$.seq'));
+      CREATE INDEX IF NOT EXISTS message_turn ON messages(json_extract(data,'$.turnId'));
+      CREATE INDEX IF NOT EXISTS message_chat ON messages(json_extract(data,'$.chatEpisodeId'));
+      CREATE INDEX IF NOT EXISTS message_activity ON messages(json_extract(data,'$.sharedActivityId'));
+      CREATE INDEX IF NOT EXISTS chat_open ON chat_episodes(json_extract(data,'$.status'));
       CREATE UNIQUE INDEX IF NOT EXISTS post_turn ON post_jobs(json_extract(data, '$.turnId'));
     `);
     if (!this.get('runtime')) {this.save('chat_index_metadata','chat-index',{id:'chat-index',idleMinutes:options.dialogueIdleMinutes??15});this.set('runtime', {
@@ -78,11 +82,24 @@ export class Storage {
   runtime(): Runtime { const r = this.get<Runtime>('runtime')!; return { ...r, dialogueContextVersion:r.dialogueContextVersion??null,activeDialogueEpisodeId:r.activeDialogueEpisodeId??null,activeChatEpisodeId:r.activeChatEpisodeId??null, sharedActivityVersion: r.sharedActivityVersion ?? null, sharedClock: r.sharedClock ?? null,environmentPlanningVersion:r.environmentPlanningVersion??null,nextEnvironmentAt:r.nextEnvironmentAt??null,memoryCapacityVersion:r.memoryCapacityVersion??null,memoryIdle:r.memoryIdle??null }; }
   character(): CharacterState { return this.get<CharacterState>('character')!; }
   messages(): Message[] { return this.all('messages').sort((a, b) => Date.parse(a.receivedAt) - Date.parse(b.receivedAt)); }
-  unreadMessages(): Message[] {
-    const open = this.runtime().openBatch?.id;
-    return this.messages().filter(m => m.direction === 'incoming' && m.seenTurnId === null && !(m.sharedActivityId && m.batchId === null) && m.batchId !== open);
+  private messageQuery(where:string,args:readonly any[]=[]):Message[]{return this.db.prepare('SELECT data FROM messages WHERE '+where+' ORDER BY rowid').all(...args).map(r=>JSON.parse(String(r.data)) as Message).sort((a,b)=>Date.parse(a.receivedAt)-Date.parse(b.receivedAt));}
+  unseenIncomingMessages():Message[]{return this.messageQuery("json_extract(data,'$.direction')='incoming' AND json_type(data,'$.seenTurnId')='null'");}
+  unreadActivityMessages(activityId:string):Message[]{return this.messageQuery("json_extract(data,'$.direction')='incoming' AND json_type(data,'$.seenTurnId')='null' AND json_type(data,'$.batchId')='null' AND json_extract(data,'$.sharedActivityId')=?",[activityId]);}
+  messagesByTurn(id:string):Message[]{return this.messageQuery("json_extract(data,'$.turnId')=?",[id]);}
+  messagesByChatEpisode(id:string):Message[]{return this.messageQuery("json_extract(data,'$.chatEpisodeId')=?",[id]);}
+  messagesByActivity(id:string):Message[]{return this.messageQuery("json_extract(data,'$.sharedActivityId')=?",[id]);}
+  messagesByIds(ids:readonly string[]):Message[]{
+    const unique=[...new Set(ids)],rows:Array<Record<string,any>>=[];
+    for(let i=0;i<unique.length;i+=500){const chunk=unique.slice(i,i+500);rows.push(...this.db.prepare('SELECT rowid,data FROM messages WHERE id IN ('+chunk.map(()=>'?').join(',')+')').all(...chunk));}
+    return rows.sort((a,b)=>Number(a.rowid)-Number(b.rowid)).map(r=>JSON.parse(String(r.data)) as Message).sort((a,b)=>Date.parse(a.receivedAt)-Date.parse(b.receivedAt));
   }
-  unfinishedTurn(): TurnRecord | null { return this.all('turns').find(isUnfinishedTurn) ?? null; }
-  outbox(turnId: string): OutboxItem[] { return this.all('outbox').filter(i => i.turnId === turnId).sort((a, b) => a.seq - b.seq); }
+  unreadMessages(): Message[] {
+    const open=this.runtime().openBatch?.id;
+    return this.messageQuery("json_extract(data,'$.direction')='incoming' AND json_type(data,'$.seenTurnId')='null' AND NOT (COALESCE(json_extract(data,'$.sharedActivityId'),'')!='' AND COALESCE(json_type(data,'$.batchId')='null',0)) AND "+(open===undefined?"json_type(data,'$.batchId') IS NOT NULL":"json_extract(data,'$.batchId') IS NOT ?"),open===undefined?[]:[open]);
+  }
+  unfinishedTurns():TurnRecord[]{return this.db.prepare("SELECT data FROM turns WHERE COALESCE(json_extract(data,'$.done'),0)=0 AND COALESCE(json_extract(data,'$.legacyDisposition'),'')!='superseded' ORDER BY rowid").all().map(r=>JSON.parse(String(r.data)));}
+  unfinishedTurn():TurnRecord|null{const row=this.db.prepare("SELECT data FROM turns WHERE COALESCE(json_extract(data,'$.done'),0)=0 AND COALESCE(json_extract(data,'$.legacyDisposition'),'')!='superseded' ORDER BY rowid LIMIT 1").get();return row?JSON.parse(String(row.data)):null;}
+
+  outbox(turnId:string):OutboxItem[]{return this.db.prepare("SELECT data FROM outbox WHERE json_extract(data,'$.turnId')=? ORDER BY json_extract(data,'$.seq'),rowid").all(turnId).map(r=>JSON.parse(String(r.data)));}
   saveOutbox(item: OutboxItem): void { this.save('outbox', `${item.turnId}:${item.seq}`, item); }
 }

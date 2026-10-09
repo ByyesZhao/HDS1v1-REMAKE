@@ -42,8 +42,7 @@ export class Scheduler {
     const dueTasks = this.storage.all('tasks').filter(t => t.status === 'pending' && due(t.at, now));
     if (hasValidSharedScene(state)) {
       this.storage.transaction(() => refreshSharedStep(this.storage, now));
-      const inputs = this.storage.messages().filter(m => m.direction === 'incoming' && m.seenTurnId === null
-        && m.batchId === null && m.sharedActivityId === state.scene.shared!.activityId);
+      const inputs = this.storage.unreadActivityMessages(state.scene.shared!.activityId);
       const tasks = dueTasks.filter(t => t.kind !== 'scene_step');
       const meta = selectSharedMeta(this.storage, now, inputs.map(m => m.id), tasks.map(t => t.id));
       if (!meta) return null;
