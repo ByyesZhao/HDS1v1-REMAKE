@@ -88,11 +88,12 @@ export function finishSharedTurn(storage: Storage, turn: TurnRecord, completedAt
     if (!storage.outbox(turn.id).length && runtime.sharedClock?.activityId === activityId) runtime.sharedClock.lastSilentCompletedAt = completedAt;
   }
   if (change?.action === 'start') {
-    const transferred = storage.messages().filter(m => m.direction === 'incoming' && m.seenTurnId === null && m.batchId !== null);
+    const transferred = storage.messages().filter(m => m.direction === 'incoming' && m.seenTurnId === null && m.batchId !== null && m.sharedActivityId === null);
     const batches = new Set(transferred.map(m => m.batchId!));
     transferred.forEach(m => {const moved={...m,sharedActivityId:activityId,batchId:null};if(chat)chat.acceptMessage(moved);else storage.save('messages',m.id,moved);});
-    runtime.pendingBatchIds = runtime.pendingBatchIds.filter(id => !batches.has(id));
-    if (runtime.openBatch && batches.has(runtime.openBatch.id)) runtime.openBatch = null;
+    const emptied = new Set([...batches].filter(id => !storage.messages().some(m => m.direction === 'incoming' && m.seenTurnId === null && m.batchId === id)));
+    runtime.pendingBatchIds = runtime.pendingBatchIds.filter(id => !emptied.has(id));
+    if (runtime.openBatch && emptied.has(runtime.openBatch.id)) runtime.openBatch = null;
     const clock = runtime.sharedClock;
     if (clock?.activityId === activityId && transferred.length) {
       const anchors = [...transferred.map(m => m.receivedAt), ...(clock.lastInputAt ? [clock.lastInputAt] : [])];

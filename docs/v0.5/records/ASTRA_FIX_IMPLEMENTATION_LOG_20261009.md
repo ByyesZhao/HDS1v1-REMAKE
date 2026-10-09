@@ -24,3 +24,6 @@ Ruling: Windows 下 skill 的 shell 记账脚本及本计划 T1 标题形式不�
 T1: complete — smoke 正确行为旧实现 RED（expected four steps, received 3）；协议/等待/V1测试5项 GREEN；实际两场景 smoke 退出0，empty 3次生成、required 4次生成，各Embedding1、repair0、四步committed。完整回归108文件625项通过（55.80s）。首次测试因Vitest已移除旧options位置报错，修正后重新取得业务RED；工具错误未作为缺陷证据。
 证据：t1-red.log、t1-green.log、t1-smoke.log、t1-suite.log。
 T2: in progress — 正式跨活动复现旧A变B RED；筛选显式普通并按残留保留批次后首次GREEN，继续扩展Host/恢复回归。
+
+T2: complete — 保留显式旧活动身份、混合open/pending残留队位与readyAt；只真迁入消息计lastInputAt。6组回归含SerialHost交错、B结束后A首次读取及原文隔离、事务失败回滚/重复重放。指定8文件61项GREEN；完整109文件631项通过（55.75s）。同步共同活动/上下文说明。证据：t2-red、t2-expanded、t2-targets、t2-suite。
+T3: in progress — 生产V1更正阅读后现场旧课次，即时visibleSnapshots仍为V1的RED已取得。
