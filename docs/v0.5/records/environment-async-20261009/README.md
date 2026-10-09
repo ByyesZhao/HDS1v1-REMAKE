@@ -10,4 +10,6 @@
 6. [接受的实施合同](../../../archive/plans/environment-async-20261009/04_ENVIRONMENT_ASYNC.md)
 7. [升级CLI证据](evidence/upgrade-cli.json)
 
-仅使用合成数据库／假HTTP，未联网、连接QQ或迁移正式数据库。早期日志按目录原则归档，原始证据只证明记录时执行。
+本初批记录保留当时状态；后续R1/R2修复及正式库升级已完成，见[最新关闭](../environment-post-delivery-fixes-20261009/DELIVERY.md)。
+
+本初批仅使用合成数据库／假HTTP，未联网、连接QQ或迁移正式数据库。早期日志按目录原则归档，原始证据只证明记录时执行。

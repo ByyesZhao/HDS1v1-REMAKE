@@ -1,0 +1,26 @@
+koishi: D:\HDSI-remake\runtime\node_modules\koishi\lib\index.cjs
+koishi-plugin-adapter-onebot: D:\HDSI-remake\runtime\node_modules\koishi-plugin-adapter-onebot\lib\index.js
+koishi-plugin-hdsi-remake: D:\HDSI-remake\lib\index.js
+@koishijs/plugin-console: D:\HDSI-remake\runtime\node_modules\@koishijs\plugin-console\lib\node\index.js
+Runtime and HDSI plugin loading verified.
+D:\HDSI-remake\lib\memory\payload-compaction.js:25
+            db.prepare(`CREATE INDEX IF NOT EXISTS ${s.table}_residual ON ${s.table}(id) WHERE ${s.where}`).run();
+                                                                                                            ^
+
+Error: attempt to write a readonly database
+    at installPayloadIndexes (D:\HDSI-remake\lib\memory\payload-compaction.js:25:109)
+    at new MemoryStore (D:\HDSI-remake\lib\memory\store.js:29:56)
+    at Object.<anonymous> (D:\HDSI-remake\runtime\check.cjs:22:812)
+    at Module._compile (node:internal/modules/cjs/loader:1929:14)
+    at Object..js (node:internal/modules/cjs/loader:2060:10)
+    at Module.load (node:internal/modules/cjs/loader:1651:32)
+    at Module._load (node:internal/modules/cjs/loader:1443:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47 {
+  code: 'ERR_SQLITE_ERROR',
+  errcode: 8,
+  errstr: 'attempt to write a readonly database'
+}
+
+Node.js v24.21.0

@@ -1,0 +1,86 @@
+{
+  "at": "2026-10-09T11:41:22.134Z",
+  "codeSha": "fbb684338bbd16bafe49b26647f809c4a19b8bc5",
+  "sourceDatabase": "runtime/data/hdsi-remake.sqlite",
+  "serviceStoppedCheck": "No Koishi start/bin.js Node or Bun process found before apply",
+  "beforeVersion": 1,
+  "afterVersion": 2,
+  "backupPaths": [
+    "runtime/archive/restore/environment-async-backups/environment-async-747a14d1-12c1-4554-8935-ab0467f6f6c3/hdsi-remake.sqlite",
+    "runtime/archive/restore/environment-async-backups/environment-async-747a14d1-12c1-4554-8935-ab0467f6f6c3/hdsi-remake.sqlite-wal",
+    "runtime/archive/restore/environment-async-backups/environment-async-747a14d1-12c1-4554-8935-ab0467f6f6c3/hdsi-remake.sqlite-shm"
+  ],
+  "integrity": [
+    "ok"
+  ],
+  "tableCounts": {
+    "chat_episodes": 0,
+    "chat_index_metadata": 1,
+    "control_requests": 0,
+    "detail_history": 0,
+    "details": 0,
+    "dialogue_activity_links": 0,
+    "dialogue_episodes": 0,
+    "environment_batches": 1,
+    "environment_steps": 4,
+    "events": 0,
+    "experiences": 0,
+    "learned_background": 0,
+    "memories": 0,
+    "memory_audit_reports": 0,
+    "memory_awakenings": 0,
+    "memory_dirty_owners": 0,
+    "memory_index": 0,
+    "memory_index_jobs": 0,
+    "memory_maintenance_jobs": 0,
+    "memory_retention_grants": 0,
+    "messages": 0,
+    "outbox": 0,
+    "post_jobs": 0,
+    "school_instances": 0,
+    "school_knowledge": 0,
+    "school_notices": 0,
+    "school_plan_items": 0,
+    "school_plans": 0,
+    "school_progress": 0,
+    "school_weeks": 0,
+    "state": 3,
+    "stickers": 67,
+    "tasks": 0,
+    "turns": 0
+  },
+  "normalizedRowsUnchanged": true,
+  "ignoredFields": [
+    "state.runtime.environmentPlanningVersion",
+    "environment_steps.preparationVersion"
+  ],
+  "schemaUnchanged": true,
+  "backupVerified": true,
+  "stickers": {
+    "before": 67,
+    "after": 67,
+    "hashUnchanged": true
+  },
+  "beforeCheck": {
+    "version": 1,
+    "targetVersion": 2,
+    "legacyUnfinished": 0,
+    "unstarted": 4,
+    "asyncUnfinished": 0,
+    "canUpgrade": true,
+    "reasons": [],
+    "backupPaths": []
+  },
+  "afterCheck": {
+    "version": 2,
+    "targetVersion": 2,
+    "legacyUnfinished": 0,
+    "unstarted": 4,
+    "asyncUnfinished": 4,
+    "canUpgrade": true,
+    "reasons": [],
+    "backupPaths": []
+  },
+  "serviceStarted": false,
+  "networkUsed": false
+}

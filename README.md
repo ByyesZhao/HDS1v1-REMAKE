@@ -4,11 +4,11 @@
 
 V0.5整理当前实现：普通最近4个完整对话段、活动完整授权原文和结束后记忆召回；7／90／3／30记忆周期及100／1000／500容量；每日06:00世界／校园／课题组／周增量链；普通15秒合批、共同60秒或全文`【推进】`，约10轮软收尾、20轮硬上限；冻结发送与按阶段恢复。
 
-这是架构文档版本。现有npm包元数据仍为0.2.0，数据库各子系统版本保持原协议，本批新增环境异步协议2，新库默认启用；旧库须显式升级。正式配置和数据库未修改。
+这是架构文档版本。现有npm包元数据仍为0.2.0，数据库各子系统版本保持原协议，本批新增环境异步协议2，新库默认启用；旧库须显式升级。正式配置未改；正式库已按后续授权备份升级环境规划至2，原数据保留。
 
 ## 1. 当前状态
 
-前批交付为[当前审核改进T1～T9](docs/archive/records/current-audit-improvements-20261009/DELIVERY.md)。此前REVIEW26的107／620、ASTRA T1～T13的121／681和R1的122／693保留各批历史含义。ASTRA随后已独立重跑137文件776项并[确认关闭](docs/archive/reviews/post-t1-t9-20261009/REVIEW.md)。最新交付为环境异步E1～E5，修复后146文件804项及类型／构建／演示／双场景插件离线验收通过，过程与验收见[本批记录](docs/v0.5/records/environment-async-20261009/README.md)。旧证据仍按原批次解释。
+前批交付为[当前审核改进T1～T9](docs/archive/records/current-audit-improvements-20261009/DELIVERY.md)。此前REVIEW26的107／620、ASTRA T1～T13的121／681和R1的122／693保留各批历史含义。ASTRA随后已独立重跑137文件776项并[确认关闭](docs/archive/reviews/post-t1-t9-20261009/REVIEW.md)。环境异步E1～E5及交付后R1／R2、只读启动检查修复均已完成，最终148文件826项及离线验收通过，最新见[修复与正式升级交付](docs/v0.5/records/environment-post-delivery-fixes-20261009/DELIVERY.md)；初批过程见[本批记录](docs/v0.5/records/environment-async-20261009/README.md)。旧证据仍按原批次解释。
 
 67项旧图库的图片、说明、标签和1024维向量已在新项目复用；运行不依赖旧HDSI目录。角色背景和用途映射已批准启用，故事阶段完整背景保留，未迁移作者事实或覆盖已有细节。
 
@@ -83,7 +83,7 @@ SnowLuma登录该机器人，OneBot反向WebSocket对应`ws://127.0.0.1:5141/one
 
 ## 5. 数据版本与升级
 
-正式库默认`runtime/data/hdsi-remake.sqlite`。新库默认记忆schema3、容量1、共同活动1、环境规划2、普通窗口2；已有正式库本次未迁移；版本号不随文档统一改为0.5。
+正式库默认`runtime/data/hdsi-remake.sqlite`。新库默认记忆schema3、容量1、共同活动1、环境规划2、普通窗口2；已有正式库已在2026-10-09按用户授权停服备份升级环境规划1→2，67表情包及其他非协议数据保持；版本号不随文档统一改为0.5。
 
 已有故事需要升级时先停止HDSI，检查报告并备份。不要为文档改名重新运行所有升级。各批检查命令：
 
@@ -154,7 +154,7 @@ npm run stickers -- rebuild - config.local.json runtime/data/hdsi-remake.sqlite
 
 ## 8. 当前文档与复盘
 
-[V0.5总架构](docs/v0.5/architecture/REMAKE_V0.5.md)＋其8份子系统＋[实现对应](docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md)是当前说明。最近实现证据在[环境异步交付](docs/v0.5/records/environment-async-20261009/DELIVERY.md)和[复核关闭](docs/v0.5/records/environment-async-20261009/REVIEW_CLOSURE.md)；版本重写过程在[文档修订日志](docs/archive/records/V0.5_DOCUMENT_REWRITE_LOG_20261009.md)。
+[V0.5总架构](docs/v0.5/architecture/REMAKE_V0.5.md)＋其8份子系统＋[实现对应](docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md)是当前说明。最新证据见[交付后修复与正式升级](docs/v0.5/records/environment-post-delivery-fixes-20261009/DELIVERY.md)；原E阶段证据在[环境异步交付](docs/v0.5/records/environment-async-20261009/DELIVERY.md)和[复核关闭](docs/v0.5/records/environment-async-20261009/REVIEW_CLOSURE.md)；版本重写过程在[文档修订日志](docs/archive/records/V0.5_DOCUMENT_REWRITE_LOG_20261009.md)。
 
 文档分类与新建原则见[文档总入口](docs/README.md)和[目录原则](docs/DIRECTORY_POLICY.md)。当前说明、最新交付和最终复核在docs/v0.5；过期说明、已完成合同、旧审核和过程日志在docs/archive。进行中的计划单独保留在当前plans，完成后按目录原则移入历史合同；最新交付见V0.5索引。
 

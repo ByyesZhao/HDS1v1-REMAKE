@@ -1,0 +1,14 @@
+{
+  "at": "2026-10-09T11:51:19.733Z",
+  "codeSha": "7821918cd39ccf0199a2a9d3a15d1733b59adcc3",
+  "environmentPlanningVersion": 2,
+  "quickCheck": [
+    "ok"
+  ],
+  "afterRuntimeCheckRowsUnchanged": true,
+  "afterRuntimeCheckSchemaUnchanged": true,
+  "stickers": 67,
+  "rowsComparedTo": "runtime/data/deployments/environment-post-delivery-20261009/upgrade.json",
+  "serviceStarted": false,
+  "networkUsed": false
+}

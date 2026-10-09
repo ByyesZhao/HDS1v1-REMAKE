@@ -1,5 +1,7 @@
 # 环境异步交付复核与修复实施方案
 
+> 后续关闭：R1／R2已按本方案完成，见[修复／正式升级交付](../../../records/environment-post-delivery-fixes-20261009/DELIVERY.md)及[差异复核](FIX_DIFF_REVIEW.md)。以下审核基线、原失败证据和未勾选清单保持产生时内容，不表示今天仍待做。
+
 > **执行者 SOL：**按 `superpowers:subagent-driven-development` 或 `superpowers:executing-plans` 逐项实施下列任务。复选框表示尚待执行，不能用本次审核通过的旧测试代替修复验收。
 
 **日期与状态：**2026-10-09；复核已完成，R1／R2 修复未实施。  

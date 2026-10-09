@@ -1,8 +1,8 @@
 # HDSI V0.5：当前文档与审核入口
 
-更新：2026-10-09。当前实现包含 ASTRA T1～T13、R1、T1～T9及环境异步 E1～E5。最新离线验收为146文件／804项；独立复核提出的两处来源快照问题已修复，详见[关闭说明](records/environment-async-20261009/REVIEW_CLOSURE.md)。
+更新：2026-10-09。当前实现包含 ASTRA T1～T13、R1、T1～T9及环境异步 E1～E5。最新离线验收为148文件／826项；独立复核提出的两处来源快照问题已修复，详见[关闭说明](records/environment-async-20261009/REVIEW_CLOSURE.md)。
 
-交付后对 `cc963f8` 的[独立复核与修复实施方案](reviews/environment-async-20261009/post-delivery/REVIEW.md)已完成：全量146／804及公开离线验收重跑通过，另确认 P2 Host 门禁竞态和 P3 迁移报告计数错误，**两项待修**。报告含可直接实施的任务、复现和关闭条件。
+交付后对 `cc963f8` 的[独立复核与修复实施方案](reviews/environment-async-20261009/post-delivery/REVIEW.md)已完成：全量146／804及公开离线验收重跑通过，其确认的P2 Host门禁竞态和P3报告计数错误已修复；独立差异复核无新发现。正式升级后的只读启动检查问题也已修复，详见[修复与正式升级关闭](records/environment-post-delivery-fixes-20261009/DELIVERY.md)。原报告的待修清单属于原基线。
 
 默认提供整个 `docs/v0.5/`，从本文件阅读，并附[目录原则](../DIRECTORY_POLICY.md)。当前功能说明为以下10份；归档仅按疑点查阅。
 
@@ -27,7 +27,9 @@
 
 | 材料 | 状态 |
 | --- | --- |
-| [交付后复核与修复实施方案](reviews/environment-async-20261009/post-delivery/REVIEW.md) | 基线cc963f8；1 P2／1 P3待修；独立全量及离线验收通过，复现与修复步骤齐全 |
+| [最新修复／正式升级交付](records/environment-post-delivery-fixes-20261009/DELIVERY.md) | R1／R2及只读启动检查关闭；主目录148文件826项；正式库环境2、67图库完整保留 |
+| [R1／R2独立差异复核](reviews/environment-async-20261009/post-delivery/FIX_DIFF_REVIEW.md) | 7文件40项、无新发现；未覆盖后续启动检查附加修复和正式部署 |
+| [交付后复核与修复实施方案](reviews/environment-async-20261009/post-delivery/REVIEW.md) | 基线cc963f8的原报告；1 P2／1 P3现已关闭，原复现／未勾选清单保留历史含义 |
 | [E阶段交付与复跑](records/environment-async-20261009/DELIVERY.md) | 已交付；前台聊天、环境准备、记忆准备可并行等待，业务写入仍串行 |
 | [实施过程](records/environment-async-20261009/IMPLEMENTATION_LOG.md) | E1～E5、失败回归、裁决和验证 |
 | [独立复核原报告](reviews/environment-async-20261009/INDEPENDENT_REVIEW.md) | 基线272437f→2a6b981，1 Important／1 Minor；原结论保留 |
@@ -35,7 +37,7 @@
 | [工作量证据](records/environment-async-20261009/evidence/workload-final.json) | H=0／90／180，每档5样本，15/15聊天先于环境响应完成 |
 | [目录整理记录](records/document-organization-20261009/README.md) | 前批整理范围与原迁移清单 |
 
-环境新库版本2；旧库必须显式停服备份升级，旧冻结任务保留串行兼容。**正式库尚未升级**。T1～T9的137／776与其ASTRA复核已收进[历史记录](../archive/records/)和[历史审核](../archive/reviews/)，各自只证明原基线。
+环境新库版本2；旧库必须显式停服备份升级，旧冻结任务保留串行兼容。**正式库已显式停服备份升级1→2**；[部署及只读复核摘要](records/environment-post-delivery-fixes-20261009/evidence/formal-upgrade-summary.json)与[检查后指纹](records/environment-post-delivery-fixes-20261009/evidence/formal-postcheck.json)确认图库及非协议数据保持。T1～T9的137／776与其ASTRA复核已收进[历史记录](../archive/records/)和[历史审核](../archive/reviews/)，各自只证明原基线。
 
 ## 目录与后续工作
 
@@ -43,7 +45,7 @@
 | --- | --- |
 | `architecture/`、`subsystems/` | 当前架构及8份功能规则 |
 | `reference/` | 实现对应、配置和必要参考 |
-| [plans/](plans/README.md) | 未实施或进行中合同；E1～E5原合同已关闭，本次复核的两项修复任务见最新review |
+| [plans/](plans/README.md) | 未实施或进行中合同；E1～E5及交付后两项修复已关闭；没有待执行合同 |
 | [records/](records/README.md) | 最近交付、过程、最终日志及目录整理 |
 | [reviews/](reviews/README.md) | 本批独立报告、探针和原始证据 |
 | [../archive/](../archive/README.md) | 已完成计划、被替代交付、旧审核和早期红绿日志 |

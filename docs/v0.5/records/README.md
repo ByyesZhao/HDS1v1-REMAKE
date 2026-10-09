@@ -4,6 +4,7 @@
 
 | 记录 | 状态 |
 | --- | --- |
+| [环境交付后修复与正式升级](environment-post-delivery-fixes-20261009/DELIVERY.md) | 最新：148文件826项；R1/R2及只读启动检查关闭，正式库停服备份升环境2，67图库及其他数据保持 |
 | [环境异步E1～E5](environment-async-20261009/README.md) | 已交付，146文件／804项；附过程、离线工作量、升级CLI与复核关闭 |
 | [目录整理](document-organization-20261009/README.md) | 前批文档和本地历史资料整理，只表示当时整理范围 |
 
