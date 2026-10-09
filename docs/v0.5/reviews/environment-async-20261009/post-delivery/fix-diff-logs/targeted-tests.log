@@ -1,0 +1,12 @@
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/environment-post-delivery/HDSI-remake
+
+
+ Test Files  7 passed (7)
+      Tests  40 passed (40)
+   Start at  19:34:29
+   Duration  10.60s (tests 86%, import 9%, transform 5%)
+
+    Isolate  7 workers spawned · ~92ms startup each (spawn + environment, per file)
+             at least ~553ms faster with isolate: false — reuses workers across files instead of one per file
+

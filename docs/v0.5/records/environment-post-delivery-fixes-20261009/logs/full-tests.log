@@ -1,0 +1,14 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 test
+npm notice run vitest run
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/environment-post-delivery/HDSI-remake
+
+
+ Test Files  147 passed (147)
+      Tests  824 passed (824)
+   Start at  19:32:52
+   Duration  94.40s (tests 81%, import 17%, transform 2%, worker 1%)
+
+    Isolate  147 workers spawned · ~91ms startup each (spawn + environment, per file)
+             at least ~13.24s faster with isolate: false — reuses workers across files instead of one per file
+
