@@ -1,8 +1,8 @@
 # HDSI V0.5：文档入口与审核清单
 
-核对日期：2026-10-09，当前源码基线`c02d4a6`，包含REVIEW24与REVIEW26代码修复。本次交给ASTRA前再次对照源码，只修正文档，不改代码或运行配置。过去累计核对记录完整保存在[历史快照](../DOCUMENT_AUDIT_PRE_V0.5_20261009.md)，其旧数字／行为不当当前验收。
+核对日期：2026-10-09。当前包含ASTRA审核后T1～T13源码修复及文档同步，修复起点`73774bf`，本次完整离线验收121文件681项通过。最新[交付记录](records/ASTRA_FIX_DELIVERY_20261009.md)、[实施过程](records/ASTRA_FIX_IMPLEMENTATION_LOG_20261009.md)与[性能原始数据](records/ASTRA_FIX_BENCHMARK_20261009.json)供复核。过去累计核对保存在[历史快照](../DOCUMENT_AUDIT_PRE_V0.5_20261009.md)，旧数字/行为不当当前验收。没有在线模型、正式库或QQ运行验证。
 
-REVIEW26批准的两项修复已完成：引用已有长期记忆的create路径区分真实进展，记忆文档补同事件合并例外，见[修复记录](records/REVIEW26_MEMORY_CREATE_FIX_LOG_20261009.md)。本次文档检查与补充见[交审前检查记录](records/V0.5_PRE_ASTRA_DOCUMENT_CHECK_20261009.md)。
+REVIEW26批准的两项修复已完成：引用已有长期记忆的create路径区分真实进展，记忆文档补同事件合并例外，见[修复记录](records/REVIEW26_MEMORY_CREATE_FIX_LOG_20261009.md)。交ASTRA前的文档检查与补充见[交审前检查记录](records/V0.5_PRE_ASTRA_DOCUMENT_CHECK_20261009.md)。
 
 ## 1. 当前说明文档
 
@@ -61,3 +61,21 @@ REVIEW26批准的两项修复已完成：引用已有长期记忆的create路径
 若审核代码，同时提供src/、tests/、scripts/、runtime/check.cjs和两个cmd。纯文档只能核对描述，不能证明程序正确。人物风格需要审查时由用户另行决定提供背景，不把key.txt、私有配置或正式故事库混进普通审核材料。
 
 本轮未新增防御编程、供应商推荐、多进程或语义审核模型；请区分明确矛盾、现有限制和可选新需求，不把用户的初步概括当已实施合同。
+
+## 5. 独立审核结果（2026-10-09）
+
+针对源码基线`73774bf`的文档／代码审核见[审核报告](reviews/ASTRA_REVIEW_20261009.md)，运行结果、覆盖范围和可重跑复现见[证据说明](reviews/AUDIT_EVIDENCE_20261009.md)。此节保留修复前审核证据；后续实际修复见§6及交付记录，历史缺陷描述不当作当前现状。
+
+CODEX 已对照源码并复跑隔离证据，见[核验回复与修复边界](reviews/CODEX_RESPONSE_ASTRA_REVIEW_20261009.md)：F1～F8及D1均有依据，无需反驳核心结论；回复补充适用范围和核验结果；当时尚未实施，现已完成§6修复。
+
+## 6. ASTRA 审核后修复（已实施）
+
+ASTRA 已核对上述回复，接受个人提醒适用路径与“记忆失去检索入口、并非删除”的范围说明。后续实施材料放在 `plans/`，建议先读执行计划，再随任务读取对应细化：
+
+| 材料 | 内容 |
+| --- | --- |
+| [统一执行计划](plans/ASTRA_FIX_EXECUTION_PLAN_20261009.md) | 13 项任务、依赖顺序、改动文件、回归断言、验证命令及交付门槛 |
+| [业务修复细化](plans/ASTRA_FIX_BUSINESS_IMPLEMENTATION_20261009.md) | F1～F4、D1：活动身份、学校知情与个人提醒、晋升召回、旧投影补齐 |
+| [流程与性能细化](plans/ASTRA_FIX_OPERATIONS_IMPLEMENTATION_20261009.md) | F5～F8：后台冻结与索引合并、读取与检查成本、状态摘要、双场景 smoke |
+
+T1～T13均已执行并逐项记录；三份文件现标明实施状态。先读[交付](records/ASTRA_FIX_DELIVERY_20261009.md)，再按需要查[过程](records/ASTRA_FIX_IMPLEMENTATION_LOG_20261009.md)与对应细化。既有审核与核验继续保留为修复前证据，未重写旧证据中的失败断言。

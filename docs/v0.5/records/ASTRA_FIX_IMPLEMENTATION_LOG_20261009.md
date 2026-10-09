@@ -74,3 +74,8 @@ Declined-to-judge裁决：
 Ruling: superpowers:finishing-a-development-branch要求选择本地合入/推送/保留；用户已要求落实到当前本地项目，按高优先级授权直接集成main，不重复征求菜单确认，不推送远端。保留现有README/审核资料，先合入不触碰其脏文件的实现提交，再同步已审阅文档；native归档worktree前复制忽略的验收日志。
 
 T13: complete — 最终121文件681项全量通过（66.15s），typecheck/build/demo/两场景smoke通过，默认参数合成探针通过；独立Minor已关闭。新SQL计划回归和旧every规则失败证据保留。汇总/原始数据/范围见[交付](ASTRA_FIX_DELIVERY_20261009.md)。本地合入后的build/全回归记录另保存为primary-final-*，不混同隔离工作区数字。
+
+
+## 本地集成结果
+
+主目录main以ff-only由73774bf到ac1e870；代码/测试无未提交改动。用户原README和三个计划先备份，随后同步完成状态，审核/rebuttal原材料不重写。主目录build及完整121文件681项回归通过（66.23s），typecheck/demo/smoke/diff检查退出0。16份文档130个相对链接无缺失。逐任务与最终日志复制到runtime/astra-fixes-acceptance-20261009/logs，性能JSON也保留；编译后的lib已更新。后续native归档隔离worktree，仅清理本次已合入的工作区，不删除其他历史工作区。

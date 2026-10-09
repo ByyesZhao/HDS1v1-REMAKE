@@ -58,6 +58,8 @@ full的messages、turns、chat_episodes各读一次，仍随历史增长；activ
 | node scripts/bench-chat-status.cjs | 退出0；默认目录、三个规模、五样本全部断言通过 | t13-final-bench.log |
 | git diff --check | 退出0 | t13-final-diff.log |
 
+本地集成：`73774bf → ac1e870`快进合入main，随后同步README及三份计划状态，原有审核链接与材料保留。主目录再次执行完整回归：121文件681项，66.23s，退出0；build、typecheck、demo、smoke与diff检查均退出0，日志为primary-final-*。16份当前/计划/记录文档的130个相对链接检查无缺失。原未提交README与三份计划先备份到验收目录original-docs，不覆盖DSH-review或reviews原始材料。
+
 日志最终保存在 `D:\HDSI-remake\runtime\astra-fixes-acceptance-20261009\logs`。原始审核与旧复现保持历史，不要求修复后继续满足其错误行为断言。smoke使用真实Koishi注册/Host/V1展开，但所有模型/Embedding是假fetch，未知请求失败；测试不会透传网络。
 
 独立复核未发现Critical/Important，窄回归7文件39项通过。两处Minor验收漏检已修正并增回归：默认--output和持久通知ID精确覆盖；无空数组/部分缺项假绿。Declined-to-judge均逐项裁决于过程记录。
