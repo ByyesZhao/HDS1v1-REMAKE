@@ -1,0 +1,70 @@
+{
+  "mode": "public-browser",
+  "probe": true,
+  "engine": "bing",
+  "query": "中国气象局",
+  "realNetworkRequests": null,
+  "passed": false,
+  "drained": true,
+  "versions": {
+    "puppeteerPlugin": "3.9.0",
+    "readability": "0.6.0"
+  },
+  "pages": [
+    {
+      "kind": "search",
+      "finalUrl": "https://www.bing.com/search?q=%E4%B8%AD%E5%9B%BD%E6%B0%94%E8%B1%A1%E5%B1%80",
+      "access": "ok",
+      "searchState": "results",
+      "bodyCharacters": 0
+    }
+  ],
+  "browserVersion": "Chrome/154.0.8037.98",
+  "searchMs": 3740.9079,
+  "candidateCount": 10,
+  "candidates": [
+    {
+      "url": "http://www.nmc.cn/",
+      "title": "中央气象台 - 关注阴晴冷暖，守望四时安康"
+    },
+    {
+      "url": "https://www.cma.gov.cn/",
+      "title": "中国气象局政府门户网站 - 中国气象网-中国气象局 ..."
+    },
+    {
+      "url": "https://www.nmc.cn/publish/forecast",
+      "title": "国内天气预报"
+    },
+    {
+      "url": "https://weather.cma.cn/",
+      "title": "中国气象局 - WEB 应用防火墙"
+    },
+    {
+      "url": "https://www.cma.gov.cn/?dzb=true",
+      "title": "中国气象网-中国气象局政府门户网站"
+    },
+    {
+      "url": "https://m.nmc.cn/index.html",
+      "title": "中央气象台"
+    },
+    {
+      "url": "https://baike.baidu.com/item/%E4%B8%AD%E5%9B%BD%E6%B0%94%E8%B1%A1%E5%B1%80/1076429",
+      "title": "中国气象局_百度百科"
+    },
+    {
+      "url": "https://data.cma.cn/site/index.html",
+      "title": "国家气象信息中心-中国气象数据网"
+    },
+    {
+      "url": "https://www.weather.com.cn/",
+      "title": "天气网"
+    },
+    {
+      "url": "https://www.weather.com.cn/forecast/",
+      "title": "天气预报 - 中国天气网"
+    }
+  ],
+  "selectedUrl": "https://baike.baidu.com/item/%E4%B8%AD%E5%9B%BD%E6%B0%94%E8%B1%A1%E5%B1%80/1076429",
+  "error": "Execution context was destroyed, most likely because of a navigation.",
+  "durationMs": 4816.5842999999995
+}

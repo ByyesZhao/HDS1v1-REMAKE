@@ -1,0 +1,5 @@
+import {it,expect} from 'vitest';import {createManagedBrowserProvider} from '../src/web/browser/provider';import {createRequire} from 'node:module';import {resolve} from 'node:path';const {parseHTML}=createRequire(resolve('package.json'))('linkedom') as {parseHTML:(html:string)=>{document:Document}};import {extractDomEvidence} from '../src/web/browser/extract';
+it('provider uses one search page and one target body page through same slots',async()=>{
+ let opens=0,closes=0;const provider=createManagedBrowserProvider({openPage:async()=>{opens++;return {read:async r=>extractDomEvidence(parseHTML(r.kind==='search'?'<ol id="b_results"><li class="b_algo"><h2><a href="https://example.org/article">A</a></h2></li></ol>':'<article>Entire actual target article</article>').document as any,r.url,r.kind==='search'?r.engine:null),close:async()=>{closes++;}};}},{engine:'bing',navigationTimeoutMs:1000,maxConcurrentPages:1});
+ expect(await provider.provider.search('无结果')).toHaveLength(1);expect((await provider.provider.read('https://example.org/article')).body).toBe('Entire actual target article');expect(opens).toBe(2);expect(closes).toBe(2);await provider.dispose();
+});

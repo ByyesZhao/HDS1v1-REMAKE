@@ -1,0 +1,17 @@
+{
+  "mode": "public-browser",
+  "probe": true,
+  "engine": "bing",
+  "query": "中国气象局",
+  "realNetworkRequests": null,
+  "passed": false,
+  "drained": true,
+  "versions": {
+    "puppeteerPlugin": "3.9.0",
+    "readability": "0.6.0"
+  },
+  "pages": [],
+  "browserVersion": "Chrome/154.0.8037.98",
+  "error": "net::ERR_CONNECTION_CLOSED at https://www.bing.com/search?q=%E4%B8%AD%E5%9B%BD%E6%B0%94%E8%B1%A1%E5%B1%80",
+  "durationMs": 10864.9622
+}

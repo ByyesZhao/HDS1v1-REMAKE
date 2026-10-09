@@ -1,0 +1,24 @@
+{
+  "mode": "public-browser",
+  "probe": true,
+  "engine": "duckduckgo",
+  "query": "中国气象局",
+  "realNetworkRequests": null,
+  "passed": false,
+  "drained": true,
+  "versions": {
+    "puppeteerPlugin": "3.9.0",
+    "readability": "0.6.0"
+  },
+  "pages": [
+    {
+      "kind": "search",
+      "finalUrl": "https://html.duckduckgo.com/html/?q=%E4%B8%AD%E5%9B%BD%E6%B0%94%E8%B1%A1%E5%B1%80",
+      "access": "captcha",
+      "bodyCharacters": 0
+    }
+  ],
+  "browserVersion": "Chrome/154.0.8037.98",
+  "error": "search page blocked: captcha",
+  "durationMs": 1166.6564
+}

@@ -1,0 +1,66 @@
+{
+  "mode": "public-browser",
+  "probe": true,
+  "engine": "bing",
+  "query": "中国气象局",
+  "realNetworkRequests": null,
+  "passed": true,
+  "drained": true,
+  "versions": {
+    "puppeteerPlugin": "3.9.0",
+    "readability": "0.6.0"
+  },
+  "browserVersion": "Chrome/154.0.8037.98",
+  "searchMs": 34816.0091,
+  "candidateCount": 10,
+  "candidates": [
+    {
+      "url": "http://www.nmc.cn/",
+      "title": "中央气象台 - 关注阴晴冷暖，守望四时安康"
+    },
+    {
+      "url": "https://www.cma.gov.cn/",
+      "title": "中国气象局政府门户网站 - 中国气象网-中国气象局 ..."
+    },
+    {
+      "url": "https://www.nmc.cn/publish/forecast",
+      "title": "国内天气预报"
+    },
+    {
+      "url": "https://weather.cma.cn/",
+      "title": "中国气象局 - WEB 应用防火墙"
+    },
+    {
+      "url": "https://www.cma.gov.cn/?dzb=true",
+      "title": "中国气象网-中国气象局政府门户网站"
+    },
+    {
+      "url": "https://m.nmc.cn/index.html",
+      "title": "中央气象台"
+    },
+    {
+      "url": "https://baike.baidu.com/item/%E4%B8%AD%E5%9B%BD%E6%B0%94%E8%B1%A1%E5%B1%80/1076429",
+      "title": "中国气象局_百度百科"
+    },
+    {
+      "url": "https://data.cma.cn/site/index.html",
+      "title": "国家气象信息中心-中国气象数据网"
+    },
+    {
+      "url": "https://www.weather.com.cn/",
+      "title": "天气网"
+    },
+    {
+      "url": "https://www.weather.com.cn/forecast/",
+      "title": "天气预报 - 中国天气网"
+    }
+  ],
+  "selectedUrl": "http://www.nmc.cn/",
+  "readMs": 445.3228999999992,
+  "bodyCharacters": 230,
+  "articleTitle": "关注阴晴冷暖，守望四时安康",
+  "bodyHash": "a8d7c5be88d4d10538370e229f9e1af863b3815d20aba934842d1a1bfa10c0aa",
+  "bodyPreview": "国家气象中心 版权所有 Copyright©2009-2026  本站所刊登的信息、数据和各种专栏材料，未经授权禁止下载使用  制作维护：国家气象中心预报系统开放实验室 地址：北京市中关村南大街46号 邮编：100081  京公网安备 11040102700100号    京ICP备05055842号 技术支持邮箱  nmccn@cma.gov.cn  商务合作电话  010-68400393  商务合作邮箱  Cooperation@cma.gov.cn",
+  "bodyTail": "国家气象中心 版权所有 Copyright©2009-2026  本站所刊登的信息、数据和各种专栏材料，未经授权禁止下载使用  制作维护：国家气象中心预报系统开放实验室 地址：北京市中关村南大街46号 邮编：100081  京公网安备 11040102700100号    京ICP备05055842号 技术支持邮箱  nmccn@cma.gov.cn  商务合作电话  010-68400393  商务合作邮箱  Cooperation@cma.gov.cn",
+  "durationMs": 36060.6339
+}
