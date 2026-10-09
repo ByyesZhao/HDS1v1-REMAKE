@@ -1,6 +1,7 @@
 import {initializeMissingBackgroundFacts} from './model/background-views';
 import {generateEnvironmentStep} from './directors/school';
-import {inspectEnvironmentUpgrade,importLegacySchoolEvents} from './deployment/environment-upgrade';
+import {importLegacySchoolEvents} from './deployment/environment-upgrade';
+import {inspectEnvironmentAsyncUpgrade} from './deployment/environment-async-upgrade';
 import { Context, Schema, h } from 'koishi';
 import { readFileSync, existsSync } from 'node:fs';
 import { resolve, extname } from 'node:path';
@@ -43,7 +44,7 @@ export function apply(ctx: Context, config: Config): void {
   if(settings.webSearch.enabled)throw new Error('web search enabled but provider not configured; select and inject a provider first');
   const databasePath = resolve(ctx.baseDir, config.databasePath);
   if (existsSync(databasePath) && inspectSharedUpgrade(databasePath).version !== 1) throw new Error('Stop HDSI and run npm run shared:migrate -- --database <path> --check before enabling this existing database.');
-  if(existsSync(databasePath)&&inspectEnvironmentUpgrade(databasePath).version!==1)throw new Error('Stop HDSI and run npm run migrate:environment -- --database <path> --check, then --apply --stopped --backup-dir <path> before starting this existing database.');
+  if(existsSync(databasePath)&&inspectEnvironmentAsyncUpgrade(databasePath).version!==2)throw new Error('Stop HDSI and run legacy npm run migrate:environment for version null first; then npm run migrate:environment-async -- --database <path> --check, then --apply --stopped --backup-dir <path> before starting this existing database.');
   if(existsSync(databasePath)){const capacity=inspectMemoryCapacity(databasePath,systemClock.now(),settings.memory.capacity);if(capacity.hasCharacter&&capacity.version!==1)throw new Error('Stop HDSI; finish old stories with the previous build; run npm run memory:capacity -- <db> --config <json> --dry-run, then --apply --stopped before starting.');}
   if(existsSync(databasePath)){const check=inspectDialogueUpgrade(databasePath,{targetVersion:2,idleMinutes:settings.memory.contextLimits.dialogueIdleMinutes,recentSegments:settings.memory.contextLimits.recentDialogueSegments});if(check.version!==2||!check.canApply)throw new Error(dialogueUpgradeInstruction(check));}
   const storage = new Storage(databasePath,{dialogueIdleMinutes:settings.memory.contextLimits.dialogueIdleMinutes});

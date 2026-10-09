@@ -49,7 +49,7 @@ export function setup() {
   const storage = new Storage(':memory:');
   const clock = new TestClock(); const random = new SequenceRandom();
   storage.set('character', initialCharacter(NOW));
-  storage.set('runtime',{...storage.runtime(),dialogueContextVersion:1,nextEnvironmentAt:'2026-10-08T06:00:00+08:00'});
+  storage.set('runtime',{...storage.runtime(),dialogueContextVersion:1,environmentPlanningVersion:1,nextEnvironmentAt:'2026-10-08T06:00:00+08:00'});
   const models = new ScriptedModels({ narrative, personal_chat: silent, personal_life: { emotions: [], innerThought: '休息', contact: { willing: false } }, memory: emptyMemory });
   const config = { ...defaultConfig, background: '开发样例', chatExamples: '嗯嗯' };
   const sender = new RecordingSender(clock);

@@ -22,6 +22,7 @@
     "validate:prompt-context": "tsx scripts/validate-prompt-context.ts",
     "dialogue:migrate": "tsx scripts/migrate-dialogue.ts",
     "shared:migrate": "tsx scripts/migrate-shared-activity.ts",
+    "migrate:environment-async":"tsx scripts/migrate-environment-async.ts",
     "migrate:environment":"tsx scripts/migrate-environment.ts",
     "validate:world-school":"tsx scripts/validate-world-school.ts",
     "memory:check": "tsx scripts/check-memory-retrieval.ts",

@@ -53,7 +53,7 @@ export interface Runtime {
   lastFailure?:{kind:'context_limit'|'request'|'error';task?:string;stage:'generation'|'sending'|'postprocessing';at:ISOTime;safeSummary:string}|null;
   nextMaintenanceAt: string | null;
   sharedActivityVersion: 1 | null; sharedClock: SharedClock | null;
-  environmentPlanningVersion:1|null; nextEnvironmentAt:ISOTime|null;
+  environmentPlanningVersion:1|2|null; nextEnvironmentAt:ISOTime|null;
   memoryCapacityVersion?:1|null; memoryIdle?:import('./memory/types').MemoryIdleState|null;
 }
 export interface Experience { id: string; happenedAt: ISOTime; description: string; relatedEventIds: string[] }

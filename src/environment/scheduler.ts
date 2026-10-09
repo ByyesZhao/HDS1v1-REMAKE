@@ -7,7 +7,7 @@ export function localDate(at:string,timezone:string):string {const p=localParts(
 export function batchIdentity(date:string,timezone:string){return JSON.stringify([timezone,date]);}
 export function nextEnvironmentDate(at:string,timezone:string,clock:string):string {const p=localParts(at,timezone),[h,m]=clock.split(':').map(Number);return localTime(p.year,p.month,p.day+1,h*60+m,timezone);}
 export function ensureEnvironmentBatch(storage:Storage,config:AppConfig,now:string):EnvironmentBatch|null {
- const r=storage.runtime();if(r.environmentPlanningVersion!==1)return null;
+ const r=storage.runtime();if(r.environmentPlanningVersion!==1&&r.environmentPlanningVersion!==2)return null;
  const date=localDate(now,config.timezone),id=batchIdentity(date,config.timezone);
  const store=new EnvironmentStore(storage);
  const existing=storage.read('environment_batches',id);
@@ -31,7 +31,7 @@ export function ensureEnvironmentBatch(storage:Storage,config:AppConfig,now:stri
   }
   const batch:EnvironmentBatch={id,localDate:date,timezone:config.timezone,scheduledAt,createdAt:now,reason:r.nextEnvironmentAt?'daily':'bootstrap',status:'active',closedAt:null};
   storage.save('environment_batches',id,batch);
-  for(const stage of environmentStages){const step:EnvironmentStep={id:JSON.stringify([id,stage]),batchId:id,stage,status:'pending',attempt:0,startedAt:null,completedAt:null,retryAt:null,lastError:null,inputSnapshot:null,frozenResult:null};storage.save('environment_steps',step.id,step);}
+  for(const stage of environmentStages){const step:EnvironmentStep={id:JSON.stringify([id,stage]),batchId:id,stage,status:'pending',attempt:0,startedAt:null,completedAt:null,retryAt:null,lastError:null,inputSnapshot:null,frozenResult:null,...(r.environmentPlanningVersion===2?{preparationVersion:1 as const}:{})};storage.save('environment_steps',step.id,step);}
   storage.set('runtime',{...r,nextEnvironmentAt:nextEnvironmentDate(now,config.timezone,config.environmentDailyAt)});return batch;
  });
 }
@@ -43,7 +43,7 @@ export function selectEnvironmentStepMetadata(storage:Storage,now:string):Enviro
 }
 export function selectEnvironmentStep(storage:Storage,now:string):EnvironmentStep|null {const meta=selectEnvironmentStepMetadata(storage,now);return meta?new EnvironmentStore(storage).step(meta.id):null;}
 export function environmentDeadline(storage:Storage,now:string):string|null {
- const runtime=storage.runtime();if(runtime.environmentPlanningVersion!==1)return null;
+ const runtime=storage.runtime();if(runtime.environmentPlanningVersion!==1&&runtime.environmentPlanningVersion!==2)return null;
  const store=new EnvironmentStore(storage),batch=store.firstActiveBatch(),steps=batch?store.stepMetadata(batch.id):[];
  const step=batch?environmentStages.map(stage=>steps.find(s=>s.stage===stage)!).find(s=>s.status!=='committed'&&s.status!=='superseded'):null;
  const deadlines=[runtime.nextEnvironmentAt,step?(step.retryAt??now):null].filter((v):v is string=>!!v);

@@ -56,7 +56,7 @@ export class Storage {
       nextWorldAt: null, nextSchoolAt: null, nextMaintenanceAt: nextDaily(new Date().toISOString(), ['04:30'], 'Asia/Shanghai'), lastError: null,
       dialogueContextVersion:2,activeDialogueEpisodeId:null,activeChatEpisodeId:null,
       sharedActivityVersion: 1, sharedClock: null,
-      environmentPlanningVersion:1,nextEnvironmentAt:null,
+      environmentPlanningVersion:2,nextEnvironmentAt:null,
     } satisfies Runtime);}
 
   }
