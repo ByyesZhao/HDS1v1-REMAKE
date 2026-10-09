@@ -24,7 +24,7 @@ export function resolveResult(d:Dependencies,result:EnvironmentModelResult,input
 export async function runEnvironmentStep(d:Dependencies,stepId:string,generate:EnvironmentGenerator):Promise<void> {
  const selected=d.environmentStore.step(stepId)!;
  if(selected.preparationVersion===1){const preparation=new EnvironmentPreparation({...d,generateEnvironment:generate});if(selected.status!=='ready'){preparation.startOne(stepId,d.clock.now());await preparation.wait();const error=preparation.takeError();if(error)throw error;}preparation.applyReady(stepId,d.clock.now());return;}
- let step=d.environmentStore.step(stepId)!;const batch=d.environmentStore.batch(step.batchId)!;
+ let step=selected;const batch=d.environmentStore.batch(step.batchId)!;
  if(step.status==='committed'||step.status==='superseded')return;
  if(localDate(d.clock.now(),batch.timezone)!==batch.localDate){ensureEnvironmentBatch(d.storage,d.config,d.clock.now());return;}
  if(step.status!=='ready'){

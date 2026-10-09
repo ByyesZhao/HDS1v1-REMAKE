@@ -1,0 +1,23 @@
+import {it,expect} from 'vitest';
+import {asyncFixture} from './environment-async-fixture';
+import {NOW} from './helpers';
+import {MemoryStore} from '../src/memory/store';import {MemoryIndex} from '../src/memory/index';
+import {MemoryLifecycle} from '../src/memory/lifecycle';import {MemoryMaintenance} from '../src/memory/maintenance';
+import {HdsiApp} from '../src/app';import {SerialHost} from '../src/host/runtime';
+import {ModelRequestError} from '../src/model/client';import {setImmediate} from 'node:timers/promises';
+it('one foreground, memory and environment slot coexist without concurrent business commits',async()=>{
+ const {d,step}=asyncFixture();const store=new MemoryStore(d.storage);store.migrate(NOW);
+ const owner=store.makeOwner({ownerType:'detail',ownerId:'phone'},{key:'phone',value:'手机',content:'手机',sourceIds:[]},NOW);store.saveOwner(owner);
+ let finishMemory!:(v:number[])=>void,finishEnvironment!:(v:any)=>void;
+ const index=new MemoryIndex(store,{model:'synthetic',embed:async()=>new Promise<number[]>(resolve=>finishMemory=resolve)},{clock:d.clock});
+ store.queueIndex(owner,NOW,index.configSignature);
+ let host:SerialHost;
+ const maintenance=new MemoryMaintenance(store,new MemoryLifecycle(store),index,d.models,{clock:d.clock,web:d.web,onReady:()=>{void host.wake();}});
+ d.generateEnvironment=async input=>input.stage==='world'?new Promise(resolve=>finishEnvironment=resolve):Promise.reject(new ModelRequestError('later'));
+ host=new SerialHost(new HdsiApp({...d,memoryStore:store,maintenance}),{timers:false});await host.start();
+ expect(maintenance.inFlight).toBe(true);expect(d.environmentStore.step(step.id)?.status).toBe('running');
+ await host.acceptInput({id:'chat',receivedAt:NOW,content:'你好',platformMessageIds:[]});d.clock.advance(16000);await host.wake();expect(d.storage.all('turns').some(t=>t.done)).toBe(true);expect(d.storage.all('events')).toHaveLength(0);
+ await host.pause();finishMemory([1,0]);finishEnvironment({stage:'world',changes:[]});await setImmediate();
+ expect(d.environmentStore.step(step.id)?.status).toBe('ready');expect(store.jobs<any>('memory_index_jobs',['ready'])).toHaveLength(1);
+ await host.resume();expect(d.environmentStore.step(step.id)?.status).toBe('committed');await host.stop();d.storage.close();
+});

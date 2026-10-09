@@ -1,7 +1,7 @@
 import type {Dependencies} from '../app';
 import type {EnvironmentGenerator,EnvironmentStep} from './types';
 import type {ModelRunOptions,LookupRequest} from '../memory/types';
-import type {WebModelCheckpoint,WebOwnerRef} from '../web/types';
+import type {WebOwnerRef} from '../web/types';
 import {ModelFormatError,ModelRequestError} from '../model/client';
 import {addMs,milliseconds} from '../time';
 import {ensureEnvironmentBatch,localDate,selectEnvironmentStepMetadata,nextEnvironmentDate} from './scheduler';
@@ -12,10 +12,10 @@ export class EnvironmentPreparation {
  private active:Execution|null=null;
  private stopped=false;
  private errors:unknown[]=[];
- constructor(private d:Dependencies,private options:{onReady?:()=>void;onError?:(error:unknown)=>void}={}){}
+ constructor(private d:Dependencies,private options:{onReady?:()=>void}={}){}
  get inFlight(){return !!this.active;}
  get inFlightStepId(){return this.active?.stepId??null;}
- currentWebOwner():WebOwnerRef|null{return this.active?{ownerType:'environment',ownerId:this.active.stepId}:null;}
+ currentWebOwner():WebOwnerRef|null{if(this.active)return {ownerType:'environment',ownerId:this.active.stepId};const batch=this.d.environmentStore.firstActiveBatch(),meta=batch?this.d.environmentStore.stepMetadata(batch.id).find(s=>s.status!=='committed'&&s.status!=='superseded'):null;return meta&&meta.attempt>0?{ownerType:'environment',ownerId:meta.id}:null;}
  takeError(){return this.errors.shift();}
  status(){
  const batch=this.d.environmentStore.firstActiveBatch(),meta=batch?this.d.environmentStore.stepMetadata(batch.id).find(s=>s.status!=='committed'&&s.status!=='superseded'):null;
@@ -54,6 +54,7 @@ export class EnvironmentPreparation {
  if(!step||step.preparationVersion!==1||!['pending','running'].includes(step.status)||step.retryAt&&milliseconds(step.retryAt)>milliseconds(now))return false;
  if(selectEnvironmentStepMetadata(d.storage,now)?.id!==stepId)return false;
  if(!d.web)throw Error('Async environment requires persistent WebSearchService, including disabled providers');
+ const retrieval=retrievalFor(d);
  const batch=d.environmentStore.batch(step.batchId)!;
  if(batch.timezone!==d.config.timezone||localDate(now,batch.timezone)!==batch.localDate)return false;
  if(!d.generateEnvironment)throw Error('environment generator not assembled');
@@ -63,7 +64,7 @@ export class EnvironmentPreparation {
  if(current.preparationSnapshot&&(current.preparationSnapshot.businessBasis!==environmentBusinessBasis(d,current.stage)||!lookupBasisCurrent(d,current.preparationSnapshot))){
  this.invalidate(current,now,'frozen preparation basis changed before restart');return d.environmentStore.step(stepId)!;
  }
- if(!current.preparationSnapshot){const snapshot=freezeEnvironmentSnapshot(d,current,now);current={...current,preparationSnapshot:snapshot,inputSnapshot:snapshot.input,preparationGeneration:current.preparationGeneration??1};}
+ if(!current.preparationSnapshot){const snapshot=freezeEnvironmentSnapshot({...d,retrieval},current,now);current={...current,preparationSnapshot:snapshot,inputSnapshot:snapshot.input,preparationGeneration:current.preparationGeneration??1};}
  const ref=d.web!.store.openStage('environment',current.id,'generation',current.stage),cp=d.web!.store.snapshot(ref.runId).checkpoint;
  if(current.status!=='running'&&cp){cp.repairCount=0;delete cp.repair;d.web!.store.saveCheckpoint(ref.runId,cp);}
  current={...current,status:'running',attempt:current.attempt+(current.status==='running'?0:1),startedAt:current.startedAt??now,retryAt:null};
@@ -71,15 +72,15 @@ export class EnvironmentPreparation {
  });
  if(step.status!=='running')return false;
  const execution:Execution={stepId,batchId:step.batchId,generation:step.preparationGeneration!,lease:Symbol(),controller:new AbortController(),promise:Promise.resolve()};
- this.active=execution;execution.promise=this.prepare(execution,step,d.generateEnvironment).catch(error=>{if(!this.stopped&&!execution.controller.signal.aborted)this.errors.push(error);}).finally(()=>{if(this.active?.lease===execution.lease)this.active=null;this.options.onReady?.();});
+ this.active=execution;execution.promise=this.prepare(execution,step,d.generateEnvironment,retrieval).catch(error=>{if(!this.stopped&&!execution.controller.signal.aborted)this.errors.push(error);}).finally(()=>{if(this.active?.lease===execution.lease)this.active=null;this.options.onReady?.();});
  return true;
  }
- private async prepare(execution:Execution,step:EnvironmentStep,generate:EnvironmentGenerator):Promise<void>{
+ private async prepare(execution:Execution,step:EnvironmentStep,generate:EnvironmentGenerator,retrieval:import('../memory/retrieval').MemoryRetrieval):Promise<void>{
  const d=this.d,snapshot=step.preparationSnapshot!,signal=execution.controller.signal;
  const ref=d.web!.store.openStage('environment',step.id,'generation',step.stage),session=d.web!.openSession(ref,()=>{if(!this.canPublish(execution)){execution.controller.abort(new DOMException('Environment lease ended','AbortError'));throw execution.controller.signal.reason;}});
  let usedBasis:typeof snapshot.usedBasis=null;
  const options:ModelRunOptions={signal,runRef:ref,lookup:async(request:LookupRequest)=>{
- const result=await lookupFrozenEnvironment(snapshot,request,retrievalFor(d),signal);signal.throwIfAborted();usedBasis=result.usedBasis;return result.context;
+ const result=await lookupFrozenEnvironment(snapshot,request,retrieval,signal);signal.throwIfAborted();usedBasis=result.usedBasis;return result.context;
  },web:{...session,searchAndRead:(request,operation)=>{signal.throwIfAborted();return session.searchAndRead(request,{...operation,signal});},readPage:(url,operation)=>{signal.throwIfAborted();return session.readPage(url,{...operation,signal});},saveCheckpoint:cp=>this.guarded(execution,current=>{
  session.saveCheckpoint(cp);
  if(usedBasis&&!cp.lookupPending)d.environmentStore.saveStep({...current,preparationSnapshot:{...current.preparationSnapshot!,usedBasis}});
