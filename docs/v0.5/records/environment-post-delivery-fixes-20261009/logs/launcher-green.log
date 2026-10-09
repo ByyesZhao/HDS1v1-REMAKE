@@ -1,0 +1,11 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/runtime-check-readonly.test.ts tests/plugin-smoke-contract.test.ts
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/environment-post-delivery/HDSI-remake
+
+
+ Test Files  2 passed (2)
+      Tests  9 passed (9)
+   Start at  19:46:03
+   Duration  3.98s (tests 92%, transform 5%, import 3%)
+

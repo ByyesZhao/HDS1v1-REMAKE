@@ -1,0 +1,101 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/runtime-check-readonly.test.ts
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/environment-post-delivery/HDSI-remake
+
+ ❯ tests/runtime-check-readonly.test.ts (2 tests | 2 failed) 1139ms
+   × launcher readonly check reads schema 3 without installing missing auxiliary indexes 581ms
+   × launcher readonly check reads schema 2 without installing missing auxiliary indexes 557ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/runtime-check-readonly.test.ts > launcher readonly check reads schema 3 without installing missing auxiliary indexes
+AssertionError: koishi: D:\HDSI-remake\runtime\node_modules\koishi\lib\index.cjs
+koishi-plugin-adapter-onebot: D:\HDSI-remake\runtime\node_modules\koishi-plugin-adapter-onebot\lib\index.js
+koishi-plugin-hdsi-remake: D:\HDSI-remake\lib\index.js
+@koishijs/plugin-console: D:\HDSI-remake\runtime\node_modules\@koishijs\plugin-console\lib\node\index.js
+Runtime and HDSI plugin loading verified.
+
+C:\Users\<user>\.codex\worktrees\environment-post-delivery\HDSI-remake\lib\memory\payload-compaction.js:25
+            db.prepare(`CREATE INDEX IF NOT EXISTS ${s.table}_residual ON ${s.table}(id) WHERE ${s.where}`).run();
+                                                                                                            ^
+
+Error: attempt to write a readonly database
+    at installPayloadIndexes (C:\Users\<user>\.codex\worktrees\environment-post-delivery\HDSI-remake\lib\memory\payload-compaction.js:25:109)
+    at new MemoryStore (C:\Users\<user>\.codex\worktrees\environment-post-delivery\HDSI-remake\lib\memory\store.js:29:56)
+    at Object.<anonymous> (C:\Users\<user>\AppData\Local\Temp\hdsi-launcher-readonly-DW317D\runtime\check.cjs:22:812)
+    at Module._compile (node:internal/modules/cjs/loader:1929:14)
+    at Object..js (node:internal/modules/cjs/loader:2060:10)
+    at Module.load (node:internal/modules/cjs/loader:1651:32)
+    at Module._load (node:internal/modules/cjs/loader:1443:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47 {
+  code: 'ERR_SQLITE_ERROR',
+  errcode: 8,
+  errstr: 'attempt to write a readonly database'
+}
+
+Node.js v24.21.0
+: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ installPayloadIndexes lib/memory/payload-compaction.js:25:109
+ ❯ new MemoryStore lib/memory/store.js:29:56
+ ❯ Object.<anonymous> ../../../../AppData/Local/Temp/hdsi-launcher-readonly-DW317D/runtime/check.cjs:22:812
+ ❯ tests/runtime-check-readonly.test.ts:23:73
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/runtime-check-readonly.test.ts > launcher readonly check reads schema 2 without installing missing auxiliary indexes
+AssertionError: expected 'C:\Users\<user>\.codex\worktrees\envir…' to contain 'memory:migrate'
+
+- Expected
++ Received
+
+- memory:migrate
++ C:\Users\<user>\.codex\worktrees\environment-post-delivery\HDSI-remake\lib\memory\payload-compaction.js:25
++             db.prepare(`CREATE INDEX IF NOT EXISTS ${s.table}_residual ON ${s.table}(id) WHERE ${s.where}`).run();
++                                                                                                             ^
++ 
++ Error: attempt to write a readonly database
++     at installPayloadIndexes (C:\Users\<user>\.codex\worktrees\environment-post-delivery\HDSI-remake\lib\memory\payload-compaction.js:25:109)
++     at new MemoryStore (C:\Users\<user>\.codex\worktrees\environment-post-delivery\HDSI-remake\lib\memory\store.js:29:56)
++     at Object.<anonymous> (C:\Users\<user>\AppData\Local\Temp\hdsi-launcher-readonly-n3fdz2\runtime\check.cjs:22:812)
++     at Module._compile (node:internal/modules/cjs/loader:1929:14)
++     at Object..js (node:internal/modules/cjs/loader:2060:10)
++     at Module.load (node:internal/modules/cjs/loader:1651:32)
++     at Module._load (node:internal/modules/cjs/loader:1443:12)
++     at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
++     at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
++     at node:internal/main/run_main_module:33:47 {
++   code: 'ERR_SQLITE_ERROR',
++   errcode: 8,
++   errstr: 'attempt to write a readonly database'
++ }
++ 
++ Node.js v24.21.0
++
+
+ ❯ tests/runtime-check-readonly.test.ts:24:64
+     22|   expect(result.error).toBeUndefined();
+     23|   if(version===3)expect(result.status,result.stdout+'\n'+result.stderr…
+     24|   else{expect(result.status).not.toBe(0);expect(result.stderr).toConta…
+       |                                                                ^
+     25|   expect(readFileSync(database)).toEqual(before);
+     26|   const readonly=new Storage(database,{readOnly:true});
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+   Start at  19:44:57
+   Duration  1.41s (tests 88%, transform 9%, import 3%)
+
