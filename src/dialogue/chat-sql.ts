@@ -8,7 +8,7 @@ export function recentChatSnapshot(storage:Storage,options:ChatWindowQuery):Chat
  if(!Number.isInteger(options.count)||options.count<=0)return fallback();
  const visible=options.eligibility==='ordinary_narrative'?[]:[...new Set(options.visibleIds)],visibleSQL=visible.length?`UNION ALL SELECT json_extract(data,'$.chatEpisodeId') AS id,hdsi_epoch_ms(json_extract(data,'$.receivedAt')) AS rank,hdsi_epoch_ms(json_extract(data,'$.receivedAt')) IS NULL AS invalidTime FROM messages WHERE id IN (SELECT value FROM json_each(?)) AND ${ordinaryChatPredicate}`:'';
  const sql=`WITH ranks AS (
- SELECT json_extract(data,'$.chatEpisodeId') AS id,MAX(hdsi_epoch_ms(json_extract(data,'$.receivedAt'))) AS rank,MAX(hdsi_epoch_ms(json_extract(data,'$.receivedAt')) IS NULL) AS invalidTime FROM messages WHERE ${baseChatPredicate} GROUP BY json_extract(data,'$.chatEpisodeId')
+ SELECT MAX(json_extract(data,'$.chatEpisodeId')) AS id,MAX(hdsi_epoch_ms(json_extract(data,'$.receivedAt'))) AS rank,MAX(hdsi_epoch_ms(json_extract(data,'$.receivedAt')) IS NULL) AS invalidTime FROM messages WHERE ${baseChatPredicate} GROUP BY json_extract(data,'$.chatEpisodeId')
  ${visibleSQL}
  ),combined AS (SELECT id,MAX(rank) AS rank,MAX(invalidTime) AS invalidTime FROM ranks GROUP BY id),
  joined AS (SELECT c.id,c.rank,hdsi_epoch_ms(json_extract(e.data,'$.openedAt')) AS openedEpoch,c.invalidTime OR hdsi_epoch_ms(json_extract(e.data,'$.openedAt')) IS NULL AS invalidTime FROM combined c JOIN chat_episodes e ON e.id=c.id),

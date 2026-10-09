@@ -10,8 +10,8 @@ it.each([1000,10000,50000])('directed window decodes only four complete segments
  expect(observed.queries.reduce((n:number,q:any)=>n+q.jsonRows,0)).toBe(168);expect(observed.queries.reduce((n:number,q:any)=>n+q.writes,0)).toBe(0);
  const p=plans(s,observed.queries);expect(JSON.stringify(p[0].plan)).toContain('message_chat_rank');expect(JSON.stringify(p.find((q:any)=>q.sql.includes('SELECT rowid,data FROM messages')).plan)).toContain('message_chat');
  const rank=observed.queries[0];expect(rank.rows).toBe(4);
- const ops=s.prepare('EXPLAIN '+rank.sql).all(...rank.args);const tableCursor=ops.find((op:any)=>op.opcode==='OpenRead'&&op.p4===2)?.p1;
- if(tableCursor!==undefined)expect(ops.filter((op:any)=>op.opcode==='Column'&&op.p1===tableCursor)).toEqual([]);
+ const ops=s.prepare('EXPLAIN '+rank.sql).all(...rank.args);const root=s.prepare("SELECT rootpage FROM sqlite_master WHERE name='messages'").get()!.rootpage,cursors=ops.filter((op:any)=>op.opcode==='OpenRead'&&op.p2===root).map((op:any)=>op.p1);
+ expect(ops.filter((op:any)=>op.opcode==='Column'&&cursors.includes(op.p1)&&op.p2===1)).toEqual([]);
  const recent=s.recentChatSnapshot.bind(s);let calls=0;s.recentChatSnapshot=(q)=>{calls++;return recent(q);};const b=new ContextBuilder(s,new MemoryRetrieval(new MemoryStore(s)));const q=makeRetrievalRequest('',new Date().toISOString(),'memory');q.dialogueWindowVersion=2;await b.buildForMemory(q);await b.lookupForMemory('',q);expect(calls).toBe(0);
  }finally{s.close();}
 });

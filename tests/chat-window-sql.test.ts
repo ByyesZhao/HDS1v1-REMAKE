@@ -19,6 +19,7 @@ it('SQL ranks only stage-visible interactions and preserves every message of sel
 });
 it('SQL retains missing seen fields, closed segments, JS epoch and literal ID ties',()=>{
  const s=new Storage(':memory:');try{for(const id of ['a','z','\uE000','\u{10000}','x']){episode(s,id,0);s.save('messages',id,{...msg(id,id,0),receivedAt:'2026-10-07T10:00:00+08:00'});}
+ expect(compare(s).episodeIds).toEqual(['x','z','\u{10000}','\uE000']);
  const missing:any={...msg('missing','a',1)};delete missing.seenTurnId;s.save('messages','missing',missing);s.save('messages','unseen',msg('unseen','z',10,null));
  for(const count of [1,4,6,0,-1,1.5])compare(s,count);
  const dates=['2026-10-07T02:00:00.001Z','2026-10-07T10:00:00.010+08:00','2026-10-07T02:00:00.0009Z'];

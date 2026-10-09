@@ -87,6 +87,12 @@ export async function runMemoryCapacityAcceptance(path:string){
     await host.start();assert(frontBeforeSecondCleanup);
     const protectedArchiveSurvived=!!store.owner(protectedArchive);assert(protectedArchiveSurvived);
     const leakedPayloads=['memories','learned_background','memory_index_jobs','memory_maintenance_jobs','memory_dirty_owners','memory_audit_reports','post_jobs','web_sessions'].filter(table=>Number(storage.prepare(`SELECT count(*) n FROM ${table} WHERE data LIKE ?`).get(`%${sentinel}%`)!.n)>0);
+    // Owner deletion prunes active recovery immediately; old terminal bodies use
+    // the separate bounded recovery path and must not be hidden in each cleanup.
+    assert.deepEqual(leakedPayloads,['memory_maintenance_jobs','post_jobs','web_sessions']);
+    let residual=storage.transaction(()=>store.compactCompletedPayloads(50));
+    while(residual.hasMore)residual=storage.transaction(()=>store.compactCompletedPayloads(50));
+    leakedPayloads.splice(0,leakedPayloads.length,...['memories','learned_background','memory_index_jobs','memory_maintenance_jobs','memory_dirty_owners','memory_audit_reports','post_jobs','web_sessions'].filter(table=>Number(storage.prepare(`SELECT count(*) n FROM ${table} WHERE data LIKE ?`).get(`%${sentinel}%`)!.n)>0));
     assert.deepEqual(leakedPayloads,[]);assert.equal(storage.prepare('SELECT count(*) n FROM memory_index WHERE ownerId=?').get(gone.id)!.n,0);
     assert.equal(store.listAwakenings(gone.id).length,0);assert.equal(store.listGrants(gone.id).length,0);
     store.saveOwner({...store.owner(protector)!,shortExpiresAt:now});await host.wake();const archiveRemovedAfterUnreference=!store.owner(protectedArchive);assert(archiveRemovedAfterUnreference);

@@ -31,3 +31,9 @@ it('no personal stage still commits narrative experiences and memory postprocess
  expect(d.storage.all('turns')[0].done).toBe(true);expect(d.storage.character().narratedUntil).toBe(NOW);expect(d.storage.all('experiences')).toHaveLength(1);expect(d.models.calls.map(c=>c.name)).toEqual(['narrative','memory']);
  }finally{d.storage.close();}
 });
+
+it('no personal stage still commits already-known research progress',async()=>{
+ const d=setup();try{const item=schoolItem({id:'research',kind:'research'});d.storage.save('school_plan_items',item.id,item);d.storage.save('school_knowledge','known',{id:'known',entityKind:'plan_item',entityId:item.id,revision:1,snapshot:{entityKind:'plan_item',entityId:item.id,revision:1,value:item},acquiredAt:NOW,experienceId:'previous',turnId:'previous',via:'notice'});
+ d.models.outputs.narrative={...narrative,experiences:[{happenedAt:NOW,description:'模拟推进科研',relatedEventIds:[]}],researchProgress:[{taskId:item.id,kind:'progress',experienceIndex:0,summary:'模拟进展'}]};await new HdsiApp(d).runTurn({inputMessageIds:[],taskIds:[],triggerKinds:['check_messages']});expect(d.storage.all('turns')[0].done).toBe(true);expect(d.schoolStore.progress()).toHaveLength(1);expect(d.models.calls.map(c=>c.name)).toEqual(['narrative','memory']);
+ }finally{d.storage.close();}
+});
