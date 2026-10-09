@@ -39,6 +39,10 @@ export class MemoryStore {
     const id=`${owner.ownerType}:${owner.ownerId}`;const row=parse<MemoryDirtyOwner>(this.storage.prepare('SELECT data FROM memory_dirty_owners WHERE id=?').get(id));
     if(row?.status==='reserved')this.storage.prepare('UPDATE memory_dirty_owners SET data=? WHERE id=?').run(JSON.stringify({...row,status:'pending'}),id);
   }
+  releaseDirtyVersion(owner:OwnerVersion):void {
+    const id=owner.ownerType+':'+owner.ownerId,row=parse<MemoryDirtyOwner>(this.storage.prepare('SELECT data FROM memory_dirty_owners WHERE id=?').get(id));
+    if(row?.status==='reserved'&&row.revision===owner.revision&&row.stateVersion===owner.stateVersion)this.releaseDirty(owner);
+  }
   completeDirty(readVersion:OwnerVersion,resultingVersion:OwnerVersion):void {
     const id=`${readVersion.ownerType}:${readVersion.ownerId}`;const row=parse<MemoryDirtyOwner>(this.storage.prepare('SELECT data FROM memory_dirty_owners WHERE id=?').get(id));if(!row)return;
     const same=row.revision===readVersion.revision&&row.stateVersion===readVersion.stateVersion;
@@ -140,9 +144,13 @@ export class MemoryStore {
   queueIndex(owner:MemoryCandidate,now:string,signature=this.storage.get<string>('memory_embedding_signature')??'unconfigured'):void {
     const id=`${owner.ownerType}:${owner.ownerId}:${owner.revision}:${signature}`;
     if(this.job('memory_index_jobs',id))return;
+    const pending=this.jobs<IndexJob>('memory_index_jobs',['pending']).filter(j=>j.startedAt===null&&j.owner.ownerType===owner.ownerType&&j.owner.ownerId===owner.ownerId&&j.configSignature===signature);
+    if(pending.some(j=>j.owner.revision>owner.revision))return;
+    let createdAt=now;
+    for(const job of pending){if(milliseconds(job.createdAt)<milliseconds(createdAt))createdAt=job.createdAt;this.saveJob('memory_index_jobs',{...job,status:'done',completionReason:'stale',completedAt:now,retryAt:null,lastError:null});}
     const text=memoryIndexText(owner);
     const ref:OwnerVersion={ownerType:owner.ownerType,ownerId:owner.ownerId,revision:owner.revision,stateVersion:owner.stateVersion};
-    this.saveJob<IndexJob>('memory_index_jobs',{id,owner:ref,text,configSignature:signature,createdAt:now,status:'pending',retryAt:null,completedAt:null,completionReason:null});
+    this.saveJob<IndexJob>('memory_index_jobs',{id,startedAt:null,owner:ref,text,configSignature:signature,createdAt,status:'pending',retryAt:null,completedAt:null,completionReason:null});
   }
   saveGrant(grant:RetentionGrant):void {this.storage.prepare('INSERT INTO memory_retention_grants(id,data) VALUES(?,?) ON CONFLICT(id) DO UPDATE SET data=excluded.data').run(grant.id,JSON.stringify(grant));}
   listGrants(id:string):RetentionGrant[] {return this.storage.prepare("SELECT data FROM memory_retention_grants WHERE json_extract(data,'$.canonicalMemoryId')=? ORDER BY julianday(json_extract(data,'$.anchorAt')),id").all(id).map(r=>JSON.parse(String(r.data)));}
