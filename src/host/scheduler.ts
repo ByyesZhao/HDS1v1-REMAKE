@@ -11,7 +11,7 @@ import type { TurnRequest, TriggerKind } from '../types';
 
 export class Scheduler {
   constructor(private storage: Storage,private config:AppConfig=defaultConfig) {}
-  async collectReady(now: string): Promise<TurnRequest | null> {
+  async collectReady(now: string,options:{environmentInFlightStepId?:string|null}={}): Promise<TurnRequest | null> {
     new InputBuffer(this.storage).closeReady(now);
     if (this.storage.runtime().paused || this.storage.unfinishedTurn()) return null;
     const noticeContext=createSchoolNoticeEvaluationContext(this.storage);
@@ -31,7 +31,7 @@ export class Scheduler {
     if(!runtime.openBatch){
       ensureEnvironmentBatch(this.storage,this.config,now);
       const step=selectEnvironmentStepMetadata(this.storage,now);
-      if(step)return {inputMessageIds:[],taskIds:[],triggerKinds:['environment'],batchIds:[],environmentStepId:step.id,sharedMeta:null};
+      if(step&&!(options.environmentInFlightStepId&&step.preparationVersion===1&&step.status!=='ready'))return {inputMessageIds:[],taskIds:[],triggerKinds:['environment'],batchIds:[],environmentStepId:step.id,sharedMeta:null};
     }
     if (this.autonomousEligible(now) && due(state.nextAutonomousAt, now)) return {
       inputMessageIds: this.storage.unreadMessages().map(m => m.id), taskIds: [], triggerKinds: ['autonomous'], batchIds: [], sharedMeta: null,schoolNoticeRefs:selectSchoolNotices(this.storage,now, this.config.timezone,noticeContext) };
@@ -79,7 +79,7 @@ export class Scheduler {
       this.storage.save('tasks', id, { id, kind: 'check_messages', checkReason: 'unread', at: end, description: '活动预计结束后检查待看消息', messageIds: this.storage.unreadMessages().map(m => m.id), status: 'pending' });
     });
   }
-  async nextDeadline(now: string): Promise<string | null> {
+  async nextDeadline(now: string,options:{environmentInFlightStepId?:string|null}={}): Promise<string | null> {
     const runtime = this.storage.runtime();
     if (runtime.paused) return runtime.openBatch?.readyAt ?? null;
     if (this.storage.unfinishedTurn()) return null;
@@ -104,7 +104,7 @@ export class Scheduler {
         else if (state.scene.activity?.expectedEndAt) candidates.push(new Date(Math.max(milliseconds(task.at), milliseconds(state.scene.activity.expectedEndAt))).toISOString());
       }
     }
-    if(!runtime.openBatch){const env=environmentDeadline(this.storage,now);if(env)candidates.push(env);}
+    if(!runtime.openBatch){const env=environmentDeadline(this.storage,now,options);if(env)candidates.push(env);}
     const notice=schoolNoticeDeadline(this.storage,now, this.config.timezone,noticeContext);if(notice)candidates.push(notice);
 
     return candidates.sort((a, b) => milliseconds(a) - milliseconds(b))[0] ?? null;

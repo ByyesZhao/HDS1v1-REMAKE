@@ -42,10 +42,12 @@ export function selectEnvironmentStepMetadata(storage:Storage,now:string):Enviro
  return null;
 }
 export function selectEnvironmentStep(storage:Storage,now:string):EnvironmentStep|null {const meta=selectEnvironmentStepMetadata(storage,now);return meta?new EnvironmentStore(storage).step(meta.id):null;}
-export function environmentDeadline(storage:Storage,now:string):string|null {
+export function environmentDeadline(storage:Storage,now:string,options:{environmentInFlightStepId?:string|null}={}):string|null {
  const runtime=storage.runtime();if(runtime.environmentPlanningVersion!==1&&runtime.environmentPlanningVersion!==2)return null;
  const store=new EnvironmentStore(storage),batch=store.firstActiveBatch(),steps=batch?store.stepMetadata(batch.id):[];
  const step=batch?environmentStages.map(stage=>steps.find(s=>s.stage===stage)!).find(s=>s.status!=='committed'&&s.status!=='superseded'):null;
- const deadlines=[runtime.nextEnvironmentAt,step?(step.retryAt??now):null].filter((v):v is string=>!!v);
+ const blocked=!!options.environmentInFlightStepId&&step?.preparationVersion===1&&step.status!=='ready';
+ const midnight=batch&&options.environmentInFlightStepId?nextEnvironmentDate(now,batch.timezone,'00:00'):null;
+ const deadlines=[runtime.nextEnvironmentAt,step&&!blocked?(step.retryAt??now):null,midnight].filter((v):v is string=>!!v);
  return deadlines.sort((a,b)=>milliseconds(a)-milliseconds(b))[0]??(batch?null:now);
 }

@@ -14,4 +14,4 @@ export interface EnvironmentStep {preparationSnapshot?:import('./snapshot').Envi
 export interface EnvironmentGenerationOptions {signal?:AbortSignal;modelOptions?:import('../memory/types').ModelRunOptions;schoolView?:import('../school/read-view').SchoolReadView}
 export type EnvironmentGenerator = (input:EnvironmentStepInput,options?:EnvironmentGenerationOptions)=>Promise<EnvironmentModelResult>;
 
-export type EnvironmentStepMetadata=Pick<EnvironmentStep,'id'|'batchId'|'stage'|'status'|'retryAt'>;
+export type EnvironmentStepMetadata=Pick<EnvironmentStep,'id'|'batchId'|'stage'|'status'|'retryAt'|'preparationVersion'|'preparationGeneration'|'attempt'|'startedAt'|'staleReason'>;

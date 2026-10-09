@@ -1,3 +1,4 @@
+import {EnvironmentPreparation} from './preparation';
 import {randomUUID} from 'node:crypto';
 import type {Dependencies} from '../app';
 import {ModelFormatError,ModelRequestError} from '../model/client';
@@ -21,6 +22,8 @@ export function resolveResult(d:Dependencies,result:EnvironmentModelResult,input
  return resolveSchoolUpstream(view,result,at);
 }
 export async function runEnvironmentStep(d:Dependencies,stepId:string,generate:EnvironmentGenerator):Promise<void> {
+ const selected=d.environmentStore.step(stepId)!;
+ if(selected.preparationVersion===1){const preparation=new EnvironmentPreparation({...d,generateEnvironment:generate});if(selected.status!=='ready'){preparation.startOne(stepId,d.clock.now());await preparation.wait();const error=preparation.takeError();if(error)throw error;}preparation.applyReady(stepId,d.clock.now());return;}
  let step=d.environmentStore.step(stepId)!;const batch=d.environmentStore.batch(step.batchId)!;
  if(step.status==='committed'||step.status==='superseded')return;
  if(localDate(d.clock.now(),batch.timezone)!==batch.localDate){ensureEnvironmentBatch(d.storage,d.config,d.clock.now());return;}
@@ -39,12 +42,17 @@ export async function runEnvironmentStep(d:Dependencies,stepId:string,generate:E
  }
  if(localDate(d.clock.now(),batch.timezone)!==batch.localDate){ensureEnvironmentBatch(d.storage,d.config,d.clock.now());d.web?.releaseOwner('environment',step.id);return;}
  d.storage.transaction(()=>{
-  const result=step.frozenResult!;
-  if(result.stage==='world')for(const change of result.changes){if(change.action==='create')d.storage.save('events',change.id!,{...change.event,id:change.id!,status:'active'});else{const old=d.storage.read('events',change.id);if(!old)throw Error('unknown world event');d.storage.save('events',change.id,change.action==='cancel'?{...old,status:'cancelled'}:{...old,...change.event});}}
-  else applySchoolChanges(d.storage,result,d.clock.now());
-  d.environmentStore.saveStep({...step,status:'committed',completedAt:d.clock.now(),lastError:null});
-  if(d.environmentStore.stepMetadata(batch.id).every(s=>s.status==='committed'))d.environmentStore.saveBatch({...batch,status:'committed',closedAt:d.clock.now()});
+  commitEnvironmentResult(d,step,d.clock.now());
  });
  d.web?.releaseOwner('environment',step.id);
  d.web?.compactOwnerCheckpoint('environment',step.id);
+}
+
+export function commitEnvironmentResult(d:Dependencies,step:EnvironmentStep,now:string):void {
+ const batch=d.environmentStore.batch(step.batchId)!;
+  const result=step.frozenResult!;
+  if(result.stage==='world')for(const change of result.changes){if(change.action==='create')d.storage.save('events',change.id!,{...change.event,id:change.id!,status:'active'});else{const old=d.storage.read('events',change.id);if(!old)throw Error('unknown world event');d.storage.save('events',change.id,change.action==='cancel'?{...old,status:'cancelled'}:{...old,...change.event});}}
+  else applySchoolChanges(d.storage,result,now);
+  d.environmentStore.saveStep({...step,status:'committed',completedAt:now,lastError:null});
+  if(d.environmentStore.stepMetadata(batch.id).every(s=>s.status==='committed'))d.environmentStore.saveBatch({...batch,status:'committed',closedAt:now});
 }

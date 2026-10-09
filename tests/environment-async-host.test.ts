@@ -1,0 +1,26 @@
+import {it,expect} from 'vitest';
+import {setup} from './helpers';
+import {HdsiApp} from '../src/app';
+import {SerialHost} from '../src/host/runtime';
+import {WebSearchService} from '../src/web/service';
+import {WebSearchStore} from '../src/web/store';
+import {ensureEnvironmentBatch} from '../src/environment/scheduler';
+import {setImmediate} from 'node:timers/promises';
+it('chat formally commits while environment HTTP is unresolved; ready waits for foreground boundary',async()=>{
+ const base=setup(),web=new WebSearchService(new WebSearchStore(base.storage),undefined,base.clock,{enabled:false}),d={...base,web};
+ d.storage.set('runtime',{...d.storage.runtime(),environmentPlanningVersion:2,nextEnvironmentAt:null});
+ let finish!:(v:any)=>void;let requests=0;
+ d.generateEnvironment=async input=>{requests++;if(input.stage==='world')return new Promise(resolve=>{finish=resolve;});return {stage:input.stage,planChanges:[],itemChanges:[]} as any;};
+ const host=new SerialHost(new HdsiApp(d),{timers:false});
+ const wake=host.start();await setImmediate();
+ expect(requests).toBe(1);await wake;
+ expect(d.storage.all('events')).toHaveLength(0);
+ await host.acceptInput({id:'chat',receivedAt:d.clock.now(),content:'早上好',platformMessageIds:[]});
+ d.clock.advance(16000);await host.wake();
+ expect(d.storage.all('turns').some(t=>t.done&&t.inputMessageIds.includes('chat'))).toBe(true);
+ expect(d.storage.all('events')).toHaveLength(0);
+ await host.pause();finish({stage:'world',changes:[]});await setImmediate();
+ const step=d.storage.all('environment_steps').find(s=>s.stage==='world')!;
+ expect(step.status).toBe('ready');expect(await host.status()).toContain('待提交');
+ await host.stop();d.storage.close();
+});

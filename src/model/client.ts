@@ -39,7 +39,9 @@ export class ModelClient implements ModelRunner {
       const result=op.request.kind==='search'?await web!.searchAndRead(op.request.request,{operationId,signal:options.signal}):await web!.readPage(op.request.url,{operationId,signal:options.signal});
       checkpoint.toolResults.push(result);checkpoint.pendingOperationId=null;save();
     };
-    save();if(checkpoint.pendingOperationId)await perform(checkpoint.pendingOperationId);
+    const performLookup=async()=>{checkpoint.privateLookupResult=await lookup!(checkpoint.lookupRequest!);checkpoint.lookupPending=false;save();};
+    save();if(checkpoint.lookupPending&&checkpoint.lookupRequest&&lookup)await performLookup();
+    if(checkpoint.pendingOperationId)await perform(checkpoint.pendingOperationId);
     while(true) {
       options.signal?.throwIfAborted();const snapshot=web?.snapshot();
       const quota=!!web&&!!snapshot&&(snapshot.counters.successReads>=web.limits.successReads||snapshot.counters.failures>=web.limits.failures);
@@ -64,7 +66,7 @@ export class ModelClient implements ModelRunner {
       }
       delete checkpoint.repair;
       if(operation){const op=web!.beginOperation(operation);checkpoint.pendingOperationId=op.operationId;save();await perform(op.operationId);}
-      else {checkpoint.lookupUsed=true;save();checkpoint.privateLookupResult=await lookup!(value.lookupDetails);save();}
+      else {checkpoint.lookupUsed=true;checkpoint.lookupRequest=value.lookupDetails;checkpoint.lookupPending=true;save();await performLookup();}
     }
   }
 }
