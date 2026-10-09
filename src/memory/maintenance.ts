@@ -1,3 +1,4 @@
+import {selectMaintenanceBatch} from './batch-selection';
 import {assertMessageSources} from '../dialogue/active-consistency';
 import { stageInput } from '../model/context-views';
 import { randomUUID } from 'node:crypto';
@@ -29,9 +30,11 @@ export class MemoryMaintenance {
   private eligible(work:Work,now:string){return work.table==='memory_index_jobs'||!this.options.idle||this.options.idle.eligibility(now).allowed;}
   private blocked(){const r=this.store.storage.runtime();return r.paused||!!r.openBatch||!!this.store.storage.unfinishedTurn();}
   private work():Work[]{return [...this.store.jobs<IndexJob>('memory_index_jobs',['pending','computing','ready']).map(job=>({table:'memory_index_jobs' as const,job})),...this.store.jobs<MaintenanceJob>('memory_maintenance_jobs',['pending','computing','ready']).map(job=>({table:'memory_maintenance_jobs' as const,job}))].sort((a,b)=>milliseconds(a.job.createdAt)-milliseconds(b.job.createdAt)||a.job.id.localeCompare(b.job.id));}
-  private metadataWork():Work[]{
-    return (['memory_index_jobs','memory_maintenance_jobs'] as const).flatMap(table=>this.store.storage.prepare(`SELECT json_object('id',id,'status',json_extract(data,'$.status'),'createdAt',json_extract(data,'$.createdAt'),'retryAt',json_extract(data,'$.retryAt'),'lastError',json_extract(data,'$.lastError'),'configSignature',json_extract(data,'$.configSignature'),'readSet',json(COALESCE(json_extract(data,'$.readSet'),'[]'))) AS metadata FROM ${table} WHERE json_extract(data,'$.status') IN ('pending','computing','ready')`).all().map(r=>({table,job:JSON.parse(String(r.metadata))} as Work))).sort((a,b)=>milliseconds(a.job.createdAt)-milliseconds(b.job.createdAt)||a.job.id.localeCompare(b.job.id));
+  private metadataWork():Array<Work&{refreshableUnstarted:boolean}>{
+    return (['memory_index_jobs','memory_maintenance_jobs'] as const).flatMap(table=>this.store.storage.prepare(`SELECT json_object('id',id,'status',json_extract(data,'$.status'),'createdAt',json_extract(data,'$.createdAt'),'retryAt',json_extract(data,'$.retryAt'),'lastError',json_extract(data,'$.lastError'),'configSignature',json_extract(data,'$.configSignature'),'readSet',json(COALESCE(json_extract(data,'$.readSet'),'[]'))) AS metadata,${table==='memory_maintenance_jobs'?"(json_extract(data,'$.status')='pending' AND json_type(data,'$.startedAt')='null' AND json_type(data,'$.result')='null' AND COALESCE(json_array_length(data,'$.appliedUnitKeys'),0)=0)":'0'} AS refreshableUnstarted FROM ${table} WHERE json_extract(data,'$.status') IN ('pending','computing','ready')`).all().map(r=>({table,job:JSON.parse(String(r.metadata)),refreshableUnstarted:!!r.refreshableUnstarted} as Work&{refreshableUnstarted:boolean}))).sort((a,b)=>milliseconds(a.job.createdAt)-milliseconds(b.job.createdAt)||a.job.id.localeCompare(b.job.id));
   }
+  private refreshable(job:MaintenanceJob):boolean{return job.status==='pending'&&job.startedAt===null&&job.result===null&&job.appliedUnitKeys.length===0;}
+  private selectBatch(rows:MemoryCandidate[]):MemoryCandidate[]{return selectMaintenanceBatch(rows,{batchItems:this.options.batchItems??20,batchCharacters:this.options.batchCharacters??null});}
   private buildSnapshot(rows:MemoryCandidate[]):MemoryCandidate[] {
     const snapshot=rows.map(row=>row.linkedLongId?{...row,linkedLongId:this.store.canonical(row.linkedLongId)?.id??row.linkedLongId}:row);
     for(const row of snapshot.slice())if(row.linkedLongId){const long=this.store.canonical(row.linkedLongId);if(long&&!snapshot.some(r=>r.id===long.id))snapshot.push(long);}
@@ -63,10 +66,10 @@ export class MemoryMaintenance {
     }
     if(!cycle)return;
     const jobs=this.store.jobs<MaintenanceJob>('memory_maintenance_jobs',['pending','computing','ready']);
+    if(jobs.some(j=>this.refreshable(j)))return;
     const reserved=new Set(jobs.flatMap(j=>j.readSet.map(r=>r.ownerId)));
     const eligible=this.store.maintenanceCandidates(cycle.cutoff).filter(r=>!reserved.has(r.id)&&(!r.linkedLongId||!reserved.has(this.store.canonical(r.linkedLongId)?.id??r.linkedLongId)));
-    const selected:MemoryCandidate[]=[];let characters=0;
-    for(const row of eligible){if(selected.length>=(this.options.batchItems??20))break;const size=[...row.content].length;if(selected.length&&this.options.batchCharacters!=null&&characters+size>this.options.batchCharacters)break;selected.push(row);characters+=size;}
+    const selected=this.selectBatch(eligible);
     if(selected.length)this.makeJob(selected,cycle.cutoff,now);
     else if(!jobs.length){this.store.storage.set('memory_maintenance_cycle',null);this.store.storage.set('runtime',{...this.store.storage.runtime(),nextMaintenanceAt:nextDaily(now,['04:30'],'Asia/Shanghai')});}
   }
@@ -80,10 +83,11 @@ export class MemoryMaintenance {
     }
     if(!this.options.idle!.eligibility(now).allowed)return;
     const jobs=this.store.jobs<MaintenanceJob>('memory_maintenance_jobs',['pending','computing','ready']),reserved=new Set(jobs.flatMap(j=>j.readSet.map(r=>r.ownerId)));
+    if(jobs.some(j=>this.refreshable(j)))return;
     const available=this.incrementalCandidates(reserved);
     if(!available.length)return;
     const first=available[0],audit=first.kind==='detail'||first.kind==='learned';
-    const selected=available.filter(r=>(r.kind==='detail'||r.kind==='learned')===audit).slice(0,this.options.batchItems??20).map(r=>this.store.owner(r)!);
+    const selected=this.selectBatch(available.filter(r=>(r.kind==='detail'||r.kind==='learned')===audit).map(r=>this.store.owner(r)!));
     if(selected.length)this.makeJob(selected,now,now);
   }
   private incrementalCandidates(reserved:Set<string>):MemoryCandidate[]{
@@ -93,8 +97,9 @@ export class MemoryMaintenance {
   private refreshUnstarted(job:MaintenanceJob,now:string):MaintenanceJob|null {
     if(job.startedAt!==null||job.result!==null||job.appliedUnitKeys.length)return job;
     const selected=job.selectedIds??job.snapshot.map(r=>r.id),daily=this.options.idle?null:new Set(this.store.maintenanceCandidates(job.cutoff).map(r=>r.id));
-    const rows=job.snapshot.filter(r=>selected.includes(r.id)).map(r=>this.store.owner(r)).filter((r):r is MemoryCandidate=>!!r&&r.status!=='merged'&&r.status!=='discarded'&&(!daily||daily.has(r.id)));
+    const currentRows=selected.map(id=>job.snapshot.find(r=>r.id===id)).filter((r):r is MemoryCandidate=>!!r).map(r=>this.store.owner(r)).filter((r):r is MemoryCandidate=>!!r&&r.status!=='merged'&&r.status!=='discarded'&&(!daily||daily.has(r.id)));
     for(const ref of job.readSet.filter(r=>selected.includes(r.ownerId)))this.store.releaseDirtyVersion(ref);
+    const rows=this.selectBatch(currentRows);
     if(!rows.length){this.store.saveJob('memory_maintenance_jobs',{...job,status:'done'});return null;}
     const snapshot=this.buildSnapshot(rows),updated={...job,cutoff:this.options.idle?now:job.cutoff,snapshot,selectedIds:rows.map(r=>r.id),readSet:snapshot.map(version)};
     this.store.saveJob('memory_maintenance_jobs',updated);for(const row of rows)this.store.reserveDirty(row);return updated;
@@ -227,7 +232,7 @@ export class MemoryMaintenance {
       else{const idleAt=this.options.idle?.nextDeadline(now);if(idleAt)deadlines.push(milliseconds(retry)>milliseconds(idleAt)?retry:idleAt);}
     }
     const reserved=new Set(works.filter(w=>w.table==='memory_maintenance_jobs').flatMap(w=>(w.job as MaintenanceJob).readSet.map(r=>r.ownerId)));
-    if(this.options.idle&&this.incrementalCandidates(reserved).length){
+    if(this.options.idle&&!works.some(w=>w.refreshableUnstarted)&&this.incrementalCandidates(reserved).length){
       const eligibility=this.options.idle.eligibility(now);if(eligibility.allowed)deadlines.push(now);else{const at=this.options.idle.nextDeadline(now);if(at)deadlines.push(at);}
     }
     if(!this.store.storage.get('memory_maintenance_cycle')&&this.store.storage.runtime().nextMaintenanceAt)deadlines.push(this.store.storage.runtime().nextMaintenanceAt!);

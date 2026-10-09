@@ -12,3 +12,7 @@
 
 基线首次缺lib导致smoke/benchmark两个加载失败；构建后完整122文件693项通过（70.19s）。T1测试初次夹具mergeLong拼错已改为真实merge，纠正后9失败/1通过，均为事件日期断言。
 T1完成：修正缺日期／单日期默认；已通过真实canonical合并、learned引用、预备许可、旧post、检索与三阶段投影。5文件40项通过，typecheck退出0。原日期污染历史不批量修正。
+
+## T2：字符选批与未启动任务刷新
+新增完整正文选批器；主选集保持FIFO、首条超目标仍完整入选，依赖闭包不受软目标裁切。等待任务只在startedAt显式null时刷新；旧字段缺失和已启动任务保持冻结。RED补齐后9失败/3通过；GREEN7文件54项通过，typecheck退出0。绿色测试前修正夹具：长期发送字段是eventSummary，undefined参数不能被默认null覆盖。默认batchCharacters=null未变。
+
