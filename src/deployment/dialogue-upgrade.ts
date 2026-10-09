@@ -7,8 +7,8 @@ import { randomUUID } from 'node:crypto';
 import { Storage,isUnfinishedTurn } from '../storage';
 import type { Message,Runtime,TurnRecord } from '../types';
 import type { DialogueEpisode,DialogueActivityLink,DialogueTurnBinding } from '../dialogue/types';
-export interface DialogueUpgradeParameters {idleMinutes:number;targetVersion:1|2;configSource?:string;recentSegments?:number}
-export interface DialogueUpgradeReport {historicalWarnings?:string[];targetVersion?:1|2;idleMinutes?:number;configSource?:string;chatEpisodeCount?:number;ordinaryMessageCount?:number;activityMessageCount?:number;version:number|null;messageCount:number;episodeCount:number;activityCount:number;ambiguousBoundaries:string[];inflightBindings:Array<{turnId:string;binding:DialogueTurnBinding|null}>;canApply:boolean;backupPath:string|null}
+export interface DialogueUpgradeParameters {idleMinutes:number;targetVersion:1|2;configSource?:string;recentSegments?:number;rebuildChatIndex?:boolean}
+export interface DialogueUpgradeReport {historicalWarnings?:string[];targetVersion?:1|2;idleMinutes?:number;recordedIdleMinutes?:number|null;rebuildPlanned?:boolean;configSource?:string;chatEpisodeCount?:number;ordinaryMessageCount?:number;activityMessageCount?:number;version:number|null;messageCount:number;episodeCount:number;activityCount:number;ambiguousBoundaries:string[];inflightBindings:Array<{turnId:string;binding:DialogueTurnBinding|null;bindingVersion?:1|2}>;canApply:boolean;backupPath:string|null}
 export interface MigrationPlan {chatEpisodes?:import('../dialogue/types').ChatEpisode[];report:DialogueUpgradeReport;messages:Message[];episodes:DialogueEpisode[];links:DialogueActivityLink[];turns:TurnRecord[];runtime:Runtime|null}
 function legacyPlan(db:DatabaseSync,now?:string,idleMinutes=15):MigrationPlan {
  const tables=new Set(db.prepare("SELECT name FROM sqlite_master WHERE type='table'").all().map(r=>String(r.name)));
@@ -16,7 +16,7 @@ function legacyPlan(db:DatabaseSync,now?:string,idleMinutes=15):MigrationPlan {
  const row=tables.has('state')?db.prepare("SELECT data FROM state WHERE key='runtime'").get():null;
  const runtime=row?JSON.parse(String(row.data)) as Runtime:null,version=runtime?.dialogueContextVersion??null;
  const messages=rows<Message>('messages').sort((a,b)=>Date.parse(a.receivedAt)-Date.parse(b.receivedAt)||(a.id<b.id?-1:a.id>b.id?1:0)),turns=rows<TurnRecord>('turns');
- if(version===1||version===2)return {report:{version,messageCount:messages.length,episodeCount:rows('dialogue_episodes').length,activityCount:rows('dialogue_activity_links').length,ambiguousBoundaries:[],inflightBindings:turns.filter(isUnfinishedTurn).map(t=>({turnId:t.id,binding:t.dialogueBinding??null})),canApply:true,backupPath:null},messages,episodes:[],links:[],turns,runtime};
+ if(version===1||version===2)return {report:{version,messageCount:messages.length,episodeCount:rows('dialogue_episodes').length,activityCount:rows('dialogue_activity_links').length,ambiguousBoundaries:[],inflightBindings:turns.filter(isUnfinishedTurn).map(t=>({turnId:t.id,bindingVersion:t.dialogueWindowVersion??1,binding:(t.dialogueWindowVersion===2?t.chatBinding:t.dialogueBinding)??null})),canApply:true,backupPath:null},messages,episodes:[],links:[],turns,runtime};
  const activity=new Map<string,string>();
  for(const t of turns){const id=t.sharedMeta?.activityId??t.frozenResult?.nextState.scene.shared?.activityId;if(id){for(const mid of t.inputMessageIds)activity.set(mid,id);for(const m of messages)if(m.turnId===t.id)activity.set(m.id,id);}}
  const spans=new Map<string,{from:number;to:number}>();
@@ -41,23 +41,37 @@ function legacyPlan(db:DatabaseSync,now?:string,idleMinutes=15):MigrationPlan {
 function plan(db:DatabaseSync,now:string|undefined,parameters:DialogueUpgradeParameters):MigrationPlan {
  if(!Number.isFinite(parameters.idleMinutes)||parameters.idleMinutes<=0)throw new Error('idleMinutes must be positive');
  const base=legacyPlan(db,now,parameters.idleMinutes);
+ if(parameters.rebuildChatIndex&&(base.report.version!==2||parameters.targetVersion!==2))throw new Error('--rebuild-chat-index requires an existing version2 database and target-version 2');
  if(base.report.version===null&&base.runtime)base.runtime={...base.runtime,activeDialogueEpisodeId:base.episodes.find(e=>e.status==='open')?.id??null};
  const result=parameters.targetVersion===2?chatUpgradePlan(db,base,parameters,now):base;
  result.report={...result.report,targetVersion:parameters.targetVersion,idleMinutes:parameters.idleMinutes,configSource:parameters.configSource??'explicit',ordinaryMessageCount:result.report.ordinaryMessageCount??result.messages.filter(m=>!m.sharedActivityId).length,activityMessageCount:result.report.activityMessageCount??result.messages.filter(m=>!!m.sharedActivityId).length};
  if(parameters.targetVersion===1&&result.report.version===2){result.report.canApply=false;result.report.ambiguousBoundaries=['version2 cannot downgrade'];}
  return result;
 }
-export function inspectDialogueUpgrade(path:string,parameters:DialogueUpgradeParameters={idleMinutes:15,targetVersion:1}):DialogueUpgradeReport {const db=new DatabaseSync(path,{readOnly:true});try{const report=plan(db,undefined,parameters).report;if(report.version===2&&parameters.targetVersion===2){const storage=new Storage(path,{readOnly:true});try{const check=checkWindowConsistency(storage,{idleMinutes:parameters.idleMinutes,recentSegments:parameters.recentSegments??4});report.canApply=report.canApply&&check.blockingIssues.length===0;report.ambiguousBoundaries=[...new Set([...report.ambiguousBoundaries,...check.blockingIssues])];report.historicalWarnings=check.historicalWarnings;}finally{storage.close();}}return report;}finally{db.close();}}
-export function upgradeDialogue(path:string,now:string,options:{stopped:boolean;backupDirectory:string;idleMinutes?:number;targetVersion?:1|2;configSource?:string;recentSegments?:number}):DialogueUpgradeReport {
+function checkExistingIndex(path:string,report:DialogueUpgradeReport,parameters:DialogueUpgradeParameters):void {
+ if(report.version!==2||parameters.targetVersion!==2)return;
+ const storage=new Storage(path,{readOnly:true});try{
+  // A parameter rebuild must first prove the existing index is valid under its recorded rules.
+  const check=checkWindowConsistency(storage,{idleMinutes:report.rebuildPlanned?report.recordedIdleMinutes!:parameters.idleMinutes,recentSegments:parameters.recentSegments??4});
+  report.canApply=report.canApply&&check.blockingIssues.length===0;report.ambiguousBoundaries=[...new Set([...report.ambiguousBoundaries,...check.blockingIssues])];report.historicalWarnings=check.historicalWarnings;
+ }finally{storage.close();}
+}
+export function inspectDialogueUpgrade(path:string,parameters:DialogueUpgradeParameters={idleMinutes:15,targetVersion:1}):DialogueUpgradeReport {const db=new DatabaseSync(path,{readOnly:true});try{const report=plan(db,undefined,parameters).report;checkExistingIndex(path,report,parameters);return report;}finally{db.close();}}
+export function dialogueUpgradeInstruction(report:DialogueUpgradeReport):string {
+ const reasons=report.ambiguousBoundaries.join('; ');
+ if(report.version===2&&report.recordedIdleMinutes!=null&&report.idleMinutes!==report.recordedIdleMinutes)return `普通聊天分段参数不一致：记录值=${report.recordedIdleMinutes}分钟，请求值=${report.idleMinutes}分钟；阻挡原因：${reasons}。可临时恢复原配置 dialogueIdleMinutes=${report.recordedIdleMinutes} 后处理原轮；或停服后运行 npm run dialogue:migrate -- --database <path> --config <json> --rebuild-chat-index --check，再以同参数 --rebuild-chat-index --apply --stopped --backup-dir <path> 重建。不得仅修改 chat_index_metadata 代替重建。`;
+ return `Stop HDSI; 阻挡原因：${reasons||'dialogue context version requires explicit migration'}; run npm run dialogue:migrate -- --database <path> --config <json> --check, then --apply --stopped --backup-dir <path>.`;
+}
+export function upgradeDialogue(path:string,now:string,options:{stopped:boolean;backupDirectory:string;idleMinutes?:number;targetVersion?:1|2;configSource?:string;recentSegments?:number;rebuildChatIndex?:boolean}):DialogueUpgradeReport {
  if(!options.stopped)throw new Error('Stop HDSI and SnowLuma before --apply; supply --stopped.');
- const parameters:DialogueUpgradeParameters={idleMinutes:options.idleMinutes??15,targetVersion:options.targetVersion??1,configSource:options.configSource,recentSegments:options.recentSegments};
- const before=inspectDialogueUpgrade(path,parameters);if(!before.canApply)throw new Error(`dialogue binding 关联不明确: ${before.ambiguousBoundaries.join('; ')}`);
- if(before.version===parameters.targetVersion)return before;
+ const parameters:DialogueUpgradeParameters={idleMinutes:options.idleMinutes??15,targetVersion:options.targetVersion??1,configSource:options.configSource,recentSegments:options.recentSegments,rebuildChatIndex:options.rebuildChatIndex};
+ const before=inspectDialogueUpgrade(path,parameters);if(!before.canApply)throw new Error(dialogueUpgradeInstruction(before));
+ if(before.version===parameters.targetVersion&&!before.rebuildPlanned)return before;
  const backupPath=join(options.backupDirectory,`dialogue-${now.replace(/[^\d]/g,'')}-${randomUUID()}`);mkdirSync(backupPath,{recursive:true});for(const suffix of ['','-wal','-shm'])if(existsSync(path+suffix))copyFileSync(path+suffix,join(backupPath,basename(path)+suffix));
- const db=new DatabaseSync(path);try{db.exec('BEGIN IMMEDIATE');try{const p=plan(db,now,parameters);if(!p.report.canApply)throw new Error('dialogue changed: ambiguous binding');for(const table of ['dialogue_episodes','dialogue_activity_links','chat_episodes','chat_index_metadata'])db.exec(`CREATE TABLE IF NOT EXISTS ${table}(id TEXT PRIMARY KEY,data TEXT NOT NULL)`);
+ const db=new DatabaseSync(path);try{db.exec('BEGIN IMMEDIATE');try{const p=plan(db,now,parameters);checkExistingIndex(path,p.report,parameters);if(!p.report.canApply)throw new Error(`dialogue changed: ${p.report.ambiguousBoundaries.join('; ')}`);for(const table of ['dialogue_episodes','dialogue_activity_links','chat_episodes','chat_index_metadata'])db.exec(`CREATE TABLE IF NOT EXISTS ${table}(id TEXT PRIMARY KEY,data TEXT NOT NULL)`);
  const save=(table:string,id:string,row:unknown)=>db.prepare(`INSERT INTO ${table}(id,data) VALUES (?,?) ON CONFLICT(id) DO UPDATE SET data=excluded.data`).run(id,JSON.stringify(row));
  for(const m of p.messages)save('messages',m.id,m);for(const e of p.episodes)save('dialogue_episodes',e.id,e);for(const l of p.links)save('dialogue_activity_links',l.id,l);for(const t of p.turns.filter(isUnfinishedTurn))save('turns',t.id,t);
- if(parameters.targetVersion===2){for(const e of p.chatEpisodes??[])save('chat_episodes',e.id,e);save('chat_index_metadata','chat-index',{id:'chat-index',idleMinutes:parameters.idleMinutes});}
+ if(parameters.targetVersion===2){if(p.report.rebuildPlanned)db.exec('DELETE FROM chat_episodes');for(const e of p.chatEpisodes??[])save('chat_episodes',e.id,e);save('chat_index_metadata','chat-index',{id:'chat-index',idleMinutes:parameters.idleMinutes});}
  db.prepare("UPDATE state SET data=? WHERE key='runtime'").run(JSON.stringify({...p.runtime,dialogueContextVersion:parameters.targetVersion}));db.exec('COMMIT');}catch(e){db.exec('ROLLBACK');throw e;}}finally{db.close();}
  return {...inspectDialogueUpgrade(path,parameters),backupPath};
 }

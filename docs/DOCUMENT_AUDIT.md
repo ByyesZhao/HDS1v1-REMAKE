@@ -40,7 +40,9 @@
 
 ## 3. 证据与限制
 
-最近实际交付为105文件588项、typecheck/build、demo和两cmd --check通过；正式窗口2备份升级与只读检查通过。见[验收](PROMPT_CONTEXT_OPTIMIZATION_V0.1_DELIVERY_REVIEW_20261008.md)、[日志](PROMPT_CONTEXT_OPTIMIZATION_V0.1_IMPLEMENTATION_LOG_20261008.md)。这不是本轮Markdown整理重新跑出来的数字。
+此前活动窗口交付为105文件588项、typecheck/build、demo和两cmd --check通过；正式窗口2备份升级与只读检查通过。见[验收](PROMPT_CONTEXT_OPTIMIZATION_V0.1_DELIVERY_REVIEW_20261008.md)、[日志](PROMPT_CONTEXT_OPTIMIZATION_V0.1_IMPLEMENTATION_LOG_20261008.md)。这不是V0.5纯文档整理重新跑出来的数字。
+
+后续REVIEW24局部修复已完成：参数重建／诊断、V1归属检查、绑定报告与初始化等；本轮106文件612项及typecheck/build通过。给DSH复核时补充[修复过程](REVIEW24_DIALOGUE_FIX_LOG_20261009.md)与本轮源码／测试；没有新在线或正式库验证。
 
 最新活动上下文两场隔离真实模型合计35次HTTP，Embedding0；不能当数月稳定或语义检索标定。搜索供应商未装配、semantic=null、新图描述未在线验收、真实QQ持续收发待用户运行后核对。服务不因文档整理启动。
 

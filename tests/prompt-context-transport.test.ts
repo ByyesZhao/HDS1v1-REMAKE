@@ -22,6 +22,12 @@ it('lookup_new_school_version_kept; lookup_different_detail_history_kept',()=>{
  expect(envelope.lookupResult).toMatchObject({context:{school:lookup.school,detailHistory:lookup.detailHistory}});
  expect(envelope.lookupResult).not.toHaveProperty('contextRefs');
 });
+it('transport_explains_reused_context_paths_only_when_lookup_uses_them',async()=>{
+ const {t,bodies}=fixture(),school={knownSnapshots:[{id:'s',revision:1,text:'同一正文'}]},input=stageInput('personal_chat',{school}),task=modelTask('personal_chat',z.object({}));
+ await t.complete({task,input,lookupResult:{school:structuredClone(school)}});
+ const envelope=JSON.parse(bodies[0].messages[1].content);expect(envelope.lookupResult.contextRefs.school).toBe('input.context.school');expect(bodies[0].messages[0].content).toMatch(/lookupResult\.contextRefs.*input\.context/);expect(bodies[0].messages[0].content).toMatch(/新来源/);
+ await t.complete({task,input});expect(bodies[1].messages[0].content).not.toContain('lookupResult.contextRefs');
+});
 it('web_body_once_across_input_results_lookup and each continuation has complete available bodies',async()=>{
  const {t,bodies}=fixture(),input=stageInput('memory',{selfWebReadMaterials:[{sourceId:'s',material}]});const result={materials:[material],counters:{successReads:1,failures:0},stopReason:'satisfied' as const};const request={task:modelTask('memory',z.object({})),input,webMaterials:[material],webResults:[result,result],lookupResult:{materials:[material]},tools:{web:false,lookup:false}};const before=JSON.stringify(request);
  await t.complete(request);const body=JSON.parse(bodies[0].messages[1].content);expect(JSON.stringify(body).split(material.body)).toHaveLength(2);expect(body.resources.materials).toHaveLength(1);expect(body.webResults[0].materialIds).toEqual(['page']);expect(body.webResults[0]).not.toHaveProperty('materials');expect(JSON.stringify(request)).toBe(before);

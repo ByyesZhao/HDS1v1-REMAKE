@@ -9,5 +9,5 @@ const configPath=value('--config')?resolve(value('--config')!):existsSync('confi
 const configured=configPath?(JSON.parse(readFileSync(configPath,'utf8')) as {memory?:{contextLimits?:{dialogueIdleMinutes?:number;recentDialogueSegments?:number}}}).memory?.contextLimits:undefined;
 const idleMinutes=value('--idle-minutes')!==undefined?Number(value('--idle-minutes')):configured?.dialogueIdleMinutes??15;
 const target=Number(value('--target-version')??2);if(target!==1&&target!==2)throw new Error('--target-version must be 1 or 2');
-const parameters={idleMinutes,recentSegments:configured?.recentDialogueSegments??4,targetVersion:target as 1|2,configSource:value('--idle-minutes')!==undefined?'--idle-minutes':configPath??'default:15'};
+const parameters={idleMinutes,recentSegments:configured?.recentDialogueSegments??4,targetVersion:target as 1|2,configSource:value('--idle-minutes')!==undefined?'--idle-minutes':configPath??'default:15',rebuildChatIndex:args.includes('--rebuild-chat-index')};
 console.log(JSON.stringify(args.includes('--apply')?upgradeDialogue(path,new Date().toISOString(),{...parameters,stopped:args.includes('--stopped'),backupDirectory:resolve(backup!)}):inspectDialogueUpgrade(path,parameters),null,2));

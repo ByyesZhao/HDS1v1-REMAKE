@@ -20,7 +20,7 @@ export class ChatEpisodes {
  private reconcile(id:string,at:string):void {
   const s=this.store.storage,e=this.store.chatEpisode(id);if(!e)return;
   const rows=s.messages().filter(m=>m.chatEpisodeId===id&&!m.sharedActivityId);
-  if(!rows.length){s.remove('chat_episodes',id);if(s.runtime().activeChatEpisodeId===id)s.set('runtime',{...s.runtime(),activeChatEpisodeId:null});for(const t of s.all('turns').filter(t=>t.chatBinding?.episodeId===id))s.save('turns',t.id,{...t,chatBinding:{episodeId:null,holdReply:false}});return;}
+  if(!rows.length){s.remove('chat_episodes',id);if(s.runtime().activeChatEpisodeId===id)s.set('runtime',{...s.runtime(),activeChatEpisodeId:null});for(const t of s.all('turns').filter(t=>isUnfinishedTurn(t)&&t.chatBinding?.episodeId===id))s.save('turns',t.id,{...t,chatBinding:{episodeId:null,holdReply:false}});return;}
   e.openedAt=rows[0].receivedAt;e.lastInteractionAt=rows.at(-1)!.receivedAt;if(e.status==='closed')e.closedAt=this.deadline(e);this.store.saveChatEpisode(e);this.closeDue(at);
  }
  bindTurn(turn:TurnRecord):ChatTurnBinding {

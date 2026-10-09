@@ -1,6 +1,6 @@
 import { ModelRequestError } from './model/client';
 import { DialogueEpisodes } from './dialogue/episodes';
-import {selectActivityContext,activityContextMessages} from './dialogue/activity-context';
+import {selectActivityContext,activityContextMessages,ActivityContextError} from './dialogue/activity-context';
 import {ChatEpisodes} from './dialogue/chat-episodes';
 import { DialogueStore } from './dialogue/store';
 import { runEnvironmentStep } from './environment/runtime';
@@ -81,7 +81,7 @@ export class HdsiApp {
       const runtime = d.storage.runtime(); runtime.paused = true; runtime.lastError = message;
       const kind=error instanceof ModelRequestError?error.kind:'error';
       const label={generation:'生成',sending:'发送',postprocessing:'后处理'}[stage];
-      const safeSummary=`${label}失败，程序已暂停${kind==='context_limit'?'（接口明确报告上下文超限）':''}`;
+      const safeSummary=`${label}失败，程序已暂停${kind==='context_limit'?'（接口明确报告上下文超限）':error instanceof ActivityContextError?'（活动原文缺失或身份变化，保留原轮）':''}`;
       runtime.lastFailure={kind,task:error instanceof ModelRequestError?error.taskName:undefined,stage,at:d.clock.now(),safeSummary};
       d.storage.set('runtime', runtime);
       try { await d.sender.sendError(`error：${safeSummary}`); } catch { /* Preserve the failed stage even if the system notice cannot be delivered. */ }

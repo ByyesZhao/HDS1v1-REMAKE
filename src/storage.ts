@@ -22,7 +22,7 @@ export const environmentTables = ['environment_batches','environment_steps','sch
 tables.push(...environmentTables,'dialogue_episodes','dialogue_activity_links','chat_episodes','chat_index_metadata');
 export class Storage {
   private readonly db: DatabaseSync;
-  constructor(path: string,options:{readOnly?:boolean}={}) {
+  constructor(path: string,options:{readOnly?:boolean;dialogueIdleMinutes?:number}={}) {
     if (!options.readOnly&&path !== ':memory:') mkdirSync(dirname(path), { recursive: true });
     this.db = new DatabaseSync(path,{readOnly:options.readOnly??false});
     if(options.readOnly)return;
@@ -38,7 +38,7 @@ export class Storage {
       CREATE UNIQUE INDEX IF NOT EXISTS outbox_sequence ON outbox(json_extract(data, '$.turnId'), json_extract(data, '$.seq'));
       CREATE UNIQUE INDEX IF NOT EXISTS post_turn ON post_jobs(json_extract(data, '$.turnId'));
     `);
-    if (!this.get('runtime')) {this.save('chat_index_metadata','chat-index',{id:'chat-index',idleMinutes:15});this.set('runtime', {
+    if (!this.get('runtime')) {this.save('chat_index_metadata','chat-index',{id:'chat-index',idleMinutes:options.dialogueIdleMinutes??15});this.set('runtime', {
       openBatch: null, pendingBatchIds: [], paused: false, contactMisses: 0, stickerMisses: 0,
       nextWorldAt: null, nextSchoolAt: null, nextMaintenanceAt: nextDaily(new Date().toISOString(), ['04:30'], 'Asia/Shanghai'), lastError: null,
       dialogueContextVersion:2,activeDialogueEpisodeId:null,activeChatEpisodeId:null,

@@ -168,4 +168,12 @@ Ruling: 保留旧迁移API不传参数时的版本1兼容；所有新CLI及最�
 
 909b53d本地fast-forward合入main，主目录再次typecheck/build与105文件588项全量回归通过；离线demo和start-hdsi.cmd --check／start-snowluma.cmd --check均返回0，不启动服务。正式库只读确认版本2、idle15、canApply=true、无歧义／历史告警、完整性ok，学校历史步骤4仍保留，消息／在途0；项目服务进程0。
 
+## 2026-10-09：REVIEW24局部修复
+
+用户同意直接修现有流程，不另起新细化／执行计划；同步原细化§15与执行计划补记，详细红绿证据、独立复核及最终结果见[修复记录](REVIEW24_DIALOGUE_FIX_LOG_20261009.md)。
+
+保留三条约束：纯参数差异显示记录／请求参数、真实原因、恢复原配置方式，不只提示普通apply；不得只改chat_index_metadata代替重建；V1明确ID／显式null／字段缺失三分，不按时间覆盖显式归属。显式参数重建只读计划，停服备份、无在途／无活动、检查原索引、事务替换和回滚。报告按轮版本选择绑定，首次创建使用实际参数，完成轮历史不追写；contextRefs按需说明，冻结资料异常仍留原轮并给安全原因。
+
+基线588项为本轮实跑；默认参数仍15分钟，本次没有读取／重建正式库、联网或启动服务，不用上次正式升级记录充当本次部署证据。
+
 逐任务brief／账本、红绿回归、单次复核摘要、在线隔离报告和迁移报告保存在runtime/data/prompt-activity-context-process-20261009。worktree过程55份已复制到主目录，逐文件SHA256比对差异0；主目录main-final-suite.log、main-formal-*、main-demo.log、main-*-check.log另存于同目录。用户原有未跟踪review文件未改动或纳入提交。只做本地Git提交，不推送远程或建PR。工作树将通过Codex归档工具清理，过程材料已保留。

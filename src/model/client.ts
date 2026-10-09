@@ -87,7 +87,8 @@ export class ChatCompletionsTransport implements Transport {
     const policy=request.task.promptPolicy??buildPromptPolicy(request.task.name as PromptStage,factsFromInput(request.input));
     const business=request.task.prompt+(request.task.promptPolicy?'':'\n'+policyRules(policy));
     const resources=view?{...view,resources:envelope.resources}:undefined;
-    const capabilities=[request.tools?.lookup?'如需本地事实查询，可先只返回 {"lookupDetails":"主题"}；最多一次。':'',request.tools?.web?'如需公开资料，可返回 {"webSearch":{"query":"查询","requestedPages":1}} 或 {"webRead":{"url":"https://..."}}，取得正文后继续或输出任务 JSON。':'',applicableResourceRules(resources,policy.stage,!!request.tools?.web,envelope.resources.materials.length>0)].filter(Boolean).join('\n');
+    const hasContextRefs=!!envelope.lookupResult&&typeof envelope.lookupResult==='object'&&'contextRefs' in envelope.lookupResult;
+    const capabilities=[request.tools?.lookup?'如需本地事实查询，可先只返回 {"lookupDetails":"主题"}；最多一次。':'',request.tools?.web?'如需公开资料，可返回 {"webSearch":{"query":"查询","requestedPages":1}} 或 {"webRead":{"url":"https://..."}}，取得正文后继续或输出任务 JSON。':'',applicableResourceRules(resources,policy.stage,!!request.tools?.web,envelope.resources.materials.length>0,hasContextRefs)].filter(Boolean).join('\n');
     const schemaText=c.outputMode==='json_schema'?'\n输出合法JSON，遵循response_format。':`\nJSON Schema:\n${JSON.stringify(schema)}`;
     const messages:Array<Record<string,unknown>>=[{role:'system',content:business+schemaText+'\n'+capabilities},{role:'user',content:imageUrl?[{type:'text',text:userText},{type:'image_url',image_url:{url:imageUrl}}]:userText}];
     const format = c.outputMode ?? 'json_object';

@@ -8,7 +8,7 @@ V0.5整理当前实现：普通最近4个完整对话段、活动完整授权原
 
 ## 1. 当前状态
 
-最近代码交付已本地提交：105文件588项、类型检查、构建、离线demo及两个启动文件--check通过，正式普通窗口已备份升级2。详情见[最近验收](docs/PROMPT_CONTEXT_OPTIMIZATION_V0.1_DELIVERY_REVIEW_20261008.md)。本次文档整理没有重跑上述程序测试或联网。
+此前活动窗口增量交付105文件588项、类型检查、构建、离线demo及两个启动文件--check通过，正式普通窗口已备份升级2。随后REVIEW24局部修复的本轮验证为106文件612项、类型检查与构建通过；见[最近验收](docs/PROMPT_CONTEXT_OPTIMIZATION_V0.1_DELIVERY_REVIEW_20261008.md)。V0.5纯文档重写与此次代码修复分开记录；此次没有联网、启动服务或改正式库。
 
 67项旧图库的图片、说明、标签和1024维向量已在新项目复用；运行不依赖旧HDSI目录。角色背景和用途映射已批准启用，故事阶段完整背景保留，未迁移作者事实或覆盖已有细节。
 
@@ -100,7 +100,16 @@ npm run dialogue:migrate -- --database runtime/data/hdsi-remake.sqlite --config 
 npm run dialogue:migrate -- --database runtime/data/hdsi-remake.sqlite --config config.local.json --apply --stopped --backup-dir runtime/data/backups
 ```
 
-它先备份DB及已有WAL／SHM，保留旧混合段和旧轮恢复，不删除消息。修改普通idle参数也需显式检查／升级，不自动重拼。其他升级的前置条件／停服／备份以各自细化及对应工具报告为准，不擅自跳过未完成旧轮。
+它先备份DB及已有WAL／SHM，保留旧混合段和旧轮恢复，不删除消息。同版本普通apply幂等，不自动重拼。
+
+已经升级到普通窗口2后，若修改`dialogueIdleMinutes`，启动会显示库内参数、请求参数与阻挡原因。可先恢复原参数完成旧轮和进行中的活动，再停止服务；要应用新参数需明确重建：
+
+```powershell
+npm run dialogue:migrate -- --database runtime/data/hdsi-remake.sqlite --config config.local.json --rebuild-chat-index --check
+npm run dialogue:migrate -- --database runtime/data/hdsi-remake.sqlite --config config.local.json --rebuild-chat-index --apply --stopped --backup-dir runtime/data/backups
+```
+
+check不写业务数据；apply备份并事务重建普通索引，保留原消息与记忆。缺元数据、损坏关联、未完成故事轮或进行中的活动会阻挡，不得仅修改`chat_index_metadata`代替重建。普通窗口段数变化不需要重建。其他升级的前置条件以各自报告为准。修复证据见[REVIEW24记录](docs/REVIEW24_DIALOGUE_FIX_LOG_20261009.md)。
 
 最近普通升级备份位置及配套回退代码见[实施日志任务20](docs/PROMPT_CONTEXT_OPTIMIZATION_V0.1_IMPLEMENTATION_LOG_20261008.md)。回退用配套代码和完整备份，不直接拿新库运行旧门禁。
 
