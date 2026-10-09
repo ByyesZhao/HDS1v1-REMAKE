@@ -4,14 +4,14 @@ import {mkdirSync,writeFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import {createManagedBrowserProvider} from '../src/web/browser/provider';
 import {createKoishiBrowserPort} from '../src/web/browser/koishi-port';
-import {extractDomEvidence,extractReadablePage} from '../src/web/browser/extract';
+import {extractDomEvidence,extractReadablePage,BROWSER_EXTRACTOR_VERSION} from '../src/web/browser/extract';
 import {BrowserPageSlots} from '../src/web/browser/slots';
 import type {BrowserEngine,BrowserPort} from '../src/web/browser/types';
 const localRequire=createRequire(resolve('package.json'));
 const browserConfig=(engine:BrowserEngine)=>({engine,navigationTimeoutMs:60000,maxConcurrentPages:1});
 export async function validateLocalWeb(options:{online?:boolean;probe?:boolean;engine?:BrowserEngine;report?:string}={}):Promise<any>{
  const engine=options.engine??'bing',started=performance.now();let ctx:any,managed:any,owned=0,maxOwned=0,operations=0;
- const report:any={mode:options.online?'public-browser':'offline',probe:options.probe??false,engine,query:'中国气象局',realNetworkRequests:options.online?null:0,passed:false,drained:false,pages:[],versions:{puppeteerPlugin:localRequire('koishi-plugin-puppeteer/package.json').version,readability:localRequire('@mozilla/readability/package.json').version}};
+ const report:any={mode:options.online?'public-browser':'offline',probe:options.probe??false,engine,query:'中国气象局',realNetworkRequests:options.online?null:0,passed:false,drained:false,pages:[],versions:{extractor:BROWSER_EXTRACTOR_VERSION,puppeteerPlugin:localRequire('koishi-plugin-puppeteer/package.json').version,readability:localRequire('@mozilla/readability/package.json').version}};
  const save=()=>{if(options.report){mkdirSync(dirname(resolve(options.report)),{recursive:true});writeFileSync(resolve(options.report),JSON.stringify(report,null,2));}};
  function tracked(port:BrowserPort):BrowserPort{return {async openPage(){
   owned++;operations++;maxOwned=Math.max(maxOwned,owned);

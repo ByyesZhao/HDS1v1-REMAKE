@@ -18,12 +18,14 @@ export function extractDomEvidence(document:Document,finalUrl:string,engine:Brow
   result.search={state:links.length?'results':empty&&visible(empty)?'empty':'unready',links,evidence:links.length?selectors:empty&&visible(empty)?'engine empty-result element':null};return result;
  }
  const clone=document.cloneNode(true) as Document;
- for(const e of Array.from(clone.querySelectorAll('script,style,noscript,template,nav,header,footer,aside,form,button,[aria-busy="true"],[role="contentinfo"],[class*="footer"],[id*="footer"],[class*="copyright"],[id*="copyright"],[hidden],[aria-hidden="true"]')))e.remove();
+ for(const e of Array.from(clone.querySelectorAll('script,style,noscript,template,nav,header,footer,aside,form,button,[aria-busy="true"],[role="navigation"],[role="status"],[role="progressbar"],[role="contentinfo"],[class*="footer"],[id*="footer"],[class*="copyright"],[id*="copyright"],[hidden],[aria-hidden="true"]')))e.remove();
  for(const e of Array.from(clone.querySelectorAll('[style]')))if(!visible(e))e.remove();
  const text=(e:Element)=>((e as HTMLElement).innerText??e.textContent??'').trim();
- for(const [selector,source] of [['article','article'],['main,[role="main"]','main']] as const){const nodes=Array.from(clone.querySelectorAll(selector));const contents=nodes.map(text).filter(Boolean);if(contents.length){result.main={text:contents.join('\n\n'),source};return result;}}
+ // Evidence excludes links/headings/status shells; it does not shorten accepted body text.
+ const hasBodyEvidence=(e:Element)=>{const body=e.cloneNode(true) as Element;for(const node of Array.from(body.querySelectorAll('a,[role="link"],h1,h2,h3,h4,h5,h6')))node.remove();return !!text(body);};
+ for(const [selector,source] of [['article','article'],['main,[role="main"]','main']] as const){const nodes=Array.from(clone.querySelectorAll(selector));const contents=nodes.filter(hasBodyEvidence).map(text).filter(Boolean);if(contents.length){result.main={text:contents.join('\n\n'),source};return result;}}
  const Ctor=ReadabilityCtor??(globalThis as unknown as {Readability?:typeof ReadabilityCtor}).Readability;
- if(Ctor){try{const readable=new Ctor(clone).parse();if(readable?.textContent?.trim())result.main={text:readable.textContent.trim(),source:'readability'};}catch{}}
+ if(Ctor&&clone.documentElement&&hasBodyEvidence(clone.documentElement)){try{const readable=new Ctor(clone).parse();if(readable?.textContent?.trim())result.main={text:readable.textContent.trim(),source:'readability'};}catch{}}
  return result;
 }
 function candidateUrl(value:string,base:string):string|null{

@@ -7,12 +7,15 @@ const requireLocal=createRequire(__filename);
 export function createKoishiBrowserPort(pageFactory:()=>Promise<Page>):BrowserPort {
  return {async openPage(){
   const page=await pageFactory();
+  const popups=new Map<Page,Promise<void>>();let closing:Promise<void>|undefined;
+  const gone=(p:Page)=>p.isClosed()||!p.browser().connected;
+  const closePage=async(p:Page)=>{try{await p.close();}catch(error){if(!gone(p))throw error;}};
+  page.on('popup',popup=>{if(!popup)return;const drain=closePage(popup);popups.set(popup,drain);void drain.catch(()=>{});});
   return {async read(request:BrowserReadRequest,{signal,deadlineAt}):Promise<BrowserPageResult>{
    signal.throwIfAborted();
    const remaining=()=>{signal.throwIfAborted();const ms=deadlineAt-performance.now();if(ms<=0)throw Error('browser operation deadline exceeded');return Math.max(1,ms);};
    await page.setRequestInterception(true);
    page.on('request',r=>{const allowed=normalizePublicUrl(r.url())&&['document','stylesheet','script','xhr','fetch','image'].includes(r.resourceType());void (allowed?r.continue():r.abort('blockedbyclient')).catch(()=>{});});
-   page.on('popup',popup=>{void popup?.close().catch(()=>{});});
    const response=await page.goto(request.url,{waitUntil:'domcontentloaded',timeout:remaining()});remaining();
    if(!normalizePublicUrl(page.url()))throw Error('page redirected to non-public URL');
    if(response&&response.status()>=400)return {finalUrl:page.url(),title:await page.title(),access:'http_error',search:null,main:null};
@@ -27,6 +30,11 @@ export function createKoishiBrowserPort(pageFactory:()=>Promise<Page>):BrowserPo
     }catch(error){if(!/Execution context was destroyed|Cannot find context with specified id/.test(String(error)))throw error;}
     const wait=Math.min(100,remaining());await new Promise<void>((resolve,reject)=>{const timer=setTimeout(()=>{signal.removeEventListener('abort',abort);resolve();},wait);const abort=()=>{clearTimeout(timer);reject(signal.reason);};signal.addEventListener('abort',abort,{once:true});});remaining();
    }
-  },close:async()=>{await page.close();},isClosed:()=>page.isClosed()||!page.browser().connected};
+  },close:()=>closing??=(async()=>{
+   let failure:unknown;try{await closePage(page);}catch(error){failure=error;}
+   const settled=await Promise.allSettled([...popups.values()]);
+   for(const result of settled)if(result.status==='rejected')failure??=result.reason;
+   if(failure&&!([page,...popups.keys()].every(gone)))throw failure;
+  })(),isClosed:()=>[page,...popups.keys()].every(gone)};
  }};
 }

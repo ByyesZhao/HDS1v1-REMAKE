@@ -15,7 +15,7 @@ export class AttachmentResolver {
  constructor(private fetcher:typeof fetch=fetch,private getImage?:(file:string)=>Promise<{url?:string;base64?:string}>) {}
  async resolve(a:IncomingAttachment,signal?:AbortSignal):Promise<{bytes:Uint8Array;mimeType:string}> {
   signal?.throwIfAborted();let url=a.sourceUrl;
-  if(!url&&a.platformFile&&this.getImage){const data=await this.getImage(a.platformFile);url=data.url??(data.base64?'data:image/unknown;base64,'+data.base64:undefined);}
+  if((!url||!/^https?:\/\//.test(url)&&!/^data:image\/[^;,]+;base64,/.test(url))&&a.platformFile&&this.getImage){const data=await this.getImage(a.platformFile);url=data.url??(data.base64?'data:image/unknown;base64,'+data.base64:undefined);}
   if(!url)throw new ImageUnavailableError();
   let bytes:Buffer;
   if(/^data:image\/[^;,]+;base64,/.test(url))bytes=Buffer.from(url.slice(url.indexOf(',')+1),'base64');
