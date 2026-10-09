@@ -1,0 +1,4 @@
+import {it,expect} from 'vitest';import {mkdtempSync,rmSync,writeFileSync,readFileSync} from 'node:fs';import {join} from 'node:path';import {tmpdir} from 'node:os';import {loadSettings} from '../src/settings';
+it('decodes replaceable provider and single-page defaults without changing existing model connections',()=>{
+ const root=mkdtempSync(join(tmpdir(),'hdsi-browser-config-'));try{const raw=JSON.parse(readFileSync('examples/story.sample.json','utf8'));raw.webSearch={enabled:true,provider:'browser'};writeFileSync(join(root,'story.json'),JSON.stringify(raw));const settings=loadSettings(join(root,'story.json'),{});expect(settings.webSearch).toMatchObject({provider:'browser',browser:{engine:'bing',navigationTimeoutMs:60000,maxConcurrentPages:1}});expect(settings.models).toMatchObject(raw.models);}finally{rmSync(root,{recursive:true,force:true});}
+});

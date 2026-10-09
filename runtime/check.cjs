@@ -1,6 +1,7 @@
 const {createRequire}=require('node:module');
 const {resolve,isAbsolute,dirname,join}=require('node:path');
 const fs=require('node:fs');
+function enabledPuppeteer(tree){if(!tree||typeof tree!=='object')return false;for(const [name,value] of Object.entries(tree)){if(name.startsWith('~')||value===false)continue;if(name==='puppeteer'||name.startsWith('puppeteer:'))return true;if((name==='plugins'||name.startsWith('group:'))&&enabledPuppeteer(value))return true;}return false;}
 function checkRuntime(paths={},dependencies={}) {
  const runtimeRequire=dependencies.runtimeRequire||createRequire(resolve(__dirname,'package.json'));
  const projectRequire=dependencies.projectRequire||createRequire(resolve(__dirname,'../package.json'));
@@ -18,7 +19,7 @@ function checkRuntime(paths={},dependencies={}) {
  const {loadSettings,connectionFor,modelRoles}=projectRequire('./lib/settings');
  const settings=loadSettings(configPath);modelRoles.forEach(role=>connectionFor(settings,role));
  if(settings.visualInput.enabled)connectionFor(settings,'incoming_image');
- if(settings.webSearch.enabled)throw Error('web search enabled but provider not configured');
+ if(settings.webSearch.enabled){if(settings.webSearch.provider!=='browser')throw Error('web search enabled but provider not configured');try{runtimeRequire.resolve('koishi-plugin-puppeteer');}catch{throw Error('install koishi-plugin-puppeteer in the selected runtime before enabling browser search');}const koishiPath=paths.koishiConfigPath||resolve(__dirname,'koishi.yml');if(!exists(koishiPath))throw Error('Koishi configuration not found: '+koishiPath);const yaml=runtimeRequire('yaml').parse(fs.readFileSync(koishiPath,'utf8'));if(!enabledPuppeteer(yaml.plugins))throw Error('enable Puppeteer in the selected Koishi configuration: '+koishiPath);}
  if(!process.env[settings.memoryEmbedding.apiKeyEnv])throw Error('memory embedding local key is missing');
  const {Storage}=projectRequire('./lib/storage');
  if(exists(databasePath)){
@@ -40,7 +41,7 @@ function checkRuntime(paths={},dependencies={}) {
  }else if(settings.stickersEnabled)throw Error('import the sticker catalog before startup: '+databasePath);
  log('Specified configuration and database checks verified; no network requests made.');
 }
-module.exports={checkRuntime};
+module.exports={checkRuntime,enabledPuppeteer};
 if(require.main===module){
  const args=process.argv.slice(2),paths={};for(let i=0;i<args.length;i+=2){const map={'--config':'configPath','--database':'databasePath','--koishi-config':'koishiConfigPath'};if(!map[args[i]]||!args[i+1])throw Error('invalid check argument: '+args[i]);paths[map[args[i]]]=args[i+1];}
  checkRuntime(paths);

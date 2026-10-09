@@ -63,7 +63,7 @@ const settingsSchema = z.object({
   stickerDescriptionModel: connection.optional(),
   embedding: embedding.optional(),
   webSources: z.array(z.url({protocol:/^https?$/})).default([]),
-  webSearch:z.object({enabled:z.boolean().default(false),maxSuccessReads:z.literal(20).default(20),maxFailures:z.literal(40).default(40)}).prefault({}),
+  webSearch:z.object({provider:z.enum(['unconfigured','browser']).default('unconfigured'),browser:z.object({engine:z.enum(['bing','duckduckgo']).default('bing'),navigationTimeoutMs:z.number().positive().default(60000),maxConcurrentPages:z.number().int().positive().default(1)}).prefault({}),enabled:z.boolean().default(false),maxSuccessReads:z.literal(20).default(20),maxFailures:z.literal(40).default(40)}).prefault({}),
 });
 export type StorySettings = z.infer<typeof settingsSchema>;
 export function loadSettings(path: string, environment: Record<string, string | undefined> = process.env): StorySettings {
