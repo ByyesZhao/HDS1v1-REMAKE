@@ -1,0 +1,14 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 test
+npm notice run vitest run tests/shared-v3-contracts.test.ts tests/shared-scene.test.ts tests/shared-v3-flow.test.ts tests/shared-v3-input.test.ts
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+
+ Test Files  4 passed (4)
+      Tests  32 passed (32)
+   Start at  08:35:36
+   Duration  1.40s (tests 50%, import 30%, transform 18%, worker 1%)
+
+    Isolate  4 workers spawned · ~95ms startup each (spawn + environment, per file)
+             at least ~284ms faster with isolate: false — reuses workers across files instead of one per file
+

@@ -28,3 +28,7 @@ runtime/memory-capacity-backups/
 .codex/
 .agents/
 .aws/
+
+# Local historical datasets, restore snapshots and transient housekeeping
+runtime/archive/
+.tmp/

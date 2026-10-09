@@ -1,0 +1,295 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 test
+npm notice run vitest run tests/memory-maintenance-checkpoint.test.ts
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/astra-r1-checkpoint/HDSI-remake
+
+ ❯ tests/memory-maintenance-checkpoint.test.ts (12 tests | 6 failed) 582ms
+   × retains repair checkpoint after transport failure and resumes the same repair 33ms
+   × preserves repair progress on timeout and ignores a late response 10ms
+   × preserves repair progress on stop and ignores a late response 6ms
+   × reopens interrupted pending maintenance with frozen input and the same checkpoint 238ms
+   × reopens interrupted computing maintenance with frozen input and the same checkpoint 251ms
+   × does not reset the repair budget across background retries 5ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/memory-maintenance-checkpoint.test.ts > retains repair checkpoint after transport failure and resumes the same repair
+AssertionError: expected null to match object { repairCount: 1, repair: { …(2) } }
+
+- Expected:
+{
+  "repair": {
+    "errors": "[
+  {
+    \"expected\": \"array\",
+    \"code\": \"invalid_type\",
+    \"path\": [
+      \"units\"
+    ],
+    \"message\": \"Invalid input: expected array, received undefined\"
+  }
+]",
+    "original": {
+      "invalid": true,
+    },
+  },
+  "repairCount": 1,
+}
+
++ Received:
+null
+
+ ❯ tests/memory-maintenance-checkpoint.test.ts:64:13
+     62|  const failed=job(d),cp=checkpoint(d),run=phase(d).runId;
+     63|  expect(failed.status).toBe('pending');expect(failed.startedAt).toBe(N…
+     64|  expect(cp).toMatchObject({repairCount:1,repair:requests[1].repair});e…
+       |             ^
+     65|  d.store.saveOwner({...row,content:'新事件',eventSummary:'新事件',revision:2…
+     66|  d.clock.advance(1000);expect(d.maintenance.startOne(d.clock.now())).t…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  tests/memory-maintenance-checkpoint.test.ts > preserves repair progress on timeout and ignores a late response
+ FAIL  tests/memory-maintenance-checkpoint.test.ts > preserves repair progress on stop and ignores a late response
+AssertionError: expected null to deeply equal { …(6) }
+
+- Expected:
+{
+  "input": {
+    "context": {
+      "allowedActions": [
+        "refine",
+        "merge",
+        "merge_short",
+        "discard",
+        "promote",
+        "retain",
+      ],
+      "cutoff": "2026-10-07T10:00:00+08:00",
+      "kind": "consolidation",
+      "promotionEligibleIds": [],
+      "selectedIds": [
+        "s",
+      ],
+      "summaryRepairPairs": [],
+    },
+    "contextVersion": 1,
+    "resources": {
+      "materials": [],
+      "messages": [],
+      "owners": [
+        {
+          "content": "旧事件",
+          "createdAt": "2026-10-07T10:00:00+08:00",
+          "eventSummary": "旧事件",
+          "evidenceMemoryIds": [],
+          "feelingSummary": "",
+          "happenedAt": "2026-10-07T10:00:00+08:00",
+          "happenedUntil": "2026-10-07T10:00:00+08:00",
+          "id": "s",
+          "importance": "normal",
+          "kind": "short",
+          "linkedLongId": null,
+          "ref": "owner:e4f8e4ad5cdca51e1846884a",
+          "sourceIds": [],
+          "summaryQuality": "preview",
+          "topics": [],
+          "totalAwakenings": 0,
+          "windowAwakenings": 0,
+        },
+      ],
+      "tasks": [],
+    },
+    "roles": {
+      "shortRefs": [
+        "owner:e4f8e4ad5cdca51e1846884a",
+      ],
+    },
+  },
+  "lookupUsed": false,
+  "pendingOperationId": null,
+  "repair": {
+    "errors": "[
+  {
+    \"expected\": \"array\",
+    \"code\": \"invalid_type\",
+    \"path\": [
+      \"units\"
+    ],
+    \"message\": \"Invalid input: expected array, received undefined\"
+  }
+]",
+    "original": {
+      "invalid": true,
+    },
+  },
+  "repairCount": 1,
+  "toolResults": [],
+}
+
++ Received:
+null
+
+ ❯ tests/memory-maintenance-checkpoint.test.ts:83:24
+     81|  expect(interrupted.status).toBe(mode==='timeout'?'pending':'computing…
+     82|  if(mode==='timeout')expect(interrupted.retryAt).toBe('2026-10-07T02:0…
+     83|  expect(checkpoint(d)).toEqual(cp);expect(phase(d)).toEqual(ref);
+       |                        ^
+     84|  gate.resolve(good);await new Promise<void>(resolve=>setImmediate(reso…
+     85|  expect(job(d)).toEqual(interrupted);expect(checkpoint(d)).toEqual(cp)…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  tests/memory-maintenance-checkpoint.test.ts > reopens interrupted pending maintenance with frozen input and the same checkpoint
+AssertionError: expected null to match object { repairCount: 1 }
+
+- Expected:
+{
+  "repairCount": 1,
+}
+
++ Received:
+null
+
+ ❯ tests/memory-maintenance-checkpoint.test.ts:98:13
+     96|  await until(()=>requests.length===2);if(mode==='pending')await until(…
+     97|  const cp=checkpoint(d),before=frozen(job(d)),ref=phase(d);
+     98|  expect(cp).toMatchObject({repairCount:1});
+       |             ^
+     99|  await d.maintenance.stop();expect(job(d).status).toBe(mode);expect(ch…
+    100|  gate.resolve(good);await new Promise<void>(resolve=>setImmediate(reso…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  tests/memory-maintenance-checkpoint.test.ts > reopens interrupted computing maintenance with frozen input and the same checkpoint
+AssertionError: expected null to deeply equal { …(6) }
+
+- Expected:
+{
+  "input": {
+    "context": {
+      "allowedActions": [
+        "refine",
+        "merge",
+        "merge_short",
+        "discard",
+        "promote",
+        "retain",
+      ],
+      "cutoff": "2026-10-07T10:00:00+08:00",
+      "kind": "consolidation",
+      "promotionEligibleIds": [],
+      "selectedIds": [
+        "s",
+      ],
+      "summaryRepairPairs": [],
+    },
+    "contextVersion": 1,
+    "resources": {
+      "materials": [],
+      "messages": [],
+      "owners": [
+        {
+          "content": "旧事件",
+          "createdAt": "2026-10-07T10:00:00+08:00",
+          "eventSummary": "旧事件",
+          "evidenceMemoryIds": [],
+          "feelingSummary": "",
+          "happenedAt": "2026-10-07T10:00:00+08:00",
+          "happenedUntil": "2026-10-07T10:00:00+08:00",
+          "id": "s",
+          "importance": "normal",
+          "kind": "short",
+          "linkedLongId": null,
+          "ref": "owner:e4f8e4ad5cdca51e1846884a",
+          "sourceIds": [],
+          "summaryQuality": "preview",
+          "topics": [],
+          "totalAwakenings": 0,
+          "windowAwakenings": 0,
+        },
+      ],
+      "tasks": [],
+    },
+    "roles": {
+      "shortRefs": [
+        "owner:e4f8e4ad5cdca51e1846884a",
+      ],
+    },
+  },
+  "lookupUsed": false,
+  "pendingOperationId": null,
+  "repair": {
+    "errors": "[
+  {
+    \"expected\": \"array\",
+    \"code\": \"invalid_type\",
+    \"path\": [
+      \"units\"
+    ],
+    \"message\": \"Invalid input: expected array, received undefined\"
+  }
+]",
+    "original": {
+      "invalid": true,
+    },
+  },
+  "repairCount": 1,
+  "toolResults": [],
+}
+
++ Received:
+null
+
+ ❯ tests/memory-maintenance-checkpoint.test.ts:99:84
+     97|  const cp=checkpoint(d),before=frozen(job(d)),ref=phase(d);
+     98|  expect(cp).toMatchObject({repairCount:1});
+     99|  await d.maintenance.stop();expect(job(d).status).toBe(mode);expect(ch…
+       |                                                                                    ^
+    100|  gate.resolve(good);await new Promise<void>(resolve=>setImmediate(reso…
+    101|  d.storage.close();resources.splice(resources.indexOf(d),1);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  tests/memory-maintenance-checkpoint.test.ts > does not reset the repair budget across background retries
+AssertionError: expected null to match object { repairCount: 2, repair: { …(2) } }
+
+- Expected:
+{
+  "repair": {
+    "errors": "[
+  {
+    \"expected\": \"array\",
+    \"code\": \"invalid_type\",
+    \"path\": [
+      \"units\"
+    ],
+    \"message\": \"Invalid input: expected array, received undefined\"
+  }
+]",
+    "original": {
+      "invalid": 2,
+    },
+  },
+  "repairCount": 2,
+}
+
++ Received:
+null
+
+ ❯ tests/memory-maintenance-checkpoint.test.ts:181:49
+    179|  }});
+    180|  seed(d);expect(d.maintenance.startOne(d.clock.now())).toBe(true);awai…
+    181|  const first=job(d),cp=checkpoint(d);expect(cp).toMatchObject({repairC…
+       |                                                 ^
+    182|  d.clock.advance(1000);expect(d.maintenance.startOne(d.clock.now())).t…
+    183|  expect(requests).toHaveLength(4);expect(requests[3].repair).toEqual(r…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  6 failed | 6 passed (12)
+   Start at  14:09:51
+   Duration  1.04s (tests 63%, transform 25%, import 12%)
+

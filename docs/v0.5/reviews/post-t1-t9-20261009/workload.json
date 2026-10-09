@@ -1,0 +1,657 @@
+{
+  "node": "v24.21.0",
+  "scope": "offline synthetic databases; counts and native plans",
+  "results": [
+    {
+      "kind": "chatWindow",
+      "H": 1000,
+      "selectedEpisodes": 4,
+      "fullMessages": 164,
+      "queries": [
+        {
+          "sql": "WITH ranks AS (\n SELECT MAX(json_extract(data,'$.chatEpisodeId')) AS id,MAX(hdsi_epoch_ms(json_extract(data,'$.receivedAt'))) AS rank,MAX(hdsi_epoch_ms(json_extract(data,'$.receivedAt')) IS NULL) AS invalidTime FROM messages WHERE COALESCE(json_extract(data,'$.sharedActivityId'),'')='' AND COALESCE(json_extract(data,'$.chatEpisodeId'),'')!='' AND (json_extract(data,'$.direction')='outgoing' OR COALESCE(json_type(data,'$.seenTurnId'),'missing')!='null') GROUP BY json_extract(data,'$.chatEpisodeId')\n \n ),combined AS (SELECT id,MAX(rank) AS rank,MAX(invalidTime) AS invalidTime FROM ranks GROUP BY id),\n joined AS (SELECT c.id,c.rank,hdsi_epoch_ms(json_extract(e.data,'$.openedAt')) AS openedEpoch,c.invalidTime OR hdsi_epoch_ms(json_extract(e.data,'$.openedAt')) IS NULL AS invalidTime FROM combined c JOIN chat_episodes e ON e.id=c.id),\n ranked AS (SELECT *,MAX(invalidTime) OVER () AS anyInvalidTime,RANK() OVER (ORDER BY rank DESC,openedEpoch DESC) AS boundary FROM joined)\n SELECT id,rank,openedEpoch,anyInvalidTime AS invalidTime FROM ranked WHERE boundary<=?",
+          "args": [
+            4
+          ],
+          "method": "all",
+          "rows": 4,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM chat_episodes WHERE id IN (SELECT value FROM json_each(?)) ORDER BY rowid",
+          "args": [
+            "[\"e1000\",\"e1001\",\"e1002\",\"e1003\"]"
+          ],
+          "method": "all",
+          "rows": 4,
+          "jsonRows": 4,
+          "jsonBytes": 704,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT rowid,data FROM messages WHERE json_extract(data,'$.chatEpisodeId') IN (SELECT value FROM json_each(?)) AND COALESCE(json_extract(data,'$.sharedActivityId'),'')='' AND COALESCE(json_extract(data,'$.chatEpisodeId'),'')!='' AND (json_extract(data,'$.direction')='outgoing' OR COALESCE(json_type(data,'$.seenTurnId'),'missing')!='null') ORDER BY rowid",
+          "args": [
+            "[\"e1000\",\"e1001\",\"e1002\",\"e1003\"]"
+          ],
+          "method": "all",
+          "rows": 164,
+          "jsonRows": 164,
+          "jsonBytes": 39772,
+          "writes": 0
+        }
+      ],
+      "plans": [
+        {
+          "sql": "WITH ranks AS (\n SELECT MAX(json_extract(data,'$.chatEpisodeId')) AS id,MAX(hdsi_epoch_ms(json_extract(data,'$.receivedAt'))) AS rank,MAX(hdsi_epoch_ms(json_extract(data,'$.receivedAt')) IS NULL) AS invalidTime FROM messages WHERE COALESCE(json_extract(data,'$.sharedActivityId'),'')='' AND COALESCE(json_extract(data,'$.chatEpisodeId'),'')!='' AND (json_extract(data,'$.direction')='outgoing' OR COALESCE(json_type(data,'$.seenTurnId'),'missing')!='null') GROUP BY json_extract(data,'$.chatEpisodeId')\n \n ),combined AS (SELECT id,MAX(rank) AS rank,MAX(invalidTime) AS invalidTime FROM ranks GROUP BY id),\n joined AS (SELECT c.id,c.rank,hdsi_epoch_ms(json_extract(e.data,'$.openedAt')) AS openedEpoch,c.invalidTime OR hdsi_epoch_ms(json_extract(e.data,'$.openedAt')) IS NULL AS invalidTime FROM combined c JOIN chat_episodes e ON e.id=c.id),\n ranked AS (SELECT *,MAX(invalidTime) OVER () AS anyInvalidTime,RANK() OVER (ORDER BY rank DESC,openedEpoch DESC) AS boundary FROM joined)\n SELECT id,rank,openedEpoch,anyInvalidTime AS invalidTime FROM ranked WHERE boundary<=?",
+          "args": [
+            4
+          ],
+          "plan": [
+            {
+              "id": 2,
+              "parent": 0,
+              "notused": 0,
+              "detail": "CO-ROUTINE ranked"
+            },
+            {
+              "id": 5,
+              "parent": 2,
+              "notused": 0,
+              "detail": "CO-ROUTINE (subquery-6)"
+            },
+            {
+              "id": 8,
+              "parent": 5,
+              "notused": 0,
+              "detail": "CO-ROUTINE (subquery-7)"
+            },
+            {
+              "id": 10,
+              "parent": 8,
+              "notused": 0,
+              "detail": "CO-ROUTINE combined"
+            },
+            {
+              "id": 12,
+              "parent": 10,
+              "notused": 0,
+              "detail": "CO-ROUTINE ranks"
+            },
+            {
+              "id": 19,
+              "parent": 12,
+              "notused": 213,
+              "detail": "SCAN messages USING INDEX message_chat_rank"
+            },
+            {
+              "id": 65,
+              "parent": 10,
+              "notused": 82,
+              "detail": "SCAN ranks"
+            },
+            {
+              "id": 68,
+              "parent": 10,
+              "notused": 0,
+              "detail": "USE TEMP B-TREE FOR GROUP BY"
+            },
+            {
+              "id": 114,
+              "parent": 8,
+              "notused": 82,
+              "detail": "SCAN c"
+            },
+            {
+              "id": 117,
+              "parent": 8,
+              "notused": 47,
+              "detail": "SEARCH e USING INDEX sqlite_autoindex_chat_episodes_1 (id=?)"
+            },
+            {
+              "id": 147,
+              "parent": 8,
+              "notused": 0,
+              "detail": "USE TEMP B-TREE FOR ORDER BY"
+            },
+            {
+              "id": 165,
+              "parent": 5,
+              "notused": 82,
+              "detail": "SCAN (subquery-7)"
+            },
+            {
+              "id": 244,
+              "parent": 2,
+              "notused": 82,
+              "detail": "SCAN (subquery-6)"
+            },
+            {
+              "id": 300,
+              "parent": 0,
+              "notused": 82,
+              "detail": "SCAN ranked"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT data FROM chat_episodes WHERE id IN (SELECT value FROM json_each(?)) ORDER BY rowid",
+          "args": [
+            "[\"e1000\",\"e1001\",\"e1002\",\"e1003\"]"
+          ],
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 93,
+              "detail": "SEARCH chat_episodes USING INDEX sqlite_autoindex_chat_episodes_1 (id=?)"
+            },
+            {
+              "id": 8,
+              "parent": 0,
+              "notused": 0,
+              "detail": "LIST SUBQUERY 1"
+            },
+            {
+              "id": 10,
+              "parent": 8,
+              "notused": 0,
+              "detail": "SCAN json_each VIRTUAL TABLE INDEX 1:"
+            },
+            {
+              "id": 32,
+              "parent": 0,
+              "notused": 0,
+              "detail": "USE TEMP B-TREE FOR ORDER BY"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT rowid,data FROM messages WHERE json_extract(data,'$.chatEpisodeId') IN (SELECT value FROM json_each(?)) AND COALESCE(json_extract(data,'$.sharedActivityId'),'')='' AND COALESCE(json_extract(data,'$.chatEpisodeId'),'')!='' AND (json_extract(data,'$.direction')='outgoing' OR COALESCE(json_type(data,'$.seenTurnId'),'missing')!='null') ORDER BY rowid",
+          "args": [
+            "[\"e1000\",\"e1001\",\"e1002\",\"e1003\"]"
+          ],
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 107,
+              "detail": "SEARCH messages USING INDEX message_chat (<expr>=?)"
+            },
+            {
+              "id": 8,
+              "parent": 0,
+              "notused": 0,
+              "detail": "LIST SUBQUERY 1"
+            },
+            {
+              "id": 10,
+              "parent": 8,
+              "notused": 0,
+              "detail": "SCAN json_each VIRTUAL TABLE INDEX 1:"
+            },
+            {
+              "id": 50,
+              "parent": 0,
+              "notused": 0,
+              "detail": "USE TEMP B-TREE FOR ORDER BY"
+            }
+          ]
+        }
+      ],
+      "rankMessageBodyColumnOperations": 0,
+      "firstMs": 6.155900000000003,
+      "hotMs": [
+        5.421899999999994,
+        5.522400000000005,
+        6.699899999999985,
+        4.602499999999992,
+        4.930000000000007
+      ],
+      "medianMs": 5.421899999999994
+    },
+    {
+      "kind": "chatWindow",
+      "H": 10000,
+      "selectedEpisodes": 4,
+      "fullMessages": 164,
+      "queries": [
+        {
+          "sql": "WITH ranks AS (\n SELECT MAX(json_extract(data,'$.chatEpisodeId')) AS id,MAX(hdsi_epoch_ms(json_extract(data,'$.receivedAt'))) AS rank,MAX(hdsi_epoch_ms(json_extract(data,'$.receivedAt')) IS NULL) AS invalidTime FROM messages WHERE COALESCE(json_extract(data,'$.sharedActivityId'),'')='' AND COALESCE(json_extract(data,'$.chatEpisodeId'),'')!='' AND (json_extract(data,'$.direction')='outgoing' OR COALESCE(json_type(data,'$.seenTurnId'),'missing')!='null') GROUP BY json_extract(data,'$.chatEpisodeId')\n \n ),combined AS (SELECT id,MAX(rank) AS rank,MAX(invalidTime) AS invalidTime FROM ranks GROUP BY id),\n joined AS (SELECT c.id,c.rank,hdsi_epoch_ms(json_extract(e.data,'$.openedAt')) AS openedEpoch,c.invalidTime OR hdsi_epoch_ms(json_extract(e.data,'$.openedAt')) IS NULL AS invalidTime FROM combined c JOIN chat_episodes e ON e.id=c.id),\n ranked AS (SELECT *,MAX(invalidTime) OVER () AS anyInvalidTime,RANK() OVER (ORDER BY rank DESC,openedEpoch DESC) AS boundary FROM joined)\n SELECT id,rank,openedEpoch,anyInvalidTime AS invalidTime FROM ranked WHERE boundary<=?",
+          "args": [
+            4
+          ],
+          "method": "all",
+          "rows": 4,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM chat_episodes WHERE id IN (SELECT value FROM json_each(?)) ORDER BY rowid",
+          "args": [
+            "[\"e10000\",\"e10001\",\"e10002\",\"e10003\"]"
+          ],
+          "method": "all",
+          "rows": 4,
+          "jsonRows": 4,
+          "jsonBytes": 708,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT rowid,data FROM messages WHERE json_extract(data,'$.chatEpisodeId') IN (SELECT value FROM json_each(?)) AND COALESCE(json_extract(data,'$.sharedActivityId'),'')='' AND COALESCE(json_extract(data,'$.chatEpisodeId'),'')!='' AND (json_extract(data,'$.direction')='outgoing' OR COALESCE(json_type(data,'$.seenTurnId'),'missing')!='null') ORDER BY rowid",
+          "args": [
+            "[\"e10000\",\"e10001\",\"e10002\",\"e10003\"]"
+          ],
+          "method": "all",
+          "rows": 164,
+          "jsonRows": 164,
+          "jsonBytes": 40100,
+          "writes": 0
+        }
+      ],
+      "plans": [
+        {
+          "sql": "WITH ranks AS (\n SELECT MAX(json_extract(data,'$.chatEpisodeId')) AS id,MAX(hdsi_epoch_ms(json_extract(data,'$.receivedAt'))) AS rank,MAX(hdsi_epoch_ms(json_extract(data,'$.receivedAt')) IS NULL) AS invalidTime FROM messages WHERE COALESCE(json_extract(data,'$.sharedActivityId'),'')='' AND COALESCE(json_extract(data,'$.chatEpisodeId'),'')!='' AND (json_extract(data,'$.direction')='outgoing' OR COALESCE(json_type(data,'$.seenTurnId'),'missing')!='null') GROUP BY json_extract(data,'$.chatEpisodeId')\n \n ),combined AS (SELECT id,MAX(rank) AS rank,MAX(invalidTime) AS invalidTime FROM ranks GROUP BY id),\n joined AS (SELECT c.id,c.rank,hdsi_epoch_ms(json_extract(e.data,'$.openedAt')) AS openedEpoch,c.invalidTime OR hdsi_epoch_ms(json_extract(e.data,'$.openedAt')) IS NULL AS invalidTime FROM combined c JOIN chat_episodes e ON e.id=c.id),\n ranked AS (SELECT *,MAX(invalidTime) OVER () AS anyInvalidTime,RANK() OVER (ORDER BY rank DESC,openedEpoch DESC) AS boundary FROM joined)\n SELECT id,rank,openedEpoch,anyInvalidTime AS invalidTime FROM ranked WHERE boundary<=?",
+          "args": [
+            4
+          ],
+          "plan": [
+            {
+              "id": 2,
+              "parent": 0,
+              "notused": 0,
+              "detail": "CO-ROUTINE ranked"
+            },
+            {
+              "id": 5,
+              "parent": 2,
+              "notused": 0,
+              "detail": "CO-ROUTINE (subquery-6)"
+            },
+            {
+              "id": 8,
+              "parent": 5,
+              "notused": 0,
+              "detail": "CO-ROUTINE (subquery-7)"
+            },
+            {
+              "id": 10,
+              "parent": 8,
+              "notused": 0,
+              "detail": "CO-ROUTINE combined"
+            },
+            {
+              "id": 12,
+              "parent": 10,
+              "notused": 0,
+              "detail": "CO-ROUTINE ranks"
+            },
+            {
+              "id": 19,
+              "parent": 12,
+              "notused": 213,
+              "detail": "SCAN messages USING INDEX message_chat_rank"
+            },
+            {
+              "id": 65,
+              "parent": 10,
+              "notused": 82,
+              "detail": "SCAN ranks"
+            },
+            {
+              "id": 68,
+              "parent": 10,
+              "notused": 0,
+              "detail": "USE TEMP B-TREE FOR GROUP BY"
+            },
+            {
+              "id": 114,
+              "parent": 8,
+              "notused": 82,
+              "detail": "SCAN c"
+            },
+            {
+              "id": 117,
+              "parent": 8,
+              "notused": 47,
+              "detail": "SEARCH e USING INDEX sqlite_autoindex_chat_episodes_1 (id=?)"
+            },
+            {
+              "id": 147,
+              "parent": 8,
+              "notused": 0,
+              "detail": "USE TEMP B-TREE FOR ORDER BY"
+            },
+            {
+              "id": 165,
+              "parent": 5,
+              "notused": 82,
+              "detail": "SCAN (subquery-7)"
+            },
+            {
+              "id": 244,
+              "parent": 2,
+              "notused": 82,
+              "detail": "SCAN (subquery-6)"
+            },
+            {
+              "id": 300,
+              "parent": 0,
+              "notused": 82,
+              "detail": "SCAN ranked"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT data FROM chat_episodes WHERE id IN (SELECT value FROM json_each(?)) ORDER BY rowid",
+          "args": [
+            "[\"e10000\",\"e10001\",\"e10002\",\"e10003\"]"
+          ],
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 93,
+              "detail": "SEARCH chat_episodes USING INDEX sqlite_autoindex_chat_episodes_1 (id=?)"
+            },
+            {
+              "id": 8,
+              "parent": 0,
+              "notused": 0,
+              "detail": "LIST SUBQUERY 1"
+            },
+            {
+              "id": 10,
+              "parent": 8,
+              "notused": 0,
+              "detail": "SCAN json_each VIRTUAL TABLE INDEX 1:"
+            },
+            {
+              "id": 32,
+              "parent": 0,
+              "notused": 0,
+              "detail": "USE TEMP B-TREE FOR ORDER BY"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT rowid,data FROM messages WHERE json_extract(data,'$.chatEpisodeId') IN (SELECT value FROM json_each(?)) AND COALESCE(json_extract(data,'$.sharedActivityId'),'')='' AND COALESCE(json_extract(data,'$.chatEpisodeId'),'')!='' AND (json_extract(data,'$.direction')='outgoing' OR COALESCE(json_type(data,'$.seenTurnId'),'missing')!='null') ORDER BY rowid",
+          "args": [
+            "[\"e10000\",\"e10001\",\"e10002\",\"e10003\"]"
+          ],
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 107,
+              "detail": "SEARCH messages USING INDEX message_chat (<expr>=?)"
+            },
+            {
+              "id": 8,
+              "parent": 0,
+              "notused": 0,
+              "detail": "LIST SUBQUERY 1"
+            },
+            {
+              "id": 10,
+              "parent": 8,
+              "notused": 0,
+              "detail": "SCAN json_each VIRTUAL TABLE INDEX 1:"
+            },
+            {
+              "id": 50,
+              "parent": 0,
+              "notused": 0,
+              "detail": "USE TEMP B-TREE FOR ORDER BY"
+            }
+          ]
+        }
+      ],
+      "rankMessageBodyColumnOperations": 0,
+      "firstMs": 45.2518,
+      "hotMs": [
+        36.184799999999996,
+        36.74350000000004,
+        35.59840000000008,
+        35.186399999999935,
+        41.80899999999997
+      ],
+      "medianMs": 36.184799999999996
+    },
+    {
+      "kind": "chatWindow",
+      "H": 50000,
+      "selectedEpisodes": 4,
+      "fullMessages": 164,
+      "queries": [
+        {
+          "sql": "WITH ranks AS (\n SELECT MAX(json_extract(data,'$.chatEpisodeId')) AS id,MAX(hdsi_epoch_ms(json_extract(data,'$.receivedAt'))) AS rank,MAX(hdsi_epoch_ms(json_extract(data,'$.receivedAt')) IS NULL) AS invalidTime FROM messages WHERE COALESCE(json_extract(data,'$.sharedActivityId'),'')='' AND COALESCE(json_extract(data,'$.chatEpisodeId'),'')!='' AND (json_extract(data,'$.direction')='outgoing' OR COALESCE(json_type(data,'$.seenTurnId'),'missing')!='null') GROUP BY json_extract(data,'$.chatEpisodeId')\n \n ),combined AS (SELECT id,MAX(rank) AS rank,MAX(invalidTime) AS invalidTime FROM ranks GROUP BY id),\n joined AS (SELECT c.id,c.rank,hdsi_epoch_ms(json_extract(e.data,'$.openedAt')) AS openedEpoch,c.invalidTime OR hdsi_epoch_ms(json_extract(e.data,'$.openedAt')) IS NULL AS invalidTime FROM combined c JOIN chat_episodes e ON e.id=c.id),\n ranked AS (SELECT *,MAX(invalidTime) OVER () AS anyInvalidTime,RANK() OVER (ORDER BY rank DESC,openedEpoch DESC) AS boundary FROM joined)\n SELECT id,rank,openedEpoch,anyInvalidTime AS invalidTime FROM ranked WHERE boundary<=?",
+          "args": [
+            4
+          ],
+          "method": "all",
+          "rows": 4,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM chat_episodes WHERE id IN (SELECT value FROM json_each(?)) ORDER BY rowid",
+          "args": [
+            "[\"e50000\",\"e50001\",\"e50002\",\"e50003\"]"
+          ],
+          "method": "all",
+          "rows": 4,
+          "jsonRows": 4,
+          "jsonBytes": 708,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT rowid,data FROM messages WHERE json_extract(data,'$.chatEpisodeId') IN (SELECT value FROM json_each(?)) AND COALESCE(json_extract(data,'$.sharedActivityId'),'')='' AND COALESCE(json_extract(data,'$.chatEpisodeId'),'')!='' AND (json_extract(data,'$.direction')='outgoing' OR COALESCE(json_type(data,'$.seenTurnId'),'missing')!='null') ORDER BY rowid",
+          "args": [
+            "[\"e50000\",\"e50001\",\"e50002\",\"e50003\"]"
+          ],
+          "method": "all",
+          "rows": 164,
+          "jsonRows": 164,
+          "jsonBytes": 40100,
+          "writes": 0
+        }
+      ],
+      "plans": [
+        {
+          "sql": "WITH ranks AS (\n SELECT MAX(json_extract(data,'$.chatEpisodeId')) AS id,MAX(hdsi_epoch_ms(json_extract(data,'$.receivedAt'))) AS rank,MAX(hdsi_epoch_ms(json_extract(data,'$.receivedAt')) IS NULL) AS invalidTime FROM messages WHERE COALESCE(json_extract(data,'$.sharedActivityId'),'')='' AND COALESCE(json_extract(data,'$.chatEpisodeId'),'')!='' AND (json_extract(data,'$.direction')='outgoing' OR COALESCE(json_type(data,'$.seenTurnId'),'missing')!='null') GROUP BY json_extract(data,'$.chatEpisodeId')\n \n ),combined AS (SELECT id,MAX(rank) AS rank,MAX(invalidTime) AS invalidTime FROM ranks GROUP BY id),\n joined AS (SELECT c.id,c.rank,hdsi_epoch_ms(json_extract(e.data,'$.openedAt')) AS openedEpoch,c.invalidTime OR hdsi_epoch_ms(json_extract(e.data,'$.openedAt')) IS NULL AS invalidTime FROM combined c JOIN chat_episodes e ON e.id=c.id),\n ranked AS (SELECT *,MAX(invalidTime) OVER () AS anyInvalidTime,RANK() OVER (ORDER BY rank DESC,openedEpoch DESC) AS boundary FROM joined)\n SELECT id,rank,openedEpoch,anyInvalidTime AS invalidTime FROM ranked WHERE boundary<=?",
+          "args": [
+            4
+          ],
+          "plan": [
+            {
+              "id": 2,
+              "parent": 0,
+              "notused": 0,
+              "detail": "CO-ROUTINE ranked"
+            },
+            {
+              "id": 5,
+              "parent": 2,
+              "notused": 0,
+              "detail": "CO-ROUTINE (subquery-6)"
+            },
+            {
+              "id": 8,
+              "parent": 5,
+              "notused": 0,
+              "detail": "CO-ROUTINE (subquery-7)"
+            },
+            {
+              "id": 10,
+              "parent": 8,
+              "notused": 0,
+              "detail": "CO-ROUTINE combined"
+            },
+            {
+              "id": 12,
+              "parent": 10,
+              "notused": 0,
+              "detail": "CO-ROUTINE ranks"
+            },
+            {
+              "id": 19,
+              "parent": 12,
+              "notused": 213,
+              "detail": "SCAN messages USING INDEX message_chat_rank"
+            },
+            {
+              "id": 65,
+              "parent": 10,
+              "notused": 82,
+              "detail": "SCAN ranks"
+            },
+            {
+              "id": 68,
+              "parent": 10,
+              "notused": 0,
+              "detail": "USE TEMP B-TREE FOR GROUP BY"
+            },
+            {
+              "id": 114,
+              "parent": 8,
+              "notused": 82,
+              "detail": "SCAN c"
+            },
+            {
+              "id": 117,
+              "parent": 8,
+              "notused": 47,
+              "detail": "SEARCH e USING INDEX sqlite_autoindex_chat_episodes_1 (id=?)"
+            },
+            {
+              "id": 147,
+              "parent": 8,
+              "notused": 0,
+              "detail": "USE TEMP B-TREE FOR ORDER BY"
+            },
+            {
+              "id": 165,
+              "parent": 5,
+              "notused": 82,
+              "detail": "SCAN (subquery-7)"
+            },
+            {
+              "id": 244,
+              "parent": 2,
+              "notused": 82,
+              "detail": "SCAN (subquery-6)"
+            },
+            {
+              "id": 300,
+              "parent": 0,
+              "notused": 82,
+              "detail": "SCAN ranked"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT data FROM chat_episodes WHERE id IN (SELECT value FROM json_each(?)) ORDER BY rowid",
+          "args": [
+            "[\"e50000\",\"e50001\",\"e50002\",\"e50003\"]"
+          ],
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 93,
+              "detail": "SEARCH chat_episodes USING INDEX sqlite_autoindex_chat_episodes_1 (id=?)"
+            },
+            {
+              "id": 8,
+              "parent": 0,
+              "notused": 0,
+              "detail": "LIST SUBQUERY 1"
+            },
+            {
+              "id": 10,
+              "parent": 8,
+              "notused": 0,
+              "detail": "SCAN json_each VIRTUAL TABLE INDEX 1:"
+            },
+            {
+              "id": 32,
+              "parent": 0,
+              "notused": 0,
+              "detail": "USE TEMP B-TREE FOR ORDER BY"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT rowid,data FROM messages WHERE json_extract(data,'$.chatEpisodeId') IN (SELECT value FROM json_each(?)) AND COALESCE(json_extract(data,'$.sharedActivityId'),'')='' AND COALESCE(json_extract(data,'$.chatEpisodeId'),'')!='' AND (json_extract(data,'$.direction')='outgoing' OR COALESCE(json_type(data,'$.seenTurnId'),'missing')!='null') ORDER BY rowid",
+          "args": [
+            "[\"e50000\",\"e50001\",\"e50002\",\"e50003\"]"
+          ],
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 107,
+              "detail": "SEARCH messages USING INDEX message_chat (<expr>=?)"
+            },
+            {
+              "id": 8,
+              "parent": 0,
+              "notused": 0,
+              "detail": "LIST SUBQUERY 1"
+            },
+            {
+              "id": 10,
+              "parent": 8,
+              "notused": 0,
+              "detail": "SCAN json_each VIRTUAL TABLE INDEX 1:"
+            },
+            {
+              "id": 50,
+              "parent": 0,
+              "notused": 0,
+              "detail": "USE TEMP B-TREE FOR ORDER BY"
+            }
+          ]
+        }
+      ],
+      "rankMessageBodyColumnOperations": 0,
+      "firstMs": 218.2746000000002,
+      "hotMs": [
+        187.6002999999996,
+        182.84299999999985,
+        182.5000999999993,
+        196.95799999999963,
+        186.59249999999975
+      ],
+      "medianMs": 186.59249999999975
+    },
+    {
+      "kind": "cleanup",
+      "H": 0,
+      "K": 10,
+      "actualHistoricalUpdates": [],
+      "deletedOwners": 10,
+      "elapsedMs": 5.576900000000023
+    },
+    {
+      "kind": "cleanup",
+      "H": 1000,
+      "K": 10,
+      "actualHistoricalUpdates": [],
+      "deletedOwners": 10,
+      "elapsedMs": 7.048699999999371
+    },
+    {
+      "kind": "cleanup",
+      "H": 5000,
+      "K": 10,
+      "actualHistoricalUpdates": [],
+      "deletedOwners": 10,
+      "elapsedMs": 16.60650000000078
+    }
+  ]
+}

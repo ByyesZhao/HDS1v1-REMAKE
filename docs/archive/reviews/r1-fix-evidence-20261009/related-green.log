@@ -1,0 +1,14 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 test
+npm notice run vitest run tests/memory-pending-refresh.test.ts tests/memory-v3-recovery.test.ts tests/memory-idle-recovery.test.ts tests/memory-idle-fairness.test.ts tests/memory-capacity-cleanup.test.ts tests/web-recovery.test.ts tests/web-model-tools.test.ts
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/astra-r1-checkpoint/HDSI-remake
+
+
+ Test Files  7 passed (7)
+      Tests  34 passed (34)
+   Start at  14:11:13
+   Duration  2.34s (import 40%, tests 35%, transform 24%, worker 1%)
+
+    Isolate  7 workers spawned · ~92ms startup each (spawn + environment, per file)
+             at least ~552ms faster with isolate: false — reuses workers across files instead of one per file
+

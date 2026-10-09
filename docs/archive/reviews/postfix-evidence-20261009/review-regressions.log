@@ -1,0 +1,53 @@
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ❯ docs/v0.5/reviews/postfix-evidence-20261009/memory.test.ts (4 tests | 1 failed) 58ms
+   × F5 contract gap: a started maintenance retry must retain its saved model repair checkpoint 17ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  docs/v0.5/reviews/postfix-evidence-20261009/memory.test.ts > F5 contract gap: a started maintenance retry must retain its saved model repair checkpoint
+AssertionError: expected { checkpointAfterFailure: null, …(1) } to deeply equal { …(2) }
+
+- Expected
++ Received
+
+  {
+-   "checkpointAfterFailure": ObjectContaining {
+-     "repairCount": 1,
+-   },
+-   "retryRepair": {
+-     "errors": "[
+-   {
+-     \"expected\": \"array\",
+-     \"code\": \"invalid_type\",
+-     \"path\": [
+-       \"units\"
+-     ],
+-     \"message\": \"Invalid input: expected array, received undefined\"
+-   }
+- ]",
+-     "original": {
+-       "invalid": true,
+-     },
+-   },
++   "checkpointAfterFailure": null,
++   "retryRepair": undefined,
+  }
+
+ ❯ docs/v0.5/reviews/postfix-evidence-20261009/memory.test.ts:64:90
+     62|  d.clock.advance(1000);expect(maintenance.startOne(d.clock.now())).toB…
+     63|  expect(requests).toHaveLength(3);
+     64|  expect({checkpointAfterFailure:afterFailure.checkpoint,retryRepair:re…
+       |                                                                                          ^
+     65| });
+     66|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 8 passed (9)
+   Start at  13:50:56
+   Duration  476ms (transform 56%, tests 23%, import 20%, worker 1%)
+

@@ -1,0 +1,30 @@
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ❯ docs/v0.5/reviews/evidence/shared.test.ts (1 test | 1 failed) 30ms
+   × retains prior activity identity when next activity starts before its unread transfer batch is selected 29ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  docs/v0.5/reviews/evidence/shared.test.ts > retains prior activity identity when next activity starts before its unread transfer batch is selected
+AssertionError: expected '1bc41a3d-7e29-41ed-94cb-15c1080c431a' to be 'activity-a' // Object.is equality
+
+Expected: "activity-a"
+Received: "1bc41a3d-7e29-41ed-94cb-15c1080c431a"
+
+ ❯ docs/v0.5/reviews/evidence/shared.test.ts:41:76
+     39|   await app.runTurn(next);
+     40|   expect(d.storage.character().scene.shared?.activityId).not.toBe('act…
+     41|   expect(d.storage.read('messages','old-activity-late')?.sharedActivit…
+       |                                                                            ^
+     42|  }finally{d.storage.close();}
+     43| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 2 passed (3)
+      Tests  1 failed | 5 passed (6)
+   Start at  11:25:50
+   Duration  786ms (transform 41%, import 40%, tests 17%, worker 2%)
+

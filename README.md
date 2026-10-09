@@ -1,6 +1,6 @@
 # HDSI 重制版 V0.5
 
-单角色、一对一QQ生活模拟。当前架构入口为[总架构](docs/v0.5/architecture/REMAKE_V0.5.md)，子系统、源码对应与审核材料见[文档索引](docs/v0.5/README.md)。旧REMAKE_V0.2系列是历史累积说明，当前规则无需再从旧文档和多轮rebuttal拼接。
+单角色、一对一QQ生活模拟。当前架构入口为[总架构](docs/v0.5/architecture/REMAKE_V0.5.md)，子系统、源码对应与审核材料见[文档索引](docs/v0.5/README.md)。旧架构、已完成方案和旧日志已集中到[历史归档](docs/archive/README.md)，当前规则无需拼接多轮旧rebuttal。
 
 V0.5整理当前实现：普通最近4个完整对话段、活动完整授权原文和结束后记忆召回；7／90／3／30记忆周期及100／1000／500容量；每日06:00世界／校园／课题组／周增量链；普通15秒合批、共同60秒或全文`【推进】`，约10轮软收尾、20轮硬上限；冻结发送与按阶段恢复。
 
@@ -8,7 +8,7 @@ V0.5整理当前实现：普通最近4个完整对话段、活动完整授权原
 
 ## 1. 当前状态
 
-最新交付为[当前审核改进T1～T9](docs/v0.5/records/current-audit-improvements-20261009/DELIVERY.md)。此前REVIEW26的107／620、ASTRA T1～T13的121／681和R1的122／693保留各批历史含义。本批只做离线合成库／脚本模型验收，不联网、不启动QQ服务、不改正式库。
+最新交付为[当前审核改进T1～T9](docs/v0.5/records/current-audit-improvements-20261009/DELIVERY.md)。此前REVIEW26的107／620、ASTRA T1～T13的121／681和R1的122／693保留各批历史含义。ASTRA随后已独立重跑137文件776项并[确认关闭](docs/v0.5/reviews/post-t1-t9-20261009/REVIEW.md)。本轮仅整理资料，未继续实施环境异步计划；已保存的验收均按各批次范围解释。
 
 67项旧图库的图片、说明、标签和1024维向量已在新项目复用；运行不依赖旧HDSI目录。角色背景和用途映射已批准启用，故事阶段完整背景保留，未迁移作者事实或覆盖已有细节。
 
@@ -109,9 +109,9 @@ npm run dialogue:migrate -- --database runtime/data/hdsi-remake.sqlite --config 
 npm run dialogue:migrate -- --database runtime/data/hdsi-remake.sqlite --config config.local.json --rebuild-chat-index --apply --stopped --backup-dir runtime/data/backups
 ```
 
-check不写业务数据；apply备份并事务重建普通索引，保留原消息与记忆。缺元数据、损坏关联、未完成故事轮或进行中的活动会阻挡，不得仅修改`chat_index_metadata`代替重建。普通窗口段数变化不需要重建。其他升级的前置条件以各自报告为准。修复证据见[REVIEW24记录](docs/v0.5/records/REVIEW24_DIALOGUE_FIX_LOG_20261009.md)。
+check不写业务数据；apply备份并事务重建普通索引，保留原消息与记忆。缺元数据、损坏关联、未完成故事轮或进行中的活动会阻挡，不得仅修改`chat_index_metadata`代替重建。普通窗口段数变化不需要重建。其他升级的前置条件以各自报告为准。修复证据见[REVIEW24记录](docs/archive/records/REVIEW24_DIALOGUE_FIX_LOG_20261009.md)。
 
-最近普通升级备份位置及配套回退代码见[实施日志任务20](docs/PROMPT_CONTEXT_OPTIMIZATION_V0.1_IMPLEMENTATION_LOG_20261008.md)。回退用配套代码和完整备份，不直接拿新库运行旧门禁。
+最近普通升级备份及配套回退代码的原记录见[实施日志任务20](docs/archive/topics/prompt-context/PROMPT_CONTEXT_OPTIMIZATION_V0.1_IMPLEMENTATION_LOG_20261008.md)。备份现收纳于runtime/archive/restore，按迁移清单查新路径。回退用配套代码和完整备份，不直接拿新库运行旧门禁。
 
 ## 6. 图库维护
 
@@ -122,7 +122,7 @@ npm run stickers -- import D:\我的素材 config.local.json runtime/data/hdsi-r
 npm run stickers -- rebuild - config.local.json runtime/data/hdsi-remake.sqlite
 ```
 
-新图描述后再编码；重建沿旧文字／标签，不重识图。更换模型、端点或维度需显式重建图库，素材ID和图片文件保持可用。细节见[素材文档](docs/v0.5/subsystems/REMAKE_V0.5_EXPRESSION_STICKERS.md)、[迁移记录](docs/STICKER_MIGRATION.md)。
+新图描述后再编码；重建沿旧文字／标签，不重识图。更换模型、端点或维度需显式重建图库，素材ID和图片文件保持可用。细节见[素材文档](docs/v0.5/subsystems/REMAKE_V0.5_EXPRESSION_STICKERS.md)、[迁移记录](docs/archive/topics/stickers/STICKER_MIGRATION.md)。
 
 `npm run check:models`会发固定测试提示及素材测试查询，是显式在线验证；普通启动检查不联网。其他`--online`验收也使用模型与认证，报告有明确数据范围，不能当成离线命令。
 
@@ -140,17 +140,8 @@ npm run stickers -- rebuild - config.local.json runtime/data/hdsi-remake.sqlite
 
 ## 8. 当前文档与复盘
 
-[V0.5总架构](docs/v0.5/architecture/REMAKE_V0.5.md)＋其8份子系统＋[实现对应](docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md)是当前说明。最近实现证据在[当前审核交付](docs/v0.5/records/current-audit-improvements-20261009/DELIVERY.md)；本轮重写过程在[文档修订日志](docs/v0.5/records/V0.5_DOCUMENT_REWRITE_LOG_20261009.md)。
+[V0.5总架构](docs/v0.5/architecture/REMAKE_V0.5.md)＋其8份子系统＋[实现对应](docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md)是当前说明。最近实现证据在[当前审核交付](docs/v0.5/records/current-audit-improvements-20261009/DELIVERY.md)；本轮重写过程在[文档修订日志](docs/archive/records/V0.5_DOCUMENT_REWRITE_LOG_20261009.md)。
 
-详细过程保存在`runtime/data/prompt-activity-context-process-20261009`。旧REMAKE_V0.2、历次细化／计划／review及DSH-review副本保留历史；旧zip不持续更新，不作为V0.5审核包。
+文档分类与新建原则见[文档总入口](docs/README.md)和[目录原则](docs/DIRECTORY_POLICY.md)。当前说明、最新交付和最终复核在docs/v0.5；过期说明、已完成合同、旧审核和过程日志在docs/archive。尚未实施的环境异步计划单独保留在当前plans，当前暂停开发。
 
-## 旧终态载荷有限回收
-
-默认只读计数，不需要私有配置：
-
-```powershell
-npm run memory:compact-payloads -- <数据库路径> --dry-run
-npm run memory:compact-payloads -- <数据库路径> --apply --stopped --batch-size 50 --max-batches 20
-```
-
-apply前自行停止HDSI；有候选才备份主文件及存在的WAL／SHM，默认在目标库同目录的backups/memory-payloads/UUID目录，可用--backup-dir指定。四表合计每批限50行、默认最多20批；hasMore=true表示可再次执行。只清终态恢复正文，保留消息、经历、身份、统计及来源，不碰未完成恢复载荷；不把容量版本1当作旧载荷已全清。
+原runtime历史测试输出、旧运行日志及完整回退快照已收至[runtime/archive](runtime/archive/README.md)，其中的私有资料不默认送审。源码工具和在用部署文件保持原路径；旧记录内的原执行路径以[迁移清单](docs/v0.5/records/document-organization-20261009/move-manifest.json)查新位置。

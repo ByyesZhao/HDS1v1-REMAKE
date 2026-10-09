@@ -17,13 +17,13 @@
 
 | 入口 | 实际证据 |
 | --- | --- |
-| 全量 | logs/main-full-suite.log：137/776，87.86秒；之前隔离验证136/761另存full-suite-final.log |
-| 类型／构建 | logs/main-types.log、main-build.log |
-| 演示／插件 | logs/main-demo.log、main-smoke.log：empty_week／required_notice |
-| 普通窗口／清理 | benchmark.json；脚本check-current-audit-workload.cjs，6样本 |
-| 环境／学校 | scheduling-query-results.json；脚本check-scheduling-queries.cjs，32样本 |
-| 文档 | document-link-check.json：22文档209本地链接，无缺失（不检查锚点） |
-| 各任务RED/GREEN／兼容 | IMPLEMENTATION_LOG.md与logs/；原基线成本红测t7-cost-red-baseline.log |
+| 全量 | [主目录日志](logs/main-full-suite.log)：137/776，87.86秒；[前次隔离日志](../../../archive/records/current-audit-improvements-20261009/logs/full-suite-final.log)：136/761 |
+| 类型／构建 | [类型](logs/main-types.log)、[构建](logs/main-build.log) |
+| 演示／插件 | [演示](logs/main-demo.log)、[双场景smoke](logs/main-smoke.log) |
+| 普通窗口／清理 | [benchmark.json](benchmark.json)；check-current-audit-workload.cjs，6样本；[最终输出](logs/review-fix-workload.log) |
+| 环境／学校 | [工作量JSON](scheduling-query-results.json)；check-scheduling-queries.cjs，32样本；[最终输出](logs/review-fix-scheduling.log) |
+| 原交付时文档检查 | [原检查快照](../../../archive/records/current-audit-improvements-20261009/document-link-check.json)：当时22文档209本地链接；本次整理的检查另见[整理记录](../document-organization-20261009/README.md) |
+| 各任务RED/GREEN／兼容 | [过程](IMPLEMENTATION_LOG.md)及[归档原始日志](../../../archive/records/current-audit-improvements-20261009/logs/)；原基线成本红测保留 |
 
 固定4段各41条消息，在H=1000/10000/50000历史下，每次解码164条完整消息＋4段，rank候选4行，写入0；原生EXPLAIN确认排名不从messages主表取data列。SQL仍扫描合格历史索引标量；热样本中位数约5.0/41.2/278.2ms只是此次观测，不是保证或验收阈值。
 
@@ -57,3 +57,7 @@ npm run memory:compact-payloads -- <数据库路径> --apply --stopped --batch-s
 主目录首次受限执行在Vite配置加载／测试子进程启动阶段失败；相同离线命令获执行许可后137／776通过。未将环境失败当成业务回归。主目录原有未提交文档及审核材料保留，仅提交本批实现相关说明；未推送远程。
 
 原ASTRA审核及失败证据保留历史含义；未启用搜索供应商、semantic=null、数月运行／真实QQ／新图视觉尚未验收的边界不变。
+
+## 目录整理后的关闭入口
+
+ASTRA随后独立复核已确认本批可关闭，见[最终review及证据](../../reviews/post-t1-t9-20261009/REVIEW.md)。N1相关知识内部成本已补测，不需要本批产品修复。本记录保留实施时测试和耗时；2026-10-09目录整理仅调整导航和证据位置，原日志内容不变。

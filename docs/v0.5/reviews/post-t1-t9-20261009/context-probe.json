@@ -1,0 +1,2066 @@
+{
+  "scope": "offline synthetic memory databases; extra post-review evidence",
+  "node": "v24.21.0",
+  "fuzz": {
+    "seed": 764123,
+    "iterations": 160,
+    "comparisons": 1920
+  },
+  "scale": [
+    {
+      "H": 1000,
+      "memoryBuild": {
+        "queries": 16,
+        "rows": 10,
+        "jsonRows": 10,
+        "writes": 0
+      },
+      "memoryLookup": {
+        "queries": 16,
+        "rows": 10,
+        "jsonRows": 10,
+        "writes": 0
+      },
+      "recentWindow": {
+        "queries": 3,
+        "rows": 172,
+        "jsonRows": 168,
+        "writes": 0
+      },
+      "recentGate": {
+        "queries": 15,
+        "rows": 173,
+        "jsonRows": 173,
+        "writes": 0
+      },
+      "recentAll": {
+        "queries": 18,
+        "rows": 345,
+        "jsonRows": 341,
+        "writes": 0
+      },
+      "visibleRankPlan": [
+        {
+          "id": 2,
+          "parent": 0,
+          "notused": 0,
+          "detail": "CO-ROUTINE ranked"
+        },
+        {
+          "id": 5,
+          "parent": 2,
+          "notused": 0,
+          "detail": "CO-ROUTINE (subquery-8)"
+        },
+        {
+          "id": 8,
+          "parent": 5,
+          "notused": 0,
+          "detail": "CO-ROUTINE (subquery-9)"
+        },
+        {
+          "id": 10,
+          "parent": 8,
+          "notused": 0,
+          "detail": "CO-ROUTINE combined"
+        },
+        {
+          "id": 12,
+          "parent": 10,
+          "notused": 0,
+          "detail": "CO-ROUTINE ranks"
+        },
+        {
+          "id": 13,
+          "parent": 12,
+          "notused": 0,
+          "detail": "COMPOUND QUERY"
+        },
+        {
+          "id": 14,
+          "parent": 13,
+          "notused": 0,
+          "detail": "LEFT-MOST SUBQUERY"
+        },
+        {
+          "id": 21,
+          "parent": 14,
+          "notused": 213,
+          "detail": "SCAN messages USING INDEX message_chat_rank"
+        },
+        {
+          "id": 62,
+          "parent": 13,
+          "notused": 0,
+          "detail": "UNION ALL"
+        },
+        {
+          "id": 65,
+          "parent": 62,
+          "notused": 93,
+          "detail": "SEARCH messages USING INDEX sqlite_autoindex_messages_1 (id=?)"
+        },
+        {
+          "id": 69,
+          "parent": 62,
+          "notused": 0,
+          "detail": "LIST SUBQUERY 2"
+        },
+        {
+          "id": 71,
+          "parent": 69,
+          "notused": 0,
+          "detail": "SCAN json_each VIRTUAL TABLE INDEX 1:"
+        },
+        {
+          "id": 116,
+          "parent": 10,
+          "notused": 85,
+          "detail": "SCAN ranks"
+        },
+        {
+          "id": 119,
+          "parent": 10,
+          "notused": 0,
+          "detail": "USE TEMP B-TREE FOR GROUP BY"
+        },
+        {
+          "id": 165,
+          "parent": 8,
+          "notused": 82,
+          "detail": "SCAN c"
+        },
+        {
+          "id": 168,
+          "parent": 8,
+          "notused": 47,
+          "detail": "SEARCH e USING INDEX sqlite_autoindex_chat_episodes_1 (id=?)"
+        },
+        {
+          "id": 198,
+          "parent": 8,
+          "notused": 0,
+          "detail": "USE TEMP B-TREE FOR ORDER BY"
+        },
+        {
+          "id": 216,
+          "parent": 5,
+          "notused": 82,
+          "detail": "SCAN (subquery-9)"
+        },
+        {
+          "id": 295,
+          "parent": 2,
+          "notused": 82,
+          "detail": "SCAN (subquery-8)"
+        },
+        {
+          "id": 351,
+          "parent": 0,
+          "notused": 82,
+          "detail": "SCAN ranked"
+        }
+      ],
+      "memoryQueries": [
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "memory_embedding_signature"
+          ],
+          "method": "get",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        },
+        {
+          "sql": "WITH owners AS (\n      SELECT id,data FROM memories WHERE json_extract(data,'$.status') NOT IN ('merged','discarded') AND\n      ((json_extract(data,'$.kind')='short' AND json_extract(data,'$.capacityExitedAt') IS NULL AND (? OR julianday(json_extract(data,'$.shortExpiresAt'))>julianday(?))) OR\n       (json_extract(data,'$.kind')='long' AND json_extract(data,'$.status')!='durable' AND julianday(json_extract(data,'$.retainedFrom'))<=julianday(?) AND (? OR (CASE WHEN json_extract(data,'$.kind')='long' AND json_extract(data,'$.status')='active' AND json_extract(data,'$.mergedInto') IS NULL THEN COALESCE(json_extract(data,'$.archiveEnteredAt'),json_extract(data,'$.capacityExitedAt'),CASE WHEN julianday(json_extract(data,'$.expiresAt'))<=julianday(?) THEN json_extract(data,'$.expiresAt') END) END) IS NULL)))\n      UNION ALL SELECT id,data FROM details\n      UNION ALL SELECT id,data FROM learned_background WHERE json_extract(data,'$.status')='active')\n      SELECT o.data,i.vector FROM owners o LEFT JOIN memory_index i ON i.ownerType=json_extract(o.data,'$.ownerType') AND i.ownerId=o.id AND i.revision=json_extract(o.data,'$.revision') AND i.configSignature=?",
+          "args": [
+            0,
+            "2030-01-01T00:00:00Z",
+            "2030-01-01T00:00:00Z",
+            0,
+            "2030-01-01T00:00:00Z",
+            ""
+          ],
+          "method": "all",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 785,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "runtime"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 379,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT rowid,data FROM messages WHERE id IN (?)",
+          "args": [
+            "source-message"
+          ],
+          "method": "all",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 256,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM chat_index_metadata WHERE id = ?",
+          "args": [
+            "chat-index"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 36,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "runtime"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 379,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM turns WHERE COALESCE(json_extract(data,'$.done'),0)=0 AND COALESCE(json_extract(data,'$.legacyDisposition'),'')!='superseded' ORDER BY rowid",
+          "args": [],
+          "method": "all",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM chat_episodes WHERE json_extract(data,'$.status')='open' ORDER BY rowid",
+          "args": [],
+          "method": "all",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM messages WHERE json_extract(data,'$.direction')='incoming' AND json_type(data,'$.seenTurnId')='null' AND json_extract(data,'$.seenTurnId') IS NULL ORDER BY rowid",
+          "args": [],
+          "method": "all",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "runtime"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 379,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM tasks WHERE json_extract(data,'$.status')='pending' ORDER BY rowid",
+          "args": [],
+          "method": "all",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT rowid,data FROM messages WHERE id IN (?)",
+          "args": [
+            "source-message"
+          ],
+          "method": "all",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 256,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM chat_episodes WHERE id = ?",
+          "args": [
+            "source"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 177,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "runtime"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 379,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM chat_index_metadata WHERE id = ?",
+          "args": [
+            "chat-index"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 36,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "character"
+          ],
+          "method": "get",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        }
+      ],
+      "recentQueries": [
+        {
+          "sql": "WITH ranks AS (\n SELECT MAX(json_extract(data,'$.chatEpisodeId')) AS id,MAX(hdsi_epoch_ms(json_extract(data,'$.receivedAt'))) AS rank,MAX(hdsi_epoch_ms(json_extract(data,'$.receivedAt')) IS NULL) AS invalidTime FROM messages WHERE COALESCE(json_extract(data,'$.sharedActivityId'),'')='' AND COALESCE(json_extract(data,'$.chatEpisodeId'),'')!='' AND (json_extract(data,'$.direction')='outgoing' OR COALESCE(json_type(data,'$.seenTurnId'),'missing')!='null') GROUP BY json_extract(data,'$.chatEpisodeId')\n \n ),combined AS (SELECT id,MAX(rank) AS rank,MAX(invalidTime) AS invalidTime FROM ranks GROUP BY id),\n joined AS (SELECT c.id,c.rank,hdsi_epoch_ms(json_extract(e.data,'$.openedAt')) AS openedEpoch,c.invalidTime OR hdsi_epoch_ms(json_extract(e.data,'$.openedAt')) IS NULL AS invalidTime FROM combined c JOIN chat_episodes e ON e.id=c.id),\n ranked AS (SELECT *,MAX(invalidTime) OVER () AS anyInvalidTime,RANK() OVER (ORDER BY rank DESC,openedEpoch DESC) AS boundary FROM joined)\n SELECT id,rank,openedEpoch,anyInvalidTime AS invalidTime FROM ranked WHERE boundary<=?",
+          "args": [
+            4
+          ],
+          "method": "all",
+          "rows": 4,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM chat_episodes WHERE id IN (SELECT value FROM json_each(?)) ORDER BY rowid",
+          "args": [
+            "[\"e1000\",\"e1001\",\"e1002\",\"e1003\"]"
+          ],
+          "method": "all",
+          "rows": 4,
+          "jsonRows": 4,
+          "jsonBytes": 704,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT rowid,data FROM messages WHERE json_extract(data,'$.chatEpisodeId') IN (SELECT value FROM json_each(?)) AND COALESCE(json_extract(data,'$.sharedActivityId'),'')='' AND COALESCE(json_extract(data,'$.chatEpisodeId'),'')!='' AND (json_extract(data,'$.direction')='outgoing' OR COALESCE(json_type(data,'$.seenTurnId'),'missing')!='null') ORDER BY rowid",
+          "args": [
+            "[\"e1000\",\"e1001\",\"e1002\",\"e1003\"]"
+          ],
+          "method": "all",
+          "rows": 164,
+          "jsonRows": 164,
+          "jsonBytes": 39772,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM chat_index_metadata WHERE id = ?",
+          "args": [
+            "chat-index"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 36,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "runtime"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 379,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM turns WHERE COALESCE(json_extract(data,'$.done'),0)=0 AND COALESCE(json_extract(data,'$.legacyDisposition'),'')!='superseded' ORDER BY rowid",
+          "args": [],
+          "method": "all",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM chat_episodes WHERE json_extract(data,'$.status')='open' ORDER BY rowid",
+          "args": [],
+          "method": "all",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM messages WHERE json_extract(data,'$.direction')='incoming' AND json_type(data,'$.seenTurnId')='null' AND json_extract(data,'$.seenTurnId') IS NULL ORDER BY rowid",
+          "args": [],
+          "method": "all",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "runtime"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 379,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM tasks WHERE json_extract(data,'$.status')='pending' ORDER BY rowid",
+          "args": [],
+          "method": "all",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT rowid,data FROM messages WHERE id IN (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+          "args": [
+            "e1000:0",
+            "e1000:1",
+            "e1000:10",
+            "e1000:11",
+            "e1000:12",
+            "e1000:13",
+            "e1000:14",
+            "e1000:15",
+            "e1000:16",
+            "e1000:17",
+            "e1000:18",
+            "e1000:19",
+            "e1000:2",
+            "e1000:20",
+            "e1000:21",
+            "e1000:22",
+            "e1000:23",
+            "e1000:24",
+            "e1000:25",
+            "e1000:26",
+            "e1000:27",
+            "e1000:28",
+            "e1000:29",
+            "e1000:3",
+            "e1000:30",
+            "e1000:31",
+            "e1000:32",
+            "e1000:33",
+            "e1000:34",
+            "e1000:35",
+            "e1000:36",
+            "e1000:37",
+            "e1000:38",
+            "e1000:39",
+            "e1000:4",
+            "e1000:40",
+            "e1000:5",
+            "e1000:6",
+            "e1000:7",
+            "e1000:8",
+            "e1000:9",
+            "e1001:0",
+            "e1001:1",
+            "e1001:10",
+            "e1001:11",
+            "e1001:12",
+            "e1001:13",
+            "e1001:14",
+            "e1001:15",
+            "e1001:16",
+            "e1001:17",
+            "e1001:18",
+            "e1001:19",
+            "e1001:2",
+            "e1001:20",
+            "e1001:21",
+            "e1001:22",
+            "e1001:23",
+            "e1001:24",
+            "e1001:25",
+            "e1001:26",
+            "e1001:27",
+            "e1001:28",
+            "e1001:29",
+            "e1001:3",
+            "e1001:30",
+            "e1001:31",
+            "e1001:32",
+            "e1001:33",
+            "e1001:34",
+            "e1001:35",
+            "e1001:36",
+            "e1001:37",
+            "e1001:38",
+            "e1001:39",
+            "e1001:4",
+            "e1001:40",
+            "e1001:5",
+            "e1001:6",
+            "e1001:7",
+            "e1001:8",
+            "e1001:9",
+            "e1002:0",
+            "e1002:1",
+            "e1002:10",
+            "e1002:11",
+            "e1002:12",
+            "e1002:13",
+            "e1002:14",
+            "e1002:15",
+            "e1002:16",
+            "e1002:17",
+            "e1002:18",
+            "e1002:19",
+            "e1002:2",
+            "e1002:20",
+            "e1002:21",
+            "e1002:22",
+            "e1002:23",
+            "e1002:24",
+            "e1002:25",
+            "e1002:26",
+            "e1002:27",
+            "e1002:28",
+            "e1002:29",
+            "e1002:3",
+            "e1002:30",
+            "e1002:31",
+            "e1002:32",
+            "e1002:33",
+            "e1002:34",
+            "e1002:35",
+            "e1002:36",
+            "e1002:37",
+            "e1002:38",
+            "e1002:39",
+            "e1002:4",
+            "e1002:40",
+            "e1002:5",
+            "e1002:6",
+            "e1002:7",
+            "e1002:8",
+            "e1002:9",
+            "e1003:0",
+            "e1003:1",
+            "e1003:10",
+            "e1003:11",
+            "e1003:12",
+            "e1003:13",
+            "e1003:14",
+            "e1003:15",
+            "e1003:16",
+            "e1003:17",
+            "e1003:18",
+            "e1003:19",
+            "e1003:2",
+            "e1003:20",
+            "e1003:21",
+            "e1003:22",
+            "e1003:23",
+            "e1003:24",
+            "e1003:25",
+            "e1003:26",
+            "e1003:27",
+            "e1003:28",
+            "e1003:29",
+            "e1003:3",
+            "e1003:30",
+            "e1003:31",
+            "e1003:32",
+            "e1003:33",
+            "e1003:34",
+            "e1003:35",
+            "e1003:36",
+            "e1003:37",
+            "e1003:38",
+            "e1003:39",
+            "e1003:4",
+            "e1003:40",
+            "e1003:5",
+            "e1003:6",
+            "e1003:7",
+            "e1003:8",
+            "e1003:9"
+          ],
+          "method": "all",
+          "rows": 164,
+          "jsonRows": 164,
+          "jsonBytes": 39772,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM chat_episodes WHERE id = ?",
+          "args": [
+            "e1000"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 176,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM chat_episodes WHERE id = ?",
+          "args": [
+            "e1001"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 176,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM chat_episodes WHERE id = ?",
+          "args": [
+            "e1002"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 176,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM chat_episodes WHERE id = ?",
+          "args": [
+            "e1003"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 176,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "runtime"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 379,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM chat_index_metadata WHERE id = ?",
+          "args": [
+            "chat-index"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 36,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "character"
+          ],
+          "method": "get",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        }
+      ]
+    },
+    {
+      "H": 10000,
+      "memoryBuild": {
+        "queries": 16,
+        "rows": 10,
+        "jsonRows": 10,
+        "writes": 0
+      },
+      "memoryLookup": {
+        "queries": 16,
+        "rows": 10,
+        "jsonRows": 10,
+        "writes": 0
+      },
+      "recentWindow": {
+        "queries": 3,
+        "rows": 172,
+        "jsonRows": 168,
+        "writes": 0
+      },
+      "recentGate": {
+        "queries": 15,
+        "rows": 173,
+        "jsonRows": 173,
+        "writes": 0
+      },
+      "recentAll": {
+        "queries": 18,
+        "rows": 345,
+        "jsonRows": 341,
+        "writes": 0
+      },
+      "visibleRankPlan": [
+        {
+          "id": 2,
+          "parent": 0,
+          "notused": 0,
+          "detail": "CO-ROUTINE ranked"
+        },
+        {
+          "id": 5,
+          "parent": 2,
+          "notused": 0,
+          "detail": "CO-ROUTINE (subquery-8)"
+        },
+        {
+          "id": 8,
+          "parent": 5,
+          "notused": 0,
+          "detail": "CO-ROUTINE (subquery-9)"
+        },
+        {
+          "id": 10,
+          "parent": 8,
+          "notused": 0,
+          "detail": "CO-ROUTINE combined"
+        },
+        {
+          "id": 12,
+          "parent": 10,
+          "notused": 0,
+          "detail": "CO-ROUTINE ranks"
+        },
+        {
+          "id": 13,
+          "parent": 12,
+          "notused": 0,
+          "detail": "COMPOUND QUERY"
+        },
+        {
+          "id": 14,
+          "parent": 13,
+          "notused": 0,
+          "detail": "LEFT-MOST SUBQUERY"
+        },
+        {
+          "id": 21,
+          "parent": 14,
+          "notused": 213,
+          "detail": "SCAN messages USING INDEX message_chat_rank"
+        },
+        {
+          "id": 62,
+          "parent": 13,
+          "notused": 0,
+          "detail": "UNION ALL"
+        },
+        {
+          "id": 65,
+          "parent": 62,
+          "notused": 93,
+          "detail": "SEARCH messages USING INDEX sqlite_autoindex_messages_1 (id=?)"
+        },
+        {
+          "id": 69,
+          "parent": 62,
+          "notused": 0,
+          "detail": "LIST SUBQUERY 2"
+        },
+        {
+          "id": 71,
+          "parent": 69,
+          "notused": 0,
+          "detail": "SCAN json_each VIRTUAL TABLE INDEX 1:"
+        },
+        {
+          "id": 116,
+          "parent": 10,
+          "notused": 85,
+          "detail": "SCAN ranks"
+        },
+        {
+          "id": 119,
+          "parent": 10,
+          "notused": 0,
+          "detail": "USE TEMP B-TREE FOR GROUP BY"
+        },
+        {
+          "id": 165,
+          "parent": 8,
+          "notused": 82,
+          "detail": "SCAN c"
+        },
+        {
+          "id": 168,
+          "parent": 8,
+          "notused": 47,
+          "detail": "SEARCH e USING INDEX sqlite_autoindex_chat_episodes_1 (id=?)"
+        },
+        {
+          "id": 198,
+          "parent": 8,
+          "notused": 0,
+          "detail": "USE TEMP B-TREE FOR ORDER BY"
+        },
+        {
+          "id": 216,
+          "parent": 5,
+          "notused": 82,
+          "detail": "SCAN (subquery-9)"
+        },
+        {
+          "id": 295,
+          "parent": 2,
+          "notused": 82,
+          "detail": "SCAN (subquery-8)"
+        },
+        {
+          "id": 351,
+          "parent": 0,
+          "notused": 82,
+          "detail": "SCAN ranked"
+        }
+      ],
+      "memoryQueries": [
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "memory_embedding_signature"
+          ],
+          "method": "get",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        },
+        {
+          "sql": "WITH owners AS (\n      SELECT id,data FROM memories WHERE json_extract(data,'$.status') NOT IN ('merged','discarded') AND\n      ((json_extract(data,'$.kind')='short' AND json_extract(data,'$.capacityExitedAt') IS NULL AND (? OR julianday(json_extract(data,'$.shortExpiresAt'))>julianday(?))) OR\n       (json_extract(data,'$.kind')='long' AND json_extract(data,'$.status')!='durable' AND julianday(json_extract(data,'$.retainedFrom'))<=julianday(?) AND (? OR (CASE WHEN json_extract(data,'$.kind')='long' AND json_extract(data,'$.status')='active' AND json_extract(data,'$.mergedInto') IS NULL THEN COALESCE(json_extract(data,'$.archiveEnteredAt'),json_extract(data,'$.capacityExitedAt'),CASE WHEN julianday(json_extract(data,'$.expiresAt'))<=julianday(?) THEN json_extract(data,'$.expiresAt') END) END) IS NULL)))\n      UNION ALL SELECT id,data FROM details\n      UNION ALL SELECT id,data FROM learned_background WHERE json_extract(data,'$.status')='active')\n      SELECT o.data,i.vector FROM owners o LEFT JOIN memory_index i ON i.ownerType=json_extract(o.data,'$.ownerType') AND i.ownerId=o.id AND i.revision=json_extract(o.data,'$.revision') AND i.configSignature=?",
+          "args": [
+            0,
+            "2030-01-01T00:00:00Z",
+            "2030-01-01T00:00:00Z",
+            0,
+            "2030-01-01T00:00:00Z",
+            ""
+          ],
+          "method": "all",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 785,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "runtime"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 379,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT rowid,data FROM messages WHERE id IN (?)",
+          "args": [
+            "source-message"
+          ],
+          "method": "all",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 256,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM chat_index_metadata WHERE id = ?",
+          "args": [
+            "chat-index"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 36,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "runtime"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 379,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM turns WHERE COALESCE(json_extract(data,'$.done'),0)=0 AND COALESCE(json_extract(data,'$.legacyDisposition'),'')!='superseded' ORDER BY rowid",
+          "args": [],
+          "method": "all",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM chat_episodes WHERE json_extract(data,'$.status')='open' ORDER BY rowid",
+          "args": [],
+          "method": "all",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM messages WHERE json_extract(data,'$.direction')='incoming' AND json_type(data,'$.seenTurnId')='null' AND json_extract(data,'$.seenTurnId') IS NULL ORDER BY rowid",
+          "args": [],
+          "method": "all",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "runtime"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 379,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM tasks WHERE json_extract(data,'$.status')='pending' ORDER BY rowid",
+          "args": [],
+          "method": "all",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT rowid,data FROM messages WHERE id IN (?)",
+          "args": [
+            "source-message"
+          ],
+          "method": "all",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 256,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM chat_episodes WHERE id = ?",
+          "args": [
+            "source"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 177,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "runtime"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 379,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM chat_index_metadata WHERE id = ?",
+          "args": [
+            "chat-index"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 36,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "character"
+          ],
+          "method": "get",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        }
+      ],
+      "recentQueries": [
+        {
+          "sql": "WITH ranks AS (\n SELECT MAX(json_extract(data,'$.chatEpisodeId')) AS id,MAX(hdsi_epoch_ms(json_extract(data,'$.receivedAt'))) AS rank,MAX(hdsi_epoch_ms(json_extract(data,'$.receivedAt')) IS NULL) AS invalidTime FROM messages WHERE COALESCE(json_extract(data,'$.sharedActivityId'),'')='' AND COALESCE(json_extract(data,'$.chatEpisodeId'),'')!='' AND (json_extract(data,'$.direction')='outgoing' OR COALESCE(json_type(data,'$.seenTurnId'),'missing')!='null') GROUP BY json_extract(data,'$.chatEpisodeId')\n \n ),combined AS (SELECT id,MAX(rank) AS rank,MAX(invalidTime) AS invalidTime FROM ranks GROUP BY id),\n joined AS (SELECT c.id,c.rank,hdsi_epoch_ms(json_extract(e.data,'$.openedAt')) AS openedEpoch,c.invalidTime OR hdsi_epoch_ms(json_extract(e.data,'$.openedAt')) IS NULL AS invalidTime FROM combined c JOIN chat_episodes e ON e.id=c.id),\n ranked AS (SELECT *,MAX(invalidTime) OVER () AS anyInvalidTime,RANK() OVER (ORDER BY rank DESC,openedEpoch DESC) AS boundary FROM joined)\n SELECT id,rank,openedEpoch,anyInvalidTime AS invalidTime FROM ranked WHERE boundary<=?",
+          "args": [
+            4
+          ],
+          "method": "all",
+          "rows": 4,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM chat_episodes WHERE id IN (SELECT value FROM json_each(?)) ORDER BY rowid",
+          "args": [
+            "[\"e10000\",\"e10001\",\"e10002\",\"e10003\"]"
+          ],
+          "method": "all",
+          "rows": 4,
+          "jsonRows": 4,
+          "jsonBytes": 708,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT rowid,data FROM messages WHERE json_extract(data,'$.chatEpisodeId') IN (SELECT value FROM json_each(?)) AND COALESCE(json_extract(data,'$.sharedActivityId'),'')='' AND COALESCE(json_extract(data,'$.chatEpisodeId'),'')!='' AND (json_extract(data,'$.direction')='outgoing' OR COALESCE(json_type(data,'$.seenTurnId'),'missing')!='null') ORDER BY rowid",
+          "args": [
+            "[\"e10000\",\"e10001\",\"e10002\",\"e10003\"]"
+          ],
+          "method": "all",
+          "rows": 164,
+          "jsonRows": 164,
+          "jsonBytes": 40264,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM chat_index_metadata WHERE id = ?",
+          "args": [
+            "chat-index"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 36,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "runtime"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 379,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM turns WHERE COALESCE(json_extract(data,'$.done'),0)=0 AND COALESCE(json_extract(data,'$.legacyDisposition'),'')!='superseded' ORDER BY rowid",
+          "args": [],
+          "method": "all",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM chat_episodes WHERE json_extract(data,'$.status')='open' ORDER BY rowid",
+          "args": [],
+          "method": "all",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM messages WHERE json_extract(data,'$.direction')='incoming' AND json_type(data,'$.seenTurnId')='null' AND json_extract(data,'$.seenTurnId') IS NULL ORDER BY rowid",
+          "args": [],
+          "method": "all",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "runtime"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 379,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM tasks WHERE json_extract(data,'$.status')='pending' ORDER BY rowid",
+          "args": [],
+          "method": "all",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT rowid,data FROM messages WHERE id IN (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+          "args": [
+            "e10000:0",
+            "e10000:1",
+            "e10000:10",
+            "e10000:11",
+            "e10000:12",
+            "e10000:13",
+            "e10000:14",
+            "e10000:15",
+            "e10000:16",
+            "e10000:17",
+            "e10000:18",
+            "e10000:19",
+            "e10000:2",
+            "e10000:20",
+            "e10000:21",
+            "e10000:22",
+            "e10000:23",
+            "e10000:24",
+            "e10000:25",
+            "e10000:26",
+            "e10000:27",
+            "e10000:28",
+            "e10000:29",
+            "e10000:3",
+            "e10000:30",
+            "e10000:31",
+            "e10000:32",
+            "e10000:33",
+            "e10000:34",
+            "e10000:35",
+            "e10000:36",
+            "e10000:37",
+            "e10000:38",
+            "e10000:39",
+            "e10000:4",
+            "e10000:40",
+            "e10000:5",
+            "e10000:6",
+            "e10000:7",
+            "e10000:8",
+            "e10000:9",
+            "e10001:0",
+            "e10001:1",
+            "e10001:10",
+            "e10001:11",
+            "e10001:12",
+            "e10001:13",
+            "e10001:14",
+            "e10001:15",
+            "e10001:16",
+            "e10001:17",
+            "e10001:18",
+            "e10001:19",
+            "e10001:2",
+            "e10001:20",
+            "e10001:21",
+            "e10001:22",
+            "e10001:23",
+            "e10001:24",
+            "e10001:25",
+            "e10001:26",
+            "e10001:27",
+            "e10001:28",
+            "e10001:29",
+            "e10001:3",
+            "e10001:30",
+            "e10001:31",
+            "e10001:32",
+            "e10001:33",
+            "e10001:34",
+            "e10001:35",
+            "e10001:36",
+            "e10001:37",
+            "e10001:38",
+            "e10001:39",
+            "e10001:4",
+            "e10001:40",
+            "e10001:5",
+            "e10001:6",
+            "e10001:7",
+            "e10001:8",
+            "e10001:9",
+            "e10002:0",
+            "e10002:1",
+            "e10002:10",
+            "e10002:11",
+            "e10002:12",
+            "e10002:13",
+            "e10002:14",
+            "e10002:15",
+            "e10002:16",
+            "e10002:17",
+            "e10002:18",
+            "e10002:19",
+            "e10002:2",
+            "e10002:20",
+            "e10002:21",
+            "e10002:22",
+            "e10002:23",
+            "e10002:24",
+            "e10002:25",
+            "e10002:26",
+            "e10002:27",
+            "e10002:28",
+            "e10002:29",
+            "e10002:3",
+            "e10002:30",
+            "e10002:31",
+            "e10002:32",
+            "e10002:33",
+            "e10002:34",
+            "e10002:35",
+            "e10002:36",
+            "e10002:37",
+            "e10002:38",
+            "e10002:39",
+            "e10002:4",
+            "e10002:40",
+            "e10002:5",
+            "e10002:6",
+            "e10002:7",
+            "e10002:8",
+            "e10002:9",
+            "e10003:0",
+            "e10003:1",
+            "e10003:10",
+            "e10003:11",
+            "e10003:12",
+            "e10003:13",
+            "e10003:14",
+            "e10003:15",
+            "e10003:16",
+            "e10003:17",
+            "e10003:18",
+            "e10003:19",
+            "e10003:2",
+            "e10003:20",
+            "e10003:21",
+            "e10003:22",
+            "e10003:23",
+            "e10003:24",
+            "e10003:25",
+            "e10003:26",
+            "e10003:27",
+            "e10003:28",
+            "e10003:29",
+            "e10003:3",
+            "e10003:30",
+            "e10003:31",
+            "e10003:32",
+            "e10003:33",
+            "e10003:34",
+            "e10003:35",
+            "e10003:36",
+            "e10003:37",
+            "e10003:38",
+            "e10003:39",
+            "e10003:4",
+            "e10003:40",
+            "e10003:5",
+            "e10003:6",
+            "e10003:7",
+            "e10003:8",
+            "e10003:9"
+          ],
+          "method": "all",
+          "rows": 164,
+          "jsonRows": 164,
+          "jsonBytes": 40264,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM chat_episodes WHERE id = ?",
+          "args": [
+            "e10000"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 177,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM chat_episodes WHERE id = ?",
+          "args": [
+            "e10001"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 177,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM chat_episodes WHERE id = ?",
+          "args": [
+            "e10002"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 177,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM chat_episodes WHERE id = ?",
+          "args": [
+            "e10003"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 177,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "runtime"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 379,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM chat_index_metadata WHERE id = ?",
+          "args": [
+            "chat-index"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 36,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "character"
+          ],
+          "method": "get",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        }
+      ]
+    },
+    {
+      "H": 50000,
+      "memoryBuild": {
+        "queries": 16,
+        "rows": 10,
+        "jsonRows": 10,
+        "writes": 0
+      },
+      "memoryLookup": {
+        "queries": 16,
+        "rows": 10,
+        "jsonRows": 10,
+        "writes": 0
+      },
+      "recentWindow": {
+        "queries": 3,
+        "rows": 172,
+        "jsonRows": 168,
+        "writes": 0
+      },
+      "recentGate": {
+        "queries": 15,
+        "rows": 173,
+        "jsonRows": 173,
+        "writes": 0
+      },
+      "recentAll": {
+        "queries": 18,
+        "rows": 345,
+        "jsonRows": 341,
+        "writes": 0
+      },
+      "visibleRankPlan": [
+        {
+          "id": 2,
+          "parent": 0,
+          "notused": 0,
+          "detail": "CO-ROUTINE ranked"
+        },
+        {
+          "id": 5,
+          "parent": 2,
+          "notused": 0,
+          "detail": "CO-ROUTINE (subquery-8)"
+        },
+        {
+          "id": 8,
+          "parent": 5,
+          "notused": 0,
+          "detail": "CO-ROUTINE (subquery-9)"
+        },
+        {
+          "id": 10,
+          "parent": 8,
+          "notused": 0,
+          "detail": "CO-ROUTINE combined"
+        },
+        {
+          "id": 12,
+          "parent": 10,
+          "notused": 0,
+          "detail": "CO-ROUTINE ranks"
+        },
+        {
+          "id": 13,
+          "parent": 12,
+          "notused": 0,
+          "detail": "COMPOUND QUERY"
+        },
+        {
+          "id": 14,
+          "parent": 13,
+          "notused": 0,
+          "detail": "LEFT-MOST SUBQUERY"
+        },
+        {
+          "id": 21,
+          "parent": 14,
+          "notused": 213,
+          "detail": "SCAN messages USING INDEX message_chat_rank"
+        },
+        {
+          "id": 62,
+          "parent": 13,
+          "notused": 0,
+          "detail": "UNION ALL"
+        },
+        {
+          "id": 65,
+          "parent": 62,
+          "notused": 93,
+          "detail": "SEARCH messages USING INDEX sqlite_autoindex_messages_1 (id=?)"
+        },
+        {
+          "id": 69,
+          "parent": 62,
+          "notused": 0,
+          "detail": "LIST SUBQUERY 2"
+        },
+        {
+          "id": 71,
+          "parent": 69,
+          "notused": 0,
+          "detail": "SCAN json_each VIRTUAL TABLE INDEX 1:"
+        },
+        {
+          "id": 116,
+          "parent": 10,
+          "notused": 85,
+          "detail": "SCAN ranks"
+        },
+        {
+          "id": 119,
+          "parent": 10,
+          "notused": 0,
+          "detail": "USE TEMP B-TREE FOR GROUP BY"
+        },
+        {
+          "id": 165,
+          "parent": 8,
+          "notused": 82,
+          "detail": "SCAN c"
+        },
+        {
+          "id": 168,
+          "parent": 8,
+          "notused": 47,
+          "detail": "SEARCH e USING INDEX sqlite_autoindex_chat_episodes_1 (id=?)"
+        },
+        {
+          "id": 198,
+          "parent": 8,
+          "notused": 0,
+          "detail": "USE TEMP B-TREE FOR ORDER BY"
+        },
+        {
+          "id": 216,
+          "parent": 5,
+          "notused": 82,
+          "detail": "SCAN (subquery-9)"
+        },
+        {
+          "id": 295,
+          "parent": 2,
+          "notused": 82,
+          "detail": "SCAN (subquery-8)"
+        },
+        {
+          "id": 351,
+          "parent": 0,
+          "notused": 82,
+          "detail": "SCAN ranked"
+        }
+      ],
+      "memoryQueries": [
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "memory_embedding_signature"
+          ],
+          "method": "get",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        },
+        {
+          "sql": "WITH owners AS (\n      SELECT id,data FROM memories WHERE json_extract(data,'$.status') NOT IN ('merged','discarded') AND\n      ((json_extract(data,'$.kind')='short' AND json_extract(data,'$.capacityExitedAt') IS NULL AND (? OR julianday(json_extract(data,'$.shortExpiresAt'))>julianday(?))) OR\n       (json_extract(data,'$.kind')='long' AND json_extract(data,'$.status')!='durable' AND julianday(json_extract(data,'$.retainedFrom'))<=julianday(?) AND (? OR (CASE WHEN json_extract(data,'$.kind')='long' AND json_extract(data,'$.status')='active' AND json_extract(data,'$.mergedInto') IS NULL THEN COALESCE(json_extract(data,'$.archiveEnteredAt'),json_extract(data,'$.capacityExitedAt'),CASE WHEN julianday(json_extract(data,'$.expiresAt'))<=julianday(?) THEN json_extract(data,'$.expiresAt') END) END) IS NULL)))\n      UNION ALL SELECT id,data FROM details\n      UNION ALL SELECT id,data FROM learned_background WHERE json_extract(data,'$.status')='active')\n      SELECT o.data,i.vector FROM owners o LEFT JOIN memory_index i ON i.ownerType=json_extract(o.data,'$.ownerType') AND i.ownerId=o.id AND i.revision=json_extract(o.data,'$.revision') AND i.configSignature=?",
+          "args": [
+            0,
+            "2030-01-01T00:00:00Z",
+            "2030-01-01T00:00:00Z",
+            0,
+            "2030-01-01T00:00:00Z",
+            ""
+          ],
+          "method": "all",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 785,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "runtime"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 379,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT rowid,data FROM messages WHERE id IN (?)",
+          "args": [
+            "source-message"
+          ],
+          "method": "all",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 256,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM chat_index_metadata WHERE id = ?",
+          "args": [
+            "chat-index"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 36,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "runtime"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 379,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM turns WHERE COALESCE(json_extract(data,'$.done'),0)=0 AND COALESCE(json_extract(data,'$.legacyDisposition'),'')!='superseded' ORDER BY rowid",
+          "args": [],
+          "method": "all",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM chat_episodes WHERE json_extract(data,'$.status')='open' ORDER BY rowid",
+          "args": [],
+          "method": "all",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM messages WHERE json_extract(data,'$.direction')='incoming' AND json_type(data,'$.seenTurnId')='null' AND json_extract(data,'$.seenTurnId') IS NULL ORDER BY rowid",
+          "args": [],
+          "method": "all",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "runtime"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 379,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM tasks WHERE json_extract(data,'$.status')='pending' ORDER BY rowid",
+          "args": [],
+          "method": "all",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT rowid,data FROM messages WHERE id IN (?)",
+          "args": [
+            "source-message"
+          ],
+          "method": "all",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 256,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM chat_episodes WHERE id = ?",
+          "args": [
+            "source"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 177,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "runtime"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 379,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM chat_index_metadata WHERE id = ?",
+          "args": [
+            "chat-index"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 36,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "character"
+          ],
+          "method": "get",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        }
+      ],
+      "recentQueries": [
+        {
+          "sql": "WITH ranks AS (\n SELECT MAX(json_extract(data,'$.chatEpisodeId')) AS id,MAX(hdsi_epoch_ms(json_extract(data,'$.receivedAt'))) AS rank,MAX(hdsi_epoch_ms(json_extract(data,'$.receivedAt')) IS NULL) AS invalidTime FROM messages WHERE COALESCE(json_extract(data,'$.sharedActivityId'),'')='' AND COALESCE(json_extract(data,'$.chatEpisodeId'),'')!='' AND (json_extract(data,'$.direction')='outgoing' OR COALESCE(json_type(data,'$.seenTurnId'),'missing')!='null') GROUP BY json_extract(data,'$.chatEpisodeId')\n \n ),combined AS (SELECT id,MAX(rank) AS rank,MAX(invalidTime) AS invalidTime FROM ranks GROUP BY id),\n joined AS (SELECT c.id,c.rank,hdsi_epoch_ms(json_extract(e.data,'$.openedAt')) AS openedEpoch,c.invalidTime OR hdsi_epoch_ms(json_extract(e.data,'$.openedAt')) IS NULL AS invalidTime FROM combined c JOIN chat_episodes e ON e.id=c.id),\n ranked AS (SELECT *,MAX(invalidTime) OVER () AS anyInvalidTime,RANK() OVER (ORDER BY rank DESC,openedEpoch DESC) AS boundary FROM joined)\n SELECT id,rank,openedEpoch,anyInvalidTime AS invalidTime FROM ranked WHERE boundary<=?",
+          "args": [
+            4
+          ],
+          "method": "all",
+          "rows": 4,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM chat_episodes WHERE id IN (SELECT value FROM json_each(?)) ORDER BY rowid",
+          "args": [
+            "[\"e50000\",\"e50001\",\"e50002\",\"e50003\"]"
+          ],
+          "method": "all",
+          "rows": 4,
+          "jsonRows": 4,
+          "jsonBytes": 708,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT rowid,data FROM messages WHERE json_extract(data,'$.chatEpisodeId') IN (SELECT value FROM json_each(?)) AND COALESCE(json_extract(data,'$.sharedActivityId'),'')='' AND COALESCE(json_extract(data,'$.chatEpisodeId'),'')!='' AND (json_extract(data,'$.direction')='outgoing' OR COALESCE(json_type(data,'$.seenTurnId'),'missing')!='null') ORDER BY rowid",
+          "args": [
+            "[\"e50000\",\"e50001\",\"e50002\",\"e50003\"]"
+          ],
+          "method": "all",
+          "rows": 164,
+          "jsonRows": 164,
+          "jsonBytes": 40264,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM chat_index_metadata WHERE id = ?",
+          "args": [
+            "chat-index"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 36,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "runtime"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 379,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM turns WHERE COALESCE(json_extract(data,'$.done'),0)=0 AND COALESCE(json_extract(data,'$.legacyDisposition'),'')!='superseded' ORDER BY rowid",
+          "args": [],
+          "method": "all",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM chat_episodes WHERE json_extract(data,'$.status')='open' ORDER BY rowid",
+          "args": [],
+          "method": "all",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM messages WHERE json_extract(data,'$.direction')='incoming' AND json_type(data,'$.seenTurnId')='null' AND json_extract(data,'$.seenTurnId') IS NULL ORDER BY rowid",
+          "args": [],
+          "method": "all",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "runtime"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 379,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM tasks WHERE json_extract(data,'$.status')='pending' ORDER BY rowid",
+          "args": [],
+          "method": "all",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT rowid,data FROM messages WHERE id IN (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+          "args": [
+            "e50000:0",
+            "e50000:1",
+            "e50000:10",
+            "e50000:11",
+            "e50000:12",
+            "e50000:13",
+            "e50000:14",
+            "e50000:15",
+            "e50000:16",
+            "e50000:17",
+            "e50000:18",
+            "e50000:19",
+            "e50000:2",
+            "e50000:20",
+            "e50000:21",
+            "e50000:22",
+            "e50000:23",
+            "e50000:24",
+            "e50000:25",
+            "e50000:26",
+            "e50000:27",
+            "e50000:28",
+            "e50000:29",
+            "e50000:3",
+            "e50000:30",
+            "e50000:31",
+            "e50000:32",
+            "e50000:33",
+            "e50000:34",
+            "e50000:35",
+            "e50000:36",
+            "e50000:37",
+            "e50000:38",
+            "e50000:39",
+            "e50000:4",
+            "e50000:40",
+            "e50000:5",
+            "e50000:6",
+            "e50000:7",
+            "e50000:8",
+            "e50000:9",
+            "e50001:0",
+            "e50001:1",
+            "e50001:10",
+            "e50001:11",
+            "e50001:12",
+            "e50001:13",
+            "e50001:14",
+            "e50001:15",
+            "e50001:16",
+            "e50001:17",
+            "e50001:18",
+            "e50001:19",
+            "e50001:2",
+            "e50001:20",
+            "e50001:21",
+            "e50001:22",
+            "e50001:23",
+            "e50001:24",
+            "e50001:25",
+            "e50001:26",
+            "e50001:27",
+            "e50001:28",
+            "e50001:29",
+            "e50001:3",
+            "e50001:30",
+            "e50001:31",
+            "e50001:32",
+            "e50001:33",
+            "e50001:34",
+            "e50001:35",
+            "e50001:36",
+            "e50001:37",
+            "e50001:38",
+            "e50001:39",
+            "e50001:4",
+            "e50001:40",
+            "e50001:5",
+            "e50001:6",
+            "e50001:7",
+            "e50001:8",
+            "e50001:9",
+            "e50002:0",
+            "e50002:1",
+            "e50002:10",
+            "e50002:11",
+            "e50002:12",
+            "e50002:13",
+            "e50002:14",
+            "e50002:15",
+            "e50002:16",
+            "e50002:17",
+            "e50002:18",
+            "e50002:19",
+            "e50002:2",
+            "e50002:20",
+            "e50002:21",
+            "e50002:22",
+            "e50002:23",
+            "e50002:24",
+            "e50002:25",
+            "e50002:26",
+            "e50002:27",
+            "e50002:28",
+            "e50002:29",
+            "e50002:3",
+            "e50002:30",
+            "e50002:31",
+            "e50002:32",
+            "e50002:33",
+            "e50002:34",
+            "e50002:35",
+            "e50002:36",
+            "e50002:37",
+            "e50002:38",
+            "e50002:39",
+            "e50002:4",
+            "e50002:40",
+            "e50002:5",
+            "e50002:6",
+            "e50002:7",
+            "e50002:8",
+            "e50002:9",
+            "e50003:0",
+            "e50003:1",
+            "e50003:10",
+            "e50003:11",
+            "e50003:12",
+            "e50003:13",
+            "e50003:14",
+            "e50003:15",
+            "e50003:16",
+            "e50003:17",
+            "e50003:18",
+            "e50003:19",
+            "e50003:2",
+            "e50003:20",
+            "e50003:21",
+            "e50003:22",
+            "e50003:23",
+            "e50003:24",
+            "e50003:25",
+            "e50003:26",
+            "e50003:27",
+            "e50003:28",
+            "e50003:29",
+            "e50003:3",
+            "e50003:30",
+            "e50003:31",
+            "e50003:32",
+            "e50003:33",
+            "e50003:34",
+            "e50003:35",
+            "e50003:36",
+            "e50003:37",
+            "e50003:38",
+            "e50003:39",
+            "e50003:4",
+            "e50003:40",
+            "e50003:5",
+            "e50003:6",
+            "e50003:7",
+            "e50003:8",
+            "e50003:9"
+          ],
+          "method": "all",
+          "rows": 164,
+          "jsonRows": 164,
+          "jsonBytes": 40264,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM chat_episodes WHERE id = ?",
+          "args": [
+            "e50000"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 177,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM chat_episodes WHERE id = ?",
+          "args": [
+            "e50001"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 177,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM chat_episodes WHERE id = ?",
+          "args": [
+            "e50002"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 177,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM chat_episodes WHERE id = ?",
+          "args": [
+            "e50003"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 177,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "runtime"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 379,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM chat_index_metadata WHERE id = ?",
+          "args": [
+            "chat-index"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 36,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "character"
+          ],
+          "method": "get",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        }
+      ]
+    }
+  ]
+}

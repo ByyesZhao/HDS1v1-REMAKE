@@ -1,0 +1,61 @@
+{
+  "dialogue": [
+    {
+      "size": 1000,
+      "medianMs": {
+        "full": 5.6638000000000375,
+        "active": 3.2801000000000045
+      },
+      "cost": {
+        "ms": 4.1601,
+        "queries": 67,
+        "decoded": 46,
+        "returnedDataRows": 46
+      }
+    },
+    {
+      "size": 10000,
+      "medianMs": {
+        "full": 52.684499999999844,
+        "active": 4.192500000000109
+      },
+      "cost": {
+        "ms": 4.192500000000109,
+        "queries": 67,
+        "decoded": 46,
+        "returnedDataRows": 46
+      }
+    },
+    {
+      "size": 50000,
+      "medianMs": {
+        "full": 411.8905999999997,
+        "active": 3.5010999999994965
+      },
+      "cost": {
+        "ms": 4.282900000000154,
+        "queries": 67,
+        "decoded": 46,
+        "returnedDataRows": 46
+      }
+    }
+  ],
+  "status": [
+    {
+      "size": 10,
+      "medianMs": 0.2893999999996595,
+      "chars": 153
+    },
+    {
+      "size": 100,
+      "medianMs": 1.0861999999997352,
+      "chars": 155
+    },
+    {
+      "size": 1000,
+      "medianMs": 9.51260000000184,
+      "chars": 157
+    }
+  ],
+  "output": "D:\\HDSI-remake\\docs\\v0.5\\reviews\\postfix-evidence-20261009"
+}

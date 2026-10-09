@@ -1,0 +1,1382 @@
+[
+  {
+    "file": "README.md",
+    "bytes": 9721,
+    "lines": 146,
+    "sha256": "12f3ce544a5f66e1c25c3fca9b13e60c8e016c97f74cfb8986ddd967e2546ef4"
+  },
+  {
+    "file": "docs/v0.5/README.md",
+    "bytes": 7751,
+    "lines": 74,
+    "sha256": "1af30556138dd00c512b65a000f8421b333170da9b520ff96a79930ab16dee9c"
+  },
+  {
+    "file": "docs/v0.5/architecture/REMAKE_V0.5.md",
+    "bytes": 11644,
+    "lines": 127,
+    "sha256": "c671e9a1ffb7a1630fc5d15063ad1499619439fe685c0cb0472506bf8b72cabb"
+  },
+  {
+    "file": "docs/v0.5/subsystems/REMAKE_V0.5_DIRECTORS.md",
+    "bytes": 8977,
+    "lines": 97,
+    "sha256": "9a275867c199a4d94ce295c540ed0595d4d409ab5053c590ff337b2e0e18efc6"
+  },
+  {
+    "file": "docs/v0.5/subsystems/REMAKE_V0.5_SCHEDULING.md",
+    "bytes": 8569,
+    "lines": 106,
+    "sha256": "fff7ea728886f6a3893e93e7134b2ba12c80af1f9130a28365ccf86864025237"
+  },
+  {
+    "file": "docs/v0.5/subsystems/REMAKE_V0.5_MEMORY.md",
+    "bytes": 13991,
+    "lines": 136,
+    "sha256": "ad5c4b629109904bae4b8aa1275a2bb5796efbd639d206bd75da27143f8bc16e"
+  },
+  {
+    "file": "docs/v0.5/subsystems/REMAKE_V0.5_SHARED_ACTIVITY.md",
+    "bytes": 8016,
+    "lines": 86,
+    "sha256": "bd0cfbef03980d3f0cad35e6fd9a358c20ccc1a90e75861810c74d094d247693"
+  },
+  {
+    "file": "docs/v0.5/subsystems/REMAKE_V0.5_CONTEXT.md",
+    "bytes": 10113,
+    "lines": 93,
+    "sha256": "4de8384e0d9af991369271c1361772badee49c4359da38834e3138687ddfa336"
+  },
+  {
+    "file": "docs/v0.5/subsystems/REMAKE_V0.5_EXPRESSION_STICKERS.md",
+    "bytes": 4633,
+    "lines": 54,
+    "sha256": "e7eb8f5d49e1530a686fd1e73e67ac3a8235e37718fba355e83f5a2f2c4f1d23"
+  },
+  {
+    "file": "docs/v0.5/subsystems/REMAKE_V0.5_WEB_SEARCH.md",
+    "bytes": 6366,
+    "lines": 69,
+    "sha256": "4f10661e0c694e8548cd78fe59c2798fab93223a6d1543cc9b191b8811b703fd"
+  },
+  {
+    "file": "docs/v0.5/subsystems/REMAKE_V0.5_RECOVERY.md",
+    "bytes": 10837,
+    "lines": 108,
+    "sha256": "b087e3444f0a6dccb1c5580cb75a901850325a2e6c175ac5ced510feab1578ed"
+  },
+  {
+    "file": "docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md",
+    "bytes": 24583,
+    "lines": 231,
+    "sha256": "031f9a94fe4b7acaa026b22f550f7b2432a7c7572a4029a7262442461f7336a8"
+  },
+  {
+    "file": "src/app.ts",
+    "bytes": 21124,
+    "lines": 234,
+    "sha256": "bce875b0e2740be64fb0c0391b8d109951679ad2af3a9039190d1394116f1f77"
+  },
+  {
+    "file": "src/config.ts",
+    "bytes": 1778,
+    "lines": 32,
+    "sha256": "ebb76cd377ed2f21189a8940d87f5c7864fee06762456e39d496f7d1a40f8d49"
+  },
+  {
+    "file": "src/deployment/character-background.ts",
+    "bytes": 1888,
+    "lines": 19,
+    "sha256": "512e2cb300b78db7e32774c75ca5e6139663e64fc73c54ad0c32b1766312712f"
+  },
+  {
+    "file": "src/deployment/chat-upgrade.ts",
+    "bytes": 9548,
+    "lines": 74,
+    "sha256": "b7fb489f0fe20bb747cc0797427502d487403736961695fc89623d15dd82db4c"
+  },
+  {
+    "file": "src/deployment/credentials.ts",
+    "bytes": 580,
+    "lines": 11,
+    "sha256": "3d37a157a6c2363795d7f8a03a8ef3f857c635cabbfff85254d93a37c110641c"
+  },
+  {
+    "file": "src/deployment/dialogue-upgrade.ts",
+    "bytes": 12130,
+    "lines": 79,
+    "sha256": "6f450cea1e336a833e3b109f107b0410fbb674f8a52c1ada83857a6d2b96b04c"
+  },
+  {
+    "file": "src/deployment/environment-upgrade.ts",
+    "bytes": 8172,
+    "lines": 64,
+    "sha256": "6e62d99f52f95f6c8f1db369ed543e8d667ddee5cdf629e66ae13edbcc1e1990"
+  },
+  {
+    "file": "src/deployment/memory-capacity-upgrade.ts",
+    "bytes": 5142,
+    "lines": 39,
+    "sha256": "ed09ed84c934dd2023b7cb52207fb4ffbc349ac9be057d684e26924601c9834b"
+  },
+  {
+    "file": "src/deployment/memory-runtime.ts",
+    "bytes": 3116,
+    "lines": 26,
+    "sha256": "445c8206c6d4cf9a4a8681873baecea7471bae20525a7ccc2418f232601c9222"
+  },
+  {
+    "file": "src/deployment/prompt-context-acceptance.ts",
+    "bytes": 13782,
+    "lines": 96,
+    "sha256": "995304e9758bbf874eb4d55ad5b62255fe53cd39581dfe13be984e1eba669883"
+  },
+  {
+    "file": "src/deployment/prompt-quality-acceptance.ts",
+    "bytes": 7739,
+    "lines": 55,
+    "sha256": "377ef028002cd5ec25239cb2bd70e81b51fd15cdde34c63d438f780772ab1185"
+  },
+  {
+    "file": "src/deployment/shared-upgrade.ts",
+    "bytes": 4656,
+    "lines": 64,
+    "sha256": "63ccc7d80ec5f819df0723b2e9d62ff418c53f49943065ab0f61a04c17703a9a"
+  },
+  {
+    "file": "src/deployment/sticker-catalog.ts",
+    "bytes": 2272,
+    "lines": 28,
+    "sha256": "25839088a51dda57f73972f38acf1f775ffabd3f6c8290f092370c8b798c1f98"
+  },
+  {
+    "file": "src/deployment/web-runtime.ts",
+    "bytes": 477,
+    "lines": 8,
+    "sha256": "950e47096ab1964b278a1978d7bc9a5165940d299a1d392eedfe5daadd41fcae"
+  },
+  {
+    "file": "src/dialogue/active-consistency.ts",
+    "bytes": 4713,
+    "lines": 49,
+    "sha256": "5fa736c04106c7440c303c690f1f93443cfc7d0f2fe8c3f97d85515e705c1ce1"
+  },
+  {
+    "file": "src/dialogue/activity-context.ts",
+    "bytes": 1733,
+    "lines": 20,
+    "sha256": "4a7799e5e2a69dd4295f17c60a29e2c7fdf3500c6559927122183f57069f223d"
+  },
+  {
+    "file": "src/dialogue/chat-episodes.ts",
+    "bytes": 5346,
+    "lines": 48,
+    "sha256": "06dcf63a7a2132ed115d942dd3c99cff1e79ff142588f7ace6fed9c3a8c44e92"
+  },
+  {
+    "file": "src/dialogue/chat-window.ts",
+    "bytes": 1283,
+    "lines": 10,
+    "sha256": "71ba5e7f00e0422057fb268dd4961340aff4d6da32afc9035b4ce4aaab6fdada"
+  },
+  {
+    "file": "src/dialogue/episodes.ts",
+    "bytes": 8268,
+    "lines": 77,
+    "sha256": "41b1374b425bd950eb229308c5df02322b4970846d66045cf8ac6b54f3e1043c"
+  },
+  {
+    "file": "src/dialogue/errors.ts",
+    "bytes": 129,
+    "lines": 2,
+    "sha256": "26e7ee661e769526c8e48f7da1bc38388a270cafcea773083f48be38a7c01c08"
+  },
+  {
+    "file": "src/dialogue/store.ts",
+    "bytes": 1195,
+    "lines": 16,
+    "sha256": "4fd0fcfc29e9484b7cc7191ceeef68c7756667671f217c78ea74e4ed6025c173"
+  },
+  {
+    "file": "src/dialogue/types.ts",
+    "bytes": 1696,
+    "lines": 18,
+    "sha256": "bc08effa607fee786aaedeffd9d1f85053949615ad481e30a1f572f4a40307ac"
+  },
+  {
+    "file": "src/dialogue/window-consistency.ts",
+    "bytes": 6554,
+    "lines": 51,
+    "sha256": "d8090aa9e0180c4b41454df93919f11975dfb68a0e860516bf133af1869962d8"
+  },
+  {
+    "file": "src/directors/narrative.ts",
+    "bytes": 672,
+    "lines": 5,
+    "sha256": "ec98862ee6281a2dcc7b27e81e6ce3cef5568873574604294dc72cc9ddab64ce"
+  },
+  {
+    "file": "src/directors/personal.ts",
+    "bytes": 675,
+    "lines": 5,
+    "sha256": "62f4e2d09b7e55ecab7008081522b5fc6a4b66d503e507c1c3d51e9d30bf76b2"
+  },
+  {
+    "file": "src/directors/school.ts",
+    "bytes": 2619,
+    "lines": 31,
+    "sha256": "fc75bd5f7f78e0976f2c8b80b6d1d2b7cf453a2b56e8ade19c858937b8a3d9c9"
+  },
+  {
+    "file": "src/directors/world.ts",
+    "bytes": 1218,
+    "lines": 16,
+    "sha256": "0a9b5af4542892b450a0eabbfcc1ce57b804010648b6ab60593a16f6a1f41784"
+  },
+  {
+    "file": "src/embedding.ts",
+    "bytes": 1110,
+    "lines": 21,
+    "sha256": "327bb8d87ed2f395a043e8c6c83bf82a5e970f1eb3bb2828678294f859e71648"
+  },
+  {
+    "file": "src/environment/runtime.ts",
+    "bytes": 5528,
+    "lines": 51,
+    "sha256": "ecf31c0bb430069a5500b02feca75bf1bad5e91891ae99f95b4d15542a4296c4"
+  },
+  {
+    "file": "src/environment/scheduler.ts",
+    "bytes": 4392,
+    "lines": 50,
+    "sha256": "1bfb421cfda17fa604e58733206eeb231fc038f9125ac2603871ebbf6588aaa2"
+  },
+  {
+    "file": "src/environment/store.ts",
+    "bytes": 685,
+    "lines": 12,
+    "sha256": "e6b8b0c44b20db340e457b5f916b8ef313b3a281a7b1b145b53f1744f5de544e"
+  },
+  {
+    "file": "src/environment/types.ts",
+    "bytes": 2162,
+    "lines": 15,
+    "sha256": "cfa1b31e9b7c00f188864f38526d5c417199469c05ebb3e42b16289fd67af9ee"
+  },
+  {
+    "file": "src/host/input.ts",
+    "bytes": 4560,
+    "lines": 73,
+    "sha256": "2df8ee81a8cc37c0cb66e8083b6cf501732b2066f322a90d7d9cc834eaa61e95"
+  },
+  {
+    "file": "src/host/probability.ts",
+    "bytes": 689,
+    "lines": 11,
+    "sha256": "9f8842dc08486fa07237f3c33400bf8f24e23c73f6eafd7ee14507623a370b03"
+  },
+  {
+    "file": "src/host/runtime.ts",
+    "bytes": 9116,
+    "lines": 124,
+    "sha256": "4aca10907634471b6e4989ec8bdbdecc6e6a4b18b416260c8f320455e95d3828"
+  },
+  {
+    "file": "src/host/scheduler.ts",
+    "bytes": 7713,
+    "lines": 113,
+    "sha256": "5991232ed2e57cdf836bb43a007ac1534f142a800ce38de7927d47681277f441"
+  },
+  {
+    "file": "src/host/shared.ts",
+    "bytes": 8786,
+    "lines": 121,
+    "sha256": "305d771d2f46383ee634445ffbee0174009b87723dd5007ed87bd7e600bc8374"
+  },
+  {
+    "file": "src/host/state.ts",
+    "bytes": 4101,
+    "lines": 64,
+    "sha256": "20a929c7c534f4cfec1e725650768ede09be50f24e2fc580318d03d8d5df04e5"
+  },
+  {
+    "file": "src/index.ts",
+    "bytes": 9714,
+    "lines": 126,
+    "sha256": "c56d9b61b1a67d138c1c62f9d51f00bec5dac2e27adb96ea735d28b9c8d62546"
+  },
+  {
+    "file": "src/memory/capacity.ts",
+    "bytes": 8164,
+    "lines": 77,
+    "sha256": "d00fe8733e8d9559cb6ba1ee0e208fe746c8ec70f31ec27f904d7ccc420bb1c3"
+  },
+  {
+    "file": "src/memory/cleanup.ts",
+    "bytes": 5237,
+    "lines": 51,
+    "sha256": "31170b44593e5f53fa01a208f2df1fc96562b9264580838e569efccf251eded0"
+  },
+  {
+    "file": "src/memory/context.ts",
+    "bytes": 1166,
+    "lines": 18,
+    "sha256": "c34c2ee5e9fe1ab949a1d6e60207d7c4963905d216ad832846af2fcb584a219e"
+  },
+  {
+    "file": "src/memory/idle.ts",
+    "bytes": 2489,
+    "lines": 35,
+    "sha256": "e18a1bfd201919e05235fc58b441590f036930e1384b28198f4fde587b8b732e"
+  },
+  {
+    "file": "src/memory/index.ts",
+    "bytes": 3441,
+    "lines": 63,
+    "sha256": "ecddf16182bd4e0fe22f51115e115df95b8c0c49161509e0e3017886b3cb5f3f"
+  },
+  {
+    "file": "src/memory/lexical.ts",
+    "bytes": 1712,
+    "lines": 22,
+    "sha256": "2e0db3fbf8d2c0e03897a400626cfbf8910894f1191ac09b4d3f9de3e1d8169e"
+  },
+  {
+    "file": "src/memory/lifecycle.ts",
+    "bytes": 20844,
+    "lines": 182,
+    "sha256": "75be8e5e2e1d65509f9c09042f3632ce00b5daafba4c00aed3b73f1ebce26655"
+  },
+  {
+    "file": "src/memory/maintenance.ts",
+    "bytes": 25288,
+    "lines": 239,
+    "sha256": "1954e93c84b4baf5652dd97542e54108d7f02d420fec0d092b0d2663223c7039"
+  },
+  {
+    "file": "src/memory/metadata.ts",
+    "bytes": 2392,
+    "lines": 21,
+    "sha256": "9fcff59b19dd353090e6966b9d339d246cdb587748b16af002161430158ef7bb"
+  },
+  {
+    "file": "src/memory/organize.ts",
+    "bytes": 6515,
+    "lines": 74,
+    "sha256": "c15dff01c0963e78ece0c17526049a74d155a1967cb0f0ee8650a558b31e3017"
+  },
+  {
+    "file": "src/memory/retrieval.ts",
+    "bytes": 8734,
+    "lines": 91,
+    "sha256": "40f745f9e4d892decbd5e6f90a3bbaf8183fe83eea85db48b53f0a7e60842c5f"
+  },
+  {
+    "file": "src/memory/store.ts",
+    "bytes": 24488,
+    "lines": 214,
+    "sha256": "d23378b2fd1371946031ca6c6545f2f494206313277562856244d76a8972f653"
+  },
+  {
+    "file": "src/memory/summary-repair.ts",
+    "bytes": 571,
+    "lines": 6,
+    "sha256": "eb940528c9ad4386c375f389eda7e721f1d6ab51e697c6c5cbbb6e39c4cb20da"
+  },
+  {
+    "file": "src/memory/types.ts",
+    "bytes": 7807,
+    "lines": 58,
+    "sha256": "e2216c8a70b109b241b3e825a1b93fd975d4d9afa38807b9f3f5dfb699f36be9"
+  },
+  {
+    "file": "src/model/background-views.ts",
+    "bytes": 1552,
+    "lines": 15,
+    "sha256": "3c6c2097db5e37796b78cfb193aea0aec2d6f37b9c265aad79ecfbc57326200c"
+  },
+  {
+    "file": "src/model/client.ts",
+    "bytes": 10222,
+    "lines": 119,
+    "sha256": "e3b6dd04c6029c2cde22e4c20b8b6894d689b6d3a26a73b2d71aa6b06bcca178"
+  },
+  {
+    "file": "src/model/context-types.ts",
+    "bytes": 3246,
+    "lines": 17,
+    "sha256": "11708fab90ea3be33257f6be6971e0ac1f7a5fcc32fbcf6a8cf6aa79a7e7eb5a"
+  },
+  {
+    "file": "src/model/context-views.ts",
+    "bytes": 9055,
+    "lines": 71,
+    "sha256": "f9b255c4319dd3bce92c043ea105ea22eeb58a7177380c8ec50a461cfd3d2844"
+  },
+  {
+    "file": "src/model/contracts.ts",
+    "bytes": 21990,
+    "lines": 201,
+    "sha256": "ab6b1c4abe9a87e7e359f69d00164dfb994df982f05d3d02ec5cf5293b7fe838"
+  },
+  {
+    "file": "src/model/prompt-policy.ts",
+    "bytes": 4987,
+    "lines": 30,
+    "sha256": "0462fdb9472d883a9a5c9d6ce4948e151d1f3da23fc3576b8d0e8f2c60b7f137"
+  },
+  {
+    "file": "src/model/prompts.ts",
+    "bytes": 20686,
+    "lines": 30,
+    "sha256": "8c448032b12a9adbeb003beffe1f06c3e79d0b5bb59c2b654f899e36ba17ee73"
+  },
+  {
+    "file": "src/model/resource-pool.ts",
+    "bytes": 3847,
+    "lines": 41,
+    "sha256": "0fc326fbd08d4131dbf0e6877392d738ff133cced79f205931576011d25ff712"
+  },
+  {
+    "file": "src/output/expression.ts",
+    "bytes": 461,
+    "lines": 5,
+    "sha256": "4c0687401e7f41c3aa66626d091d560c366bae2a4a1aabc7eb43d7a1804afdf0"
+  },
+  {
+    "file": "src/output/qq.ts",
+    "bytes": 1171,
+    "lines": 20,
+    "sha256": "9572c579d320129947df8da82c4f0e0f0c46819c15e36eacac26785fe21e605f"
+  },
+  {
+    "file": "src/output/sticker-description.ts",
+    "bytes": 665,
+    "lines": 8,
+    "sha256": "178adfc1b9f77f6cfab488b0d1c1fe2e1c15e58891649098047c28ddf69a194b"
+  },
+  {
+    "file": "src/output/stickers.ts",
+    "bytes": 2418,
+    "lines": 38,
+    "sha256": "a8679101fa33f54565854874690dc79f83a12df6eb3c03de9a720285dab2d5f5"
+  },
+  {
+    "file": "src/recovery.ts",
+    "bytes": 9422,
+    "lines": 136,
+    "sha256": "26bb06d19431a953842b931e2bacc9b5b16ad9c89cf525c5c534a0d60f80f6a7"
+  },
+  {
+    "file": "src/school/calendar.ts",
+    "bytes": 19930,
+    "lines": 176,
+    "sha256": "6396042ca8938340f230452fd323ec29addcd6ab02033c95a0e1fd5b2e87a972"
+  },
+  {
+    "file": "src/school/changes.ts",
+    "bytes": 4244,
+    "lines": 45,
+    "sha256": "8d96c0dc3f6a11fba911776deef1d5b7a33271d94ab1d0219ee508aaef2186c9"
+  },
+  {
+    "file": "src/school/context.ts",
+    "bytes": 3101,
+    "lines": 31,
+    "sha256": "0047f30dc0dfe9f49c7b69fa99a9534d7eaa2290129939cb407136c95b4f7bbc"
+  },
+  {
+    "file": "src/school/contracts.ts",
+    "bytes": 8971,
+    "lines": 55,
+    "sha256": "f7c06177d74aa8a027b20575270fa7278f1167fb68627699274a55c817eb6e6a"
+  },
+  {
+    "file": "src/school/knowledge.ts",
+    "bytes": 826,
+    "lines": 13,
+    "sha256": "fa34878c675086b69f9c04ccf7d90916dc0a96729d52b680123d1fe37840d120"
+  },
+  {
+    "file": "src/school/notices.ts",
+    "bytes": 5420,
+    "lines": 58,
+    "sha256": "c892fe1365097bea3365279f0573ae307d66dca2c4ef7fc0c4d1b37cdf33ceb1"
+  },
+  {
+    "file": "src/school/progress.ts",
+    "bytes": 6865,
+    "lines": 59,
+    "sha256": "94f2054ee183d8a2c32c9967f27fc5833a2149d33364088283a0c63e1051d0c0"
+  },
+  {
+    "file": "src/school/store.ts",
+    "bytes": 512,
+    "lines": 12,
+    "sha256": "fd4a304fa35d63b545fa1a5b03db76c6a3a061efd2836d90f080b7d6f8cb2827"
+  },
+  {
+    "file": "src/school/timing.ts",
+    "bytes": 1696,
+    "lines": 21,
+    "sha256": "5bf9d956a3736c959f3999d6473a5d134fc753eb207f9881320646a03e68c888"
+  },
+  {
+    "file": "src/school/types.ts",
+    "bytes": 5665,
+    "lines": 41,
+    "sha256": "e11ebbe5d670d82e5b26bbb87723eb454597599a15f6928d4569b405fee412a5"
+  },
+  {
+    "file": "src/settings.ts",
+    "bytes": 8631,
+    "lines": 90,
+    "sha256": "dbb4125d57d1524fda25c38cf916e20f7450c6ac34a6028cddaf96b88295573e"
+  },
+  {
+    "file": "src/storage.ts",
+    "bytes": 10293,
+    "lines": 107,
+    "sha256": "80d0cf9dae13eb5207fcd0e68ca4e49613f7267e7b55e49eb958c64b27fc2006"
+  },
+  {
+    "file": "src/time.ts",
+    "bytes": 1954,
+    "lines": 33,
+    "sha256": "5d45159f846cd566eaa66a846808f4ba6964f47bfe6b7fac20b3d493e07d6487"
+  },
+  {
+    "file": "src/types.ts",
+    "bytes": 10097,
+    "lines": 120,
+    "sha256": "5f7dc782ceca689a11db141012553f1ca0b015f351a637f3357b21fd614aa01b"
+  },
+  {
+    "file": "src/web/content.ts",
+    "bytes": 1959,
+    "lines": 22,
+    "sha256": "47e4ab25448f7df7ba8c112102abd8921dc2ebf1f81bc647dfe5010d3f5733fe"
+  },
+  {
+    "file": "src/web/phases.ts",
+    "bytes": 501,
+    "lines": 8,
+    "sha256": "f144284e06993e12ebe5dbb3ac5729615b7ae2c638d82c496403b7152782e7c7"
+  },
+  {
+    "file": "src/web/provider.ts",
+    "bytes": 618,
+    "lines": 11,
+    "sha256": "9d623d499a9ab395b5b3115ee82b76e93ac6c1f1ff04f306143534198d608223"
+  },
+  {
+    "file": "src/web/service.ts",
+    "bytes": 8011,
+    "lines": 68,
+    "sha256": "25f79abce11e81542c60668328274aff045261e0844407b939ccf35b7679e92c"
+  },
+  {
+    "file": "src/web/status.ts",
+    "bytes": 1009,
+    "lines": 8,
+    "sha256": "ba0fee13de7e812c7711cdc22758583b8a999c8c8a60476db7f36b2d91cd2ec5"
+  },
+  {
+    "file": "src/web/store.ts",
+    "bytes": 11016,
+    "lines": 80,
+    "sha256": "21d9f5b17626cb810e68d4ae4a4d6342b2b448e0c8ef27e35f31486c22797a8c"
+  },
+  {
+    "file": "src/web/types.ts",
+    "bytes": 3346,
+    "lines": 32,
+    "sha256": "caf1c7f2471c340a35b288944f2e87ac518227499f7ff41659da01b13063fb03"
+  },
+  {
+    "file": "tests/activity-context.test.ts",
+    "bytes": 7300,
+    "lines": 22,
+    "sha256": "faf8dc9296734233ee2c09bb6ba7eba46b7290825f3e1e120a97b883985a266a"
+  },
+  {
+    "file": "tests/activity-memory-context.test.ts",
+    "bytes": 6696,
+    "lines": 18,
+    "sha256": "36637cd15ee7eca8b258ac7a7264442c0e09351152580adb1da672c2a53f2854"
+  },
+  {
+    "file": "tests/background-stage-views.test.ts",
+    "bytes": 1749,
+    "lines": 14,
+    "sha256": "1c5b907442e3c7bd6fb07e7e617760160a63105bbc8caa4a6aeb1c226408ee83"
+  },
+  {
+    "file": "tests/chat-active-consistency.test.ts",
+    "bytes": 7726,
+    "lines": 69,
+    "sha256": "db6e693b0a0cfb84e40a0c872beff1ce17e6f0c044d8889da33a0f036a526131"
+  },
+  {
+    "file": "tests/chat-consistency.test.ts",
+    "bytes": 7230,
+    "lines": 19,
+    "sha256": "7089dcb26f367c26ffc1f3f4155958f4b00f3b85be8fcf42ea521d6f5da37979"
+  },
+  {
+    "file": "tests/chat-episodes.test.ts",
+    "bytes": 4339,
+    "lines": 23,
+    "sha256": "8a2b83b32b383b35b85d956c3accc10ac398af0e3d8f13bb325ce006c1169f6e"
+  },
+  {
+    "file": "tests/chat-fixture.ts",
+    "bytes": 443,
+    "lines": 5,
+    "sha256": "44d7df9d899a89da92443f5073664d871b5c720d272a581a653a3f0e3779bf01"
+  },
+  {
+    "file": "tests/chat-flow.test.ts",
+    "bytes": 6361,
+    "lines": 15,
+    "sha256": "7843d179eec1d1e94f583a969aab2d25c5a0eadf7a574a19436b70699dd32eba"
+  },
+  {
+    "file": "tests/chat-input-cost.test.ts",
+    "bytes": 1575,
+    "lines": 13,
+    "sha256": "dafb2623fe5459e034e6c7ae8203cdbb333a479543d0fa0d80b3b8bc949c7702"
+  },
+  {
+    "file": "tests/chat-recovery.test.ts",
+    "bytes": 9904,
+    "lines": 23,
+    "sha256": "c96c850bc5afcaffdf306915612253819b4f6c4e9653d01749cfd67edacc1c8b"
+  },
+  {
+    "file": "tests/chat-upgrade.test.ts",
+    "bytes": 8070,
+    "lines": 30,
+    "sha256": "524cafb0ce3a9355e8f23d210b0755de1a021ec11a7cf9dc55dffb57ed387bab"
+  },
+  {
+    "file": "tests/chat-window-snapshot.test.ts",
+    "bytes": 1957,
+    "lines": 21,
+    "sha256": "cadadc95cb7a295929dc41b81b8b8cde692749ba62516045dd70373922901ef7"
+  },
+  {
+    "file": "tests/deployment.test.ts",
+    "bytes": 3897,
+    "lines": 57,
+    "sha256": "4874d22269739fd8a7a607afd2d79b5500c89f5996804efb082341f8110c0806"
+  },
+  {
+    "file": "tests/dialogue-episodes.test.ts",
+    "bytes": 4773,
+    "lines": 29,
+    "sha256": "556cfc8bd0509ad2d97f7fad6d98fcbfd60cd02bcdb178247c0ce1c3ed8b2504"
+  },
+  {
+    "file": "tests/dialogue-flow.test.ts",
+    "bytes": 6996,
+    "lines": 38,
+    "sha256": "cccd728314e5a127bfb11dbe7425bb4171440874ac41a73166e127b1d024bdcd"
+  },
+  {
+    "file": "tests/dialogue-recovery.test.ts",
+    "bytes": 6351,
+    "lines": 39,
+    "sha256": "3199cfe84aa62d76c6bc61bab053fd2e09bd2787ab14e49f6e0aec2fc1ebcae3"
+  },
+  {
+    "file": "tests/dialogue-upgrade.test.ts",
+    "bytes": 6827,
+    "lines": 46,
+    "sha256": "68850fbd83aba7483fbea9ef78d58852ccf5f3901f8c50ad74053b0fd39c57ca"
+  },
+  {
+    "file": "tests/environment-context-view.test.ts",
+    "bytes": 2077,
+    "lines": 13,
+    "sha256": "c3468e86c0a5d855420865f6f896725463e6e5764eff0bd072064c751e75e93f"
+  },
+  {
+    "file": "tests/environment.test.ts",
+    "bytes": 1387,
+    "lines": 14,
+    "sha256": "c1abc7c5bceef7c5dab472653c53611145fe930f89b428a15ab62f29e1db4298"
+  },
+  {
+    "file": "tests/expression-context-view.test.ts",
+    "bytes": 1987,
+    "lines": 16,
+    "sha256": "5a685acaf277ac7abdd39347cdff11dd96c524577af9d75ddb610a80983fbe49"
+  },
+  {
+    "file": "tests/fixtures/memory-retrieval-labels.json",
+    "bytes": 1920,
+    "lines": 19,
+    "sha256": "7611fc8de2b95e050af25df618dc07fe37c80a4e68e354b91ffa1924ce2c30ce"
+  },
+  {
+    "file": "tests/helpers.ts",
+    "bytes": 4809,
+    "lines": 62,
+    "sha256": "d5a807b65b4e6872f255cc29c7b256d60caeb1034d34e8fd7eaff01b69e75281"
+  },
+  {
+    "file": "tests/input.test.ts",
+    "bytes": 1540,
+    "lines": 30,
+    "sha256": "6e41eec7293a3f3db397f4872ecbd4519a31bbaa1a79c77770e4e110014f934f"
+  },
+  {
+    "file": "tests/integration.test.ts",
+    "bytes": 2037,
+    "lines": 37,
+    "sha256": "f8c18aca7c00169efab263a78b6df3e39c810507293a47244a372f53718babcc"
+  },
+  {
+    "file": "tests/memory-capacity-cleanup.test.ts",
+    "bytes": 4286,
+    "lines": 44,
+    "sha256": "a0c6025e9656d057c201d1a41ded00b97d7adf8367be56cfe0cf6f02e0722656"
+  },
+  {
+    "file": "tests/memory-capacity-deployment.test.ts",
+    "bytes": 1728,
+    "lines": 19,
+    "sha256": "b86bde9b5b0d6a8b56cbd5b8908b271e38dc499aa60e947e2fc3dd21593373c6"
+  },
+  {
+    "file": "tests/memory-capacity-fixture.ts",
+    "bytes": 1286,
+    "lines": 21,
+    "sha256": "f0fc41474668582a02af4cfb63c3fe3cdadb79119074f936d2286102b611b6ba"
+  },
+  {
+    "file": "tests/memory-capacity-idle-integration.test.ts",
+    "bytes": 1390,
+    "lines": 18,
+    "sha256": "27b78870e0279e20075c0f22c10eb29c80eea4877a521a0ea04276347c45b847"
+  },
+  {
+    "file": "tests/memory-capacity-lifecycle.test.ts",
+    "bytes": 4160,
+    "lines": 52,
+    "sha256": "561d02a40b746634771f113ae5c0fc6c52bb2c27b7900d363eab688f7f2d7acd"
+  },
+  {
+    "file": "tests/memory-capacity-prune-race.test.ts",
+    "bytes": 4580,
+    "lines": 36,
+    "sha256": "133691daa4080b1f028a2ff9fc0e97323c000f8854b5a8c4c99f78c367659bda"
+  },
+  {
+    "file": "tests/memory-capacity-retrieval.test.ts",
+    "bytes": 1683,
+    "lines": 21,
+    "sha256": "6f544d5fabedb799269f12264e5aaac03afe5db2e1e64b47938fc4f12aa5ed0c"
+  },
+  {
+    "file": "tests/memory-capacity-state.test.ts",
+    "bytes": 1364,
+    "lines": 24,
+    "sha256": "99517ec6750c932248e26f6479c9a8870d9e6a431c2b69340a1f90445cd3043e"
+  },
+  {
+    "file": "tests/memory-capacity-upgrade.test.ts",
+    "bytes": 9578,
+    "lines": 85,
+    "sha256": "6bf2df49d8e76357eb679387440a6ab4a29c82fa62806b8c9599ecc1af7dfa68"
+  },
+  {
+    "file": "tests/memory-final-review.test.ts",
+    "bytes": 8014,
+    "lines": 48,
+    "sha256": "8362c9471198104205b2f02f818b6a8ac17a344c1087acc98fe635fda97c80f1"
+  },
+  {
+    "file": "tests/memory-idle-consolidation.test.ts",
+    "bytes": 7662,
+    "lines": 60,
+    "sha256": "22ff579807f8ff97b2cbfc2ead2f51085dd6a054cc244fdaaa2c1a5e17944493"
+  },
+  {
+    "file": "tests/memory-idle-contracts.test.ts",
+    "bytes": 3387,
+    "lines": 34,
+    "sha256": "3ea37df35380949007a60fe4ead93ad8f725145f7cb9bb84ad140cd9ea172dc8"
+  },
+  {
+    "file": "tests/memory-idle-fairness.test.ts",
+    "bytes": 6831,
+    "lines": 56,
+    "sha256": "520d4daad02ba523acafddd36a2d7327590b9b29a7dc08b734d596b50b041952"
+  },
+  {
+    "file": "tests/memory-idle-host.test.ts",
+    "bytes": 6438,
+    "lines": 47,
+    "sha256": "091a01a7d86ce014148cff5bf28bb083b50153894c42a0efb980711c2d7617f0"
+  },
+  {
+    "file": "tests/memory-idle-policy.test.ts",
+    "bytes": 2799,
+    "lines": 30,
+    "sha256": "8cceb33674397f82626cf92aa7a27ce34a8d57de816b517fec250110ee0b1712"
+  },
+  {
+    "file": "tests/memory-idle-recovery.test.ts",
+    "bytes": 1837,
+    "lines": 24,
+    "sha256": "694281370c888164b18e7d289b3e8780ad4bd23a78c502eba6d334fe36ce74d6"
+  },
+  {
+    "file": "tests/memory-index-coalescing.test.ts",
+    "bytes": 3120,
+    "lines": 29,
+    "sha256": "126380e04eb97003f0d8b6977b4cceb50fb82fd9e18d31ecd9602799fda4f62e"
+  },
+  {
+    "file": "tests/memory-maintenance-checkpoint.test.ts",
+    "bytes": 14872,
+    "lines": 190,
+    "sha256": "025ba7b320168739c29471601c3ff65f9049a2d05501f3e3114c2f2e8b5be3f0"
+  },
+  {
+    "file": "tests/memory-pending-refresh.test.ts",
+    "bytes": 3619,
+    "lines": 35,
+    "sha256": "a02dc82bc2fea5f631a5b0465cdada17324af8c0d8b7ac76da1bee9573a91b1b"
+  },
+  {
+    "file": "tests/memory-projection-retrieval.test.ts",
+    "bytes": 6072,
+    "lines": 64,
+    "sha256": "4984b36abd380b1dfb5acd29e3fe85d75d88e4c09dbe58a9b73c2b1cf76d7a1e"
+  },
+  {
+    "file": "tests/memory-v3-deployment.test.ts",
+    "bytes": 5744,
+    "lines": 36,
+    "sha256": "6ab52187d4ed69c4b28afa7fa787501e45ad718f68df652393c1ab2b42d111ae"
+  },
+  {
+    "file": "tests/memory-v3-host.test.ts",
+    "bytes": 9841,
+    "lines": 57,
+    "sha256": "9c2511b89479b359349cb3e203798af746d2da2601b45eabf26afc64784b922d"
+  },
+  {
+    "file": "tests/memory-v3-index.test.ts",
+    "bytes": 4001,
+    "lines": 32,
+    "sha256": "a357e1b30e960fdd1587ac1cac8cd818e943514d7e0b3c17d04025a9335f0311"
+  },
+  {
+    "file": "tests/memory-v3-lifecycle.test.ts",
+    "bytes": 9917,
+    "lines": 83,
+    "sha256": "b93238b09bbc58d78fbd195b5d94a0e10468b19b6a8586c5ec08ec5c5f3dd68c"
+  },
+  {
+    "file": "tests/memory-v3-maintenance.test.ts",
+    "bytes": 8938,
+    "lines": 62,
+    "sha256": "28f61b78db4489ac4c4dc6a240fdec67c1476559d1cd60001340bf2e24078339"
+  },
+  {
+    "file": "tests/memory-v3-recovery.test.ts",
+    "bytes": 5379,
+    "lines": 31,
+    "sha256": "b0683aff33d55eeb59c27aa5b369514676deca5692846fde87cbae37fb9a33c7"
+  },
+  {
+    "file": "tests/memory-v3-retrieval.test.ts",
+    "bytes": 9320,
+    "lines": 76,
+    "sha256": "8c535e05a9783225166c8a704cf2d3e97cf60736514d6812de43025621ea4a48"
+  },
+  {
+    "file": "tests/memory-v3-store.test.ts",
+    "bytes": 6300,
+    "lines": 59,
+    "sha256": "34b8d03b899ca9c98cb8dfb3ac3eee35bfe857a212b50228cfa68da1a361a1a9"
+  },
+  {
+    "file": "tests/memory.test.ts",
+    "bytes": 5312,
+    "lines": 62,
+    "sha256": "dbfda09edc460f6e470a0b0d9dfea6079d8949191647b2bb957bc26a41f8438a"
+  },
+  {
+    "file": "tests/model-call-context.test.ts",
+    "bytes": 2691,
+    "lines": 18,
+    "sha256": "f7e89e73f7d4b27856d63f5e9621033c64f535c01af2d9f9791918570ce725e8"
+  },
+  {
+    "file": "tests/model-settings.test.ts",
+    "bytes": 7548,
+    "lines": 118,
+    "sha256": "173ce59bb40fff28dff382b550dc962490785f2bfaa6818fd7d0e98ddeb9afe3"
+  },
+  {
+    "file": "tests/output.test.ts",
+    "bytes": 739,
+    "lines": 12,
+    "sha256": "aec3bb019ab864eb222768aa735c9d61320827fa06298958005aeb20c78efa40"
+  },
+  {
+    "file": "tests/plugin-smoke-contract.test.ts",
+    "bytes": 4184,
+    "lines": 52,
+    "sha256": "e8f41578cd23668f3f959549b5119a711b3b5e0cb9c6d8040cfdb490e122c25d"
+  },
+  {
+    "file": "tests/plugin.test.ts",
+    "bytes": 657,
+    "lines": 10,
+    "sha256": "6a17fe78ac56ab794ac4b738a7dc2975f9bb9225d22589d7625740da3a403ebf"
+  },
+  {
+    "file": "tests/probability.test.ts",
+    "bytes": 2398,
+    "lines": 33,
+    "sha256": "eb5fe0c203dfb3e32135d2c520c120e166bda6ca2fbd2732fca5b468dfc01a03"
+  },
+  {
+    "file": "tests/prompt-context-call-skip.test.ts",
+    "bytes": 5991,
+    "lines": 26,
+    "sha256": "b91e3cf6d65827080efdb9b998ee516d9eb031e577abf2dfbc392eb382aba098"
+  },
+  {
+    "file": "tests/prompt-context-errors.test.ts",
+    "bytes": 4986,
+    "lines": 43,
+    "sha256": "977c94bf8f73ca735fbadc993fc4fb8ccaf369b38ca779c2f9f0470f69792a08"
+  },
+  {
+    "file": "tests/prompt-context-integration.test.ts",
+    "bytes": 2396,
+    "lines": 14,
+    "sha256": "b968a6aa5465361983b6ed23a6c26db87d20e9da31a41c10ca6d04d350799adf"
+  },
+  {
+    "file": "tests/prompt-context-transport.test.ts",
+    "bytes": 5728,
+    "lines": 42,
+    "sha256": "f9fe02457a07f19bfd61c07271c20ad4fa0970c07fc633579c5848a53feced96"
+  },
+  {
+    "file": "tests/prompt-context-views.test.ts",
+    "bytes": 7274,
+    "lines": 32,
+    "sha256": "8a386895a26db38a31653e22fe51a0491f1791f3155c13676e1cd7b6bc21a25f"
+  },
+  {
+    "file": "tests/prompt-policy.test.ts",
+    "bytes": 3544,
+    "lines": 25,
+    "sha256": "0ef777a4a39600fac0dc1856323079a01ec231a1a96a7a4df842bf6881a36e50"
+  },
+  {
+    "file": "tests/recovery.test.ts",
+    "bytes": 6084,
+    "lines": 90,
+    "sha256": "a660dc5a57c4c6e5c3220437567a4733629de33d6f7aa7a3d6cab9d7aa611f8f"
+  },
+  {
+    "file": "tests/review-fixes.test.ts",
+    "bytes": 6649,
+    "lines": 89,
+    "sha256": "cb3065515f78f7e1ca86551cc9f2d6f5a8c60648e2441f9adb041401bd953413"
+  },
+  {
+    "file": "tests/review-recovery.test.ts",
+    "bytes": 9574,
+    "lines": 146,
+    "sha256": "4055b2cd1c411cb73b6806125413f9203d551c487dc97edd844a9891c883be87"
+  },
+  {
+    "file": "tests/review10-public.test.ts",
+    "bytes": 5114,
+    "lines": 69,
+    "sha256": "4613ff08313d1fe801ece9377b545a6332e5720b5c2c12093825340b59020153"
+  },
+  {
+    "file": "tests/review17-capacity-cost.test.ts",
+    "bytes": 676,
+    "lines": 8,
+    "sha256": "b629bb06b5603c3ec2f7d161205229dcb2dedc29e71fb60b6b1b031113786b34"
+  },
+  {
+    "file": "tests/review17-identities.test.ts",
+    "bytes": 3291,
+    "lines": 32,
+    "sha256": "854abdef6fa9e4b6749f5dbd921a845e1a42a90ad3a22e69515a828288f52d6f"
+  },
+  {
+    "file": "tests/review17-promotion-audit.test.ts",
+    "bytes": 4312,
+    "lines": 32,
+    "sha256": "0c04a598c94fc389d9bb149c065a6fa3503612939df86132f839a2588131810d"
+  },
+  {
+    "file": "tests/review17-summary-repair.test.ts",
+    "bytes": 6142,
+    "lines": 56,
+    "sha256": "7bfee3306ed63c3dba98f21f08c45e20b56f17f460a243127c37a2025512d031"
+  },
+  {
+    "file": "tests/review24-dialogue.test.ts",
+    "bytes": 15070,
+    "lines": 50,
+    "sha256": "26dd2b8675aef7564da7ad0982fb6ba05cdb668442ba2a395a5f736edd2e305f"
+  },
+  {
+    "file": "tests/review26-memory-create.test.ts",
+    "bytes": 5219,
+    "lines": 64,
+    "sha256": "9d7322ee3a15a7b0584f9dccf76279a72721bda11fc5a39a7ae8a7d49c41b64d"
+  },
+  {
+    "file": "tests/review7-maintenance.test.ts",
+    "bytes": 5465,
+    "lines": 33,
+    "sha256": "43ebe2ba5df05bd0d0314f0eb829ec0c09a39b7bbbbab8d1a8def86c9f7930b6"
+  },
+  {
+    "file": "tests/review7-memory.test.ts",
+    "bytes": 8894,
+    "lines": 67,
+    "sha256": "0eb6dadcbb15ede42543e87c3091dbf6f9374eae7110e1ef4b73d8cfd9f848c5"
+  },
+  {
+    "file": "tests/review7-web.test.ts",
+    "bytes": 7391,
+    "lines": 49,
+    "sha256": "c97a47f806226ccda483dd3d70f318bd2524d94e4455ed090edb37bc645a3c17"
+  },
+  {
+    "file": "tests/scheduler.test.ts",
+    "bytes": 4620,
+    "lines": 66,
+    "sha256": "2e79937f153b43522f3c0f8c17df5f5d5f443e03c05afcefdb9709e42bd99868"
+  },
+  {
+    "file": "tests/school-notice-evaluation.test.ts",
+    "bytes": 1659,
+    "lines": 17,
+    "sha256": "12cf2dcee9d2ca43fcba9f412cb5f07dffcb12e1743e364317f4f429c23d6a90"
+  },
+  {
+    "file": "tests/school-week-contract-recovery.test.ts",
+    "bytes": 4622,
+    "lines": 26,
+    "sha256": "7ef797d87ba9244a66be1e94a503b9c0b4725905fc07daf8d87b1d9bcd9bb211"
+  },
+  {
+    "file": "tests/school-week-text-contract.test.ts",
+    "bytes": 6744,
+    "lines": 34,
+    "sha256": "de8795e8072ffb93b5088ff2c58a4d582299cb0d295ec5e1e6a4da001e47379a"
+  },
+  {
+    "file": "tests/shared-scene.test.ts",
+    "bytes": 6247,
+    "lines": 71,
+    "sha256": "49a41257692fe29d6e33df5574c8d169be99aefc5b3dafb425c6ab828081443b"
+  },
+  {
+    "file": "tests/shared-story-seed.test.ts",
+    "bytes": 1583,
+    "lines": 24,
+    "sha256": "11a9104a5f12ac78e002fb329adcd34c25b95e092fc48b780655ee29e7ee50eb"
+  },
+  {
+    "file": "tests/shared-v3-contracts.test.ts",
+    "bytes": 7608,
+    "lines": 86,
+    "sha256": "f0fb29fa8d71349a767bb0b3b7ba67523cc232497c32cb99d78c4e1a81414842"
+  },
+  {
+    "file": "tests/shared-v3-cross-activity.test.ts",
+    "bytes": 8375,
+    "lines": 107,
+    "sha256": "1662b3b58a6282356bf327e982809f773391126cf1df88cb76ae5355b13a9eb4"
+  },
+  {
+    "file": "tests/shared-v3-fixture.ts",
+    "bytes": 1801,
+    "lines": 23,
+    "sha256": "26179ee1e02ebd9285d5deca2f52727c8f5b3ca608222f7b2191ac0d61798d40"
+  },
+  {
+    "file": "tests/shared-v3-flow.test.ts",
+    "bytes": 17699,
+    "lines": 168,
+    "sha256": "99d2b6cc803b7318d60f1c074d39d67d408e9d3f54d1186a2100b0339d9d7e6b"
+  },
+  {
+    "file": "tests/shared-v3-input.test.ts",
+    "bytes": 4529,
+    "lines": 54,
+    "sha256": "9744679ff13123913d12c6bcaf61b0b42317b3f9ba58457236e10ade1f62ca9c"
+  },
+  {
+    "file": "tests/shared-v3-recovery.test.ts",
+    "bytes": 8241,
+    "lines": 89,
+    "sha256": "afe8ccb12bcbf8a6cf0b8b7adc117812e30477127572e2ecbde63e56bc2ebfd3"
+  },
+  {
+    "file": "tests/shared-v3-scheduler.test.ts",
+    "bytes": 8044,
+    "lines": 88,
+    "sha256": "db22b0fc71782bebc5979b7efa63c6e86ea955cfd14cffbd3fbfa191092ecb20"
+  },
+  {
+    "file": "tests/shared-v3-state.test.ts",
+    "bytes": 4889,
+    "lines": 76,
+    "sha256": "37aa646222b7cf25e3ed682007dc9d7c01877e8c4596d3bccfb660f4dc9fb828"
+  },
+  {
+    "file": "tests/shared-v3-upgrade.test.ts",
+    "bytes": 10322,
+    "lines": 106,
+    "sha256": "0e22ede6dfb834b1a158d2035220eda9939bfcb1797646dace152061df37bf2f"
+  },
+  {
+    "file": "tests/stickers.test.ts",
+    "bytes": 3969,
+    "lines": 51,
+    "sha256": "fe0e184ff6bf88bf43332299b678ed11c0ae92a69cd3cae6ddcad8078314718d"
+  },
+  {
+    "file": "tests/storage-queries.test.ts",
+    "bytes": 3589,
+    "lines": 43,
+    "sha256": "e32cec622a5ec63176d64ec35c872d8f747f472b0eac2103419a89ec9bd1fdf1"
+  },
+  {
+    "file": "tests/storage.test.ts",
+    "bytes": 1896,
+    "lines": 26,
+    "sha256": "79b2ffa7c42c8094210e124ac67d11321df1353b79fedf2be8faae993a354873"
+  },
+  {
+    "file": "tests/tasks.test.ts",
+    "bytes": 3685,
+    "lines": 45,
+    "sha256": "74881d819f38073fb9091e2622d0b13cee17fd11e5348b4f70843e3973c1208e"
+  },
+  {
+    "file": "tests/turn.test.ts",
+    "bytes": 3598,
+    "lines": 56,
+    "sha256": "b01b07420fce629b42d83dba40021386585495007694f6740562028c44beea0e"
+  },
+  {
+    "file": "tests/web-content.test.ts",
+    "bytes": 2024,
+    "lines": 14,
+    "sha256": "274eb9bf2d2e122c9653af605a9f798b7c39aa87b7d041bf18edcd6affd218e7"
+  },
+  {
+    "file": "tests/web-deployment.test.ts",
+    "bytes": 1274,
+    "lines": 15,
+    "sha256": "cb8879ffe2b9a9b7d51f43af17baf226c7cdbf239ce2cd0f08562b4386c65e74"
+  },
+  {
+    "file": "tests/web-host.test.ts",
+    "bytes": 4106,
+    "lines": 23,
+    "sha256": "cc59adf1f54356e880e0cdc37fa92e19085e2dccb1e8a9e707f141ba8a428b9a"
+  },
+  {
+    "file": "tests/web-integration.test.ts",
+    "bytes": 3125,
+    "lines": 20,
+    "sha256": "df3188262ca70b6b495b198fcd2ea64fac9770dbba865eec0bece08f2310bfe3"
+  },
+  {
+    "file": "tests/web-memory-sources.test.ts",
+    "bytes": 4199,
+    "lines": 27,
+    "sha256": "ff3dc403139f805aa9b383775fa476e92553da8b8ddffadbf33c6b8391520525"
+  },
+  {
+    "file": "tests/web-model-tools.test.ts",
+    "bytes": 6041,
+    "lines": 39,
+    "sha256": "fbfefeab9ea892ff7a8a3d8e1b3a54b31b96317f9e3390c97ab978baee1bd0cd"
+  },
+  {
+    "file": "tests/web-phases.test.ts",
+    "bytes": 5836,
+    "lines": 37,
+    "sha256": "68bec0c48af65d46a3b038e75686f1ab2afcd5e20591d6de7866468f39dac8e0"
+  },
+  {
+    "file": "tests/web-provider.test.ts",
+    "bytes": 839,
+    "lines": 8,
+    "sha256": "1aae41cb7575e6ff803f96b515379ebd09e9f424868b6cf0b16914d5843b2b82"
+  },
+  {
+    "file": "tests/web-recovery.test.ts",
+    "bytes": 3069,
+    "lines": 16,
+    "sha256": "7873cc567a981ea57c5e2130d159df21149391e74203ac5d22531cc57e5b543d"
+  },
+  {
+    "file": "tests/web-session.test.ts",
+    "bytes": 7195,
+    "lines": 40,
+    "sha256": "22733fc4f0e46eafc245b151b8927dec2dcf21a4415ec1ef908b23536846eabd"
+  },
+  {
+    "file": "tests/web-status.test.ts",
+    "bytes": 2664,
+    "lines": 36,
+    "sha256": "f8539b3980da133194a35930bb556aa66d000d0d569e339ac912b2b33b6833f2"
+  },
+  {
+    "file": "tests/web-store.test.ts",
+    "bytes": 4373,
+    "lines": 18,
+    "sha256": "6f21133dd8da98ae42855812234dd0b97df9a32e9bd4cc5cec6a626d4b140bcd"
+  },
+  {
+    "file": "tests/world-school-acceptance-tool.test.ts",
+    "bytes": 1431,
+    "lines": 22,
+    "sha256": "4d70ba2fcb8d60f03bb580e69c62a2c8578304025050353b8c15f6691763c870"
+  },
+  {
+    "file": "tests/world-school-batch.test.ts",
+    "bytes": 6356,
+    "lines": 62,
+    "sha256": "aed14017511f7156933178613192928d8a7d0cefadcc21bcdb268a1ce585ac52"
+  },
+  {
+    "file": "tests/world-school-calendar.test.ts",
+    "bytes": 10860,
+    "lines": 80,
+    "sha256": "72826b70ff12634711f80254b43807f7d3d05ddb434cb356fab9cbb9379bedb0"
+  },
+  {
+    "file": "tests/world-school-fixture.ts",
+    "bytes": 1932,
+    "lines": 11,
+    "sha256": "382acbae89aea8e5acd630d47b954a412b8f45bdcf3ed9b081508ed8e19fa78d"
+  },
+  {
+    "file": "tests/world-school-integration.test.ts",
+    "bytes": 4996,
+    "lines": 29,
+    "sha256": "638f382251205b4af04482cc8d37f55e1f82654f260e506a9c854188c0f884e2"
+  },
+  {
+    "file": "tests/world-school-knowledge-version.test.ts",
+    "bytes": 7919,
+    "lines": 82,
+    "sha256": "c905958ee344235e7648703c6b1ce7d9eebd77c7c946c6b1ddcf3b5e4ce9c194"
+  },
+  {
+    "file": "tests/world-school-models.test.ts",
+    "bytes": 6128,
+    "lines": 50,
+    "sha256": "d01764f5cc562c70d03d744433af0c782d6e1a8785494a09810797ce0de75c04"
+  },
+  {
+    "file": "tests/world-school-notices.test.ts",
+    "bytes": 4420,
+    "lines": 27,
+    "sha256": "cf269c773a7c8804b61b483be594aba587f74486ed697f14b6c1e309a062a1d6"
+  },
+  {
+    "file": "tests/world-school-personal-reminder.test.ts",
+    "bytes": 4574,
+    "lines": 61,
+    "sha256": "2065c3c76b8363d8ee1b14e79239ccb1acfa0bd7b977d09966c233aaa24db079"
+  },
+  {
+    "file": "tests/world-school-perspective.test.ts",
+    "bytes": 6398,
+    "lines": 49,
+    "sha256": "1d38354eb00de948d6e672df5da7864259e00c8645179d9825f53f5db067b26d"
+  },
+  {
+    "file": "tests/world-school-reminder-timing.test.ts",
+    "bytes": 2964,
+    "lines": 31,
+    "sha256": "7c612553b6af884fa7b3d921f7aed08f17ff1cd15dc39193c6a910b39338ccf0"
+  },
+  {
+    "file": "tests/world-school-review14-calendar.test.ts",
+    "bytes": 9939,
+    "lines": 59,
+    "sha256": "3b1ee4cafa6ee093ad96abf5d0c9cd68a48e92de63474f1fd7111298599a2b99"
+  },
+  {
+    "file": "tests/world-school-review14-contracts.test.ts",
+    "bytes": 10530,
+    "lines": 64,
+    "sha256": "a95424cb9f0cda31fcea3cd96ce56db58a8f0817696eb31b36bc214be52bcf43"
+  },
+  {
+    "file": "tests/world-school-review14-environment.test.ts",
+    "bytes": 3149,
+    "lines": 20,
+    "sha256": "79c2ba0ee0f4aee573e83cb7da2b313aca6b5234ca0fb7767d869833be7ccb54"
+  },
+  {
+    "file": "tests/world-school-review14-fixture.ts",
+    "bytes": 821,
+    "lines": 6,
+    "sha256": "37f633bbec1dab127f00e89d5486f10a7873265604f471506f4e9c07eed13926"
+  },
+  {
+    "file": "tests/world-school-review14-time.test.ts",
+    "bytes": 4408,
+    "lines": 28,
+    "sha256": "238c070147d2c5ca20af101204f991859049e8ffbc5249642de15cd5e2d78e69"
+  },
+  {
+    "file": "tests/world-school-state.test.ts",
+    "bytes": 2017,
+    "lines": 40,
+    "sha256": "b2e1f0895450a0db923ee3044444c0eb67bc082308f6047174e989564f28a4b5"
+  },
+  {
+    "file": "tests/world-school-story.test.ts",
+    "bytes": 5673,
+    "lines": 39,
+    "sha256": "12b1f656c9ea4e691ca189503c3e36ecfa17ee2743214f59b17cbd4932ed974f"
+  },
+  {
+    "file": "tests/world-school-upgrade.test.ts",
+    "bytes": 6056,
+    "lines": 41,
+    "sha256": "19c051702494e8d7cc2dc5cf1ff09d10d3c5df7f3a634c6f6df239603caee1ad"
+  },
+  {
+    "file": "package.json",
+    "bytes": 1642,
+    "lines": 35,
+    "sha256": "596b24d11fbf42cb0d40af5e2be5331194fc69a81d4b9032b9fa26576571ba7c"
+  },
+  {
+    "file": "package-lock.json",
+    "bytes": 127446,
+    "lines": 3834,
+    "sha256": "2902f1be92d14fe2e2dc747ebf90301cc1203d86d405b38670041f7fc68b1c80"
+  }
+]

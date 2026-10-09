@@ -1,0 +1,794 @@
+[
+  {
+    "file": "README.md",
+    "line": 3,
+    "link": "docs/v0.5/architecture/REMAKE_V0.5.md",
+    "exists": true
+  },
+  {
+    "file": "README.md",
+    "line": 3,
+    "link": "docs/v0.5/README.md",
+    "exists": true
+  },
+  {
+    "file": "README.md",
+    "line": 11,
+    "link": "docs/PROMPT_CONTEXT_OPTIMIZATION_V0.1_DELIVERY_REVIEW_20261008.md",
+    "exists": true
+  },
+  {
+    "file": "README.md",
+    "line": 11,
+    "link": "docs/v0.5/records/REVIEW26_MEMORY_CREATE_FIX_LOG_20261009.md",
+    "exists": true
+  },
+  {
+    "file": "README.md",
+    "line": 68,
+    "link": "docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md",
+    "exists": true
+  },
+  {
+    "file": "README.md",
+    "line": 112,
+    "link": "docs/v0.5/records/REVIEW24_DIALOGUE_FIX_LOG_20261009.md",
+    "exists": true
+  },
+  {
+    "file": "README.md",
+    "line": 114,
+    "link": "docs/PROMPT_CONTEXT_OPTIMIZATION_V0.1_IMPLEMENTATION_LOG_20261008.md",
+    "exists": true
+  },
+  {
+    "file": "README.md",
+    "line": 125,
+    "link": "docs/v0.5/subsystems/REMAKE_V0.5_EXPRESSION_STICKERS.md",
+    "exists": true
+  },
+  {
+    "file": "README.md",
+    "line": 125,
+    "link": "docs/STICKER_MIGRATION.md",
+    "exists": true
+  },
+  {
+    "file": "README.md",
+    "line": 139,
+    "link": "docs/v0.5/subsystems/REMAKE_V0.5_RECOVERY.md",
+    "exists": true
+  },
+  {
+    "file": "README.md",
+    "line": 143,
+    "link": "docs/v0.5/architecture/REMAKE_V0.5.md",
+    "exists": true
+  },
+  {
+    "file": "README.md",
+    "line": 143,
+    "link": "docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md",
+    "exists": true
+  },
+  {
+    "file": "README.md",
+    "line": 143,
+    "link": "docs/PROMPT_CONTEXT_OPTIMIZATION_V0.1_DELIVERY_REVIEW_20261008.md",
+    "exists": true
+  },
+  {
+    "file": "README.md",
+    "line": 143,
+    "link": "docs/v0.5/records/V0.5_DOCUMENT_REWRITE_LOG_20261009.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/README.md",
+    "line": 11,
+    "link": "architecture/REMAKE_V0.5.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/README.md",
+    "line": 12,
+    "link": "subsystems/REMAKE_V0.5_DIRECTORS.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/README.md",
+    "line": 13,
+    "link": "subsystems/REMAKE_V0.5_SCHEDULING.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/README.md",
+    "line": 14,
+    "link": "subsystems/REMAKE_V0.5_MEMORY.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/README.md",
+    "line": 15,
+    "link": "subsystems/REMAKE_V0.5_SHARED_ACTIVITY.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/README.md",
+    "line": 16,
+    "link": "subsystems/REMAKE_V0.5_CONTEXT.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/README.md",
+    "line": 17,
+    "link": "subsystems/REMAKE_V0.5_EXPRESSION_STICKERS.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/README.md",
+    "line": 18,
+    "link": "subsystems/REMAKE_V0.5_WEB_SEARCH.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/README.md",
+    "line": 19,
+    "link": "subsystems/REMAKE_V0.5_RECOVERY.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/README.md",
+    "line": 20,
+    "link": "reference/V0.5_IMPLEMENTATION_MAP_20261009.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/README.md",
+    "line": 22,
+    "link": "../../README.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/README.md",
+    "line": 24,
+    "link": "records/V0.5_RESUBMISSION_DOCUMENT_CHECK_20261009.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/README.md",
+    "line": 30,
+    "link": "records/ASTRA_FIX_DELIVERY_20261009.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/README.md",
+    "line": 30,
+    "link": "records/ASTRA_FIX_IMPLEMENTATION_LOG_20261009.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/README.md",
+    "line": 30,
+    "link": "records/ASTRA_FIX_BENCHMARK_20261009.json",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/README.md",
+    "line": 31,
+    "link": "records/ASTRA_R1_CHECKPOINT_FIX_DELIVERY_20261009.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/README.md",
+    "line": 31,
+    "link": "records/ASTRA_R1_CHECKPOINT_FIX_IMPLEMENTATION_LOG_20261009.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/README.md",
+    "line": 31,
+    "link": "reviews/ASTRA_POST_IMPLEMENTATION_REVIEW_20261009.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/README.md",
+    "line": 35,
+    "link": "records/REVIEW24_DIALOGUE_FIX_LOG_20261009.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/README.md",
+    "line": 35,
+    "link": "records/REVIEW26_MEMORY_CREATE_FIX_LOG_20261009.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/README.md",
+    "line": 46,
+    "link": "plans/README.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/README.md",
+    "line": 48,
+    "link": "reviews/README.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/README.md",
+    "line": 66,
+    "link": "../MEMORY_V0.3_IMPLEMENTATION_20261007.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/README.md",
+    "line": 66,
+    "link": "../MEMORY_V0.3_EXECUTION_PLAN_20261007.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/README.md",
+    "line": 67,
+    "link": "../MEMORY_CAPACITY_IDLE_V0.4_IMPLEMENTATION_20261008.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/README.md",
+    "line": 67,
+    "link": "../MEMORY_CAPACITY_IDLE_V0.4_EXECUTION_PLAN_20261008.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/README.md",
+    "line": 68,
+    "link": "../SHARED_ACTIVITY_V0.3_IMPLEMENTATION_20261007.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/README.md",
+    "line": 68,
+    "link": "../SHARED_ACTIVITY_V0.3_EXECUTION_PLAN_20261007.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/README.md",
+    "line": 69,
+    "link": "../WORLD_SCHOOL_PLANNING_V0.4_IMPLEMENTATION_20261008.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/README.md",
+    "line": 69,
+    "link": "../WORLD_SCHOOL_PLANNING_V0.4_EXECUTION_PLAN_20261008.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/README.md",
+    "line": 70,
+    "link": "../WEB_SEARCH_SUBSYSTEM_DESIGN_20261007.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/README.md",
+    "line": 70,
+    "link": "../WEB_SEARCH_EXECUTION_PLAN_20261007.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/README.md",
+    "line": 71,
+    "link": "../PROMPT_CONTEXT_OPTIMIZATION_V0.1_IMPLEMENTATION_20261008.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/README.md",
+    "line": 71,
+    "link": "../PROMPT_CONTEXT_OPTIMIZATION_V0.1_EXECUTION_PLAN_20261008.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/README.md",
+    "line": 73,
+    "link": "records/V0.5_DOCUMENT_REWRITE_LOG_20261009.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/README.md",
+    "line": 73,
+    "link": "records/V0.5_DOCUMENT_ALIGNMENT_LOG_20261009.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/README.md",
+    "line": 73,
+    "link": "records/V0.5_PRE_ASTRA_DOCUMENT_CHECK_20261009.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/README.md",
+    "line": 73,
+    "link": "../DOCUMENT_AUDIT_PRE_V0.5_20261009.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/architecture/REMAKE_V0.5.md",
+    "line": 5,
+    "link": "../reference/V0.5_IMPLEMENTATION_MAP_20261009.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/architecture/REMAKE_V0.5.md",
+    "line": 5,
+    "link": "../../../README.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/architecture/REMAKE_V0.5.md",
+    "line": 117,
+    "link": "../subsystems/REMAKE_V0.5_DIRECTORS.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/architecture/REMAKE_V0.5.md",
+    "line": 118,
+    "link": "../subsystems/REMAKE_V0.5_SCHEDULING.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/architecture/REMAKE_V0.5.md",
+    "line": 119,
+    "link": "../subsystems/REMAKE_V0.5_MEMORY.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/architecture/REMAKE_V0.5.md",
+    "line": 120,
+    "link": "../subsystems/REMAKE_V0.5_SHARED_ACTIVITY.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/architecture/REMAKE_V0.5.md",
+    "line": 121,
+    "link": "../subsystems/REMAKE_V0.5_CONTEXT.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/architecture/REMAKE_V0.5.md",
+    "line": 122,
+    "link": "../subsystems/REMAKE_V0.5_EXPRESSION_STICKERS.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/architecture/REMAKE_V0.5.md",
+    "line": 123,
+    "link": "../subsystems/REMAKE_V0.5_WEB_SEARCH.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/architecture/REMAKE_V0.5.md",
+    "line": 124,
+    "link": "../subsystems/REMAKE_V0.5_RECOVERY.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/architecture/REMAKE_V0.5.md",
+    "line": 126,
+    "link": "../reference/V0.5_IMPLEMENTATION_MAP_20261009.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/architecture/REMAKE_V0.5.md",
+    "line": 126,
+    "link": "../README.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/architecture/REMAKE_V0.5.md",
+    "line": 126,
+    "link": "../records/V0.5_DOCUMENT_REWRITE_LOG_20261009.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/architecture/REMAKE_V0.5.md",
+    "line": 126,
+    "link": "../records/V0.5_DOCUMENT_ALIGNMENT_LOG_20261009.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/architecture/REMAKE_V0.5.md",
+    "line": 126,
+    "link": "../records/V0.5_PRE_ASTRA_DOCUMENT_CHECK_20261009.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/architecture/REMAKE_V0.5.md",
+    "line": 126,
+    "link": "../records/V0.5_RESUBMISSION_DOCUMENT_CHECK_20261009.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/subsystems/REMAKE_V0.5_DIRECTORS.md",
+    "line": 3,
+    "link": "../architecture/REMAKE_V0.5.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/subsystems/REMAKE_V0.5_DIRECTORS.md",
+    "line": 47,
+    "link": "../reference/V0.5_IMPLEMENTATION_MAP_20261009.md#7-检索和服务边界",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/subsystems/REMAKE_V0.5_DIRECTORS.md",
+    "line": 96,
+    "link": "REMAKE_V0.5_WEB_SEARCH.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/subsystems/REMAKE_V0.5_DIRECTORS.md",
+    "line": 96,
+    "link": "REMAKE_V0.5_CONTEXT.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/subsystems/REMAKE_V0.5_SCHEDULING.md",
+    "line": 3,
+    "link": "../architecture/REMAKE_V0.5.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/subsystems/REMAKE_V0.5_SCHEDULING.md",
+    "line": 9,
+    "link": "REMAKE_V0.5_RECOVERY.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/subsystems/REMAKE_V0.5_SCHEDULING.md",
+    "line": 21,
+    "link": "REMAKE_V0.5_SHARED_ACTIVITY.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/subsystems/REMAKE_V0.5_SCHEDULING.md",
+    "line": 68,
+    "link": "REMAKE_V0.5_DIRECTORS.md#5-周展开与通知",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/subsystems/REMAKE_V0.5_SCHEDULING.md",
+    "line": 105,
+    "link": "../reference/V0.5_IMPLEMENTATION_MAP_20261009.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/subsystems/REMAKE_V0.5_MEMORY.md",
+    "line": 3,
+    "link": "../architecture/REMAKE_V0.5.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/subsystems/REMAKE_V0.5_MEMORY.md",
+    "line": 133,
+    "link": "REMAKE_V0.5_RECOVERY.md#7-后台记忆恢复",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/subsystems/REMAKE_V0.5_SHARED_ACTIVITY.md",
+    "line": 3,
+    "link": "../architecture/REMAKE_V0.5.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/subsystems/REMAKE_V0.5_CONTEXT.md",
+    "line": 3,
+    "link": "../architecture/REMAKE_V0.5.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/subsystems/REMAKE_V0.5_CONTEXT.md",
+    "line": 9,
+    "link": "../reference/V0.5_IMPLEMENTATION_MAP_20261009.md#4-模型任务与强度",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/subsystems/REMAKE_V0.5_CONTEXT.md",
+    "line": 31,
+    "link": "REMAKE_V0.5_DIRECTORS.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/subsystems/REMAKE_V0.5_CONTEXT.md",
+    "line": 43,
+    "link": "REMAKE_V0.5_RECOVERY.md#8-历史库与配置改变",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/subsystems/REMAKE_V0.5_CONTEXT.md",
+    "line": 84,
+    "link": "REMAKE_V0.5_WEB_SEARCH.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/subsystems/REMAKE_V0.5_CONTEXT.md",
+    "line": 86,
+    "link": "REMAKE_V0.5_MEMORY.md#9-容量归档与真实删除",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/subsystems/REMAKE_V0.5_CONTEXT.md",
+    "line": 92,
+    "link": "REMAKE_V0.5_RECOVERY.md#8-历史库与配置改变",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/subsystems/REMAKE_V0.5_EXPRESSION_STICKERS.md",
+    "line": 3,
+    "link": "../architecture/REMAKE_V0.5.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/subsystems/REMAKE_V0.5_EXPRESSION_STICKERS.md",
+    "line": 27,
+    "link": "../reference/V0.5_IMPLEMENTATION_MAP_20261009.md#5-运行参数",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/subsystems/REMAKE_V0.5_EXPRESSION_STICKERS.md",
+    "line": 45,
+    "link": "../../../README.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/subsystems/REMAKE_V0.5_EXPRESSION_STICKERS.md",
+    "line": 49,
+    "link": "REMAKE_V0.5_RECOVERY.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/subsystems/REMAKE_V0.5_WEB_SEARCH.md",
+    "line": 3,
+    "link": "../architecture/REMAKE_V0.5.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/subsystems/REMAKE_V0.5_WEB_SEARCH.md",
+    "line": 62,
+    "link": "REMAKE_V0.5_RECOVERY.md#7-后台记忆恢复",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/subsystems/REMAKE_V0.5_RECOVERY.md",
+    "line": 3,
+    "link": "../architecture/REMAKE_V0.5.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/subsystems/REMAKE_V0.5_RECOVERY.md",
+    "line": 87,
+    "link": "../records/ASTRA_R1_CHECKPOINT_FIX_DELIVERY_20261009.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/subsystems/REMAKE_V0.5_RECOVERY.md",
+    "line": 95,
+    "link": "../../../README.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/subsystems/REMAKE_V0.5_RECOVERY.md",
+    "line": 101,
+    "link": "../reference/V0.5_IMPLEMENTATION_MAP_20261009.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/subsystems/REMAKE_V0.5_RECOVERY.md",
+    "line": 101,
+    "link": "../../../README.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md",
+    "line": 5,
+    "link": "../records/V0.5_RESUBMISSION_DOCUMENT_CHECK_20261009.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md",
+    "line": 7,
+    "link": "../architecture/REMAKE_V0.5.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md",
+    "line": 23,
+    "link": "../records/ASTRA_FIX_DELIVERY_20261009.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md",
+    "line": 23,
+    "link": "../records/ASTRA_FIX_IMPLEMENTATION_LOG_20261009.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md",
+    "line": 25,
+    "link": "../records/ASTRA_R1_CHECKPOINT_FIX_DELIVERY_20261009.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md",
+    "line": 25,
+    "link": "../records/ASTRA_R1_CHECKPOINT_FIX_IMPLEMENTATION_LOG_20261009.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md",
+    "line": 31,
+    "link": "../architecture/REMAKE_V0.5.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md",
+    "line": 32,
+    "link": "../subsystems/REMAKE_V0.5_DIRECTORS.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md",
+    "line": 33,
+    "link": "../subsystems/REMAKE_V0.5_SCHEDULING.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md",
+    "line": 34,
+    "link": "../subsystems/REMAKE_V0.5_MEMORY.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md",
+    "line": 35,
+    "link": "../subsystems/REMAKE_V0.5_SHARED_ACTIVITY.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md",
+    "line": 36,
+    "link": "../subsystems/REMAKE_V0.5_CONTEXT.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md",
+    "line": 37,
+    "link": "../subsystems/REMAKE_V0.5_EXPRESSION_STICKERS.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md",
+    "line": 38,
+    "link": "../subsystems/REMAKE_V0.5_WEB_SEARCH.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md",
+    "line": 39,
+    "link": "../subsystems/REMAKE_V0.5_RECOVERY.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md",
+    "line": 42,
+    "link": "../README.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md",
+    "line": 71,
+    "link": "../subsystems/REMAKE_V0.5_MEMORY.md#4-短期与预备长期",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md",
+    "line": 73,
+    "link": "../subsystems/REMAKE_V0.5_RECOVERY.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md",
+    "line": 92,
+    "link": "../records/REVIEW24_DIALOGUE_FIX_LOG_20261009.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md",
+    "line": 142,
+    "link": "../../../examples/story.sample.json",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md",
+    "line": 199,
+    "link": "../records/ASTRA_R1_CHECKPOINT_FIX_DELIVERY_20261009.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md",
+    "line": 199,
+    "link": "../records/ASTRA_R1_CHECKPOINT_FIX_IMPLEMENTATION_LOG_20261009.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md",
+    "line": 200,
+    "link": "../records/ASTRA_FIX_DELIVERY_20261009.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md",
+    "line": 200,
+    "link": "../records/ASTRA_FIX_IMPLEMENTATION_LOG_20261009.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md",
+    "line": 200,
+    "link": "../records/ASTRA_FIX_BENCHMARK_20261009.json",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md",
+    "line": 201,
+    "link": "../records/REVIEW26_MEMORY_CREATE_FIX_LOG_20261009.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md",
+    "line": 202,
+    "link": "../records/REVIEW24_DIALOGUE_FIX_LOG_20261009.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md",
+    "line": 203,
+    "link": "../../PROMPT_CONTEXT_OPTIMIZATION_V0.1_DELIVERY_REVIEW_20261008.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md",
+    "line": 203,
+    "link": "../../PROMPT_CONTEXT_OPTIMIZATION_V0.1_IMPLEMENTATION_LOG_20261008.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md",
+    "line": 222,
+    "link": "../reviews/README.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md",
+    "line": 222,
+    "link": "../records/V0.5_RESUBMISSION_DOCUMENT_CHECK_20261009.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md",
+    "line": 226,
+    "link": "../README.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md",
+    "line": 226,
+    "link": "../plans/README.md",
+    "exists": true
+  },
+  {
+    "file": "docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md",
+    "line": 226,
+    "link": "../records/V0.5_DOCUMENT_REWRITE_LOG_20261009.md",
+    "exists": true
+  }
+]

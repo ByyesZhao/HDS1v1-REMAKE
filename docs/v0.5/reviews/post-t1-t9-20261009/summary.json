@@ -1,0 +1,45 @@
+{
+  "sourceWorkloadSamples": 32,
+  "relatedKnowledge": [
+    {
+      "H": 0,
+      "returned": 1,
+      "epochCalls": 1,
+      "elapsedMs": 0.12070000000039727
+    },
+    {
+      "H": 1000,
+      "returned": 1,
+      "epochCalls": 1001,
+      "elapsedMs": 1.6802999999999884
+    },
+    {
+      "H": 5000,
+      "returned": 1,
+      "epochCalls": 5001,
+      "elapsedMs": 6.954999999999927
+    }
+  ],
+  "committedTimezoneReturn": "passed",
+  "idChunkRowOrderAndRefIdentities": "passed",
+  "recordedRelatedFields": [
+    {
+      "H": 1000,
+      "keys": [
+        "kind",
+        "H",
+        "queries",
+        "plans"
+      ]
+    },
+    {
+      "H": 5000,
+      "keys": [
+        "kind",
+        "H",
+        "queries",
+        "plans"
+      ]
+    }
+  ]
+}

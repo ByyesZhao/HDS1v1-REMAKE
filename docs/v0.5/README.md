@@ -1,76 +1,70 @@
-# HDSI V0.5：文档入口与审核清单
+# HDSI V0.5：当前文档与审核入口
 
-核对日期：2026-10-09。当前已包括ASTRA T1～T13、R1 checkpoint以及本次当前审核改进T1～T9；源码基线c9e4599，本批代码与验证见[交付](records/current-audit-improvements-20261009/DELIVERY.md)。独立环境异步E1～E5尚未实施。
+核对与整理日期：2026-10-09。当前实现包含ASTRA T1～T13、R1及最近T1～T9；后者经[ASTRA最终复核](reviews/post-t1-t9-20261009/REVIEW.md)确认可以关闭。环境异步E1～E5尚未实施，本轮按用户要求暂停开发。
 
-**可以直接提供整个 `docs/v0.5/`，从本索引开始阅读。** 当前规则以总架构、8份子系统和实现对应清单为主；已完成计划与原始审核材料用于追溯。旧报告中的缺陷、失败日志和快照中的“待实施”不代表当前状态。
+**默认提供整个`docs/v0.5/`，从本文件阅读，并附[目录原则](../DIRECTORY_POLICY.md)。** 当前规则以总架构、8份子系统和实现对应为准；归档不要求审核者先逐份阅读。
 
 ## 1. 当前说明与阅读顺序
 
 | 顺序 | 材料 | 审核重点 |
 | --- | --- | --- |
-| 1 | [总架构](architecture/REMAKE_V0.5.md) | 系统边界、主流程、程序／模型职责 |
-| 2 | [导演与环境](subsystems/REMAKE_V0.5_DIRECTORS.md) | 学期／科研／周展开、客观安排、知情版本与个人提醒 |
-| 3 | [调度与生活状态](subsystems/REMAKE_V0.5_SCHEDULING.md) | 合批、优先级、自主、预约、睡眠和概率 |
-| 4 | [记忆](subsystems/REMAKE_V0.5_MEMORY.md) | 来源、7／90／3／30、容量、晋升召回及15分钟整理 |
-| 5 | [共同活动](subsystems/REMAKE_V0.5_SHARED_ACTIVITY.md) | 公开／动作、代写资格、时钟、收尾及跨活动未读归属 |
-| 6 | [提示与上下文](subsystems/REMAKE_V0.5_CONTEXT.md) | 背景用途、未读权限、四段、单池、程序分支与一致性门禁 |
-| 7 | [表达与表情](subsystems/REMAKE_V0.5_EXPRESSION_STICKERS.md) | 意图保真、分段、概率与文本向量 |
-| 8 | [网页搜索](subsystems/REMAKE_V0.5_WEB_SEARCH.md) | 未装配状态、独立额度、缓存B、本人查阅与状态摘要 |
-| 9 | [报错与恢复](subsystems/REMAKE_V0.5_RECOVERY.md) | 修补累计、冻结发送、确认／正式提交及后台 checkpoint 接续 |
-| 10 | [实现对应与现状](reference/V0.5_IMPLEMENTATION_MAP_20261009.md) | 源码、配置、协议版本、差异与验收边界 |
+| 1 | [总架构](architecture/REMAKE_V0.5.md) | 系统边界、职责、主流程和规则逻辑 |
+| 2 | [导演与环境](subsystems/REMAKE_V0.5_DIRECTORS.md) | 学期／科研／周展开、知情和个人提醒 |
+| 3 | [调度与生活状态](subsystems/REMAKE_V0.5_SCHEDULING.md) | 合批、优先级、自主、预约、睡眠、概率 |
+| 4 | [记忆](subsystems/REMAKE_V0.5_MEMORY.md) | 来源、7／90／3／30、容量、晋升召回、空闲整理 |
+| 5 | [共同活动](subsystems/REMAKE_V0.5_SHARED_ACTIVITY.md) | 公开、动作、代写、计时、收尾和跨活动归属 |
+| 6 | [提示与上下文](subsystems/REMAKE_V0.5_CONTEXT.md) | 四段、当前活动、权限、单池、程序分支、查询成本 |
+| 7 | [表达与表情](subsystems/REMAKE_V0.5_EXPRESSION_STICKERS.md) | 意图、分段、概率、文本向量图库 |
+| 8 | [网页搜索](subsystems/REMAKE_V0.5_WEB_SEARCH.md) | 未装配状态、20／40、缓存B和本人查阅 |
+| 9 | [报错与恢复](subsystems/REMAKE_V0.5_RECOVERY.md) | 修补累计、冻结发送、正式提交与后台checkpoint |
+| 10 | [实现对应与现状](reference/V0.5_IMPLEMENTATION_MAP_20261009.md) | 源码、配置、协议版本、差异和验证边界 |
 
-这10份构成完整的当前说明，不需要拼接旧 V0.2 才能理解规则。总架构只写职责、规则和逻辑；源码位置、配置键及验证证据集中在实现对应清单。运行与显式升级命令另见[项目 README](../../README.md)。
+这10份构成当前系统说明，不需要与旧V0.2拼接。总架构只写职责、规则和逻辑；技术位置及现有限制放实现对应。当前人物用途审批另见[背景映射](reference/BACKGROUND_VIEW_MAPPING_20261008.md)，不是本轮新审批。运行和显式升级命令见[项目README](../../README.md)。
 
-本次整理范围、源码对照及文档检查结果见[再次送审检查记录](records/V0.5_RESUBMISSION_DOCUMENT_CHECK_20261009.md)。
+## 2. 最近交付与关闭状态
 
-## 2. 最近修复与验收状态
+| 材料 | 当前结论 |
+| --- | --- |
+| [T1～T9交付](records/current-audit-improvements-20261009/DELIVERY.md)、[实施过程](records/current-audit-improvements-20261009/IMPLEMENTATION_LOG.md) | B1事件日期、B2完整选批已修复；按需上下文、窗口／调度查询、清理回收、资料池优化已交付 |
+| [实施者独立复核关闭](records/current-audit-improvements-20261009/REVIEW_CLOSURE.md) | 两项验收矩阵缺口和首次计时口径均已补齐 |
+| [ASTRA最终独立复核](reviews/post-t1-t9-20261009/REVIEW.md) | 本批可关闭，无需要先修的已确认业务BUG或阻断；独立137文件776项及类型／构建／演示／双场景插件检查通过 |
+| [本轮目录整理](records/document-organization-20261009/README.md) | 文档归类、导航与当前状态检查；没有改产品代码或重做在线／正式库验收 |
 
-再次独立审核见[当前审核总报告](reviews/current-audit-20261009/README.md)，其中B1／B2及本批T1～T9已修复。原审核和失败证据保留基线事实；当前结果见[交付](records/current-audit-improvements-20261009/DELIVERY.md)及[独立复核关闭记录](records/current-audit-improvements-20261009/REVIEW_CLOSURE.md)。环境异步E1～E5仍是后续独立批次。以下ASTRA T1～T13及R1是此前已完成批次。
+ASTRA补验包括1,920次窗口差分、V1中断恢复、选批组合和调度历史样本。相关知识内部成本补测见[summary.json](reviews/post-t1-t9-20261009/summary.json)：固定实体返回1份，随H=0/1000/5000历史，时间函数调用1/1001/5001；这是已注明的末端排序成本，无须本批修代码。
 
-| 批次 | 当前结论 | 证据 |
-| --- | --- | --- |
-| 当前审核改进T1～T9 | 日期与字符选批BUG、按需上下文、窗口／调度定向查询、有限旧载荷回收及资料池索引 | [交付](records/current-audit-improvements-20261009/DELIVERY.md)、[过程](records/current-audit-improvements-20261009/IMPLEMENTATION_LOG.md)、[窗口与清理工作量](records/current-audit-improvements-20261009/benchmark.json)、[调度工作量](records/current-audit-improvements-20261009/scheduling-query-results.json) |
-| ASTRA T1～T13 | F1～F8、D1 已实施：活动身份、学校知情／提醒、晋升召回、后台任务、查询与检查成本、状态摘要及 smoke | [交付](records/ASTRA_FIX_DELIVERY_20261009.md)、[过程](records/ASTRA_FIX_IMPLEMENTATION_LOG_20261009.md)、[性能数据](records/ASTRA_FIX_BENCHMARK_20261009.json) |
-| 实施后 R1 | 已关闭：维护准备失败／停止保留完整阶段进度，最新持久任务 ready／done 才压缩 checkpoint；应用重试复用结果 | [补验交付](records/ASTRA_R1_CHECKPOINT_FIX_DELIVERY_20261009.md)、[过程](records/ASTRA_R1_CHECKPOINT_FIX_IMPLEMENTATION_LOG_20261009.md)、[复核报告及关闭补充](reviews/ASTRA_POST_IMPLEMENTATION_REVIEW_20261009.md) |
+实施者主目录137／776与ASTRA独立137／776是各自执行证据，耗时和结果分别保留；旧122／693、121／681、107／620等在[历史记录](../archive/records/)中保留各批意义。日志不会随着文档整理变成一次新的测试执行。
 
-最新全量离线验收为本批137文件776项通过，typecheck、build、demo和双场景smoke通过；详情和复核状态以本批交付为准。R1的122／693与此前121／681保留各批历史含义。
+## 3. 待实施
 
-此前 REVIEW24（106文件612项）和 REVIEW26（107文件620项）修复已包含在当前代码中，分别见[窗口修复记录](records/REVIEW24_DIALOGUE_FIX_LOG_20261009.md)、[记忆 create 修复记录](records/REVIEW26_MEMORY_CREATE_FIX_LOG_20261009.md)。更早的数字保留原批次含义。
+目前唯一保留在plans的任务是[环境异步E1～E5](plans/environment-async/README.md)，状态为**未实施**。它需要新的冻结与持久恢复合同，当前环境HTTP仍串行。本次不启动开发、升级或正式迁移；776项通过不能代替未来E阶段验收。
 
-目前没有数月运行验证。搜索供应商未选、正式搜索关闭；记忆 `semantic=null`，纯语义查询关闭；新图视觉描述及真实 QQ 持续收发尚未验收。此前隔离真实活动样例与图库核对不扩大这些结论。此次未读取私有配置、角色背景或正式库，未调用在线模型或启动服务。
+已完成的T1～T9、ASTRA T1～T13和R1执行合同已收进[历史plans](../archive/plans/)。旧清单未勾选和原“待实施”文字不表示今天仍待做。
 
-## 3. 目录如何使用
+## 4. 目录与新建规则
 
 | 目录 | 用途 |
 | --- | --- |
 | `architecture/` | 当前总架构 |
-| `subsystems/` | 当前8份子系统说明 |
-| `reference/` | 当前实现映射与现有限制 |
-| `plans/` | 当前审核T1～T9已完成合同、独立E待执行方案及此前修复合同，状态分列；见[计划入口](plans/README.md) |
-| `records/` | 每一批实际修改、验收、性能与文档整理记录，数字按批次保留 |
-| `reviews/` | 原始审核、核验回复、关闭补充及证据；见[审核材料入口](reviews/README.md) |
+| `subsystems/` | 当前8份功能说明 |
+| `reference/` | 实现映射、配置及当前必要参考 |
+| [plans/](plans/README.md) | 未实施任务；当前只有环境异步计划 |
+| [records/](records/README.md) | 最近交付、过程、最终性能证据与本轮整理清单 |
+| [reviews/](reviews/README.md) | 最近ASTRA最终review、独立探针和真实验证日志 |
+| [../archive/](../archive/README.md) | 旧架构、已完成计划、旧审核、早期过程和旧红绿日志 |
+| [../../runtime/archive/](../../runtime/archive/README.md) | 本地历史测试产物与完整回退资料，不默认送审／入Git |
 
-优先复核当前说明，再按疑点查实现、测试和最近交付。原始审核、`evidence/`、`postfix-evidence-20261009/` 与 `original-docs/` 是历史证据，不能把其中旧失败断言或待修状态直接当作当前验收要求。R1 新结果保存在 `reviews/r1-fix-evidence-20261009/`。
+按[目录原则](../DIRECTORY_POLICY.md)新建任务目录，关闭后同步当前功能说明，再归档已被替代材料。不要再创建根目录rebuttal/log或另一套送审副本。文件移动前后位置见[迁移清单](records/document-organization-20261009/move-manifest.json)。
 
-旧材料与当前说明发生差异时，查最新源码及后续修复，不任选旧规则。文档版本0.5不改变 npm 包版本、数据协议版本或正式库状态。旧 DSH-review 副本及 zip 保持当时快照，不持续同步。
+## 5. 验证与送审边界
 
-## 4. 给审核者的范围说明
+搜索供应商未选，正式搜索关闭；记忆`semantic=null`，纯语义查询关闭；新图视觉描述、真实QQ持续收发和数月运行仍未验证。既有隔离真实活动样例和图库核对不扩大这些结论。目录更新不改变业务版本、运行配置或正式库状态。
 
-请检查跨文档一致性、正常功能遗漏、程序与模型判断边界、信息资格与来源、模拟与现实、候选与公开确认、正式提交与恢复，以及未启用／未验收能力是否如实标明。最新重点包括事件时间默认、字符选批/FIFO、SQL窗口等价、学校定向知情、终态载荷有限回收，以及跨活动未读归属、已读学校计划推导提醒、知情版本防回退、晋升事件依据召回，以及后台失败后的累计修补进度。
+审代码时另提供`src/`、`tests/`、`scripts/`、包与锁文件、测试配置、公开样例、`runtime/check.cjs`、`runtime/plugin-smoke*.cjs`和两个启动cmd。性能样本证明对应工作量，没有证明所有查询与历史规模无关。
 
-若审核代码，同时提供 `src/`、`tests/`、`scripts/`、`package.json`、锁文件、测试配置、公开样例、`runtime/check.cjs`、`runtime/plugin-smoke*.cjs` 和两个启动 cmd。纯文档审核不能证明代码正确；性能探针也不证明所有查询都已与历史大小无关。
+密钥、私有配置、正式故事库、人物背景及`runtime/archive/`不属默认送审材料；需要时由用户另行提供。历史复现按报告基线使用，不要求修后的程序仍满足“旧错误发生”的断言。
 
-密钥、私有配置、正式故事库及人物背景不属于默认送审材料。人物风格或正式配置需要审核时，由用户另行提供所需内容。请区分实际矛盾、已注明限制和可选新需求；此次没有增加防御编程、供应商、多进程或语义裁判模型。
+## 6. 历史追溯
 
-## 5. 按需追溯旧实施材料
+从[归档索引](../archive/README.md)按主题查记忆、共同活动、世界学校、提示上下文、搜索和素材；ASTRA旧审核、R1、DSH各轮回应、V0.5重写和旧zip均在归档内。历史报告不改判定和数字，只修可识别的导航；日志里的原执行路径可通过迁移清单定位。
 
-| 主题 | 细化／执行计划 |
-| --- | --- |
-| 记忆生命周期 | [细化](../MEMORY_V0.3_IMPLEMENTATION_20261007.md)、[计划](../MEMORY_V0.3_EXECUTION_PLAN_20261007.md) |
-| 容量／空闲整理 | [细化](../MEMORY_CAPACITY_IDLE_V0.4_IMPLEMENTATION_20261008.md)、[计划](../MEMORY_CAPACITY_IDLE_V0.4_EXECUTION_PLAN_20261008.md) |
-| 共同活动 | [细化](../SHARED_ACTIVITY_V0.3_IMPLEMENTATION_20261007.md)、[计划](../SHARED_ACTIVITY_V0.3_EXECUTION_PLAN_20261007.md) |
-| 世界与学校 | [细化](../WORLD_SCHOOL_PLANNING_V0.4_IMPLEMENTATION_20261008.md)、[计划](../WORLD_SCHOOL_PLANNING_V0.4_EXECUTION_PLAN_20261008.md) |
-| 搜索 | [设计细化](../WEB_SEARCH_SUBSYSTEM_DESIGN_20261007.md)、[计划](../WEB_SEARCH_EXECUTION_PLAN_20261007.md) |
-| 普通／活动上下文 | [细化§13～15](../PROMPT_CONTEXT_OPTIMIZATION_V0.1_IMPLEMENTATION_20261008.md)、[计划及 REVIEW24 补充](../PROMPT_CONTEXT_OPTIMIZATION_V0.1_EXECUTION_PLAN_20261008.md) |
-
-版本切换及早期检查见[重写日志](records/V0.5_DOCUMENT_REWRITE_LOG_20261009.md)、[归类记录](records/V0.5_DOCUMENT_ALIGNMENT_LOG_20261009.md)、[首次交 ASTRA 前检查](records/V0.5_PRE_ASTRA_DOCUMENT_CHECK_20261009.md)和[旧累计索引快照](../DOCUMENT_AUDIT_PRE_V0.5_20261009.md)。这些材料按需要追溯，不作为再次送审的必读前置。
+当前问题优先看当前说明、最新代码和最终复核，按疑点补看归档，不从旧决策中任选一条覆盖现行规则。

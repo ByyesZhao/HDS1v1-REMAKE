@@ -1,0 +1,13 @@
+{
+  "passed": 8,
+  "checks": [
+    "refresh follows selectedIds order instead of snapshot order",
+    "frozen payload retains all fields for 2026-10-08T02:00:00.000Z",
+    "frozen payload retains all fields for legacy unknown",
+    "refresh does not release deferred newer reserved version",
+    "unstarted retry waits until both idle and retry deadlines",
+    "daily retry gate preserves fixed cutoff and dispatches when due",
+    "over-limit dependency is in readSet and whole-closure parsed unit applies",
+    "linked create explicit/missing/offset dates x true/false eight-case matrix"
+  ]
+}

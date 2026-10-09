@@ -1,0 +1,93 @@
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ❯ tests/review24-dialogue.test.ts (21 tests | 1 failed) 5920ms
+   × cli_rebuild_check_and_apply_share_explicit_mode_and_config 202ms
+ ❯ tests/memory-capacity-upgrade.test.ts (10 tests | 1 failed) 3778ms
+   × CLI reads only memory settings without a background or key file 206ms
+ ❯ tests/chat-upgrade.test.ts (9 tests | 1 failed) 2795ms
+   × cli_defaults_target2_reads_public_idle_config_without_models_or_keys 181ms
+ ❯ tests/plugin-smoke-contract.test.ts (7 tests | 1 failed) 83ms
+   × real Koishi smoke completes empty and required-notice V1 batches without repairs 6ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/chat-upgrade.test.ts > cli_defaults_target2_reads_public_idle_config_without_models_or_keys
+AssertionError: expected null to be +0 // Object.is equality
+
+- Expected:
+0
+
++ Received:
+null
+
+ ❯ tests/chat-upgrade.test.ts:27:461
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/memory-capacity-upgrade.test.ts > CLI reads only memory settings without a background or key file
+AssertionError: expected null to be +0 // Object.is equality
+
+- Expected:
+0
+
++ Received:
+null
+
+ ❯ tests/memory-capacity-upgrade.test.ts:73:32
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  tests/plugin-smoke-contract.test.ts > real Koishi smoke completes empty and required-notice V1 batches without repairs
+AssertionError: expected Error: spawnSync C:\Program Files\nodejs\… { …(5) } to be undefined
+
+- Expected:
+undefined
+
++ Received:
+Error {
+  "message": "spawnSync C:\\Program Files\\nodejs\\node.exe EPERM",
+  "errno": -4048,
+  "code": "EPERM",
+  "syscall": "spawnSync C:\\Program Files\\nodejs\\node.exe",
+  "path": "C:\\Program Files\\nodejs\\node.exe",
+  "spawnargs": [
+    "D:\\HDSI-remake\\runtime\\plugin-smoke.cjs",
+  ],
+}
+
+ ❯ tests/plugin-smoke-contract.test.ts:11:23
+      9| test('real Koishi smoke completes empty and required-notice V1 batches…
+     10|  const result=spawnSync(process.execPath,[resolve('runtime/plugin-smok…
+     11|  expect(result.error).toBeUndefined();expect(result.status,result.stdo…
+       |                       ^
+     12|  expect(result.stdout).toContain('empty_week');expect(result.stdout).t…
+     13| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  tests/review24-dialogue.test.ts > cli_rebuild_check_and_apply_share_explicit_mode_and_config
+AssertionError: expected null to be +0 // Object.is equality
+
+- Expected:
+0
+
++ Received:
+null
+
+ ❯ tests/review24-dialogue.test.ts:40:465
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  4 failed | 118 passed (122)
+      Tests  4 failed | 689 passed (693)
+   Start at  14:42:31
+   Duration  56.44s (tests 79%, import 17%, transform 3%, worker 1%)
+
+    Isolate  122 workers spawned · ~64ms startup each (spawn + environment, per file)
+             at least ~7.73s faster with isolate: false — reuses workers across files instead of one per file
+

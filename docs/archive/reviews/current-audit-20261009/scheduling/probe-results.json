@@ -1,0 +1,326 @@
+{
+  "node": "v24.21.0",
+  "fixture": "in-memory synthetic; cold means first operation after seeding, not OS disk cold-cache; five warm calls; no all() instrumentation during timing",
+  "school": [
+    {
+      "historicalMeetings": 0,
+      "rowCounts": {
+        "school_plan_items": 0,
+        "school_instances": 0,
+        "school_notices": 0,
+        "school_knowledge": 0
+      },
+      "collect": {
+        "coldMs": 0.943000000000012,
+        "warmMs": [
+          0.18770000000000664,
+          0.16840000000000543,
+          0.1594999999999942,
+          0.16959999999998843,
+          0.15439999999999543
+        ],
+        "warmMedianMs": 0.16840000000000543
+      },
+      "deadline": {
+        "coldMs": 0.35720000000000596,
+        "warmMs": [
+          0.11299999999999955,
+          0.11769999999999925,
+          0.13100000000000023,
+          0.10490000000000066,
+          0.09650000000000603
+        ],
+        "warmMedianMs": 0.11299999999999955
+      },
+      "collectReads": {
+        "school_knowledge": {
+          "calls": 1,
+          "rows": 0
+        },
+        "school_plan_items": {
+          "calls": 1,
+          "rows": 0
+        },
+        "school_instances": {
+          "calls": 1,
+          "rows": 0
+        },
+        "school_notices": {
+          "calls": 2,
+          "rows": 0
+        },
+        "tasks": {
+          "calls": 2,
+          "rows": 0
+        },
+        "environment_batches": {
+          "calls": 1,
+          "rows": 0
+        }
+      },
+      "deadlineReads": {
+        "school_knowledge": {
+          "calls": 1,
+          "rows": 0
+        },
+        "school_plan_items": {
+          "calls": 1,
+          "rows": 0
+        },
+        "school_instances": {
+          "calls": 1,
+          "rows": 0
+        },
+        "tasks": {
+          "calls": 3,
+          "rows": 0
+        },
+        "school_notices": {
+          "calls": 1,
+          "rows": 0
+        }
+      }
+    },
+    {
+      "historicalMeetings": 250,
+      "rowCounts": {
+        "school_plan_items": 250,
+        "school_instances": 250,
+        "school_notices": 750,
+        "school_knowledge": 500
+      },
+      "collect": {
+        "coldMs": 13.68440000000001,
+        "warmMs": [
+          13.663800000000009,
+          12.952699999999993,
+          12.788399999999996,
+          12.7166,
+          12.118299999999977
+        ],
+        "warmMedianMs": 12.788399999999996
+      },
+      "deadline": {
+        "coldMs": 7.890800000000013,
+        "warmMs": [
+          7.814400000000006,
+          7.112600000000015,
+          7.1825000000000045,
+          6.559599999999989,
+          9.105200000000025
+        ],
+        "warmMedianMs": 7.1825000000000045
+      },
+      "collectReads": {
+        "school_knowledge": {
+          "calls": 1,
+          "rows": 500
+        },
+        "school_plan_items": {
+          "calls": 1,
+          "rows": 250
+        },
+        "school_instances": {
+          "calls": 1,
+          "rows": 250
+        },
+        "school_notices": {
+          "calls": 2,
+          "rows": 1500
+        },
+        "tasks": {
+          "calls": 2,
+          "rows": 0
+        },
+        "environment_batches": {
+          "calls": 1,
+          "rows": 0
+        }
+      },
+      "deadlineReads": {
+        "school_knowledge": {
+          "calls": 1,
+          "rows": 500
+        },
+        "school_plan_items": {
+          "calls": 1,
+          "rows": 250
+        },
+        "school_instances": {
+          "calls": 1,
+          "rows": 250
+        },
+        "tasks": {
+          "calls": 3,
+          "rows": 0
+        },
+        "school_notices": {
+          "calls": 1,
+          "rows": 750
+        }
+      }
+    },
+    {
+      "historicalMeetings": 1000,
+      "rowCounts": {
+        "school_plan_items": 1000,
+        "school_instances": 1000,
+        "school_notices": 3000,
+        "school_knowledge": 2000
+      },
+      "collect": {
+        "coldMs": 51.298,
+        "warmMs": [
+          48.74340000000001,
+          46.2448,
+          47.4131000000001,
+          46.9790999999999,
+          49.49069999999995
+        ],
+        "warmMedianMs": 47.4131000000001
+      },
+      "deadline": {
+        "coldMs": 31.72930000000008,
+        "warmMs": [
+          32.03449999999998,
+          30.292800000000057,
+          29.8832000000001,
+          28.134900000000016,
+          28.8116
+        ],
+        "warmMedianMs": 29.8832000000001
+      },
+      "collectReads": {
+        "school_knowledge": {
+          "calls": 1,
+          "rows": 2000
+        },
+        "school_plan_items": {
+          "calls": 1,
+          "rows": 1000
+        },
+        "school_instances": {
+          "calls": 1,
+          "rows": 1000
+        },
+        "school_notices": {
+          "calls": 2,
+          "rows": 6000
+        },
+        "tasks": {
+          "calls": 2,
+          "rows": 0
+        },
+        "environment_batches": {
+          "calls": 1,
+          "rows": 0
+        }
+      },
+      "deadlineReads": {
+        "school_knowledge": {
+          "calls": 1,
+          "rows": 2000
+        },
+        "school_plan_items": {
+          "calls": 1,
+          "rows": 1000
+        },
+        "school_instances": {
+          "calls": 1,
+          "rows": 1000
+        },
+        "tasks": {
+          "calls": 3,
+          "rows": 0
+        },
+        "school_notices": {
+          "calls": 1,
+          "rows": 3000
+        }
+      }
+    }
+  ],
+  "environment": [
+    {
+      "historicalDays": 0,
+      "currentBatchSteps": 4,
+      "historicalSteps": 0,
+      "storedStepJsonBytes": 1122,
+      "deadline": {
+        "coldMs": 0.16240000000004784,
+        "warmMs": [
+          0.05889999999999418,
+          0.05389999999999873,
+          0.05410000000006221,
+          0.06130000000007385,
+          0.06150000000002365
+        ],
+        "warmMedianMs": 0.05889999999999418
+      },
+      "reads": {
+        "environment_batches": {
+          "calls": 1,
+          "rows": 1
+        },
+        "environment_steps": {
+          "calls": 4,
+          "rows": 16
+        }
+      }
+    },
+    {
+      "historicalDays": 30,
+      "currentBatchSteps": 4,
+      "historicalSteps": 120,
+      "storedStepJsonBytes": 3450297,
+      "deadline": {
+        "coldMs": 50.55020000000002,
+        "warmMs": [
+          50.97619999999995,
+          48.131599999999935,
+          48.35480000000007,
+          50.66409999999996,
+          47.00720000000001
+        ],
+        "warmMedianMs": 48.35480000000007
+      },
+      "reads": {
+        "environment_batches": {
+          "calls": 1,
+          "rows": 31
+        },
+        "environment_steps": {
+          "calls": 4,
+          "rows": 496
+        }
+      }
+    },
+    {
+      "historicalDays": 90,
+      "currentBatchSteps": 4,
+      "historicalSteps": 360,
+      "storedStepJsonBytes": 30041007,
+      "deadline": {
+        "coldMs": 415.64260000000013,
+        "warmMs": [
+          429.50959999999986,
+          429.60360000000037,
+          445.17159999999967,
+          409.1282000000001,
+          440.6084999999998
+        ],
+        "warmMedianMs": 429.60360000000037
+      },
+      "reads": {
+        "environment_batches": {
+          "calls": 1,
+          "rows": 91
+        },
+        "environment_steps": {
+          "calls": 4,
+          "rows": 1456
+        }
+      }
+    }
+  ]
+}

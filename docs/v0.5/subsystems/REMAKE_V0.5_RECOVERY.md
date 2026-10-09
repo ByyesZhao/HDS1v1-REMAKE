@@ -84,7 +84,7 @@
 
 维护业务快照与模型阶段 checkpoint 分别保存。准备失败 pending 或停止 computing 时保留完整输入、修补结果／累计次数、本地补查状态、未确认工具操作及既有工具结果。压缩前读回最新持久任务：仅 ready／done 清除阶段 checkpoint，pending／computing／任务已不存在均不清除；索引路径不做此维护清理。
 
-准备结果先落盘再清进度；应用失败沿用 ready 结果，不重新请求模型。停止后的晚到响应不推进任务；重启把中断 computing 恢复为 pending 后接续。清理已终结的任务不会被晚到响应复活。旧版本已清空的阶段进度不能由此补回。对应修复与真实恢复验收见[R1补验](../records/ASTRA_R1_CHECKPOINT_FIX_DELIVERY_20261009.md)。
+准备结果先落盘再清进度；应用失败沿用 ready 结果，不重新请求模型。停止后的晚到响应不推进任务；重启把中断 computing 恢复为 pending 后接续。清理已终结的任务不会被晚到响应复活。旧版本已清空的阶段进度不能由此补回。对应修复与真实恢复验收见[R1补验](../../archive/records/ASTRA_R1_CHECKPOINT_FIX_DELIVERY_20261009.md)。
 
 新增终态维护任务即刻清除其网页checkpoint；失败pending／computing保留，ready结构化结果继续用于应用重试。逐条删除只读取引用该owner的活动任务，晚到结果仍受墓碑与持久状态门禁约束。旧终态恢复正文可用独立载荷回收工具在停服后分批压缩：索引text/result、维护snapshot/readSet/result、已完成轮post.result及终态owner网页checkpoint。每批四表合计默认最多50行，一次默认20批；不足以完成时返回hasMore，可续跑，不删消息、身份、来源、统计或未完成恢复正文。命令与备份见[README](../../../README.md)。
 

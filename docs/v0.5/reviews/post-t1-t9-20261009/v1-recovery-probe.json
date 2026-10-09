@@ -1,0 +1,17 @@
+{
+  "status": "passed",
+  "scope": "offline synthetic in-memory interrupted v1 turn, then runtime upgraded to v2 with valid chat associations",
+  "recentCalls": {
+    "v1": 3,
+    "v2": 0
+  },
+  "recoveryRecentV1": 2,
+  "modelCalls": [
+    "narrative",
+    "narrative",
+    "personal_chat",
+    "memory"
+  ],
+  "dialogueBindingPreserved": true,
+  "turnDone": true
+}

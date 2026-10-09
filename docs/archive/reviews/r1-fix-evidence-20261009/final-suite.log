@@ -1,0 +1,14 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 test
+npm notice run vitest run
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/astra-r1-checkpoint/HDSI-remake
+
+
+ Test Files  122 passed (122)
+      Tests  693 passed (693)
+   Start at  14:11:19
+   Duration  68.83s (tests 77%, import 20%, transform 3%, worker 1%)
+
+    Isolate  122 workers spawned · ~92ms startup each (spawn + environment, per file)
+             at least ~11.11s faster with isolate: false — reuses workers across files instead of one per file
+

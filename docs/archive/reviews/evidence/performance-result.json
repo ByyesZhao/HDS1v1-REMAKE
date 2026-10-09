@@ -1,0 +1,109 @@
+{
+  "node": "v24.21.0",
+  "history": [
+    {
+      "historicalMessages": 1000,
+      "historicalTurns": 1000,
+      "medianCheckMs": 18.03,
+      "decoded": {
+        "chat_episodes": {
+          "calls": 6,
+          "rows": 300
+        },
+        "messages": {
+          "calls": 6,
+          "rows": 6000
+        },
+        "turns": {
+          "calls": 1,
+          "rows": 1000
+        },
+        "tasks": {
+          "calls": 1,
+          "rows": 0
+        },
+        "dialogue_episodes": {
+          "calls": 1,
+          "rows": 0
+        }
+      }
+    },
+    {
+      "historicalMessages": 10000,
+      "historicalTurns": 10000,
+      "medianCheckMs": 173.22,
+      "decoded": {
+        "chat_episodes": {
+          "calls": 6,
+          "rows": 3000
+        },
+        "messages": {
+          "calls": 6,
+          "rows": 60000
+        },
+        "turns": {
+          "calls": 1,
+          "rows": 10000
+        },
+        "tasks": {
+          "calls": 1,
+          "rows": 0
+        },
+        "dialogue_episodes": {
+          "calls": 1,
+          "rows": 0
+        }
+      }
+    },
+    {
+      "historicalMessages": 50000,
+      "historicalTurns": 50000,
+      "medianCheckMs": 903.7,
+      "decoded": {
+        "chat_episodes": {
+          "calls": 6,
+          "rows": 15000
+        },
+        "messages": {
+          "calls": 6,
+          "rows": 300000
+        },
+        "turns": {
+          "calls": 1,
+          "rows": 50000
+        },
+        "tasks": {
+          "calls": 1,
+          "rows": 0
+        },
+        "dialogue_episodes": {
+          "calls": 1,
+          "rows": 0
+        }
+      }
+    }
+  ],
+  "status": [
+    {
+      "completedTurns": 10,
+      "searchEnabled": false,
+      "sessionCount": 40,
+      "statusCharacters": 12617,
+      "statusMs": 0.89
+    },
+    {
+      "completedTurns": 100,
+      "searchEnabled": false,
+      "sessionCount": 400,
+      "statusCharacters": 126107,
+      "statusMs": 3.08
+    },
+    {
+      "completedTurns": 1000,
+      "searchEnabled": false,
+      "sessionCount": 4000,
+      "statusCharacters": 1265507,
+      "statusMs": 24.11
+    }
+  ]
+}

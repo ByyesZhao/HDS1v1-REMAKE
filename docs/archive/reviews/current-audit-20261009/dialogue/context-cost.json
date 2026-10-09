@@ -1,0 +1,208 @@
+{
+  "generatedAt": "2026-10-09T06:45:43.638Z",
+  "history": [
+    {
+      "n": 1000,
+      "wholeTurnMs": 27.143800000000056,
+      "wholeTurn": {
+        "tasks": {
+          "calls": 1,
+          "rows": 0
+        },
+        "events": {
+          "calls": 2,
+          "rows": 0
+        },
+        "school_instances": {
+          "calls": 3,
+          "rows": 0
+        },
+        "school_notices": {
+          "calls": 3,
+          "rows": 0
+        },
+        "school_knowledge": {
+          "calls": 7,
+          "rows": 0
+        },
+        "messages": {
+          "calls": 3,
+          "rows": 3003
+        },
+        "chat_episodes": {
+          "calls": 3,
+          "rows": 3003
+        }
+      },
+      "memoryOnlyMs": 3.5389999999999873,
+      "memoryOnly": {
+        "messages": {
+          "calls": 1,
+          "rows": 1001
+        },
+        "chat_episodes": {
+          "calls": 1,
+          "rows": 1001
+        }
+      },
+      "memoryViewKeys": [
+        "details",
+        "retrieved"
+      ],
+      "stages": [
+        "narrative",
+        "personal_chat",
+        "memory"
+      ]
+    },
+    {
+      "n": 10000,
+      "wholeTurnMs": 100.3759,
+      "wholeTurn": {
+        "tasks": {
+          "calls": 1,
+          "rows": 0
+        },
+        "events": {
+          "calls": 2,
+          "rows": 0
+        },
+        "school_instances": {
+          "calls": 3,
+          "rows": 0
+        },
+        "school_notices": {
+          "calls": 3,
+          "rows": 0
+        },
+        "school_knowledge": {
+          "calls": 7,
+          "rows": 0
+        },
+        "messages": {
+          "calls": 3,
+          "rows": 30003
+        },
+        "chat_episodes": {
+          "calls": 3,
+          "rows": 30003
+        }
+      },
+      "memoryOnlyMs": 31.618900000000167,
+      "memoryOnly": {
+        "messages": {
+          "calls": 1,
+          "rows": 10001
+        },
+        "chat_episodes": {
+          "calls": 1,
+          "rows": 10001
+        }
+      },
+      "memoryViewKeys": [
+        "details",
+        "retrieved"
+      ],
+      "stages": [
+        "narrative",
+        "personal_chat",
+        "memory"
+      ]
+    },
+    {
+      "n": 50000,
+      "wholeTurnMs": 484.0713000000005,
+      "wholeTurn": {
+        "tasks": {
+          "calls": 1,
+          "rows": 0
+        },
+        "events": {
+          "calls": 2,
+          "rows": 0
+        },
+        "school_instances": {
+          "calls": 3,
+          "rows": 0
+        },
+        "school_notices": {
+          "calls": 3,
+          "rows": 0
+        },
+        "school_knowledge": {
+          "calls": 7,
+          "rows": 0
+        },
+        "messages": {
+          "calls": 3,
+          "rows": 150003
+        },
+        "chat_episodes": {
+          "calls": 3,
+          "rows": 150003
+        }
+      },
+      "memoryOnlyMs": 143.57080000000042,
+      "memoryOnly": {
+        "messages": {
+          "calls": 1,
+          "rows": 50001
+        },
+        "chat_episodes": {
+          "calls": 1,
+          "rows": 50001
+        }
+      },
+      "memoryViewKeys": [
+        "details",
+        "retrieved"
+      ],
+      "stages": [
+        "narrative",
+        "personal_chat",
+        "memory"
+      ]
+    }
+  ],
+  "pool": [
+    {
+      "n": 1000,
+      "stageMs": [
+        7.017300000000432,
+        6.830300000000534,
+        7.202299999999923
+      ],
+      "envelopeMs": [
+        3.7033000000001266,
+        3.7112999999999374,
+        3.4465000000000146
+      ]
+    },
+    {
+      "n": 5000,
+      "stageMs": [
+        54.475100000000566,
+        53.65909999999985,
+        54.96549999999934
+      ],
+      "envelopeMs": [
+        26.90399999999954,
+        27.92450000000008,
+        26.840800000000854
+      ]
+    },
+    {
+      "n": 10000,
+      "stageMs": [
+        280.1369000000004,
+        258.1956,
+        244.79489999999987
+      ],
+      "envelopeMs": [
+        137.54229999999916,
+        128.0685999999996,
+        135.63770000000022
+      ]
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+{"H":1000,"memoryBuild":{"queries":16,"rows":10,"jsonRows":10,"writes":0},"memoryLookup":{"queries":16,"rows":10,"jsonRows":10,"writes":0},"recentWindow":{"queries":3,"rows":172,"jsonRows":168,"writes":0},"recentGate":{"queries":15,"rows":173,"jsonRows":173,"writes":0}}
+{"H":10000,"memoryBuild":{"queries":16,"rows":10,"jsonRows":10,"writes":0},"memoryLookup":{"queries":16,"rows":10,"jsonRows":10,"writes":0},"recentWindow":{"queries":3,"rows":172,"jsonRows":168,"writes":0},"recentGate":{"queries":15,"rows":173,"jsonRows":173,"writes":0}}
+{"H":50000,"memoryBuild":{"queries":16,"rows":10,"jsonRows":10,"writes":0},"memoryLookup":{"queries":16,"rows":10,"jsonRows":10,"writes":0},"recentWindow":{"queries":3,"rows":172,"jsonRows":168,"writes":0},"recentGate":{"queries":15,"rows":173,"jsonRows":173,"writes":0}}
+{"fuzz":{"seed":764123,"iterations":160,"comparisons":1920},"status":"passed"}
