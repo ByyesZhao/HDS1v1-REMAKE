@@ -38,3 +38,5 @@ export interface SchoolExpansionInput {weekStarts:string[];sourceItems:SchoolPla
 export interface SchoolInstanceCandidate {occurrenceKey:string;sourceItemId:string;expectedRevision:number}
 export interface SchoolNoticeCandidate {key:string;text:string;entityRefs:{entityKind:SchoolEntitySnapshot['entityKind'];entityId:string}[]}
 export interface SchoolWeekCandidate {weekStart:string;sourceVersions:Record<string,number>;conflictNotes:string[]}
+
+export interface SchoolEntityRef {entityKind:SchoolEntitySnapshot['entityKind'];entityId:string}
