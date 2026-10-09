@@ -1,5 +1,6 @@
 import {randomUUID} from 'node:crypto';
 import type {Storage} from '../storage';
+import type {SchoolReadView} from './read-view';
 import type {EnvironmentModelResult,EnvironmentChangeSet} from '../environment/types';
 import type {SchoolPlan,SchoolPlanItem} from './types';
 import {milliseconds} from '../time';
@@ -7,7 +8,7 @@ import {ModelFormatError} from '../model/client';
 import {normalizeSchoolWeekChanges} from './calendar';
 const same=(a:unknown,b:unknown)=>JSON.stringify(a)===JSON.stringify(b);
 function publicValue(item:SchoolPlanItem){const {id,revision,deliveryRevision,stageInfo,...value}=item;return value;}
-export function resolveSchoolUpstream(storage:Storage,result:Extract<EnvironmentModelResult,{planChanges:unknown}>,now:string):EnvironmentChangeSet {
+export function resolveSchoolUpstream(storage:SchoolReadView,result:Extract<EnvironmentModelResult,{planChanges:unknown}>,now:string):EnvironmentChangeSet {
  const refs=new Map<string,string>(),plans:SchoolPlan[]=[],items:SchoolPlanItem[]=[];
  for(const c of [...result.planChanges,...result.itemChanges])if(c.action==='create'){if(refs.has(c.clientRef))throw new ModelFormatError('duplicate clientRef');refs.set(c.clientRef,randomUUID());}
  for(const c of result.planChanges){if(c.action==='create')plans.push({...c.plan,id:refs.get(c.clientRef)!,revision:1});else{const old=storage.read('school_plans',c.id)!;if(old.revision!==c.expectedRevision)throw new ModelFormatError('plan revision mismatch');const next={...old,...c.plan};if(!same(next,old))plans.push({...next,revision:old.revision+1});}}

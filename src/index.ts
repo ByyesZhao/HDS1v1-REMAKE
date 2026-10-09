@@ -101,7 +101,7 @@ export function apply(ctx: Context, config: Config): void {
     chat:new ChatEpisodes(new DialogueStore(storage),settings.memory.contextLimits.dialogueIdleMinutes),dialogue:new DialogueEpisodes(new DialogueStore(storage),settings.memory.contextLimits.dialogueIdleMinutes),environmentStore:new EnvironmentStore(storage),schoolStore:new SchoolStore(storage),storage, clock, random, models, config: options, sender, stickers,web,memoryStore:memory.store,memoryLifecycle:memory.lifecycle,memoryCapacity:memory.capacity,memoryIdle:memory.idle,memoryCleanup:memory.cleanup,retrieval:memory.retrieval,maintenance:memory.maintenance,
     wait: ms => new Promise(resolve => setTimeout(resolve, ms)),
   });
-  app.dependencies.generateEnvironment=input=>generateEnvironmentStep(app.dependencies,input);
+  app.dependencies.generateEnvironment=(input,execution)=>generateEnvironmentStep(app.dependencies,input,execution);
   const logger = ctx.logger(name);
   host = new SerialHost(app, { onError: error => logger.error(error), onWarning: warning => logger.warn(warning) });
   ctx.middleware(async (session, next) => {

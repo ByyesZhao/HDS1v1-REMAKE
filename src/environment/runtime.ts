@@ -11,14 +11,14 @@ export function environmentInput(d:Dependencies,step:EnvironmentStep):Environmen
  const owner=step.stage==='school_campus'?'campus':step.stage==='school_group'?'group':null;
  return {stage:step.stage,batchId:step.batchId,at:d.clock.now(),modelContractVersion:1,context:{background:d.config.background,...(d.config.backgroundViews?{backgroundViews:d.config.backgroundViews}:{}),worldSetting:d.config.worldSetting,schoolSetting:d.config.schoolSetting,timezone:d.config.timezone,events:d.storage.all('events').filter(e=>e.status==='active'&&e.kind==='world'),plans:d.schoolStore.plans().filter(p=>!owner||p.owner===owner),items:d.schoolStore.items().filter(i=>!owner||i.owner===owner),...(step.stage==='school_group'?{progress:d.schoolStore.progress(),campusTiming:d.schoolStore.items().filter(i=>i.owner==='campus').map(i=>({id:i.id,title:i.title,timing:i.timing}))}:{})}};
 }
-function resolveResult(d:Dependencies,result:EnvironmentModelResult,input:EnvironmentStepInput):EnvironmentChangeSet {
+export function resolveResult(d:Dependencies,result:EnvironmentModelResult,input:EnvironmentStepInput,view:import('../school/read-view').SchoolReadView=d.storage,at=d.clock.now()):EnvironmentChangeSet {
  if(result.stage==='world')return {...result,changes:result.changes.map(c=>c.action==='create'?{...c,id:randomUUID()}:c)};
  if(result.stage==='school_week'){
-  if(input.modelContractVersion===1)return resolveSchoolWeekText(d.storage,result as import('./types').SchoolWeekTextResult,input.context as import('../school/types').SchoolExpansionInput,d.clock.now());
+  if(input.modelContractVersion===1)return resolveSchoolWeekText(view,result as import('./types').SchoolWeekTextResult,input.context as import('../school/types').SchoolExpansionInput,at);
   if('noticeTexts' in result)throw new ModelFormatError('version0 requires legacy week candidate');
-  return resolveSchoolWeek(d.storage,result,input.context as import('../school/types').SchoolExpansionInput,d.clock.now());
+  return resolveSchoolWeek(view,result,input.context as import('../school/types').SchoolExpansionInput,at);
  }
- return resolveSchoolUpstream(d.storage,result,d.clock.now());
+ return resolveSchoolUpstream(view,result,at);
 }
 export async function runEnvironmentStep(d:Dependencies,stepId:string,generate:EnvironmentGenerator):Promise<void> {
  let step=d.environmentStore.step(stepId)!;const batch=d.environmentStore.batch(step.batchId)!;

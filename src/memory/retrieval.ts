@@ -28,6 +28,12 @@ export class MemoryRetrieval {
   constructor(public readonly store:MemoryStore,private index?:MemoryIndex,limits:Partial<ContextLimits>={},private calibration:RetrievalCalibration=defaultCalibration){this.limits={...defaultContextLimits,...limits};}
   async build(request:RetrievalRequest,options:RetrievalBuildOptions={}):Promise<RetrievedContext> {
     const at=performance.now(),candidates=this.store.selectCandidates(request);this.metrics.sqlMs=performance.now()-at;this.metrics.candidates=candidates.length;
+    const recent=options.includeRecent===false?[]:new ((request.dialogueWindowVersion??this.store.storage.runtime().dialogueContextVersion)===2?ChatEpisodes:DialogueEpisodes)(new DialogueStore(this.store.storage),this.limits.dialogueIdleMinutes).recent(request.phase,request.at,this.limits.recentDialogueSegments,request.permissions.visibleSourceIds).messages;
+    return this.buildFrozen(request,candidates,recent,ids=>assertMessageSources(this.store.storage,ids),request.includeDetailHistory?this.store.storage.all('detail_history'):[]);
+  }
+  configuration(){return {limits:this.limits,calibration:this.calibration,indexSignature:this.index?.configSignature??null};}
+  async buildFrozen(request:RetrievalRequest,candidates:MemoryCandidate[],recent:RetrievedContext['recent'],assertSources:(ids:string[])=>void,history:RetrievedContext['detailHistory']=[]):Promise<RetrievedContext>{
+    this.metrics.candidates=candidates.length;
     const threshold=this.calibration.semantic;
     const calibrated=!!threshold&&[threshold.fact,threshold.experience].every(n=>Number.isFinite(n)&&n>=-1&&n<=1);
     const eligibleCandidates=candidates.filter(r=>!(r.kind==='learned'&&r.alwaysInclude)&&!(r.ownerType==='detail'&&[r.key,...r.aliases??[]].filter(Boolean).some(alias=>request.query.toLowerCase().includes(alias!.toLowerCase()))));
@@ -63,11 +69,11 @@ export class MemoryRetrieval {
     const long=cap(ranked.filter(r=>r.ownerType==='long'||r.ownerType==='learned'),this.limits.longItemsLimit);
     const details=cap(ranked.filter(r=>r.ownerType==='detail'),this.limits.detailItemsLimit);
     const detailKeys=new Set(details.map(r=>r.key));
-    const result:RetrievedContext={recent:options.includeRecent===false?[]:new ((request.dialogueWindowVersion??this.store.storage.runtime().dialogueContextVersion)===2?ChatEpisodes:DialogueEpisodes)(new DialogueStore(this.store.storage),this.limits.dialogueIdleMinutes).recent(request.phase,request.at,this.limits.recentDialogueSegments,request.permissions.visibleSourceIds).messages,
+    const result:RetrievedContext={recent,
       details:details.map(publicRow),shortTerm:cap(ranked.filter(r=>r.ownerType==='short'),this.limits.shortItemsLimit).map(publicRow),
       longTerm:long.filter(r=>r.ownerType==='long').map(publicRow),learned:[...long.filter(r=>r.ownerType==='learned'),...stable].map(publicRow),
-      detailHistory:request.includeDetailHistory?this.store.storage.all('detail_history').filter(h=>detailKeys.has(h.key)):[]};
-    assertMessageSources(this.store.storage,[...result.details,...result.shortTerm,...result.longTerm,...result.learned,...result.detailHistory].flatMap(r=>r.sourceIds));
+      detailHistory:request.includeDetailHistory?history.filter(h=>detailKeys.has(h.key)):[]};
+    assertSources([...result.details,...result.shortTerm,...result.longTerm,...result.learned,...result.detailHistory].flatMap(r=>r.sourceIds));
     this.metrics.selected=result.details.length+result.shortTerm.length+result.longTerm.length+result.learned.length;
     this.metrics.excludedByLimits=ranked.length+always.length-this.metrics.selected;
     return result;

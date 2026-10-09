@@ -10,7 +10,8 @@ export interface SchoolWeekTextResult {stage:'school_week';noticeTexts:Array<{ke
 export type LegacySchoolWeekResult={stage:'school_week';instanceChanges:SchoolInstanceCandidate[];noticeCandidates:SchoolNoticeCandidate[];weekChanges:SchoolWeekCandidate[]};
 export type EnvironmentModelResult = {stage:'world';changes:EnvironmentChange[]}|{stage:'school_campus'|'school_group';planChanges:SchoolPlanChange[];itemChanges:SchoolItemChange[]}|LegacySchoolWeekResult|SchoolWeekTextResult;
 export type EnvironmentChangeSet = {stage:'world';changes:EnvironmentChange[]}|{stage:'school_campus'|'school_group';plans:SchoolPlan[];items:SchoolPlanItem[]}|{stage:'school_week';instances:SchoolInstance[];notices:SchoolNotice[];weeks:SchoolWeek[]};
-export interface EnvironmentStep {preparationVersion?:0|1;preparationGeneration?:number;staleReason?:string|null;id:string;batchId:string;stage:EnvironmentStage;status:EnvironmentStepStatus;attempt:number;startedAt:ISOTime|null;completedAt:ISOTime|null;retryAt:ISOTime|null;lastError:string|null;inputSnapshot:EnvironmentStepInput|null;frozenResult:EnvironmentChangeSet|null}
-export type EnvironmentGenerator = (input:EnvironmentStepInput)=>Promise<EnvironmentModelResult>;
+export interface EnvironmentStep {preparationSnapshot?:import('./snapshot').EnvironmentPreparationSnapshot|null;preparationVersion?:0|1;preparationGeneration?:number;staleReason?:string|null;id:string;batchId:string;stage:EnvironmentStage;status:EnvironmentStepStatus;attempt:number;startedAt:ISOTime|null;completedAt:ISOTime|null;retryAt:ISOTime|null;lastError:string|null;inputSnapshot:EnvironmentStepInput|null;frozenResult:EnvironmentChangeSet|null}
+export interface EnvironmentGenerationOptions {signal?:AbortSignal;modelOptions?:import('../memory/types').ModelRunOptions;schoolView?:import('../school/read-view').SchoolReadView}
+export type EnvironmentGenerator = (input:EnvironmentStepInput,options?:EnvironmentGenerationOptions)=>Promise<EnvironmentModelResult>;
 
 export type EnvironmentStepMetadata=Pick<EnvironmentStep,'id'|'batchId'|'stage'|'status'|'retryAt'>;

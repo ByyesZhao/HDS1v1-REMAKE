@@ -4,13 +4,14 @@ const day=(date:string,offset:number)=>new Date(Date.parse(date+'T12:00:00Z')+of
 import {selectKnownSchoolSnapshots} from './knowledge';
 import {createHash} from 'node:crypto';
 import type {Storage} from '../storage';
+import type {SchoolReadView} from './read-view';
 import {addMs,due,localParts,localTime,milliseconds} from '../time';
 import {localDate} from '../environment/scheduler';
 import type {EnvironmentModelResult,EnvironmentChangeSet} from '../environment/types';
 import type {SchoolExpansionInput,SchoolPlanItem,RequiredOccurrence,RequiredNotice,SchoolEntitySnapshot,SchoolInstance,SchoolNotice,SchoolWeek} from './types';
 import {ModelFormatError} from '../model/client';
 export function stableId(kind:string,tuple:unknown):string{return `${kind}:${createHash('sha256').update(JSON.stringify(tuple)).digest('hex')}`;}
-export function knownSchoolSnapshots(storage:Storage):SchoolEntitySnapshot[]{
+export function knownSchoolSnapshots(storage:SchoolReadView):SchoolEntitySnapshot[]{
  return selectKnownSchoolSnapshots(storage.all('school_knowledge'));
 }
 function related(notice:SchoolNotice,itemId:string){return notice.sourceItemId===itemId||notice.payload.snapshots.some(s=>s.entityKind==='plan_item'?s.entityId===itemId:s.value.sourceItemId===itemId);}
@@ -25,7 +26,7 @@ function anchorOccurrence(o:RequiredOccurrence,existing:SchoolInstance[],now:str
  if(milliseconds(o.startsAt)<=milliseconds(now))return null;
  return {...o,baseOccurrenceKey:base,occurrenceKey:JSON.stringify([base,'after',history[0].id])};
 }
-export function schoolExpansionInput(storage:Storage,now:string,timezone:string):SchoolExpansionInput {
+export function schoolExpansionInput(storage:SchoolReadView,now:string,timezone:string):SchoolExpansionInput {
  const current=weekStart(now,timezone),date=localDate(now,timezone),weekday=new Date(date+'T12:00:00Z').getUTCDay()||7;
  const weeks=new Set([current]);if(weekday>=5)weeks.add(day(current,7));
  for(const w of storage.all('school_weeks'))if(w.weekStart===day(current,7))weeks.add(w.weekStart);
@@ -96,7 +97,7 @@ export function validateWeekCoverage(result:import('../environment/types').Legac
  if(new Set(result.weekChanges.map(w=>w.weekStart)).size!==result.weekChanges.length)throw new ModelFormatError('duplicate week metadata');
  for(const w of result.weekChanges){if(!input.weekStarts.includes(w.weekStart)||Object.entries(w.sourceVersions).some(([id,v])=>input.sourceItems.find(i=>i.id===id)?.revision!==v))throw new ModelFormatError('wrong week coverage version');}
 }
-export function resolveSchoolWeek(storage:Storage,result:import('../environment/types').LegacySchoolWeekResult,input:SchoolExpansionInput,now:string):EnvironmentChangeSet {
+export function resolveSchoolWeek(storage:SchoolReadView,result:import('../environment/types').LegacySchoolWeekResult,input:SchoolExpansionInput,now:string):EnvironmentChangeSet {
  validateWeekCoverage(result,input);
  const instances:SchoolInstance[]=result.instanceChanges.map(c=>{
   const o=input.requiredOccurrences.find(o=>o.occurrenceKey===c.occurrenceKey)!,item=input.sourceItems.find(i=>i.id===c.sourceItemId)!,old=input.existingInstances.find(i=>i.occurrenceKey===c.occurrenceKey);
@@ -117,7 +118,7 @@ export function resolveSchoolWeek(storage:Storage,result:import('../environment/
 
 // Candidate validation belongs to the frozen input. Historical protection belongs
 // to the actual application time, including ready results restored after restart.
-export function normalizeSchoolWeekChanges(storage:Storage,changes:Extract<EnvironmentChangeSet,{stage:'school_week'}>,now:string):Extract<EnvironmentChangeSet,{stage:'school_week'}> {
+export function normalizeSchoolWeekChanges(storage:SchoolReadView,changes:Extract<EnvironmentChangeSet,{stage:'school_week'}>,now:string):Extract<EnvironmentChangeSet,{stage:'school_week'}> {
  const aliases=new Map<string,SchoolInstance|null>();
  const instances=changes.instances.flatMap(value=>{
   const old=storage.read('school_instances',value.id);
@@ -167,7 +168,7 @@ export function validateWeekText(result:import('../environment/types').SchoolWee
  if(new Set(result.weekNotes.map(w=>w.weekStart)).size!==result.weekNotes.length)throw new ModelFormatError('duplicate week notes');
  for(const w of result.weekNotes)if(!input.weekStarts.includes(w.weekStart))throw new ModelFormatError('unknown week notes');
 }
-export function resolveSchoolWeekText(storage:Storage,result:import('../environment/types').SchoolWeekTextResult,input:SchoolExpansionInput,now:string):EnvironmentChangeSet {
+export function resolveSchoolWeekText(storage:SchoolReadView,result:import('../environment/types').SchoolWeekTextResult,input:SchoolExpansionInput,now:string):EnvironmentChangeSet {
  validateWeekText(result,input);
  const descriptors=schoolWeekTextInput(input,'descriptor identity only').notices;
  const candidate:import('../environment/types').LegacySchoolWeekResult={stage:'school_week',instanceChanges:weekInstanceCandidates(input),noticeCandidates:result.noticeTexts.map(n=>({key:n.key,text:n.text,entityRefs:descriptors.find(d=>d.key===n.key)!.declaredEntities})),weekChanges:input.weekStarts.map(weekStart=>({weekStart,sourceVersions:Object.fromEntries(input.sourceItems.map(i=>[i.id,i.revision])),conflictNotes:[...new Set([...input.conflicts,...result.weekNotes.find(w=>w.weekStart===weekStart)?.conflictNotes??[]])]}))};
