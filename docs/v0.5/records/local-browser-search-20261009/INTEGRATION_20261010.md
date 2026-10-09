@@ -10,7 +10,7 @@
 - 完整173测试文件／882项通过，111.88秒。
 - demo、原empty_week／required_notice双场景smoke通过。
 - 新建独立search合成夹具，显式config/database/koishi路径check通过；no-network阻止请求，verify指纹不变。
-- 当前31份相关文档279个本地链接可达，0缺失，详见[链接结果](evidence/document-links-final.json)。
+- 当前32份相关文档287个本地链接可达，0缺失，详见[链接结果](evidence/document-links-final.json)。
 
 日志为logs/hdsi-image-search-main-*.log，保存实际路径与警告，不改写原结果。原工作树和失败日志分开保留。末次报告字段补验已纳入此完整882项。
 
