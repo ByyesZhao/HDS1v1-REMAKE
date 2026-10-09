@@ -16,3 +16,7 @@ T1完成：修正缺日期／单日期默认；已通过真实canonical合并、
 ## T2：字符选批与未启动任务刷新
 新增完整正文选批器；主选集保持FIFO、首条超目标仍完整入选，依赖闭包不受软目标裁切。等待任务只在startedAt显式null时刷新；旧字段缺失和已启动任务保持冻结。RED补齐后9失败/3通过；GREEN7文件54项通过，typecheck退出0。绿色测试前修正夹具：长期发送字段是eventSummary，undefined参数不能被默认null覆盖。默认batchCharacters=null未变。
 
+
+## T3：通道门禁
+先校正活动夹具的description/startsAt/phoneAccess，随后RED真实断言：recent关闭未实现、缺lookupForMemory API、免个人分支仍准备资料。GREEN8文件40项通过，typecheck退出0（测试触发名改为合法check_messages）。默认普通阶段结果保持，记忆补查只对发送的owner投影计一次可选预算。
+

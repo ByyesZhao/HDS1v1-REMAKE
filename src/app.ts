@@ -141,19 +141,22 @@ export async function generateTurn(d: Dependencies, request: TurnRequest, turnId
   const visible = shared || canRead(state, at) ? messages : [];
   const deferred = tasks.filter(t => t.checkReason === 'deferred_reply' && canRead(state, at));
   const reconsider = [...new Set(deferred.flatMap(t => t.messageIds ?? []))].map(id => d.storage.read('messages', id)!).filter(m => m.seenTurnId !== null);
-  const personalQuery = [state.scene.description, ...narrative.experiences.map(e => e.description), ...visible.map(m => m.content), ...reconsider.map(m => m.content)].join('\n');
-  const personalRequest=makeRetrievalRequest(personalQuery,at,'personal',d.config.historyBudget,[...visible,...reconsider].map(m=>m.id));
-  personalRequest.dialogueWindowVersion=dialogueWindowVersion;
-  const personalHistory = await contextBuilder.build(personalRequest);
-  const personalSchool=personalSchoolContext(d.storage,schoolCommits.observations,personalQuery);
-  const personalEvents=personalEnvironmentEvents(d.storage,personalSchool.knownSnapshots);
   const contactEligible = request.triggerKinds.includes('autonomous') && !shared && visible.length === 0 && !tasks.some(t => t.kind === 'appointment') && canRead(state, at) && !isSleeping(state, at);
   const kind = shared ? 'shared' : visible.length || tasks.some(t => t.kind === 'appointment') || deferred.length > 0 ? 'chat' : 'life';
   const runPerson = shared || visible.length > 0 || tasks.some(t => t.kind === 'appointment') || request.triggerKinds.includes('autonomous') || request.triggerKinds.includes('sleep') || schoolCommits.observations.length>0 || tasks.some(t => t.checkReason === 'deferred_reply' && canRead(state, at));
   let personal: PersonalResult | null = null;
   let intent: UtteranceIntent | null = null;
   let contactMisses = runtime.contactMisses;
+  let personalHistory:Awaited<ReturnType<ContextBuilder['build']>>|null=null;
+  let personalSchool:ReturnType<typeof personalSchoolContext>|null=null;
   if (runPerson) {
+  const personalQuery = [state.scene.description, ...narrative.experiences.map(e => e.description), ...visible.map(m => m.content), ...reconsider.map(m => m.content)].join('\n');
+  const personalRequest=makeRetrievalRequest(personalQuery,at,'personal',d.config.historyBudget,[...visible,...reconsider].map(m=>m.id));
+  personalRequest.dialogueWindowVersion=dialogueWindowVersion;
+  personalHistory = await contextBuilder.build(personalRequest);
+  personalSchool=personalSchoolContext(d.storage,schoolCommits.observations,personalQuery);
+  const personalEvents=personalEnvironmentEvents(d.storage,personalSchool.knownSnapshots);
+
     personal = await runPersonal(d.models, kind, at, allTasks, entryMode, [...visible, ...reconsider].map(m => m.id), { dialogueWindowVersion,currentActivityMessages:activityContextMessages(d.storage,activityContext,shared?'personal_shared':'personal_chat',visible.map(m=>m.id)),at, background: d.config.background, state, experiences: narrative.experiences,school:personalSchool, visibleMessages: visible, reconsiderMessages: reconsider, dueTasks: tasks.filter(t => t.kind !== 'check_messages' || canRead(state, at)), tasks: allTasks, events:personalEvents, history: personalHistory, contactEligible,
       ...(shared ? { sharedMeta: request.sharedMeta, remainingSteps: request.sharedMeta ? request.sharedMeta.maxSteps - request.sharedMeta.stepNumber : null, outline: state.scene.shared?.outline, publicNarration: 'publicNarration' in narrative ? narrative.publicNarration : null } : {}) },phaseOptions(d.web,'turn',turnId,'personal',`personal_${kind}`,{lookup:async q=>({...await contextBuilder.retrieval.lookup(q,personalRequest),school:personalSchoolContext(d.storage,schoolCommits.observations,typeof q==='string'?q:q.query)})}), request.sharedMeta, 'publicNarration' in narrative ? narrative.publicNarration : null,{contactEligible});
     state.emotions = personal.emotions;

@@ -1,6 +1,6 @@
 import {assertMessageSources} from '../dialogue/active-consistency';
 import { countVisibleCharacters } from '../output/qq';
-import type { ContextLimits, LookupRequest, MemoryCandidate, RetrievedContext, RetrievalRequest } from './types';
+import type { ContextLimits, LookupRequest, MemoryCandidate, RetrievedContext, RetrievalRequest, RetrievalBuildOptions } from './types';
 import { defaultContextLimits,memoryOwnerData } from './types';
 import {ChatEpisodes} from '../dialogue/chat-episodes';
 import { DialogueEpisodes } from '../dialogue/episodes';
@@ -26,7 +26,7 @@ export class MemoryRetrieval {
   readonly limits:ContextLimits;
   metrics={candidates:0,selected:0,excludedByLimits:0,sqlMs:0,semanticSkipped:0,semanticSkipReason:null as string|null};
   constructor(public readonly store:MemoryStore,private index?:MemoryIndex,limits:Partial<ContextLimits>={},private calibration:RetrievalCalibration=defaultCalibration){this.limits={...defaultContextLimits,...limits};}
-  async build(request:RetrievalRequest):Promise<RetrievedContext> {
+  async build(request:RetrievalRequest,options:RetrievalBuildOptions={}):Promise<RetrievedContext> {
     const at=performance.now(),candidates=this.store.selectCandidates(request);this.metrics.sqlMs=performance.now()-at;this.metrics.candidates=candidates.length;
     const threshold=this.calibration.semantic;
     const calibrated=!!threshold&&[threshold.fact,threshold.experience].every(n=>Number.isFinite(n)&&n>=-1&&n<=1);
@@ -63,7 +63,7 @@ export class MemoryRetrieval {
     const long=cap(ranked.filter(r=>r.ownerType==='long'||r.ownerType==='learned'),this.limits.longItemsLimit);
     const details=cap(ranked.filter(r=>r.ownerType==='detail'),this.limits.detailItemsLimit);
     const detailKeys=new Set(details.map(r=>r.key));
-    const result:RetrievedContext={recent:new ((request.dialogueWindowVersion??this.store.storage.runtime().dialogueContextVersion)===2?ChatEpisodes:DialogueEpisodes)(new DialogueStore(this.store.storage),this.limits.dialogueIdleMinutes).recent(request.phase,request.at,this.limits.recentDialogueSegments,request.permissions.visibleSourceIds).messages,
+    const result:RetrievedContext={recent:options.includeRecent===false?[]:new ((request.dialogueWindowVersion??this.store.storage.runtime().dialogueContextVersion)===2?ChatEpisodes:DialogueEpisodes)(new DialogueStore(this.store.storage),this.limits.dialogueIdleMinutes).recent(request.phase,request.at,this.limits.recentDialogueSegments,request.permissions.visibleSourceIds).messages,
       details:details.map(publicRow),shortTerm:cap(ranked.filter(r=>r.ownerType==='short'),this.limits.shortItemsLimit).map(publicRow),
       longTerm:long.filter(r=>r.ownerType==='long').map(publicRow),learned:[...long.filter(r=>r.ownerType==='learned'),...stable].map(publicRow),
       detailHistory:request.includeDetailHistory?this.store.storage.all('detail_history').filter(h=>detailKeys.has(h.key)):[]};
@@ -73,9 +73,7 @@ export class MemoryRetrieval {
     return result;
   }
   async lookup(request:LookupRequest,base:RetrievalRequest):Promise<RetrievedContext> {
-    const wanted=typeof request==='string'?{query:request,scope:wantsArchive(request)?'archive' as const:'current' as const,includeDetailHistory:wantsHistory(request)}:request;
-    if(wanted.scope==='archive'&&!base.permissions.allowArchive||wanted.includeDetailHistory&&!base.permissions.allowDetailHistory)throw new Error('retrieval permission denied');
-    return this.budget(await this.build({...base,...wanted}),base.budget??this.limits.historyBudget,base.permissions.visibleSourceIds);
+    return this.budget(await this.build(resolveLookupRequest(request,base)),base.budget??this.limits.historyBudget,base.permissions.visibleSourceIds);
   }
   budget<T extends object>(result:T,budget:number|null,protectedIds:string[]=[]):T {
     if(budget===null)return result;
@@ -87,4 +85,10 @@ export class MemoryRetrieval {
     }
     return result;
   }
+}
+
+export function resolveLookupRequest(request:LookupRequest,base:RetrievalRequest):RetrievalRequest {
+ const wanted=typeof request==='string'?{query:request,scope:wantsArchive(request)?'archive' as const:'current' as const,includeDetailHistory:wantsHistory(request)}:request;
+ if(wanted.scope==='archive'&&!base.permissions.allowArchive||wanted.includeDetailHistory&&!base.permissions.allowDetailHistory)throw new Error('retrieval permission denied');
+ return {...base,...wanted};
 }

@@ -55,3 +55,6 @@ export interface ShortUpdate {action:'update';id:string;content:string;eventSumm
 export interface MemoryResultV3 {schemaVersion:3;shortTermChanges:Array<ShortCreate|ShortUpdate>;longTermChanges:Array<{action:'awaken';id:string;reason:string;sourceIds:string[]}>;detailChanges:Array<{action:'create'|'update';key:string;value:string;aliases:string[];reason:string;sourceIds:string[]}>}
 
 export interface ProjectionRepairReport {changedOwnerIds:string[];reindexedOwnerIds:string[];missingCanonicalIds:string[]}
+
+export interface RetrievalBuildOptions {includeRecent?:boolean}
+export interface MemoryContext {details:MemoryCandidate[];retrieved:MemoryCandidate[]}
