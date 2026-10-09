@@ -62,5 +62,6 @@ export class WebSearchService {
   selfReadSources(turnId:string,runId?:string){return this.store.selfReadSources(turnId,runId);}
   releaseOwner(ownerType:ModelRunRef['ownerType'],ownerId:string):void {this.cache.delete(`${ownerType}:${ownerId}`);}
   compactOwnerCheckpoint(ownerType:ModelRunRef['ownerType'],ownerId:string):void {this.store.compactOwnerCheckpoint(ownerType,ownerId);}
+  statusSummary(currentOwners:readonly import('./types').WebOwnerRef[]){return {...this.store.statusSummary(currentOwners),enabled:this.config.enabled,limits:{successReads:this.config.maxSuccessReads,failures:this.config.maxFailures}};}
   status(){return this.store.operationalStatus();}
 }

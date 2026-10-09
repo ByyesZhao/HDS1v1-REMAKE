@@ -18,6 +18,8 @@ export class MemoryMaintenance {
   private controller:AbortController|null=null;
   private stopped=false;
   private backendRequests=0;
+  private webOwner:import('../web/types').WebOwnerRef|null=null;
+  currentWebOwner(){return this.webOwner;}
   constructor(private store:MemoryStore,private lifecycle:MemoryLifecycle,private index:MemoryIndex,private models:ModelRunner,private options:MaintenanceOptions){
     for(const table of ['memory_index_jobs','memory_maintenance_jobs'] as const)for(const job of store.jobs<IndexJob|MaintenanceJob>(table,['computing']))store.saveJob(table,{...job,status:'pending'});
   }
@@ -88,8 +90,9 @@ export class MemoryMaintenance {
     if(this.work().some(w=>w.job.status==='ready'&&this.due(w.job,now)&&this.eligible(w,now)))return false;
     const work=this.work().find(w=>w.job.status==='pending'&&(w.table!=='memory_index_jobs'||w.job.configSignature===this.index.configSignature)&&this.due(w.job,now)&&this.eligible(w,now));if(!work)return false;
     const controller=new AbortController();this.controller=controller;this.store.saveJob(work.table,{...work.job,status:'computing'});
+    this.webOwner=work.table==='memory_maintenance_jobs'?{ownerType:'maintenance',ownerId:work.job.id}:null;
     this.backendRequests++;
-    this.active=this.prepare(work,controller).finally(()=>{this.active=null;this.controller=null;});
+    this.active=this.prepare(work,controller).finally(()=>{this.active=null;this.controller=null;this.webOwner=null;});
     return true;
   }
   private async prepare(work:Work,controller:AbortController):Promise<void>{

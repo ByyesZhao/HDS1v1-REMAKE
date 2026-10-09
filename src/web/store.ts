@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import { Storage } from '../storage';
-import type { ModelRunRef,WebSessionSnapshot,WebOperationRequest,WebOperationRecord,WebConfirmedStep,WebModelCheckpoint,WebSearchResponse,WebMaterial,SelfWebReadSource,WebSessionMetrics,WebSearchCounters } from './types';
+import type { ModelRunRef,WebSessionSnapshot,WebOperationRequest,WebOperationRecord,WebConfirmedStep,WebModelCheckpoint,WebSearchResponse,WebMaterial,SelfWebReadSource,WebSessionMetrics,WebSearchCounters,WebOwnerRef,WebStatusSummary } from './types';
 type Table='web_sessions'|'web_operations'|'web_materials'|'self_web_read_sources';
 interface SessionData {ref:ModelRunRef;counters:WebSearchCounters;nextOperationOrdinal:number;checkpoint:WebModelCheckpoint|null;metrics:WebSessionMetrics}
 interface MaterialData {runId:string;material:WebMaterial;firstOperationId:string;provided:boolean}
@@ -57,6 +57,18 @@ export class WebSearchStore {
     });
   }
   selfReadSources(turnId:string,runId?:string):SelfWebReadSource[]{return this.storage.prepare(`SELECT data FROM self_web_read_sources WHERE json_extract(data,'$.turnId')=?${runId?" AND json_extract(data,'$.runId')=?":''} ORDER BY rowid`).all(...(runId?[turnId,runId]:[turnId])).map(r=>JSON.parse(String(r.data)));}
+  statusSummary(currentOwners:readonly WebOwnerRef[]):Omit<WebStatusSummary,'enabled'|'limits'> {
+    const stats=this.storage.prepare("SELECT COUNT(*) sessions,COALESCE(SUM(json_extract(data,'$.counters.successReads')),0) successReads,COALESCE(SUM(json_extract(data,'$.counters.failures')),0) failures,COALESCE(SUM(json_extract(data,'$.metrics.cacheHits')),0) cacheHits,COALESCE(SUM(json_extract(data,'$.metrics.providerSearchCalls')),0) providerSearchCalls,COALESCE(SUM(json_extract(data,'$.metrics.providerReadCalls')),0) providerReadCalls FROM web_sessions").get()!;
+    const owners=this.storage.prepare("SELECT COUNT(*) n FROM (SELECT 1 FROM web_sessions GROUP BY json_extract(data,'$.ref.ownerType'),json_extract(data,'$.ref.ownerId'))").get()!;
+    const unique=[...new Map(currentOwners.map(o=>[JSON.stringify([o.ownerType,o.ownerId]),o])).values()];
+    const current=unique.slice(0,3).map(owner=>{
+      const count=this.storage.prepare("SELECT COUNT(*) n FROM web_sessions WHERE json_extract(data,'$.ref.ownerType')=? AND json_extract(data,'$.ref.ownerId')=?").get(owner.ownerType,owner.ownerId)!;
+      const rows=this.storage.prepare("SELECT json_extract(data,'$.ref') ref,json_extract(data,'$.counters') counters,json_extract(data,'$.metrics') metrics FROM web_sessions WHERE json_extract(data,'$.ref.ownerType')=? AND json_extract(data,'$.ref.ownerId')=? ORDER BY rowid DESC LIMIT 6").all(owner.ownerType,owner.ownerId).reverse();
+      const stages=rows.map(r=>{const ref=JSON.parse(String(r.ref)) as ModelRunRef;return {runId:ref.runId,stageKey:ref.stageKey,taskName:ref.taskName,counters:JSON.parse(String(r.counters)),metrics:{cacheHits:0,providerSearchCalls:0,providerReadCalls:0,...JSON.parse(String(r.metrics??'{}'))}};});
+      return {...owner,stageCount:Number(count.n),stages,omittedStages:Math.max(0,Number(count.n)-stages.length)};
+    });
+    return {totals:{sessions:Number(stats.sessions),owners:Number(owners.n),successReads:Number(stats.successReads),failures:Number(stats.failures),cacheHits:Number(stats.cacheHits),providerSearchCalls:Number(stats.providerSearchCalls),providerReadCalls:Number(stats.providerReadCalls)},currentOwners:current,omittedOwners:Math.max(0,unique.length-current.length)};
+  }
   operationalStatus(){
     // SQL projects metadata only: status never loads saved inputs, queries or page bodies.
     const sessions=this.storage.prepare("SELECT json_extract(data,'$.ref') AS ref,json_extract(data,'$.counters') AS counters,json_extract(data,'$.metrics') AS metrics FROM web_sessions ORDER BY rowid").all().map(r=>({ref:JSON.parse(String(r.ref)) as ModelRunRef,counters:JSON.parse(String(r.counters)) as WebSearchCounters,metrics:JSON.parse(String(r.metrics)) as WebSessionMetrics}));

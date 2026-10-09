@@ -34,3 +34,4 @@ T4: complete — V1计划通知实际阅读后推导个人提醒；共用时区�
 
 T5: in progress — 未标定词法场景中具体事件词不命中晋升记录RED；兼容补齐新增接口测试亦失败，开始修复。
 T5: complete — 同候选事件依据与结论可召回，旧补齐幂等/不改durable措辞/无唤醒续期；前台先恢复、后台inFlight延期、ready/started快照保留。指定9文件51项，追加恢复/冻结测试通过。首次全回归发现既有同步接口接受尚未保存的当前owner，已保留该合同，memory-final-review重新通过；最终联合全量114文件649项通过（57.57s）。类型检查通过。日志t5-red/targets/sync-green/types、t56-extra-green/suite。
+T6: complete — 历史汇总SQL、3任务各6阶段，2048网页展示，精确统计/完整诊断不变；真实environment step无普通turn时显示当前owner，维护owner随prepare清除。10/100/1000轮增长和raw不变验证；指定5文件21项、追加环境测试通过，联合全量114文件649项通过；类型检查通过。日志t6-red/targets/types、t56-extra-green/suite。T5与T6共用Host改动在上一提交一起落入，未混入无关用户资料。

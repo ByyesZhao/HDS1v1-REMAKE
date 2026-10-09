@@ -21,3 +21,11 @@ export interface WebSearchSession {
   snapshot():WebSessionSnapshot;beginOperation(request:WebOperationRequest):WebOperationRecord;
   saveCheckpoint(checkpoint:WebModelCheckpoint):void;markProvided(materialIds:string[]):void;
 }
+
+export type WebOwnerRef=Pick<ModelRunRef,'ownerType'|'ownerId'>;
+export interface WebStatusSummary {
+ enabled:boolean;limits:WebSearchCounters;
+ totals:{sessions:number;owners:number;successReads:number;failures:number;cacheHits:number;providerSearchCalls:number;providerReadCalls:number};
+ currentOwners:Array<WebOwnerRef&{stageCount:number;stages:Array<{runId:string;stageKey:string;taskName:string;counters:WebSearchCounters;metrics:WebSessionMetrics}>;omittedStages:number}>;
+ omittedOwners:number;
+}
