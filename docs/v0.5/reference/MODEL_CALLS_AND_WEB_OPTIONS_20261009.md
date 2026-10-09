@@ -1,10 +1,10 @@
 # 当前模型调用与网页搜索服务参考
 
-日期：2026-10-09。返回[版本索引](../README.md)。本表以代码基线`7eef283`及当日本地正式配置解析结果为准；[白名单配置证据](../records/document-model-audit-20261009/evidence/effective-models.json)不包含密钥、背景或配置全文。本次没有发起模型或搜索供应商认证调用。
+更新：2026-10-10。新增图片输入和本地搜索已实现，正式配置及13个既有连接保持原值；下述正式配置白名单核对发生于2026-10-09。返回[版本索引](../README.md)。本表以代码基线`7eef283`及当日本地正式配置解析结果为准；[白名单配置证据](../records/document-model-audit-20261009/evidence/effective-models.json)不包含密钥、背景或配置全文。本次没有发起模型或搜索供应商认证调用。
 
 ## 1. 正式运行中的DeepSeek用途
 
-13个独立连接全部使用`deepseek-flash`，主机为`api.deepseek.com`，输出模式均为`json_object`。下表列出14个逻辑用途；固定信息审核没有独立连接。
+13个既有独立连接保持使用`deepseek-flash`，主机为`api.deepseek.com`，输出模式均为`json_object`。下表列出14个逻辑用途；固定信息审核没有独立连接。
 
 | 逻辑用途 | 配置连接 | 思考强度 | 主要调用位置／条件 |
 | --- | --- | --- | --- |
@@ -22,6 +22,8 @@
 | 空闲深度整理、合并与常驻评估 | `models.memory_consolidation` | high | `src/memory/maintenance.ts`；空闲资格成立且有任务 |
 | 固定信息审核 | `models.memory_consolidation` | high | 同上；独立`memory_audit`提示／资料视图，复用整理连接 |
 | 新表情素材看图描述 | `stickerDescriptionModel` | high | `src/output/sticker-description.ts`；显式导入新素材时 |
+
+新增incoming_image逻辑用途：src/input-media/observe.ts，仅在visualInput启用且角色有权读取新图时调用；可选incomingImageModel，未配复用stickerDescriptionModel（当前Flash/high）。已知face／成功观察缓存免视觉请求。13个既有连接保持原值，独立覆盖可后续改Pro。
 
 这不是每轮必须执行的14次调用。环境和维护准备使用原连接，不额外增加另一套模型。固定信息审核若要单独设置模型／强度，需要后续增加连接配置；当前改变`memory_consolidation`会同时影响整理和审核。
 
@@ -50,19 +52,19 @@
 | `scripts/memory-capacity-online-acceptance.ts` | 整理／审核使用memory_consolidation，即Flash／high |
 | `scripts/stickers.ts`导入 | 新图描述使用sticker_description，即Flash／high；重建向量仅用Qwen |
 
-收到用户图片／表情时，当前程序提供附件类型及表情语境规则，不自动发起上述图库看图描述调用。离线启动检查、demo及插件smoke不作为真实DeepSeek调用；迁移时核验连接配置也不等于已请求模型。
+收到用户图片／表情不调用图库描述合同；visualInput启用且角色可读时调用独立incoming_image四字段观察。默认正式开关仍关闭；本轮未执行真实图片／模型上传。新增scripts/validate-incoming-media.ts默认离线，显式online需公开／合成fixture；scripts/validate-local-web.ts不调用模型，仅验证浏览器。离线启动检查、demo及插件smoke不作为真实DeepSeek调用；迁移时核验连接配置也不等于已请求模型。
 
 ## 4. 网页搜索接入建议
 
-当前`webSearch.enabled=false`，各阶段20次成功取得正文／40次失败规则已实现。DeepSeek原生搜索不可用不影响本项目的可替换方案：模型生成`webSearch`／`webRead` JSON请求，HDSI执行供应商操作，再把结果交给原模型继续生成。现有接口要求`search(query)`返回候选URL／标题，`read(url)`返回正文；只有未配置供应商实现，正式入口拒绝仅打开开关。
+当前`webSearch.enabled=false`，各阶段20次成功取得正文／40次失败规则已实现。DeepSeek原生搜索不可用不影响本项目的可替换方案：模型生成`webSearch`／`webRead` JSON请求，HDSI执行供应商操作，再把结果交给原模型继续生成。现有接口要求`search(query)`返回候选URL／标题，`read(url)`返回正文；已实现browser provider；若仅打开enabled而provider仍为unconfigured，正式入口会提前报错。
 
-当前故事配置只支持搜索开关和额度，没有供应商／搜索密钥的装载字段。选定服务后仍需增加适配器、凭据装载及正式装配；本次仅提供候选建议，没有启用或付费操作。
+本地browser适配器已接入，webSearch支持provider及engine／navigationTimeoutMs／maxConcurrentPages。默认关闭；打开browser需本项目Puppeteer服务和可用Chrome／Edge；不要求搜索API密钥。Bing真实候选／正文及资源排空已通过独立公开验收，DuckDuckGo返回验证码，不自动回退。所有现有模型／强度未修改。
 
-用户随后明确优先控制费用，已核实旧HDSI及保存的作者参考版有Puppeteer公开页面浏览，建议先适配本地浏览器，不要求付费搜索API。已写[图片输入与本地搜索待审计划](../plans/image-input-local-search-20261009/README.md)，尚未实施；以下托管服务为后备候选。当前“收到图片只检测类型”仍是未修复缺口，计划补真实观察，不改变现有模型／强度。
+配置与证据见[搜索交付](../records/local-browser-search-20261009/DELIVERY.md)。下表中的付费服务仅保留作为未接入的后备对比，后续采用时需重新核对服务规则。
 
 | 方案 | 适配现有结构的理由 | 需要注意的差异 |
 | --- | --- | --- |
-| **当前优先：本地Puppeteer浏览器** | 可迁移旧页面端口，搜索与正文都在本机执行，无搜索API计次费 | 仍依赖外部搜索网站与本机网络，需处理改版／不可读结果；尚未接入 |
+| **当前优先：本地Puppeteer浏览器** | 可迁移旧页面端口，搜索与正文都在本机执行，无搜索API计次费 | 仍依赖外部搜索网站与本机网络，需处理改版／不可读结果；已接入；正式开关仍关闭 |
 | 付费候选：Tavily Search＋Extract | 同一家服务覆盖候选搜索和URL正文读取，适配较直接 | 搜索摘要不当已读正文；Extract使用无query的正文模式 |
 | 博查Web Search＋正文读取器 | 可作为中文资料检索的对比候选；官方接口提供标题、URL、摘要和日期 | 仍需独立读取正文，例如接Jina Reader；需要比较实际资料质量和可达性 |
 | Brave Web Search＋Jina Reader | 独立搜索索引与网页读取分开，便于分别更换 | 两个服务需要分别接入；不用有token预算的LLM Context替代完整读取 |

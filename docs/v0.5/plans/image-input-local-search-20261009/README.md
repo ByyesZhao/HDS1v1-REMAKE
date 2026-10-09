@@ -1,6 +1,6 @@
 # 图片输入理解与本地网页搜索：SOL 执行包
 
-日期：2026-10-09。状态：**审核意见已写回，细化方案可交实施；功能尚未实施**。源码基线 `4fe090c`，产品代码沿用 `b9d5514`。本轮只修订文档，没有改产品代码、安装依赖、修改正式配置／数据库、启停服务或调用真实模型。
+更新：2026-10-10。状态：**合同已执行，等待本批交付复核**。实施基线889805d；[图片交付](../../records/image-input-20261009/DELIVERY.md)、[搜索交付](../../records/local-browser-search-20261009/DELIVERY.md)为当前结果。原计划编写状态如下，仅用于追溯：源码基线 `4fe090c`，产品代码沿用 `b9d5514`。本轮只修订文档，没有改产品代码、安装依赖、修改正式配置／数据库、启停服务或调用真实模型。
 
 **把整个本目录及对应 [review 目录](../../reviews/image-input-local-search-20261009/PLAN_REVIEW.md)交给 SOL，从[执行与验收指南](EXECUTION_GUIDE.md)开始。** 不再执行 `4fe090c` 中的旧待审正文；它由 Git 和 review 的原始基线留存追溯。
 
@@ -18,6 +18,6 @@
 
 本轮已裁定的细节包括：消息持久观察关联和历史只读装载、图库旧描述不直接当客观观察、图文位置及同图多次出现、本轮 unknown 冻结、原资产恢复、服务 required 就绪、真实页槽排空、DOM 正文／空态证据、真正隔离的 runtime/check，以及先 build 再完整验证。执行任务和验收证据逐项对应，SOL 无须再自行选择架构。
 
-当前图片仍只有占位与附件标记；本地搜索 provider 尚未实现，不能只开正式开关。既有[公开 HTTP 探针](evidence/public-http-probe.json)仅记录当时直连：DuckDuckGo 失败，Bing HTTP200 但未检出结果项；不能证明真实浏览器成功或失败。真实可行性由 S5a 验证，真实图片质量由单列在线验收验证。
+原计划编写时图片只有占位与附件标记、本地provider未实现；本次已交付图片观察及browser provider，正式两项开关仍关闭。既有[公开 HTTP 探针](evidence/public-http-probe.json)仅记录当时直连：DuckDuckGo 失败，Bing HTTP200 但未检出结果项；不能证明真实浏览器成功或失败。真实可行性由 S5a 验证，真实图片质量由单列在线验收验证。
 
 原稿的[自查](evidence/plan-self-review.json)及[链接结果](evidence/document-link-check.json)保持原样；本轮另存 revision-* 证据。完成任务后按[目录原则](../../../DIRECTORY_POLICY.md)归档计划、同步当前功能规则，不提前宣布产品已具备计划能力。

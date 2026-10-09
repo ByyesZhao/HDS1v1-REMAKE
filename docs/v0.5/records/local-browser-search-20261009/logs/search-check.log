@@ -1,0 +1,5 @@
+koishi: C:\Users\<user>\.codex\worktrees\image-local-search\HDSI-remake\runtime\node_modules\koishi\lib\index.cjs
+koishi-plugin-adapter-onebot: C:\Users\<user>\.codex\worktrees\image-local-search\HDSI-remake\runtime\node_modules\koishi-plugin-adapter-onebot\lib\index.js
+koishi-plugin-hdsi-remake: C:\Users\<user>\.codex\worktrees\image-local-search\HDSI-remake\lib\index.js
+@koishijs/plugin-console: C:\Users\<user>\.codex\worktrees\image-local-search\HDSI-remake\runtime\node_modules\@koishijs\plugin-console\lib\node\index.js
+Specified configuration and database checks verified; no network requests made.

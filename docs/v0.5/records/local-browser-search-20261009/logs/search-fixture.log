@@ -1,0 +1,7 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run tsx scripts/prepare-feature-check.ts --mode search --output C:\Users\<user>\.codex\worktrees\image-local-search\HDSI-remake\.tmp\search-feature-check
+{
+  configPath: 'C:\\Users\\<user>\\.codex\\worktrees\\image-local-search\\HDSI-remake\\.tmp\\search-feature-check\\story.json',
+  databasePath: 'C:\\Users\\<user>\\.codex\\worktrees\\image-local-search\\HDSI-remake\\.tmp\\search-feature-check\\story.sqlite',
+  koishiConfigPath: 'C:\\Users\\<user>\\.codex\\worktrees\\image-local-search\\HDSI-remake\\.tmp\\search-feature-check\\koishi.yml'
+}

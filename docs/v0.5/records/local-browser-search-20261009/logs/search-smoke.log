@@ -1,0 +1,4 @@
+npm notice run hdsi-remake-runtime@0.2.0 smoke
+npm notice run node plugin-smoke.cjs
+empty_week: four committed steps; calls={"world":1,"school_campus":1,"school_group":1}; embedding=1; repair=0
+required_notice: four committed steps; calls={"world":1,"school_campus":1,"school_group":1,"school_week":1}; embedding=1; repair=0

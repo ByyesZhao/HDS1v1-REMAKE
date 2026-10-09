@@ -1,0 +1,132 @@
+{
+  "mode": "public-browser",
+  "probe": false,
+  "engine": "bing",
+  "query": "中国气象局",
+  "realNetworkRequests": null,
+  "passed": true,
+  "drained": true,
+  "pages": [
+    {
+      "kind": "search",
+      "finalUrl": "https://www.bing.com/search?q=%E4%B8%AD%E5%9B%BD%E6%B0%94%E8%B1%A1%E5%B1%80",
+      "access": "ok",
+      "searchState": "results",
+      "bodyCharacters": 0
+    },
+    {
+      "kind": "article",
+      "finalUrl": "https://baike.baidu.com/item/%E4%B8%AD%E5%9B%BD%E6%B0%94%E8%B1%A1%E5%B1%80/1076429?bst=1791561132.04203542e6b0b035",
+      "access": "ok",
+      "mainSource": "readability",
+      "bodyCharacters": 2703
+    },
+    {
+      "kind": "search",
+      "finalUrl": "https://www.bing.com/search?q=Mozilla%20Readability",
+      "access": "ok",
+      "searchState": "results",
+      "bodyCharacters": 0
+    },
+    {
+      "kind": "article",
+      "finalUrl": "https://github.com/bramses/chatgpt-md",
+      "access": "ok",
+      "mainSource": "article",
+      "bodyCharacters": 8335
+    },
+    {
+      "kind": "article",
+      "finalUrl": "https://synthetic.test/dynamic",
+      "access": "ok",
+      "mainSource": "article",
+      "bodyCharacters": 30
+    },
+    {
+      "kind": "article",
+      "finalUrl": "https://synthetic.test/login",
+      "access": "login_wall",
+      "bodyCharacters": 0
+    }
+  ],
+  "versions": {
+    "puppeteerPlugin": "3.9.0",
+    "readability": "0.6.0"
+  },
+  "browserVersion": "Chrome/154.0.8037.98",
+  "searchMs": 3958.3641000000002,
+  "candidateCount": 10,
+  "candidates": [
+    {
+      "url": "http://www.nmc.cn/",
+      "title": "中央气象台 - 关注阴晴冷暖，守望四时安康"
+    },
+    {
+      "url": "https://www.cma.gov.cn/",
+      "title": "中国气象局政府门户网站 - 中国气象网-中国气象局 ..."
+    },
+    {
+      "url": "https://www.nmc.cn/publish/forecast",
+      "title": "国内天气预报"
+    },
+    {
+      "url": "https://weather.cma.cn/",
+      "title": "中国气象局 - WEB 应用防火墙"
+    },
+    {
+      "url": "https://www.cma.gov.cn/?dzb=true",
+      "title": "中国气象网-中国气象局政府门户网站"
+    },
+    {
+      "url": "https://m.nmc.cn/index.html",
+      "title": "中央气象台"
+    },
+    {
+      "url": "https://baike.baidu.com/item/%E4%B8%AD%E5%9B%BD%E6%B0%94%E8%B1%A1%E5%B1%80/1076429",
+      "title": "中国气象局_百度百科"
+    },
+    {
+      "url": "https://data.cma.cn/site/index.html",
+      "title": "国家气象信息中心-中国气象数据网"
+    },
+    {
+      "url": "https://www.weather.com.cn/",
+      "title": "天气网"
+    },
+    {
+      "url": "https://www.weather.com.cn/forecast/",
+      "title": "天气预报 - 中国天气网"
+    }
+  ],
+  "selectedUrl": "https://baike.baidu.com/item/%E4%B8%AD%E5%9B%BD%E6%B0%94%E8%B1%A1%E5%B1%80/1076429",
+  "readMs": 1559.4075000000003,
+  "bodyCharacters": 2703,
+  "articleTitle": "中国气象局_百度百科",
+  "bodyHash": "be5f1f44f9004aabed9b9155ff3dc21cb77708ff44b124cc7cd825b2d7942560",
+  "bodyPreview": "历史沿革播报中国气象局的前身是中央军委气象局，成立于1949年12月。1994年由国务院直属机构改为国务院直属事业单位后，经国务院授权，承担全国气象工作的政府行政管理职能，负责全国气象工作的组织管理。中国气象事业是科技型、基础性社会公益事业，坚持“公共气象、安全气象、资源气象”的发展理念，坚持“以人为本，无微不至、无所不在”的服务宗旨。2000年1月1日，《中华人民共和国气象法》开始施行，之后颁布实施了《人工影响天气管理条例》、《气象探测环境和设施保护办法》、《防雷减灾管理办法》、《施放气球管理办法》等行政法规和部门规章。 [1]2021年12月21日，中国气象局人工影响天气中心正式启动。 [",
+  "bodyTail": "东省气象局河南省气象局湖北省气象局湖南省气象局广东省气象局广西壮族自治区气象局海南省气象局重庆市气象局四川省气象局贵州省气象局云南省气象局西藏自治区气象局陕西省气象局甘肃省气象局青海省气象局宁夏回族自治区气象局新疆维吾尔自治区气象局 [33]主管社团所获荣誉播报2022年6月，中国气象局机关党委（巡视办）党支部、中国气象局气象干部培训学院湖南分院教务党支部被授予全国气象部门2022年先进基层党组织称号；中国气象局机关党委（巡视办）党支部、中国气象局机关退休干部第三党支部被授予中国气象局直属机关2022年先进基层党支部称号。 [14]地理位置播报北京市海淀区中关村南大街46号 [16]中国气象局",
+  "english": {
+    "query": "Mozilla Readability",
+    "candidateCount": 10,
+    "selectedUrl": "https://github.com/bramses/chatgpt-md",
+    "bodyCharacters": 8325,
+    "title": "GitHub - bramses/chatgpt-md: A (nearly) seamless integration of ChatGPT into Obsidian. · GitHub",
+    "durationMs": 5027.098899999999,
+    "bodyHash": "05841f510e92ec81e9f1e1f6764e6e8b36cfcceecba484aacefe8c31be33ece5"
+  },
+  "dynamic": {
+    "mode": "synthetic-real-browser",
+    "passed": true,
+    "source": "article",
+    "bodyCharacters": 30
+  },
+  "unreadable": {
+    "mode": "synthetic-real-browser",
+    "access": "login_wall",
+    "rejected": true
+  },
+  "ownedPageOperations": 6,
+  "maximumOwnedPages": 1,
+  "remainingOwnedPages": 0,
+  "durationMs": 11766.6915
+}

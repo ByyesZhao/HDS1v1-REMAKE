@@ -7,7 +7,7 @@
 | [v0.5/README.md](v0.5/README.md) | 当前说明、最新交付与审核、未实施计划的唯一版本入口 |
 | `v0.5/architecture/`、`subsystems/` | 总架构与8份子系统，描述当前职责和规则 |
 | `v0.5/reference/` | 实现对应、配置与已确认差异、背景用途参考 |
-| [v0.5/plans/](v0.5/plans/README.md) | 只保存未实施／进行中合同；E阶段已关闭归档 |
+| [v0.5/plans/](v0.5/plans/README.md) | 未实施／进行中合同；本批图片／搜索合同已执行，暂保留稳定路径等待交付复核；E阶段已关闭归档 |
 | [v0.5/records/](v0.5/records/README.md)、[v0.5/reviews/](v0.5/reviews/README.md) | 最近代码交付、最终独立复核，以及本次整理记录 |
 | [archive/](archive/README.md) | 被替代的架构、已完成计划、旧审核、历史过程、旧测试日志和打包副本 |
 | [runtime/archive/](../runtime/archive/README.md) | 本地历史输出、测试库、运行日志和完整回退快照；默认不送审／不入Git |

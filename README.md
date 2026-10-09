@@ -14,9 +14,9 @@ V0.5整理当前实现：普通最近4个完整对话段、活动完整授权原
 
 67项旧图库的图片、说明、标签和1024维向量已在新项目复用；运行不依赖旧HDSI目录。角色背景和用途映射已批准启用，故事阶段完整背景保留，未迁移作者事实或覆盖已有细节。
 
-网页核心已实现但搜索供应商尚未接入，开关关闭；记忆向量索引已实现，真实语义阈值未标定，当前先用已标定词法和直接键。真实QQ持续收发、新图在线描述、现实新闻搜索及数月稳定运行尚未验收。服务继续由用户手动启动。
+网页核心与本地浏览器provider已实现，正式开关保持关闭；记忆向量索引已实现，真实语义阈值未标定，当前先用已标定词法和直接键。真实QQ持续收发、新图在线描述、现实新闻搜索及数月稳定运行尚未验收。服务继续由用户手动启动。
 
-[图片输入理解／本地浏览器搜索计划](docs/v0.5/plans/image-input-local-search-20261009/README.md)已写，尚未实施；目标是补齐用户图观察并复用旧浏览能力，保持现有模型／强度，优先避免付费搜索API。
+[图片输入交付](docs/v0.5/records/image-input-20261009/DELIVERY.md)与[本地搜索交付](docs/v0.5/records/local-browser-search-20261009/DELIVERY.md)已提供。保持现有模型／强度，两项正式开关仍关闭；启用步骤见各交付，不启动QQ服务。
 
 ## 2. 开发与离线验证
 
@@ -55,7 +55,7 @@ demo是内存库和固定模型的合成故事；smoke使用真实Koishi Context
 .\start-snowluma.cmd --check
 ```
 
-Koishi控制台为http://127.0.0.1:5141。机器人1000000000、目标用户1000000001；匹配此目标私聊的文本及图片／表情类型标记进入故事，纯图片／表情同样接受。当前不发送附件URL或图片字节、不实时识图；语音等其他非文本附件仍不作为模型聊天输入。
+Koishi控制台为http://127.0.0.1:5141。机器人1000000000、目标用户1000000001；匹配此目标私聊的文本及图片／表情类型标记进入故事，纯图片／表情同样接受。visualInput开启后，在角色可读时向独立incoming_image发送原图，其他阶段只读固定观察；语音等其他非文本附件仍不作为模型聊天输入。
 
 SnowLuma登录该机器人，OneBot反向WebSocket对应`ws://127.0.0.1:5141/onebot-remake`。现有运行入口由`runtime/koishi.yml`配置，插件以本地项目引用；不启动旧项目或注册后台任务。
 
@@ -163,3 +163,12 @@ npm run stickers -- rebuild - config.local.json runtime/data/hdsi-remake.sqlite
 文档分类与新建原则见[文档总入口](docs/README.md)和[目录原则](docs/DIRECTORY_POLICY.md)。当前说明、最新交付和最终复核在docs/v0.5；过期说明、已完成合同、旧审核和过程日志在docs/archive。进行中的计划单独保留在当前plans，完成后按目录原则移入历史合同；最新交付见V0.5索引。
 
 原runtime历史测试输出、旧运行日志及完整回退快照已收至[runtime/archive](runtime/archive/README.md)，其中的私有资料不默认送审。源码工具和在用部署文件保持原路径；旧记录内的原执行路径以[迁移清单](docs/v0.5/records/document-organization-20261009/move-manifest.json)查新位置。
+
+
+## 用户图片与本地浏览器配置
+
+正式配置本批未修改。审阅后可启用visualInput.enabled=true；incomingImageModel可选，未配复用stickerDescriptionModel。入站观察独立于发送图库，不改旧67项素材向量。
+
+webSearch.enabled=true且provider="browser"；browser默认engine="bing"、navigationTimeoutMs=60000、maxConcurrentPages=1。在runtime的Koishi plugins中启用puppeteer并使用本项目依赖；未就绪时故事实例等待，不由HDSI启动另一个浏览器。没有搜索API计次费，仍消耗本机资源、网络和模型续调用。当前DuckDuckGo公开验收遇到验证码，不自动回退。
+
+只读隔离check支持--config、--database、--koishi-config三个绝对路径；默认启动器原路径保留。prepare-feature-check.ts生成image／search合成库，verify检查哈希；不复制正式库。两项开关不要通过改版本号或删表启用，部署／回退仍按一致备份和手动启动规则。

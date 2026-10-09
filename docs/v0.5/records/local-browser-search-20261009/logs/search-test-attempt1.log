@@ -1,0 +1,138 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 test
+npm notice run vitest run
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/image-local-search/HDSI-remake
+
+ ❯ tests/shared-v3-upgrade.test.ts (6 tests | 1 failed) 4858ms
+   × entry_checks_before_host_start: existing missing-version database never registers a story host 271ms
+ ❯ tests/world-school-upgrade.test.ts (6 tests | 1 failed) 1884ms
+   × config_compat_does_not_bypass_db_gate 202ms
+ ❯ tests/web-deployment.test.ts (2 tests | 2 failed) 28ms
+   × defaults disabled with 20/40, advertises no unavailable tools and rejects enabled without a provider 24ms
+   × production no longer eagerly reads configured URLs or truncates at 12000 characters 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/shared-v3-upgrade.test.ts > entry_checks_before_host_start: existing missing-version database never registers a story host
+Error: Stop HDSI and run npm run shared:migrate -- --database <path> --check before enabling this existing database.
+ ❯ createPluginRuntime src/deployment/plugin-runtime.ts:48:91
+
+ ❯ Module.apply src/index.ts:23:16
+ ❯ tests/shared-v3-upgrade.test.ts:99:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/web-deployment.test.ts > defaults disabled with 20/40, advertises no unavailable tools and rejects enabled without a provider
+AssertionError: expected { provider: 'unconfigured', …(4) } to deeply equal { enabled: false, …(2) }
+
+- Expected
++ Received
+
+  {
++   "browser": {
++     "engine": "bing",
++     "maxConcurrentPages": 1,
++     "navigationTimeoutMs": 60000,
++   },
+    "enabled": false,
+    "maxFailures": 40,
+    "maxSuccessReads": 20,
++   "provider": "unconfigured",
+  }
+
+ ❯ tests/web-deployment.test.ts:9:90
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  tests/web-deployment.test.ts > production no longer eagerly reads configured URLs or truncates at 12000 characters
+AssertionError: expected 'import {Context,Schema} from \'koishi…' to contain 'assembleWeb'
+
+- Expected
++ Received
+
+- assembleWeb
++ import {Context,Schema} from 'koishi';
++ import {resolve} from 'node:path';
++ import {loadSettings,connectionFor,modelRoles} from './settings';
++ import {createPluginRuntime} from './deployment/plugin-runtime';
++ import {installBrowserRuntime} from './deployment/browser-runtime';
++ export {isTargetSession} from './host/input';
++ export const name = 'hdsi-remake';
++ export interface Config { botId: string; userId: string; databasePath: string; storyConfigPath: string }
++ export const Config: Schema<Config> = Schema.object({
++   botId: Schema.string().default('1000000000').description('机器人 QQ 号'),
++   userId: Schema.string().default('1000000001').description('目标用户 QQ 号'),
++   databasePath: Schema.string().default('data/hdsi-remake.sqlite').description('独立故事数据库路径'),
++   storyConfigPath: Schema.string().default('../config.local.json').description('角色、各任务模型和作息配置文件'),
++ });
++ export function apply(ctx:Context,config:Config):void{
++  const settings=loadSettings(resolve(ctx.baseDir,config.storyConfigPath));
++  modelRoles.forEach(role=>connectionFor(settings,role));if(settings.visualInput.enabled)connectionFor(settings,'incoming_image');
++  if(settings.webSearch.enabled){
++   if(settings.webSearch.provider!=='browser')throw Error('web search enabled but provider not configured');
++   require.resolve('koishi-plugin-puppeteer');
++   installBrowserRuntime(ctx,config,settings);return;
++  }
++  const created=createPluginRuntime(ctx,config,settings);let disposed=false;
++  ctx.on('ready',async()=>{const runtime=await created;if(!disposed)await runtime.host.start();});
++  ctx.on('dispose',async()=>{disposed=true;await (await created).close();});
++ }
++
+
+ ❯ tests/web-deployment.test.ts:13:150
+     11| });
+     12| it('production no longer eagerly reads configured URLs or truncates at…
+     13|  const src=readFileSync('src/index.ts','utf8');expect(src).not.toConta…
+       |                                                                                                                                                      ^
+     14| });
+     15|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  tests/world-school-upgrade.test.ts > config_compat_does_not_bypass_db_gate
+AssertionError: expected [Function] to throw error matching /migrate:environment/ but got 'ctx.on is not a function'
+
+- Expected:
+/migrate:environment/
+
++ Received:
+"ctx.on is not a function"
+
+ ❯ tests/world-school-upgrade.test.ts:35:124
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+⎯⎯⎯⎯⎯⎯ Unhandled Errors ⎯⎯⎯⎯⎯⎯
+
+Vitest caught 1 unhandled error during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+Error: Stop HDSI and run legacy npm run migrate:environment for version null first; then npm run migrate:environment-async -- --database <path> --check, then --apply --stopped --backup-dir <path> before starting this existing database.
+ ❯ createPluginRuntime src/deployment/plugin-runtime.ts:49:95
+
+ ❯ Module.apply src/index.ts:23:16
+ ❯ tests/world-school-upgrade.test.ts:35:13
+ ❯ Proxy.assertThrows node_modules/chai/index.js:2877:5
+ ❯ Proxy.methodWrapper node_modules/chai/index.js:1737:25
+ ❯ Proxy.<anonymous> node_modules/vitest/dist/chunks/index.C4tKZ0yW.js:1990:12
+ ❯ Proxy.overwritingMethodWrapper node_modules/chai/index.js:1796:33
+ ❯ Proxy.<anonymous> node_modules/vitest/dist/chunks/index.C4tKZ0yW.js:2287:114
+ ❯ Proxy.<anonymous> node_modules/vitest/dist/chunks/index.C4tKZ0yW.js:1944:14
+ ❯ Proxy.methodWrapper node_modules/chai/index.js:1737:25
+
+This error originated in "tests/world-school-upgrade.test.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+
+ Test Files  3 failed | 167 passed (170)
+      Tests  4 failed | 870 passed (874)
+     Errors  1 error
+   Start at  23:48:19
+   Duration  112.47s (tests 80%, import 18%, transform 2%, worker 1%)
+
+    Isolate  170 workers spawned · ~97ms startup each (spawn + environment, per file)
+             at least ~16.31s faster with isolate: false — reuses workers across files instead of one per file
+
