@@ -1,0 +1,31 @@
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/current-audit-improvements/HDSI-remake
+
+ ❯ tests/environment-queries.test.ts (2 tests | 2 failed) 22ms
+   × metadata selection keeps frozen payloads and stage retry/ready barriers 19ms
+   × latest batch means last inserted, active/step reads preserve row order 2ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/environment-queries.test.ts > metadata selection keeps frozen payloads and stage retry/ready barriers
+TypeError: selectEnvironmentStepMetadata is not a function
+ ❯ tests/environment-queries.test.ts:10:44
+
+ ❯ exports.captureQueries scripts/query-probe.cjs:5:20
+ ❯ tests/environment-queries.test.ts:10:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/environment-queries.test.ts > latest batch means last inserted, active/step reads preserve row order
+TypeError: s.latestBatch is not a function
+ ❯ tests/environment-queries.test.ts:18:339
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+   Start at  15:47:47
+   Duration  250ms (transform 62%, import 21%, tests 15%, worker 2%)
+

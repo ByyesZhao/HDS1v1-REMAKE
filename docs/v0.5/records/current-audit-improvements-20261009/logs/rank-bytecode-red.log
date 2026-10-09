@@ -1,0 +1,43 @@
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/current-audit-improvements/HDSI-remake
+
+ ❯ tests/context-query-cost.test.ts (3 tests | 3 failed) 4298ms
+   × directed window decodes only four complete segments at H=1000; memory never reads raw window 83ms
+   × directed window decodes only four complete segments at H=10000; memory never reads raw window 640ms
+   × directed window decodes only four complete segments at H=50000; memory never reads raw window 3575ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/context-query-cost.test.ts > directed window decodes only four complete segments at H=1000; memory never reads raw window
+ FAIL  tests/context-query-cost.test.ts > directed window decodes only four complete segments at H=10000; memory never reads raw window
+ FAIL  tests/context-query-cost.test.ts > directed window decodes only four complete segments at H=50000; memory never reads raw window
+AssertionError: expected [ Array(1) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   {
++     "addr": 35,
++     "comment": null,
++     "opcode": "Column",
++     "p1": 5,
++     "p2": 1,
++     "p3": 16,
++     "p4": null,
++     "p5": 0,
++   },
++ ]
+
+ ❯ tests/context-query-cost.test.ts:14:89
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed (3)
+   Start at  16:08:26
+   Duration  4.57s (tests 96%, transform 3%, import 1%)
+

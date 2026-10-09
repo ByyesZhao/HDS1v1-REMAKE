@@ -1,0 +1,74 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 test
+npm notice run vitest run
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/current-audit-improvements/HDSI-remake
+
+ ❯ tests/plugin-smoke-contract.test.ts (7 tests | 2 failed) 155ms
+   × real Koishi smoke completes empty and required-notice V1 batches without repairs 137ms
+   × benchmark default output is independent of node executable argv 13ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/plugin-smoke-contract.test.ts > real Koishi smoke completes empty and required-notice V1 batches without repairs
+AssertionError: 
+node:internal/modules/cjs/loader:1568
+  throw err;
+  ^
+
+Error: Cannot find module '../lib/index.js'
+Require stack:
+- C:\Users\<user>\.codex\worktrees\current-audit-improvements\HDSI-remake\runtime\plugin-smoke.cjs
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1564:15)
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1118:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1142:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1169:12)
+    at Module._load (node:internal/modules/cjs/loader:1341:5)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+    at Module.require (node:internal/modules/cjs/loader:1674:12)
+    at require (node:internal/modules/helpers:157:16)
+    at Object.<anonymous> (C:\Users\<user>\.codex\worktrees\current-audit-improvements\HDSI-remake\runtime\plugin-smoke.cjs:7:14)
+    at Module._compile (node:internal/modules/cjs/loader:1929:14) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'C:\\Users\\<user>\\.codex\\worktrees\\current-audit-improvements\\HDSI-remake\\runtime\\plugin-smoke.cjs'
+  ]
+}
+
+Node.js v24.21.0
+: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ Object.<anonymous> runtime/plugin-smoke.cjs:7:14
+ ❯ tests/plugin-smoke-contract.test.ts:11:94
+      9| test('real Koishi smoke completes empty and required-notice V1 batches…
+     10|  const result=spawnSync(process.execPath,[resolve('runtime/plugin-smok…
+     11|  expect(result.error).toBeUndefined();expect(result.status,result.stdo…
+       |                                                                                              ^
+     12|  expect(result.stdout).toContain('empty_week');expect(result.stdout).t…
+     13| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/plugin-smoke-contract.test.ts > benchmark default output is independent of node executable argv
+Error: Cannot find module '../lib/storage'
+Require stack:
+- C:\Users\<user>\.codex\worktrees\current-audit-improvements\HDSI-remake\scripts\bench-chat-status.cjs
+- C:\Users\<user>\.codex\worktrees\current-audit-improvements\HDSI-remake\package.json
+ ❯ Object.<anonymous> scripts/bench-chat-status.cjs:5:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed | 121 passed (122)
+      Tests  2 failed | 691 passed (693)
+   Start at  15:28:43
+   Duration  67.07s (tests 76%, import 20%, transform 3%, worker 1%)
+
+    Isolate  122 workers spawned · ~93ms startup each (spawn + environment, per file)
+             at least ~11.24s faster with isolate: false — reuses workers across files instead of one per file
+

@@ -1,0 +1,97 @@
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/current-audit-improvements/HDSI-remake
+
+ ❯ tests/chat-window-sql.test.ts (6 tests | 6 failed) 29ms
+   × SQL ranks only stage-visible interactions and preserves every message of selected segments 18ms
+   × SQL retains missing seen fields, closed segments, JS epoch and literal ID ties 3ms
+   × SQL preserves stable row insertion order when outbox comparator ties 2ms
+   × SQL snapshot follows seen/activity/date/delete lifecycle and transaction rollback 2ms
+   × invalid time uses exact old selector fallback 2ms
+   × epoch SQL function uses Date.parse precision and rejects nonstrings 2ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/chat-window-sql.test.ts > SQL ranks only stage-visible interactions and preserves every message of selected segments
+TypeError: s.recentChatSnapshot is not a function
+ ❯ compare tests/chat-window-sql.test.ts:10:19
+      8| function compare(s:Storage,count=4,visibleIds:string[]=[],eligibility:…
+      9|  const options={count,visibleIds:new Set(visibleIds),eligibility},orac…
+     10|  const snapshot=s.recentChatSnapshot({...options,visibleIds});expect(r…
+       |                   ^
+     11| }
+     12| it('SQL ranks only stage-visible interactions and preserves every mess…
+ ❯ tests/chat-window-sql.test.ts:15:9
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  tests/chat-window-sql.test.ts > SQL retains missing seen fields, closed segments, JS epoch and literal ID ties
+TypeError: s.recentChatSnapshot is not a function
+ ❯ compare tests/chat-window-sql.test.ts:10:19
+      8| function compare(s:Storage,count=4,visibleIds:string[]=[],eligibility:…
+      9|  const options={count,visibleIds:new Set(visibleIds),eligibility},orac…
+     10|  const snapshot=s.recentChatSnapshot({...options,visibleIds});expect(r…
+       |                   ^
+     11| }
+     12| it('SQL ranks only stage-visible interactions and preserves every mess…
+ ❯ tests/chat-window-sql.test.ts:23:38
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  tests/chat-window-sql.test.ts > SQL preserves stable row insertion order when outbox comparator ties
+TypeError: s.recentChatSnapshot is not a function
+ ❯ compare tests/chat-window-sql.test.ts:10:19
+      8| function compare(s:Storage,count=4,visibleIds:string[]=[],eligibility:…
+      9|  const options={count,visibleIds:new Set(visibleIds),eligibility},orac…
+     10|  const snapshot=s.recentChatSnapshot({...options,visibleIds});expect(r…
+       |                   ^
+     11| }
+     12| it('SQL ranks only stage-visible interactions and preserves every mess…
+ ❯ tests/chat-window-sql.test.ts:30:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  tests/chat-window-sql.test.ts > SQL snapshot follows seen/activity/date/delete lifecycle and transaction rollback
+TypeError: s.recentChatSnapshot is not a function
+ ❯ compare tests/chat-window-sql.test.ts:10:19
+      8| function compare(s:Storage,count=4,visibleIds:string[]=[],eligibility:…
+      9|  const options={count,visibleIds:new Set(visibleIds),eligibility},orac…
+     10|  const snapshot=s.recentChatSnapshot({...options,visibleIds});expect(r…
+       |                   ^
+     11| }
+     12| it('SQL ranks only stage-visible interactions and preserves every mess…
+ ❯ tests/chat-window-sql.test.ts:34:98
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  tests/chat-window-sql.test.ts > invalid time uses exact old selector fallback
+TypeError: s.recentChatSnapshot is not a function
+ ❯ compare tests/chat-window-sql.test.ts:10:19
+      8| function compare(s:Storage,count=4,visibleIds:string[]=[],eligibility:…
+      9|  const options={count,visibleIds:new Set(visibleIds),eligibility},orac…
+     10|  const snapshot=s.recentChatSnapshot({...options,visibleIds});expect(r…
+       |                   ^
+     11| }
+     12| it('SQL ranks only stage-visible interactions and preserves every mess…
+ ❯ tests/chat-window-sql.test.ts:39:178
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+ FAIL  tests/chat-window-sql.test.ts > epoch SQL function uses Date.parse precision and rejects nonstrings
+Error: no such function: hdsi_epoch_ms
+ ❯ Storage.prepare src/storage.ts:56:41
+     54|   }
+     55|   close(): void { this.db.close(); }
+     56|   prepare(sql: string) { return this.db.prepare(sql); }
+       |                                         ^
+     57|   pragmas(): { journalMode: string; synchronous: number } {
+     58|     return { journalMode: String(this.db.prepare('PRAGMA journal_mode'…
+ ❯ tests/chat-window-sql.test.ts:42:137
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  6 failed (6)
+   Start at  15:45:24
+   Duration  203ms (transform 43%, tests 37%, import 16%, worker 4%)
+

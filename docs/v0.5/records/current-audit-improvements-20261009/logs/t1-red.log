@@ -1,0 +1,177 @@
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/current-audit-improvements/HDSI-remake
+
+ ❯ tests/memory-event-time.test.ts (10 tests | 9 failed) 70ms
+   × linked create inherits canonical event range without dates (progress=false) 22ms
+   × linked create inherits canonical event range without dates (progress=true) 4ms
+   × create uses a sole explicit date without another synthetic endpoint: undefined 8ms
+   × create uses a sole explicit date without another synthetic endpoint: exam 8ms
+   × new event defaults to recording time, known endpoints normalize by epoch 7ms
+   × missing old end inherits start, preview progress changes grant but not event dates 4ms
+   × merged and learned aliases resolve canonical before date inheritance 2ms
+   × retrieval and model owner views preserve event date after retalk 6ms
+   × legacy saved post without progress retains dates and old grant 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 9 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/memory-event-time.test.ts > linked create inherits canonical event range without dates (progress=false)
+ FAIL  tests/memory-event-time.test.ts > linked create inherits canonical event range without dates (progress=true)
+AssertionError: expected { capacityExitedAt: null, …(31) } to match object { …(4) }
+(28 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "createdAt": "2026-10-09T02:00:00.000Z",
+-   "happenedAt": "2026-10-01T02:00:00.000Z",
+-   "happenedUntil": "2026-10-01T02:00:00.000Z",
++   "happenedAt": "2026-10-09T02:00:00.000Z",
++   "happenedUntil": "2026-10-09T02:00:00.000Z",
+    "shortExpiresAt": "2026-10-16T02:00:00.000Z",
+  }
+
+ ❯ tests/memory-event-time.test.ts:16:16
+     14| it.each([false,true])('linked create inherits canonical event range wi…
+     15|  const d=setup(),old=saveLong(d.store),grants=d.store.listGrants(old.i…
+     16|  expect(short).toMatchObject({happenedAt:original,happenedUntil:origin…
+       |                ^
+     17|  expect(d.store.canonical(old.id)).toMatchObject({happenedAt:original,…
+     18|  expect(d.store.listGrants(old.id)).toEqual(grants);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/9]⎯
+
+ FAIL  tests/memory-event-time.test.ts > create uses a sole explicit date without another synthetic endpoint: undefined
+ FAIL  tests/memory-event-time.test.ts > create uses a sole explicit date without another synthetic endpoint: exam
+AssertionError: expected { capacityExitedAt: null, …(31) } to match object { …(2) }
+(30 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "happenedAt": "2026-09-20T02:00:00.000Z",
++   "happenedAt": "2026-10-09T02:00:00.000Z",
+    "happenedUntil": "2026-09-20T02:00:00.000Z",
+  }
+
+ ❯ tests/memory-event-time.test.ts:23:16
+     21|  for(const field of ['happenedAt','happenedUntil']){
+     22|  const d=setup();if(id)saveLong(d.store);const short=apply(d,id,false,…
+     23|  expect(short).toMatchObject({happenedAt:earlier,happenedUntil:earlier…
+       |                ^
+     24|  expect(d.store.canonical(short.linkedLongId!)).toMatchObject({happene…
+     25|  }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/9]⎯
+
+ FAIL  tests/memory-event-time.test.ts > new event defaults to recording time, known endpoints normalize by epoch
+AssertionError: expected { capacityExitedAt: null, …(31) } to match object { …(2) }
+(30 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "happenedAt": "2026-10-01T04:00:00Z",
+-   "happenedUntil": "2026-10-01T13:00:00+08:00",
++   "happenedAt": "2026-10-01T13:00:00+08:00",
++   "happenedUntil": "2026-10-01T04:00:00Z",
+  }
+
+ ❯ tests/memory-event-time.test.ts:29:129
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/9]⎯
+
+ FAIL  tests/memory-event-time.test.ts > missing old end inherits start, preview progress changes grant but not event dates
+AssertionError: expected { capacityExitedAt: null, …(31) } to match object { …(4) }
+(28 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "expiresAt": "2027-01-14T02:00:00.000Z",
+    "happenedAt": "2026-10-01T02:00:00.000Z",
+-   "happenedUntil": "2026-10-01T02:00:00.000Z",
++   "happenedUntil": "2026-10-09T02:00:00.000Z",
+    "retainedFrom": "2026-10-16T02:00:00.000Z",
+  }
+
+ ❯ tests/memory-event-time.test.ts:33:57
+     31| it('missing old end inherits start, preview progress changes grant but…
+     32|  const d=setup(),old=saveLong(d.store,'exam',{happenedUntil:undefined,…
+     33|  apply(d,old.id,true);expect(d.store.canonical(old.id)).toMatchObject(…
+       |                                                         ^
+     34|  expect(d.store.listGrants(old.id).filter(g=>g.kind==='initial')).toHa…
+     35| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/9]⎯
+
+ FAIL  tests/memory-event-time.test.ts > merged and learned aliases resolve canonical before date inheritance
+TypeError: d.life.mergeLong is not a function
+ ❯ tests/memory-event-time.test.ts:45:9
+     43|  for(const alias of ['old','learned']){
+     44|  const d=setup();saveLong(d.store);saveLong(d.store,'old',{happenedAt:…
+     45|  d.life.mergeLong(['exam','old'],'exam',later);
+       |         ^
+     46|  d.store.saveOwner(d.store.makeOwner({ownerType:'learned',ownerId:'lea…
+     47|  expect(apply(d,alias)).toMatchObject({linkedLongId:'exam',happenedAt:…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/9]⎯
+
+ FAIL  tests/memory-event-time.test.ts > retrieval and model owner views preserve event date after retalk
+AssertionError: expected { …(9) } to match object { …(2) }
+(7 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "happenedAt": "2026-10-01T02:00:00.000Z",
+-   "happenedUntil": "2026-10-01T02:00:00.000Z",
++   "happenedUntil": "2026-10-09T02:00:00.000Z",
+  }
+
+ ❯ tests/memory-event-time.test.ts:54:96
+     52|  const r=await new MemoryRetrieval(d.store).build(makeRetrievalRequest…
+     53|  const row=r.longTerm.find(r=>r.id==='exam')!;expect(row).toBeDefined(…
+     54|  for(const stage of ['narrative','personal','memory'] as const)expect(…
+       |                                                                                                ^
+     55| });
+     56| it('legacy saved post without progress retains dates and old grant',()…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/9]⎯
+
+ FAIL  tests/memory-event-time.test.ts > legacy saved post without progress retains dates and old grant
+AssertionError: expected { capacityExitedAt: null, …(31) } to match object { …(4) }
+(28 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "expiresAt": "2026-12-30T02:00:00.000Z",
+    "happenedAt": "2026-10-01T02:00:00.000Z",
+-   "happenedUntil": "2026-10-01T02:00:00.000Z",
++   "happenedUntil": "2026-10-09T02:00:00.000Z",
+    "lastEventUpdateAt": "2026-10-01T02:00:00.000Z",
+  }
+
+ ❯ tests/memory-event-time.test.ts:60:36
+     58|  d.db.save('post_jobs','legacy',{turnId:'legacy',result:v as any});
+     59|  d.life.apply(d.db.read('post_jobs','legacy')!.result!,'legacy',later,…
+     60|  expect(d.store.canonical(old.id)).toMatchObject({happenedAt:original,…
+       |                                    ^
+     61| });
+     62|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/9]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  9 failed | 1 passed (10)
+   Start at  15:30:08
+   Duration  512ms (transform 52%, import 28%, tests 19%, worker 1%)
+

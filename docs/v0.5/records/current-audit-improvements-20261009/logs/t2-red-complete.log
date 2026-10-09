@@ -1,0 +1,196 @@
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/current-audit-improvements/HDSI-remake
+
+ ❯ tests/memory-batch-characters.test.ts (12 tests | 9 failed) 92ms
+   × main selection honors optional full-content soft target (idle=true) 32ms
+   × main selection honors optional full-content soft target (idle=false) 7ms
+   × dependency closure is complete beyond the main character soft target 5ms
+   × unstarted growth releases deferred main without losing FIFO to later arrivals 6ms
+   × retry deadline only suppresses new batches for explicitly unstarted task (null) 4ms
+   × smaller target refreshes only explicitly unstarted frozen inputs (null) 5ms
+   × smaller target refreshes only explicitly unstarted frozen inputs (undefined) 6ms
+   × audit class selection keeps the first dirty category and FIFO order 5ms
+   × deferred main can remain an unreserved required dependency 4ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 9 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/memory-batch-characters.test.ts > main selection honors optional full-content soft target (idle=true)
+AssertionError: expected [ 'a', 'b', 'c' ] to deeply equal [ 'a' ]
+
+- Expected
++ Received
+
+  [
+    "a",
++   "b",
++   "c",
+  ]
+
+ ❯ tests/memory-batch-characters.test.ts:30:72
+     28|  sample.texts.forEach((text,i)=>add(d,String.fromCharCode(97+i),text,i…
+     29|  expect(d.maintenance.startOne(d.clock.now())).toBe(true);
+     30|  const input=d.models.calls[0].input;expect(input.context.selectedIds)…
+       |                                                                        ^
+     31|  for(const id of sample.want)expect(input.resources.owners.find((r:any…
+     32|  if(idle)for(const r of d.store.dirtyOwners().filter(r=>!sample.want.i…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/9]⎯
+
+ FAIL  tests/memory-batch-characters.test.ts > main selection honors optional full-content soft target (idle=false)
+AssertionError: expected undefined to be 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa…' // Object.is equality
+
+- Expected:
+"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+
++ Received:
+undefined
+
+ ❯ tests/memory-batch-characters.test.ts:31:94
+     29|  expect(d.maintenance.startOne(d.clock.now())).toBe(true);
+     30|  const input=d.models.calls[0].input;expect(input.context.selectedIds)…
+     31|  for(const id of sample.want)expect(input.resources.owners.find((r:any…
+       |                                                                                              ^
+     32|  if(idle)for(const r of d.store.dirtyOwners().filter(r=>!sample.want.i…
+     33|  await flush();await d.maintenance.stop();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/9]⎯
+
+ FAIL  tests/memory-batch-characters.test.ts > dependency closure is complete beyond the main character soft target
+AssertionError: expected undefined to be 'LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL…' // Object.is equality
+
+- Expected:
+"LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL"
+
++ Received:
+undefined
+
+ ❯ tests/memory-batch-characters.test.ts:41:159
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/9]⎯
+
+ FAIL  tests/memory-batch-characters.test.ts > unstarted growth releases deferred main without losing FIFO to later arrivals
+AssertionError: expected [ 'a', 'b' ] to deeply equal [ 'a' ]
+
+- Expected
++ Received
+
+  [
+    "a",
++   "b",
+  ]
+
+ ❯ tests/memory-batch-characters.test.ts:52:54
+     50|  const c=long(d.store,'c',{content:'c'.repeat(120)});d.store.queueDirt…
+     51|  expect(d.maintenance.startOne(d.clock.now())).toBe(true);
+     52|  expect(d.models.calls[0].input.context.selectedIds).toEqual(['a']);ex…
+       |                                                      ^
+     53|  expect(d.store.dirtyOwners().find(r=>r.ownerId==='b')).toMatchObject(…
+     54|  await flush();expect(d.maintenance.applyOneReady(d.clock.now())).toBe…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/9]⎯
+
+ FAIL  tests/memory-batch-characters.test.ts > retry deadline only suppresses new batches for explicitly unstarted task (null)
+AssertionError: expected '2026-10-08T02:20:00.000Z' to be '2026-10-08T02:30:00.000Z' // Object.is equality
+
+Expected: "2026-10-08T02:30:00.000Z"
+Received: "2026-10-08T02:20:00.000Z"
+
+ ❯ tests/memory-batch-characters.test.ts:60:52
+     58| it.each([null,at,undefined])('retry deadline only suppresses new batch…
+     59|  const d=setup(true,{batchCharacters:150}),a=add(d,'a','a'),b=add(d,'b…
+     60|  expect(d.maintenance.nextDeadline(d.clock.now())).toBe(startedAt===nu…
+       |                                                    ^
+     61|  const ran=d.maintenance.startOne(d.clock.now());
+     62|  expect(ran).toBe(startedAt!==null);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/9]⎯
+
+ FAIL  tests/memory-batch-characters.test.ts > smaller target refreshes only explicitly unstarted frozen inputs (null)
+AssertionError: expected [ 'a', 'b' ] to deeply equal [ 'a' ]
+
+- Expected
++ Received
+
+  [
+    "a",
++   "b",
+  ]
+
+ ❯ tests/memory-batch-characters.test.ts:69:54
+     67|  const d=setup(true,{batchCharacters:150}),a=add(d,'a','a'.repeat(120)…
+     68|  expect(d.maintenance.startOne(d.clock.now())).toBe(true);
+     69|  expect(d.models.calls[0].input.context.selectedIds).toEqual(startedAt…
+       |                                                      ^
+     70|  expect(d.store.job<any>('memory_maintenance_jobs','prior')).toMatchOb…
+     71|  await flush();await d.maintenance.stop();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/9]⎯
+
+ FAIL  tests/memory-batch-characters.test.ts > smaller target refreshes only explicitly unstarted frozen inputs (undefined)
+AssertionError: expected { kind: 'consolidation', …(14) } to match object { id: 'prior', …(2) }
+(12 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "createdAt": "2026-10-08T02:00:00.000Z",
+-   "cutoff": "2026-10-08T02:00:00.000Z",
++   "cutoff": "2026-10-08T02:20:00.000Z",
+    "id": "prior",
+  }
+
+ ❯ tests/memory-batch-characters.test.ts:70:62
+     68|  expect(d.maintenance.startOne(d.clock.now())).toBe(true);
+     69|  expect(d.models.calls[0].input.context.selectedIds).toEqual(startedAt…
+     70|  expect(d.store.job<any>('memory_maintenance_jobs','prior')).toMatchOb…
+       |                                                              ^
+     71|  await flush();await d.maintenance.stop();
+     72| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/9]⎯
+
+ FAIL  tests/memory-batch-characters.test.ts > audit class selection keeps the first dirty category and FIFO order
+AssertionError: expected [ 'phone', 'u' ] to deeply equal [ 'phone' ]
+
+- Expected
++ Received
+
+  [
+    "phone",
++   "u",
+  ]
+
+ ❯ tests/memory-batch-characters.test.ts:78:111
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/9]⎯
+
+ FAIL  tests/memory-batch-characters.test.ts > deferred main can remain an unreserved required dependency
+AssertionError: expected [ 'a', 'b' ] to deeply equal [ 'a' ]
+
+- Expected
++ Received
+
+  [
+    "a",
++   "b",
+  ]
+
+ ❯ tests/memory-batch-characters.test.ts:85:88
+     83|  const updated={...a,linkedLongId:'b'};d.store.saveOwner(updated);pend…
+     84|  expect(d.maintenance.startOne(d.clock.now())).toBe(true);
+     85|  const job=d.store.job<any>('memory_maintenance_jobs','prior');expect(…
+       |                                                                                        ^
+     86|  expect(d.store.dirtyOwners().find(r=>r.ownerId==='b')).toMatchObject(…
+     87| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/9]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  9 failed | 3 passed (12)
+   Start at  15:35:23
+   Duration  604ms (transform 54%, import 25%, tests 20%, worker 1%)
+

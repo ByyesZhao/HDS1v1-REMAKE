@@ -1,0 +1,12 @@
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/current-audit-improvements/HDSI-remake
+
+
+ Test Files  9 passed (9)
+      Tests  52 passed (52)
+   Start at  15:46:23
+   Duration  3.26s (tests 55%, import 28%, transform 16%, worker 1%)
+
+    Isolate  9 workers spawned · ~89ms startup each (spawn + environment, per file)
+             at least ~713ms faster with isolate: false — reuses workers across files instead of one per file
+

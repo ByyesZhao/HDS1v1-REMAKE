@@ -1,0 +1,32 @@
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/current-audit-improvements/HDSI-remake
+
+ ❯ tests/memory-cleanup-write-amplification.test.ts (6 tests | 3 failed) 1115ms
+   × cleanup K=10 never rewrites H=0 already compacted terminal rows 27ms
+   × cleanup K=10 never rewrites H=1000 already compacted terminal rows 148ms
+   × cleanup K=10 never rewrites H=5000 already compacted terminal rows 715ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/memory-cleanup-write-amplification.test.ts > cleanup K=10 never rewrites H=0 already compacted terminal rows
+ FAIL  tests/memory-cleanup-write-amplification.test.ts > cleanup K=10 never rewrites H=1000 already compacted terminal rows
+ FAIL  tests/memory-cleanup-write-amplification.test.ts > cleanup K=10 never rewrites H=5000 already compacted terminal rows
+TypeError: Cannot read properties of undefined (reading 'archiveRetentionDays')
+ ❯ MemoryCleanup.candidates src/memory/cleanup.ts:15:126
+     13|     const canonical=(id:string)=>metadataOnly?metadataCanonical(rows,i…
+     14|     const expiredShort=rows.filter(r=>r.kind==='short'&&r.status==='ac…
+     15|     const archived=metadataOnly?rows.filter(r=>!!archiveStart(r,now)):…
+       |                                                                                                                              ^
+     16|     const overdue=archived.filter(r=>age!==null&&milliseconds(addMs(ar…
+     17|     const overflow=this.capacity.config.longArchiveLimit!==null&&archi…
+ ❯ MemoryCleanup.applyOne src/memory/cleanup.ts:30:35
+ ❯ tests/memory-cleanup-write-amplification.test.ts:11:107
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 3 passed (6)
+   Start at  15:58:08
+   Duration  1.39s (tests 86%, transform 11%, import 3%)
+

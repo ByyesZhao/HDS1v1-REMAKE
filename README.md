@@ -4,11 +4,11 @@
 
 V0.5整理当前实现：普通最近4个完整对话段、活动完整授权原文和结束后记忆召回；7／90／3／30记忆周期及100／1000／500容量；每日06:00世界／校园／课题组／周增量链；普通15秒合批、共同60秒或全文`【推进】`，约10轮软收尾、20轮硬上限；冻结发送与按阶段恢复。
 
-这是架构文档版本。现有npm包元数据仍为0.2.0，数据库各子系统版本保持原协议，本次不修改功能或正式配置。
+这是架构文档版本。现有npm包元数据仍为0.2.0，数据库各子系统版本保持原协议，本批实现日期、选批、上下文／调度查询及清理优化，正式配置和数据协议不变。
 
 ## 1. 当前状态
 
-此前活动窗口增量交付105文件588项、类型检查、构建、离线demo及两个启动文件--check通过，正式普通窗口已备份升级2；见[活动验收](docs/PROMPT_CONTEXT_OPTIMIZATION_V0.1_DELIVERY_REVIEW_20261008.md)。随后REVIEW24为106文件612项通过；最新REVIEW26关联记忆create修复为107文件620项、类型检查和构建通过，见[修复记录](docs/v0.5/records/REVIEW26_MEMORY_CREATE_FIX_LOG_20261009.md)。各次代码验证与当前文档核对分开记录；本次只修文档，没有联网、启动服务或改正式库。
+最新交付为[当前审核改进T1～T9](docs/v0.5/records/current-audit-improvements-20261009/DELIVERY.md)。此前REVIEW26的107／620、ASTRA T1～T13的121／681和R1的122／693保留各批历史含义。本批只做离线合成库／脚本模型验收，不联网、不启动QQ服务、不改正式库。
 
 67项旧图库的图片、说明、标签和1024维向量已在新项目复用；运行不依赖旧HDSI目录。角色背景和用途映射已批准启用，故事阶段完整背景保留，未迁移作者事实或覆盖已有细节。
 
@@ -140,6 +140,17 @@ npm run stickers -- rebuild - config.local.json runtime/data/hdsi-remake.sqlite
 
 ## 8. 当前文档与复盘
 
-[V0.5总架构](docs/v0.5/architecture/REMAKE_V0.5.md)＋其8份子系统＋[实现对应](docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md)是当前说明。最近实现证据在[交付记录](docs/PROMPT_CONTEXT_OPTIMIZATION_V0.1_DELIVERY_REVIEW_20261008.md)；本轮重写过程在[文档修订日志](docs/v0.5/records/V0.5_DOCUMENT_REWRITE_LOG_20261009.md)。
+[V0.5总架构](docs/v0.5/architecture/REMAKE_V0.5.md)＋其8份子系统＋[实现对应](docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md)是当前说明。最近实现证据在[当前审核交付](docs/v0.5/records/current-audit-improvements-20261009/DELIVERY.md)；本轮重写过程在[文档修订日志](docs/v0.5/records/V0.5_DOCUMENT_REWRITE_LOG_20261009.md)。
 
 详细过程保存在`runtime/data/prompt-activity-context-process-20261009`。旧REMAKE_V0.2、历次细化／计划／review及DSH-review副本保留历史；旧zip不持续更新，不作为V0.5审核包。
+
+## 旧终态载荷有限回收
+
+默认只读计数，不需要私有配置：
+
+```powershell
+npm run memory:compact-payloads -- <数据库路径> --dry-run
+npm run memory:compact-payloads -- <数据库路径> --apply --stopped --batch-size 50 --max-batches 20
+```
+
+apply前自行停止HDSI；有候选才备份主文件及存在的WAL／SHM，默认在目标库同目录的backups/memory-payloads/UUID目录，可用--backup-dir指定。四表合计每批限50行、默认最多20批；hasMore=true表示可再次执行。只清终态恢复正文，保留消息、经历、身份、统计及来源，不碰未完成恢复载荷；不把容量版本1当作旧载荷已全清。

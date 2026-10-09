@@ -1,0 +1,140 @@
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/current-audit-improvements/HDSI-remake
+
+ ❯ tests/personal-stage-preparation.test.ts (9 tests | 1 failed) 72ms
+   × personal preparation is skipped after narrative extends unread activity 21ms
+ ❯ tests/context-channels.test.ts (4 tests | 3 failed) 34ms
+   × retrieval recent defaults on; owner-only skips window version 1 17ms
+   × retrieval recent defaults on; owner-only skips window version 2 6ms
+   × memory lookup preserves permissions and budgets only the transmitted owner projection once 5ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/context-channels.test.ts > retrieval recent defaults on; owner-only skips window version 1
+AssertionError: expected { recent: [ { id: 'm', …(9) } ], …(5) } to deeply equal { recent: [], details: [], …(4) }
+
+- Expected
++ Received
+
+  {
+    "detailHistory": [],
+    "details": [],
+    "learned": [],
+    "longTerm": [],
+-   "recent": [],
++   "recent": [
++     {
++       "batchId": "batch-m",
++       "content": "手机",
++       "dialogueEpisodeId": "dialogue:d55f0f79-6a80-4795-9a80-dbd141a973da",
++       "direction": "incoming",
++       "id": "m",
++       "outboxSeq": null,
++       "platformMessageIds": [],
++       "receivedAt": "2026-10-07T10:00:00+08:00",
++       "seenTurnId": "seen",
++       "turnId": null,
++     },
++   ],
+    "shortTerm": [],
+  }
+
+ ❯ tests/context-channels.test.ts:15:53
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/context-channels.test.ts > retrieval recent defaults on; owner-only skips window version 2
+AssertionError: expected { recent: [ { id: 'm', …(9) } ], …(5) } to deeply equal { recent: [], details: [], …(4) }
+
+- Expected
++ Received
+
+  {
+    "detailHistory": [],
+    "details": [],
+    "learned": [],
+    "longTerm": [],
+-   "recent": [],
++   "recent": [
++     {
++       "batchId": "batch-m",
++       "chatEpisodeId": "chat:fd09023e-5f1b-40f9-a243-3498010bc8f0",
++       "content": "手机",
++       "direction": "incoming",
++       "id": "m",
++       "outboxSeq": null,
++       "platformMessageIds": [],
++       "receivedAt": "2026-10-07T10:00:00+08:00",
++       "seenTurnId": "seen",
++       "turnId": null,
++     },
++   ],
+    "shortTerm": [],
+  }
+
+ ❯ tests/context-channels.test.ts:15:53
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  tests/context-channels.test.ts > memory lookup preserves permissions and budgets only the transmitted owner projection once
+TypeError: b.lookupForMemory is not a function
+ ❯ tests/context-channels.test.ts:25:169
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  tests/personal-stage-preparation.test.ts > personal preparation is skipped after narrative extends unread activity
+ZodError: [
+  {
+    "expected": "string",
+    "code": "invalid_type",
+    "path": [
+      "currentScene",
+      "activity",
+      "description"
+    ],
+    "message": "Invalid input: expected string, received undefined"
+  },
+  {
+    "expected": "string",
+    "code": "invalid_type",
+    "path": [
+      "currentScene",
+      "activity",
+      "startsAt"
+    ],
+    "message": "Invalid input: expected string, received undefined"
+  },
+  {
+    "expected": "boolean",
+    "code": "invalid_type",
+    "path": [
+      "currentScene",
+      "activity",
+      "phoneAccess"
+    ],
+    "message": "Invalid input: expected boolean, received undefined"
+  }
+]
+ ❯ Object.parse src/model/contracts.ts:49:110
+     47|
+     48| export function modelTask<T>(name: keyof typeof prompts, schema: z.Zod…
+     49|   return { name, schema: z.toJSONSchema(schema), prompt: prompts[name]…
+       |                                                                                                              ^
+     50| }
+     51| const requireControl = (condition: boolean, path: string, message: str…
+ ❯ ScriptedModels.runModel tests/helpers.ts:39:17
+ ❯ runNarrative src/directors/narrative.ts:4:310
+ ❯ generateTurn src/app.ts:128:27
+ ❯ tests/personal-stage-preparation.test.ts:13:24
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  4 failed | 9 passed (13)
+   Start at  15:41:24
+   Duration  826ms (transform 52%, import 29%, tests 17%, worker 1%)
+

@@ -1,0 +1,43 @@
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/current-audit-improvements/HDSI-remake
+
+ ❯ tests/memory-cleanup-write-amplification.test.ts (6 tests | 2 failed | 3 skipped) 3375ms
+   × cleanup K=10 never rewrites H=1000 already compacted terminal rows 524ms
+   × cleanup K=10 never rewrites H=5000 already compacted terminal rows 2821ms
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 1 passed | 3 skipped (6)
+   Start at  15:59:09
+   Duration  3.66s (tests 95%, transform 4%, import 1%)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/memory-cleanup-write-amplification.test.ts > cleanup K=10 never rewrites H=1000 already compacted terminal rows
+AssertionError: expected 40000 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 40000
+
+ ❯ tests/memory-cleanup-write-amplification.test.ts:12:226
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/memory-cleanup-write-amplification.test.ts > cleanup K=10 never rewrites H=5000 already compacted terminal rows
+AssertionError: expected 200000 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 200000
+
+ ❯ tests/memory-cleanup-write-amplification.test.ts:12:226
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+

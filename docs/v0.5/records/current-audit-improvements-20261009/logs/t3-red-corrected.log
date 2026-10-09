@@ -1,0 +1,120 @@
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/current-audit-improvements/HDSI-remake
+
+ ❯ tests/personal-stage-preparation.test.ts (9 tests | 1 failed) 76ms
+   × personal preparation is skipped after narrative extends unread activity 21ms
+ ❯ tests/context-channels.test.ts (4 tests | 3 failed) 34ms
+   × retrieval recent defaults on; owner-only skips window version 1 17ms
+   × retrieval recent defaults on; owner-only skips window version 2 6ms
+   × memory lookup preserves permissions and budgets only the transmitted owner projection once 5ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/context-channels.test.ts > retrieval recent defaults on; owner-only skips window version 1
+AssertionError: expected { recent: [ { id: 'm', …(9) } ], …(5) } to deeply equal { recent: [], details: [], …(4) }
+
+- Expected
++ Received
+
+  {
+    "detailHistory": [],
+    "details": [],
+    "learned": [],
+    "longTerm": [],
+-   "recent": [],
++   "recent": [
++     {
++       "batchId": "batch-m",
++       "content": "手机",
++       "dialogueEpisodeId": "dialogue:4ad849d8-49e7-42a8-9a98-91b74d9e42d0",
++       "direction": "incoming",
++       "id": "m",
++       "outboxSeq": null,
++       "platformMessageIds": [],
++       "receivedAt": "2026-10-07T10:00:00+08:00",
++       "seenTurnId": "seen",
++       "turnId": null,
++     },
++   ],
+    "shortTerm": [],
+  }
+
+ ❯ tests/context-channels.test.ts:15:53
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/context-channels.test.ts > retrieval recent defaults on; owner-only skips window version 2
+AssertionError: expected { recent: [ { id: 'm', …(9) } ], …(5) } to deeply equal { recent: [], details: [], …(4) }
+
+- Expected
++ Received
+
+  {
+    "detailHistory": [],
+    "details": [],
+    "learned": [],
+    "longTerm": [],
+-   "recent": [],
++   "recent": [
++     {
++       "batchId": "batch-m",
++       "chatEpisodeId": "chat:4a7f0870-b49d-4753-af7f-9a71846ea883",
++       "content": "手机",
++       "direction": "incoming",
++       "id": "m",
++       "outboxSeq": null,
++       "platformMessageIds": [],
++       "receivedAt": "2026-10-07T10:00:00+08:00",
++       "seenTurnId": "seen",
++       "turnId": null,
++     },
++   ],
+    "shortTerm": [],
+  }
+
+ ❯ tests/context-channels.test.ts:15:53
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  tests/context-channels.test.ts > memory lookup preserves permissions and budgets only the transmitted owner projection once
+TypeError: b.lookupForMemory is not a function
+ ❯ tests/context-channels.test.ts:25:169
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  tests/personal-stage-preparation.test.ts > personal preparation is skipped after narrative extends unread activity
+ZodError: [
+  {
+    "expected": "string",
+    "code": "invalid_type",
+    "path": [
+      "currentScene",
+      "activity",
+      "description"
+    ],
+    "message": "Invalid input: expected string, received undefined"
+  }
+]
+ ❯ Object.parse src/model/contracts.ts:49:110
+     47|
+     48| export function modelTask<T>(name: keyof typeof prompts, schema: z.Zod…
+     49|   return { name, schema: z.toJSONSchema(schema), prompt: prompts[name]…
+       |                                                                                                              ^
+     50| }
+     51| const requireControl = (condition: boolean, path: string, message: str…
+ ❯ ScriptedModels.runModel tests/helpers.ts:39:17
+ ❯ runNarrative src/directors/narrative.ts:4:310
+ ❯ generateTurn src/app.ts:128:27
+ ❯ tests/personal-stage-preparation.test.ts:25:24
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  4 failed | 9 passed (13)
+   Start at  15:41:49
+   Duration  827ms (transform 52%, import 29%, tests 18%, worker 1%)
+

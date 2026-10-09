@@ -1,0 +1,3663 @@
+{
+  "node": "v24.21.0",
+  "results": [
+    {
+      "kind": "environment",
+      "H": 0,
+      "name": "deadline",
+      "rows": 6,
+      "json": 2,
+      "queries": [
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "runtime"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 444,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM environment_batches WHERE json_extract(data,'$.status')='active' ORDER BY rowid LIMIT 1",
+          "args": [],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 206,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT id,json_extract(data,'$.batchId') AS batchId,json_extract(data,'$.stage') AS stage,json_extract(data,'$.status') AS status,json_extract(data,'$.retryAt') AS retryAt FROM environment_steps WHERE json_extract(data,'$.batchId')=? ORDER BY rowid",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "method": "all",
+          "rows": 4,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        }
+      ],
+      "plans": [
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "runtime"
+          ],
+          "plan": [
+            {
+              "id": 3,
+              "parent": 0,
+              "notused": 39,
+              "detail": "SEARCH state USING INDEX sqlite_autoindex_state_1 (key=?)"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT data FROM environment_batches WHERE json_extract(data,'$.status')='active' ORDER BY rowid LIMIT 1",
+          "args": [],
+          "plan": [
+            {
+              "id": 5,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH environment_batches USING INDEX environment_batch_status (<expr>=?)"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT id,json_extract(data,'$.batchId') AS batchId,json_extract(data,'$.stage') AS stage,json_extract(data,'$.status') AS status,json_extract(data,'$.retryAt') AS retryAt FROM environment_steps WHERE json_extract(data,'$.batchId')=? ORDER BY rowid",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH environment_steps USING INDEX environment_step_batch (<expr>=?)"
+            }
+          ]
+        }
+      ],
+      "firstMs": 0.4089999999999918,
+      "hotMs": [
+        0.08620000000000516,
+        0.07330000000000325,
+        0.06260000000000332,
+        0.04619999999999891,
+        0.05270000000000152
+      ],
+      "medianMs": 0.06260000000000332
+    },
+    {
+      "kind": "environment",
+      "H": 0,
+      "name": "metadata",
+      "rows": 5,
+      "json": 1,
+      "queries": [
+        {
+          "sql": "SELECT data FROM environment_batches WHERE json_extract(data,'$.status')='active' ORDER BY rowid LIMIT 1",
+          "args": [],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 206,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT id,json_extract(data,'$.batchId') AS batchId,json_extract(data,'$.stage') AS stage,json_extract(data,'$.status') AS status,json_extract(data,'$.retryAt') AS retryAt FROM environment_steps WHERE json_extract(data,'$.batchId')=? ORDER BY rowid",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "method": "all",
+          "rows": 4,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        }
+      ],
+      "plans": [
+        {
+          "sql": "SELECT data FROM environment_batches WHERE json_extract(data,'$.status')='active' ORDER BY rowid LIMIT 1",
+          "args": [],
+          "plan": [
+            {
+              "id": 5,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH environment_batches USING INDEX environment_batch_status (<expr>=?)"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT id,json_extract(data,'$.batchId') AS batchId,json_extract(data,'$.stage') AS stage,json_extract(data,'$.status') AS status,json_extract(data,'$.retryAt') AS retryAt FROM environment_steps WHERE json_extract(data,'$.batchId')=? ORDER BY rowid",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH environment_steps USING INDEX environment_step_batch (<expr>=?)"
+            }
+          ]
+        }
+      ],
+      "firstMs": 0.1337000000000046,
+      "hotMs": [
+        0.041200000000003456,
+        0.033799999999999386,
+        0.039700000000010505,
+        0.0327000000000055,
+        0.03109999999999502
+      ],
+      "medianMs": 0.033799999999999386
+    },
+    {
+      "kind": "environment",
+      "H": 0,
+      "name": "batchSteps",
+      "rows": 4,
+      "json": 4,
+      "queries": [
+        {
+          "sql": "SELECT data FROM environment_steps WHERE json_extract(data,'$.batchId')=? ORDER BY rowid",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "method": "all",
+          "rows": 4,
+          "jsonRows": 4,
+          "jsonBytes": 9062,
+          "writes": 0
+        }
+      ],
+      "plans": [
+        {
+          "sql": "SELECT data FROM environment_steps WHERE json_extract(data,'$.batchId')=? ORDER BY rowid",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH environment_steps USING INDEX environment_step_batch (<expr>=?)"
+            }
+          ]
+        }
+      ],
+      "firstMs": 0.08949999999998681,
+      "hotMs": [
+        0.022600000000011278,
+        0.022700000000000387,
+        0.02240000000000464,
+        0.016099999999994452,
+        0.016200000000011983
+      ],
+      "medianMs": 0.02240000000000464
+    },
+    {
+      "kind": "environment",
+      "H": 0,
+      "name": "ensureExisting",
+      "rows": 3,
+      "json": 3,
+      "queries": [
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "runtime"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 444,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM environment_batches WHERE id = ?",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 206,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM environment_batches WHERE json_extract(data,'$.status')='active' ORDER BY rowid",
+          "args": [],
+          "method": "all",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 206,
+          "writes": 0
+        }
+      ],
+      "plans": [
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "runtime"
+          ],
+          "plan": [
+            {
+              "id": 3,
+              "parent": 0,
+              "notused": 39,
+              "detail": "SEARCH state USING INDEX sqlite_autoindex_state_1 (key=?)"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT data FROM environment_batches WHERE id = ?",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "plan": [
+            {
+              "id": 3,
+              "parent": 0,
+              "notused": 39,
+              "detail": "SEARCH environment_batches USING INDEX sqlite_autoindex_environment_batches_1 (id=?)"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT data FROM environment_batches WHERE json_extract(data,'$.status')='active' ORDER BY rowid",
+          "args": [],
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH environment_batches USING INDEX environment_batch_status (<expr>=?)"
+            }
+          ]
+        }
+      ],
+      "firstMs": 0.6193999999999988,
+      "hotMs": [
+        0.281099999999995,
+        0.2055999999999898,
+        0.1722999999999928,
+        0.1507000000000005,
+        0.14450000000000784
+      ],
+      "medianMs": 0.1722999999999928
+    },
+    {
+      "kind": "environment",
+      "H": 0,
+      "name": "fullSelect",
+      "rows": 6,
+      "json": 2,
+      "queries": [
+        {
+          "sql": "SELECT data FROM environment_batches WHERE json_extract(data,'$.status')='active' ORDER BY rowid LIMIT 1",
+          "args": [],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 206,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT id,json_extract(data,'$.batchId') AS batchId,json_extract(data,'$.stage') AS stage,json_extract(data,'$.status') AS status,json_extract(data,'$.retryAt') AS retryAt FROM environment_steps WHERE json_extract(data,'$.batchId')=? ORDER BY rowid",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "method": "all",
+          "rows": 4,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM environment_steps WHERE id = ?",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]world"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 2255,
+          "writes": 0
+        }
+      ],
+      "plans": [
+        {
+          "sql": "SELECT data FROM environment_batches WHERE json_extract(data,'$.status')='active' ORDER BY rowid LIMIT 1",
+          "args": [],
+          "plan": [
+            {
+              "id": 5,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH environment_batches USING INDEX environment_batch_status (<expr>=?)"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT id,json_extract(data,'$.batchId') AS batchId,json_extract(data,'$.stage') AS stage,json_extract(data,'$.status') AS status,json_extract(data,'$.retryAt') AS retryAt FROM environment_steps WHERE json_extract(data,'$.batchId')=? ORDER BY rowid",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH environment_steps USING INDEX environment_step_batch (<expr>=?)"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT data FROM environment_steps WHERE id = ?",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]world"
+          ],
+          "plan": [
+            {
+              "id": 3,
+              "parent": 0,
+              "notused": 39,
+              "detail": "SEARCH environment_steps USING INDEX sqlite_autoindex_environment_steps_1 (id=?)"
+            }
+          ]
+        }
+      ],
+      "firstMs": 0.16500000000000625,
+      "hotMs": [
+        0.04989999999999384,
+        0.05850000000000932,
+        0.18829999999999814,
+        0.09739999999999327,
+        0.052599999999998204
+      ],
+      "medianMs": 0.05850000000000932
+    },
+    {
+      "kind": "environment",
+      "H": 0,
+      "name": "partialCommit",
+      "queries": [
+        {
+          "sql": "SELECT data FROM environment_steps WHERE id = ?",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]world"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 1267,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM environment_batches WHERE id = ?",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 206,
+          "writes": 0
+        },
+        {
+          "sql": "INSERT INTO environment_steps(id, data) VALUES (?, ?) ON CONFLICT(id) DO UPDATE SET data = excluded.data",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]world",
+            "{\"id\":\"[\\\"UTC\\\",\\\"2026-10-07\\\"]world\",\"batchId\":\"[\\\"UTC\\\",\\\"2026-10-07\\\"]\",\"stage\":\"world\",\"status\":\"committed\",\"attempt\":0,\"startedAt\":null,\"completedAt\":\"2026-10-07T02:00:00.000Z\",\"retryAt\":null,\"lastError\":null,\"inputSnapshot\":{\"synthetic\":\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"},\"frozenResult\":{\"stage\":\"world\",\"changes\":[]}}"
+          ],
+          "method": "run",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 1
+        },
+        {
+          "sql": "SELECT id,json_extract(data,'$.batchId') AS batchId,json_extract(data,'$.stage') AS stage,json_extract(data,'$.status') AS status,json_extract(data,'$.retryAt') AS retryAt FROM environment_steps WHERE json_extract(data,'$.batchId')=? ORDER BY rowid",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "method": "all",
+          "rows": 4,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        }
+      ],
+      "plans": [
+        {
+          "sql": "SELECT data FROM environment_steps WHERE id = ?",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]world"
+          ],
+          "plan": [
+            {
+              "id": 3,
+              "parent": 0,
+              "notused": 39,
+              "detail": "SEARCH environment_steps USING INDEX sqlite_autoindex_environment_steps_1 (id=?)"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT data FROM environment_batches WHERE id = ?",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "plan": [
+            {
+              "id": 3,
+              "parent": 0,
+              "notused": 39,
+              "detail": "SEARCH environment_batches USING INDEX sqlite_autoindex_environment_batches_1 (id=?)"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT id,json_extract(data,'$.batchId') AS batchId,json_extract(data,'$.stage') AS stage,json_extract(data,'$.status') AS status,json_extract(data,'$.retryAt') AS retryAt FROM environment_steps WHERE json_extract(data,'$.batchId')=? ORDER BY rowid",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH environment_steps USING INDEX environment_step_batch (<expr>=?)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "environment",
+      "H": 0,
+      "name": "completeCommit",
+      "queries": [
+        {
+          "sql": "SELECT data FROM environment_steps WHERE id = ?",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]world"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 1289,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM environment_batches WHERE id = ?",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 206,
+          "writes": 0
+        },
+        {
+          "sql": "INSERT INTO environment_steps(id, data) VALUES (?, ?) ON CONFLICT(id) DO UPDATE SET data = excluded.data",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]world",
+            "{\"id\":\"[\\\"UTC\\\",\\\"2026-10-07\\\"]world\",\"batchId\":\"[\\\"UTC\\\",\\\"2026-10-07\\\"]\",\"stage\":\"world\",\"status\":\"committed\",\"attempt\":0,\"startedAt\":null,\"completedAt\":\"2026-10-07T02:00:00.000Z\",\"retryAt\":null,\"lastError\":null,\"inputSnapshot\":{\"synthetic\":\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"},\"frozenResult\":{\"stage\":\"world\",\"changes\":[]}}"
+          ],
+          "method": "run",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 1
+        },
+        {
+          "sql": "SELECT id,json_extract(data,'$.batchId') AS batchId,json_extract(data,'$.stage') AS stage,json_extract(data,'$.status') AS status,json_extract(data,'$.retryAt') AS retryAt FROM environment_steps WHERE json_extract(data,'$.batchId')=? ORDER BY rowid",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "method": "all",
+          "rows": 4,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        },
+        {
+          "sql": "INSERT INTO environment_batches(id, data) VALUES (?, ?) ON CONFLICT(id) DO UPDATE SET data = excluded.data",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]",
+            "{\"id\":\"[\\\"UTC\\\",\\\"2026-10-07\\\"]\",\"status\":\"committed\",\"timezone\":\"UTC\",\"localDate\":\"2026-10-07\",\"scheduledAt\":\"2026-10-07T02:00:00.000Z\",\"createdAt\":\"2026-10-07T02:00:00.000Z\",\"reason\":\"daily\",\"closedAt\":\"2026-10-07T02:00:00.000Z\"}"
+          ],
+          "method": "run",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 1
+        }
+      ],
+      "plans": [
+        {
+          "sql": "SELECT data FROM environment_steps WHERE id = ?",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]world"
+          ],
+          "plan": [
+            {
+              "id": 3,
+              "parent": 0,
+              "notused": 39,
+              "detail": "SEARCH environment_steps USING INDEX sqlite_autoindex_environment_steps_1 (id=?)"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT data FROM environment_batches WHERE id = ?",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "plan": [
+            {
+              "id": 3,
+              "parent": 0,
+              "notused": 39,
+              "detail": "SEARCH environment_batches USING INDEX sqlite_autoindex_environment_batches_1 (id=?)"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT id,json_extract(data,'$.batchId') AS batchId,json_extract(data,'$.stage') AS stage,json_extract(data,'$.status') AS status,json_extract(data,'$.retryAt') AS retryAt FROM environment_steps WHERE json_extract(data,'$.batchId')=? ORDER BY rowid",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH environment_steps USING INDEX environment_step_batch (<expr>=?)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "environment",
+      "H": 0,
+      "name": "supersedeFixedActive",
+      "queries": [
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "runtime"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 444,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM environment_batches WHERE id = ?",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 231,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM environment_batches WHERE json_extract(data,'$.status')='active' ORDER BY rowid",
+          "args": [],
+          "method": "all",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 190,
+          "writes": 0
+        },
+        {
+          "sql": "INSERT INTO environment_batches(id, data) VALUES (?, ?) ON CONFLICT(id) DO UPDATE SET data = excluded.data",
+          "args": [
+            "fixedOld",
+            "{\"id\":\"fixedOld\",\"status\":\"superseded\",\"timezone\":\"UTC\",\"localDate\":\"2026-10-06\",\"scheduledAt\":\"2026-10-07T02:00:00.000Z\",\"createdAt\":\"2026-10-07T02:00:00.000Z\",\"reason\":\"daily\",\"closedAt\":\"2026-10-07T02:00:00.000Z\"}"
+          ],
+          "method": "run",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 1
+        },
+        {
+          "sql": "SELECT id,json_extract(data,'$.batchId') AS batchId,json_extract(data,'$.stage') AS stage,json_extract(data,'$.status') AS status,json_extract(data,'$.retryAt') AS retryAt FROM environment_steps WHERE json_extract(data,'$.batchId')=? ORDER BY rowid",
+          "args": [
+            "fixedOld"
+          ],
+          "method": "all",
+          "rows": 4,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM environment_steps WHERE id = ?",
+          "args": [
+            "fixedOldschool_campus"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 1225,
+          "writes": 0
+        },
+        {
+          "sql": "INSERT INTO environment_steps(id, data) VALUES (?, ?) ON CONFLICT(id) DO UPDATE SET data = excluded.data",
+          "args": [
+            "fixedOldschool_campus",
+            "{\"id\":\"fixedOldschool_campus\",\"batchId\":\"fixedOld\",\"stage\":\"school_campus\",\"status\":\"superseded\",\"attempt\":0,\"startedAt\":null,\"completedAt\":\"2026-10-07T02:00:00.000Z\",\"retryAt\":null,\"lastError\":null,\"inputSnapshot\":{\"synthetic\":\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"},\"frozenResult\":null}"
+          ],
+          "method": "run",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 1
+        },
+        {
+          "sql": "SELECT data FROM environment_steps WHERE id = ?",
+          "args": [
+            "fixedOldschool_group"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 1223,
+          "writes": 0
+        },
+        {
+          "sql": "INSERT INTO environment_steps(id, data) VALUES (?, ?) ON CONFLICT(id) DO UPDATE SET data = excluded.data",
+          "args": [
+            "fixedOldschool_group",
+            "{\"id\":\"fixedOldschool_group\",\"batchId\":\"fixedOld\",\"stage\":\"school_group\",\"status\":\"superseded\",\"attempt\":0,\"startedAt\":null,\"completedAt\":\"2026-10-07T02:00:00.000Z\",\"retryAt\":null,\"lastError\":null,\"inputSnapshot\":{\"synthetic\":\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"},\"frozenResult\":null}"
+          ],
+          "method": "run",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 1
+        },
+        {
+          "sql": "SELECT data FROM environment_steps WHERE id = ?",
+          "args": [
+            "fixedOldschool_week"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 1221,
+          "writes": 0
+        },
+        {
+          "sql": "INSERT INTO environment_steps(id, data) VALUES (?, ?) ON CONFLICT(id) DO UPDATE SET data = excluded.data",
+          "args": [
+            "fixedOldschool_week",
+            "{\"id\":\"fixedOldschool_week\",\"batchId\":\"fixedOld\",\"stage\":\"school_week\",\"status\":\"superseded\",\"attempt\":0,\"startedAt\":null,\"completedAt\":\"2026-10-07T02:00:00.000Z\",\"retryAt\":null,\"lastError\":null,\"inputSnapshot\":{\"synthetic\":\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"},\"frozenResult\":null}"
+          ],
+          "method": "run",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 1
+        },
+        {
+          "sql": "INSERT INTO state(key, data) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET data = excluded.data",
+          "args": [
+            "runtime",
+            "{\"openBatch\":null,\"pendingBatchIds\":[],\"paused\":false,\"contactMisses\":0,\"stickerMisses\":0,\"nextWorldAt\":null,\"nextSchoolAt\":null,\"nextMaintenanceAt\":\"2026-10-09T20:30:00.000Z\",\"lastError\":null,\"dialogueContextVersion\":2,\"activeDialogueEpisodeId\":null,\"activeChatEpisodeId\":null,\"sharedActivityVersion\":1,\"sharedClock\":null,\"environmentPlanningVersion\":1,\"nextEnvironmentAt\":\"2026-10-08T06:00:00.000Z\",\"memoryCapacityVersion\":null,\"memoryIdle\":null}"
+          ],
+          "method": "run",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 1
+        }
+      ],
+      "plans": [
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "runtime"
+          ],
+          "plan": [
+            {
+              "id": 3,
+              "parent": 0,
+              "notused": 39,
+              "detail": "SEARCH state USING INDEX sqlite_autoindex_state_1 (key=?)"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT data FROM environment_batches WHERE id = ?",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "plan": [
+            {
+              "id": 3,
+              "parent": 0,
+              "notused": 39,
+              "detail": "SEARCH environment_batches USING INDEX sqlite_autoindex_environment_batches_1 (id=?)"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT data FROM environment_batches WHERE json_extract(data,'$.status')='active' ORDER BY rowid",
+          "args": [],
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH environment_batches USING INDEX environment_batch_status (<expr>=?)"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT id,json_extract(data,'$.batchId') AS batchId,json_extract(data,'$.stage') AS stage,json_extract(data,'$.status') AS status,json_extract(data,'$.retryAt') AS retryAt FROM environment_steps WHERE json_extract(data,'$.batchId')=? ORDER BY rowid",
+          "args": [
+            "fixedOld"
+          ],
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH environment_steps USING INDEX environment_step_batch (<expr>=?)"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT data FROM environment_steps WHERE id = ?",
+          "args": [
+            "fixedOldschool_campus"
+          ],
+          "plan": [
+            {
+              "id": 3,
+              "parent": 0,
+              "notused": 39,
+              "detail": "SEARCH environment_steps USING INDEX sqlite_autoindex_environment_steps_1 (id=?)"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT data FROM environment_steps WHERE id = ?",
+          "args": [
+            "fixedOldschool_group"
+          ],
+          "plan": [
+            {
+              "id": 3,
+              "parent": 0,
+              "notused": 39,
+              "detail": "SEARCH environment_steps USING INDEX sqlite_autoindex_environment_steps_1 (id=?)"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT data FROM environment_steps WHERE id = ?",
+          "args": [
+            "fixedOldschool_week"
+          ],
+          "plan": [
+            {
+              "id": 3,
+              "parent": 0,
+              "notused": 39,
+              "detail": "SEARCH environment_steps USING INDEX sqlite_autoindex_environment_steps_1 (id=?)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "environment",
+      "H": 90,
+      "name": "deadline",
+      "rows": 6,
+      "json": 2,
+      "queries": [
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "runtime"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 444,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM environment_batches WHERE json_extract(data,'$.status')='active' ORDER BY rowid LIMIT 1",
+          "args": [],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 206,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT id,json_extract(data,'$.batchId') AS batchId,json_extract(data,'$.stage') AS stage,json_extract(data,'$.status') AS status,json_extract(data,'$.retryAt') AS retryAt FROM environment_steps WHERE json_extract(data,'$.batchId')=? ORDER BY rowid",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "method": "all",
+          "rows": 4,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        }
+      ],
+      "plans": [
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "runtime"
+          ],
+          "plan": [
+            {
+              "id": 3,
+              "parent": 0,
+              "notused": 39,
+              "detail": "SEARCH state USING INDEX sqlite_autoindex_state_1 (key=?)"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT data FROM environment_batches WHERE json_extract(data,'$.status')='active' ORDER BY rowid LIMIT 1",
+          "args": [],
+          "plan": [
+            {
+              "id": 5,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH environment_batches USING INDEX environment_batch_status (<expr>=?)"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT id,json_extract(data,'$.batchId') AS batchId,json_extract(data,'$.stage') AS stage,json_extract(data,'$.status') AS status,json_extract(data,'$.retryAt') AS retryAt FROM environment_steps WHERE json_extract(data,'$.batchId')=? ORDER BY rowid",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH environment_steps USING INDEX environment_step_batch (<expr>=?)"
+            }
+          ]
+        }
+      ],
+      "firstMs": 0.14679999999999893,
+      "hotMs": [
+        0.05280000000000484,
+        0.048699999999996635,
+        0.05689999999999884,
+        0.03860000000000241,
+        0.035899999999998045
+      ],
+      "medianMs": 0.048699999999996635
+    },
+    {
+      "kind": "environment",
+      "H": 90,
+      "name": "metadata",
+      "rows": 5,
+      "json": 1,
+      "queries": [
+        {
+          "sql": "SELECT data FROM environment_batches WHERE json_extract(data,'$.status')='active' ORDER BY rowid LIMIT 1",
+          "args": [],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 206,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT id,json_extract(data,'$.batchId') AS batchId,json_extract(data,'$.stage') AS stage,json_extract(data,'$.status') AS status,json_extract(data,'$.retryAt') AS retryAt FROM environment_steps WHERE json_extract(data,'$.batchId')=? ORDER BY rowid",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "method": "all",
+          "rows": 4,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        }
+      ],
+      "plans": [
+        {
+          "sql": "SELECT data FROM environment_batches WHERE json_extract(data,'$.status')='active' ORDER BY rowid LIMIT 1",
+          "args": [],
+          "plan": [
+            {
+              "id": 5,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH environment_batches USING INDEX environment_batch_status (<expr>=?)"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT id,json_extract(data,'$.batchId') AS batchId,json_extract(data,'$.stage') AS stage,json_extract(data,'$.status') AS status,json_extract(data,'$.retryAt') AS retryAt FROM environment_steps WHERE json_extract(data,'$.batchId')=? ORDER BY rowid",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH environment_steps USING INDEX environment_step_batch (<expr>=?)"
+            }
+          ]
+        }
+      ],
+      "firstMs": 0.07499999999998863,
+      "hotMs": [
+        0.039600000000007185,
+        0.03249999999999886,
+        0.03630000000001132,
+        0.02790000000001669,
+        0.030299999999982674
+      ],
+      "medianMs": 0.03249999999999886
+    },
+    {
+      "kind": "environment",
+      "H": 90,
+      "name": "batchSteps",
+      "rows": 4,
+      "json": 4,
+      "queries": [
+        {
+          "sql": "SELECT data FROM environment_steps WHERE json_extract(data,'$.batchId')=? ORDER BY rowid",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "method": "all",
+          "rows": 4,
+          "jsonRows": 4,
+          "jsonBytes": 23462,
+          "writes": 0
+        }
+      ],
+      "plans": [
+        {
+          "sql": "SELECT data FROM environment_steps WHERE json_extract(data,'$.batchId')=? ORDER BY rowid",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH environment_steps USING INDEX environment_step_batch (<expr>=?)"
+            }
+          ]
+        }
+      ],
+      "firstMs": 0.04539999999997235,
+      "hotMs": [
+        0.022800000000017917,
+        0.020800000000008367,
+        0.019499999999993634,
+        0.03170000000000073,
+        0.017799999999994043
+      ],
+      "medianMs": 0.020800000000008367
+    },
+    {
+      "kind": "environment",
+      "H": 90,
+      "name": "ensureExisting",
+      "rows": 3,
+      "json": 3,
+      "queries": [
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "runtime"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 444,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM environment_batches WHERE id = ?",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 206,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM environment_batches WHERE json_extract(data,'$.status')='active' ORDER BY rowid",
+          "args": [],
+          "method": "all",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 206,
+          "writes": 0
+        }
+      ],
+      "plans": [
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "runtime"
+          ],
+          "plan": [
+            {
+              "id": 3,
+              "parent": 0,
+              "notused": 39,
+              "detail": "SEARCH state USING INDEX sqlite_autoindex_state_1 (key=?)"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT data FROM environment_batches WHERE id = ?",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "plan": [
+            {
+              "id": 3,
+              "parent": 0,
+              "notused": 39,
+              "detail": "SEARCH environment_batches USING INDEX sqlite_autoindex_environment_batches_1 (id=?)"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT data FROM environment_batches WHERE json_extract(data,'$.status')='active' ORDER BY rowid",
+          "args": [],
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH environment_batches USING INDEX environment_batch_status (<expr>=?)"
+            }
+          ]
+        }
+      ],
+      "firstMs": 0.29309999999998126,
+      "hotMs": [
+        0.21920000000000073,
+        0.1706000000000074,
+        0.1564999999999941,
+        0.14169999999998595,
+        0.15080000000000382
+      ],
+      "medianMs": 0.1564999999999941
+    },
+    {
+      "kind": "environment",
+      "H": 90,
+      "name": "fullSelect",
+      "rows": 6,
+      "json": 2,
+      "queries": [
+        {
+          "sql": "SELECT data FROM environment_batches WHERE json_extract(data,'$.status')='active' ORDER BY rowid LIMIT 1",
+          "args": [],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 206,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT id,json_extract(data,'$.batchId') AS batchId,json_extract(data,'$.stage') AS stage,json_extract(data,'$.status') AS status,json_extract(data,'$.retryAt') AS retryAt FROM environment_steps WHERE json_extract(data,'$.batchId')=? ORDER BY rowid",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "method": "all",
+          "rows": 4,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM environment_steps WHERE id = ?",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]world"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 5855,
+          "writes": 0
+        }
+      ],
+      "plans": [
+        {
+          "sql": "SELECT data FROM environment_batches WHERE json_extract(data,'$.status')='active' ORDER BY rowid LIMIT 1",
+          "args": [],
+          "plan": [
+            {
+              "id": 5,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH environment_batches USING INDEX environment_batch_status (<expr>=?)"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT id,json_extract(data,'$.batchId') AS batchId,json_extract(data,'$.stage') AS stage,json_extract(data,'$.status') AS status,json_extract(data,'$.retryAt') AS retryAt FROM environment_steps WHERE json_extract(data,'$.batchId')=? ORDER BY rowid",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH environment_steps USING INDEX environment_step_batch (<expr>=?)"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT data FROM environment_steps WHERE id = ?",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]world"
+          ],
+          "plan": [
+            {
+              "id": 3,
+              "parent": 0,
+              "notused": 39,
+              "detail": "SEARCH environment_steps USING INDEX sqlite_autoindex_environment_steps_1 (id=?)"
+            }
+          ]
+        }
+      ],
+      "firstMs": 0.08519999999998618,
+      "hotMs": [
+        0.043299999999987904,
+        0.06090000000000373,
+        0.03899999999998727,
+        0.036200000000008004,
+        0.03520000000000323
+      ],
+      "medianMs": 0.03899999999998727
+    },
+    {
+      "kind": "environment",
+      "H": 90,
+      "name": "partialCommit",
+      "queries": [
+        {
+          "sql": "SELECT data FROM environment_steps WHERE id = ?",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]world"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 3067,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM environment_batches WHERE id = ?",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 206,
+          "writes": 0
+        },
+        {
+          "sql": "INSERT INTO environment_steps(id, data) VALUES (?, ?) ON CONFLICT(id) DO UPDATE SET data = excluded.data",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]world",
+            "{\"id\":\"[\\\"UTC\\\",\\\"2026-10-07\\\"]world\",\"batchId\":\"[\\\"UTC\\\",\\\"2026-10-07\\\"]\",\"stage\":\"world\",\"status\":\"committed\",\"attempt\":0,\"startedAt\":null,\"completedAt\":\"2026-10-07T02:00:00.000Z\",\"retryAt\":null,\"lastError\":null,\"inputSnapshot\":{\"synthetic\":\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"},\"frozenResult\":{\"stage\":\"world\",\"changes\":[]}}"
+          ],
+          "method": "run",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 1
+        },
+        {
+          "sql": "SELECT id,json_extract(data,'$.batchId') AS batchId,json_extract(data,'$.stage') AS stage,json_extract(data,'$.status') AS status,json_extract(data,'$.retryAt') AS retryAt FROM environment_steps WHERE json_extract(data,'$.batchId')=? ORDER BY rowid",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "method": "all",
+          "rows": 4,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        }
+      ],
+      "plans": [
+        {
+          "sql": "SELECT data FROM environment_steps WHERE id = ?",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]world"
+          ],
+          "plan": [
+            {
+              "id": 3,
+              "parent": 0,
+              "notused": 39,
+              "detail": "SEARCH environment_steps USING INDEX sqlite_autoindex_environment_steps_1 (id=?)"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT data FROM environment_batches WHERE id = ?",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "plan": [
+            {
+              "id": 3,
+              "parent": 0,
+              "notused": 39,
+              "detail": "SEARCH environment_batches USING INDEX sqlite_autoindex_environment_batches_1 (id=?)"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT id,json_extract(data,'$.batchId') AS batchId,json_extract(data,'$.stage') AS stage,json_extract(data,'$.status') AS status,json_extract(data,'$.retryAt') AS retryAt FROM environment_steps WHERE json_extract(data,'$.batchId')=? ORDER BY rowid",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH environment_steps USING INDEX environment_step_batch (<expr>=?)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "environment",
+      "H": 90,
+      "name": "completeCommit",
+      "queries": [
+        {
+          "sql": "SELECT data FROM environment_steps WHERE id = ?",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]world"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 3089,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM environment_batches WHERE id = ?",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 206,
+          "writes": 0
+        },
+        {
+          "sql": "INSERT INTO environment_steps(id, data) VALUES (?, ?) ON CONFLICT(id) DO UPDATE SET data = excluded.data",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]world",
+            "{\"id\":\"[\\\"UTC\\\",\\\"2026-10-07\\\"]world\",\"batchId\":\"[\\\"UTC\\\",\\\"2026-10-07\\\"]\",\"stage\":\"world\",\"status\":\"committed\",\"attempt\":0,\"startedAt\":null,\"completedAt\":\"2026-10-07T02:00:00.000Z\",\"retryAt\":null,\"lastError\":null,\"inputSnapshot\":{\"synthetic\":\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"},\"frozenResult\":{\"stage\":\"world\",\"changes\":[]}}"
+          ],
+          "method": "run",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 1
+        },
+        {
+          "sql": "SELECT id,json_extract(data,'$.batchId') AS batchId,json_extract(data,'$.stage') AS stage,json_extract(data,'$.status') AS status,json_extract(data,'$.retryAt') AS retryAt FROM environment_steps WHERE json_extract(data,'$.batchId')=? ORDER BY rowid",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "method": "all",
+          "rows": 4,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        },
+        {
+          "sql": "INSERT INTO environment_batches(id, data) VALUES (?, ?) ON CONFLICT(id) DO UPDATE SET data = excluded.data",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]",
+            "{\"id\":\"[\\\"UTC\\\",\\\"2026-10-07\\\"]\",\"status\":\"committed\",\"timezone\":\"UTC\",\"localDate\":\"2026-10-07\",\"scheduledAt\":\"2026-10-07T02:00:00.000Z\",\"createdAt\":\"2026-10-07T02:00:00.000Z\",\"reason\":\"daily\",\"closedAt\":\"2026-10-07T02:00:00.000Z\"}"
+          ],
+          "method": "run",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 1
+        }
+      ],
+      "plans": [
+        {
+          "sql": "SELECT data FROM environment_steps WHERE id = ?",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]world"
+          ],
+          "plan": [
+            {
+              "id": 3,
+              "parent": 0,
+              "notused": 39,
+              "detail": "SEARCH environment_steps USING INDEX sqlite_autoindex_environment_steps_1 (id=?)"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT data FROM environment_batches WHERE id = ?",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "plan": [
+            {
+              "id": 3,
+              "parent": 0,
+              "notused": 39,
+              "detail": "SEARCH environment_batches USING INDEX sqlite_autoindex_environment_batches_1 (id=?)"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT id,json_extract(data,'$.batchId') AS batchId,json_extract(data,'$.stage') AS stage,json_extract(data,'$.status') AS status,json_extract(data,'$.retryAt') AS retryAt FROM environment_steps WHERE json_extract(data,'$.batchId')=? ORDER BY rowid",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH environment_steps USING INDEX environment_step_batch (<expr>=?)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "environment",
+      "H": 90,
+      "name": "supersedeFixedActive",
+      "queries": [
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "runtime"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 444,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM environment_batches WHERE id = ?",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 231,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM environment_batches WHERE json_extract(data,'$.status')='active' ORDER BY rowid",
+          "args": [],
+          "method": "all",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 190,
+          "writes": 0
+        },
+        {
+          "sql": "INSERT INTO environment_batches(id, data) VALUES (?, ?) ON CONFLICT(id) DO UPDATE SET data = excluded.data",
+          "args": [
+            "fixedOld",
+            "{\"id\":\"fixedOld\",\"status\":\"superseded\",\"timezone\":\"UTC\",\"localDate\":\"2026-10-06\",\"scheduledAt\":\"2026-10-07T02:00:00.000Z\",\"createdAt\":\"2026-10-07T02:00:00.000Z\",\"reason\":\"daily\",\"closedAt\":\"2026-10-07T02:00:00.000Z\"}"
+          ],
+          "method": "run",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 1
+        },
+        {
+          "sql": "SELECT id,json_extract(data,'$.batchId') AS batchId,json_extract(data,'$.stage') AS stage,json_extract(data,'$.status') AS status,json_extract(data,'$.retryAt') AS retryAt FROM environment_steps WHERE json_extract(data,'$.batchId')=? ORDER BY rowid",
+          "args": [
+            "fixedOld"
+          ],
+          "method": "all",
+          "rows": 4,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM environment_steps WHERE id = ?",
+          "args": [
+            "fixedOldschool_campus"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 3025,
+          "writes": 0
+        },
+        {
+          "sql": "INSERT INTO environment_steps(id, data) VALUES (?, ?) ON CONFLICT(id) DO UPDATE SET data = excluded.data",
+          "args": [
+            "fixedOldschool_campus",
+            "{\"id\":\"fixedOldschool_campus\",\"batchId\":\"fixedOld\",\"stage\":\"school_campus\",\"status\":\"superseded\",\"attempt\":0,\"startedAt\":null,\"completedAt\":\"2026-10-07T02:00:00.000Z\",\"retryAt\":null,\"lastError\":null,\"inputSnapshot\":{\"synthetic\":\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"},\"frozenResult\":null}"
+          ],
+          "method": "run",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 1
+        },
+        {
+          "sql": "SELECT data FROM environment_steps WHERE id = ?",
+          "args": [
+            "fixedOldschool_group"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 3023,
+          "writes": 0
+        },
+        {
+          "sql": "INSERT INTO environment_steps(id, data) VALUES (?, ?) ON CONFLICT(id) DO UPDATE SET data = excluded.data",
+          "args": [
+            "fixedOldschool_group",
+            "{\"id\":\"fixedOldschool_group\",\"batchId\":\"fixedOld\",\"stage\":\"school_group\",\"status\":\"superseded\",\"attempt\":0,\"startedAt\":null,\"completedAt\":\"2026-10-07T02:00:00.000Z\",\"retryAt\":null,\"lastError\":null,\"inputSnapshot\":{\"synthetic\":\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"},\"frozenResult\":null}"
+          ],
+          "method": "run",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 1
+        },
+        {
+          "sql": "SELECT data FROM environment_steps WHERE id = ?",
+          "args": [
+            "fixedOldschool_week"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 3021,
+          "writes": 0
+        },
+        {
+          "sql": "INSERT INTO environment_steps(id, data) VALUES (?, ?) ON CONFLICT(id) DO UPDATE SET data = excluded.data",
+          "args": [
+            "fixedOldschool_week",
+            "{\"id\":\"fixedOldschool_week\",\"batchId\":\"fixedOld\",\"stage\":\"school_week\",\"status\":\"superseded\",\"attempt\":0,\"startedAt\":null,\"completedAt\":\"2026-10-07T02:00:00.000Z\",\"retryAt\":null,\"lastError\":null,\"inputSnapshot\":{\"synthetic\":\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"},\"frozenResult\":null}"
+          ],
+          "method": "run",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 1
+        },
+        {
+          "sql": "INSERT INTO state(key, data) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET data = excluded.data",
+          "args": [
+            "runtime",
+            "{\"openBatch\":null,\"pendingBatchIds\":[],\"paused\":false,\"contactMisses\":0,\"stickerMisses\":0,\"nextWorldAt\":null,\"nextSchoolAt\":null,\"nextMaintenanceAt\":\"2026-10-09T20:30:00.000Z\",\"lastError\":null,\"dialogueContextVersion\":2,\"activeDialogueEpisodeId\":null,\"activeChatEpisodeId\":null,\"sharedActivityVersion\":1,\"sharedClock\":null,\"environmentPlanningVersion\":1,\"nextEnvironmentAt\":\"2026-10-08T06:00:00.000Z\",\"memoryCapacityVersion\":null,\"memoryIdle\":null}"
+          ],
+          "method": "run",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 1
+        }
+      ],
+      "plans": [
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "runtime"
+          ],
+          "plan": [
+            {
+              "id": 3,
+              "parent": 0,
+              "notused": 39,
+              "detail": "SEARCH state USING INDEX sqlite_autoindex_state_1 (key=?)"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT data FROM environment_batches WHERE id = ?",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "plan": [
+            {
+              "id": 3,
+              "parent": 0,
+              "notused": 39,
+              "detail": "SEARCH environment_batches USING INDEX sqlite_autoindex_environment_batches_1 (id=?)"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT data FROM environment_batches WHERE json_extract(data,'$.status')='active' ORDER BY rowid",
+          "args": [],
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH environment_batches USING INDEX environment_batch_status (<expr>=?)"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT id,json_extract(data,'$.batchId') AS batchId,json_extract(data,'$.stage') AS stage,json_extract(data,'$.status') AS status,json_extract(data,'$.retryAt') AS retryAt FROM environment_steps WHERE json_extract(data,'$.batchId')=? ORDER BY rowid",
+          "args": [
+            "fixedOld"
+          ],
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH environment_steps USING INDEX environment_step_batch (<expr>=?)"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT data FROM environment_steps WHERE id = ?",
+          "args": [
+            "fixedOldschool_campus"
+          ],
+          "plan": [
+            {
+              "id": 3,
+              "parent": 0,
+              "notused": 39,
+              "detail": "SEARCH environment_steps USING INDEX sqlite_autoindex_environment_steps_1 (id=?)"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT data FROM environment_steps WHERE id = ?",
+          "args": [
+            "fixedOldschool_group"
+          ],
+          "plan": [
+            {
+              "id": 3,
+              "parent": 0,
+              "notused": 39,
+              "detail": "SEARCH environment_steps USING INDEX sqlite_autoindex_environment_steps_1 (id=?)"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT data FROM environment_steps WHERE id = ?",
+          "args": [
+            "fixedOldschool_week"
+          ],
+          "plan": [
+            {
+              "id": 3,
+              "parent": 0,
+              "notused": 39,
+              "detail": "SEARCH environment_steps USING INDEX sqlite_autoindex_environment_steps_1 (id=?)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "environment",
+      "H": 180,
+      "name": "deadline",
+      "rows": 6,
+      "json": 2,
+      "queries": [
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "runtime"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 444,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM environment_batches WHERE json_extract(data,'$.status')='active' ORDER BY rowid LIMIT 1",
+          "args": [],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 206,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT id,json_extract(data,'$.batchId') AS batchId,json_extract(data,'$.stage') AS stage,json_extract(data,'$.status') AS status,json_extract(data,'$.retryAt') AS retryAt FROM environment_steps WHERE json_extract(data,'$.batchId')=? ORDER BY rowid",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "method": "all",
+          "rows": 4,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        }
+      ],
+      "plans": [
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "runtime"
+          ],
+          "plan": [
+            {
+              "id": 3,
+              "parent": 0,
+              "notused": 39,
+              "detail": "SEARCH state USING INDEX sqlite_autoindex_state_1 (key=?)"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT data FROM environment_batches WHERE json_extract(data,'$.status')='active' ORDER BY rowid LIMIT 1",
+          "args": [],
+          "plan": [
+            {
+              "id": 5,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH environment_batches USING INDEX environment_batch_status (<expr>=?)"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT id,json_extract(data,'$.batchId') AS batchId,json_extract(data,'$.stage') AS stage,json_extract(data,'$.status') AS status,json_extract(data,'$.retryAt') AS retryAt FROM environment_steps WHERE json_extract(data,'$.batchId')=? ORDER BY rowid",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH environment_steps USING INDEX environment_step_batch (<expr>=?)"
+            }
+          ]
+        }
+      ],
+      "firstMs": 0.16080000000002315,
+      "hotMs": [
+        0.07179999999999609,
+        0.05449999999999022,
+        0.04559999999997899,
+        0.04250000000001819,
+        0.042999999999977945
+      ],
+      "medianMs": 0.04559999999997899
+    },
+    {
+      "kind": "environment",
+      "H": 180,
+      "name": "metadata",
+      "rows": 5,
+      "json": 1,
+      "queries": [
+        {
+          "sql": "SELECT data FROM environment_batches WHERE json_extract(data,'$.status')='active' ORDER BY rowid LIMIT 1",
+          "args": [],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 206,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT id,json_extract(data,'$.batchId') AS batchId,json_extract(data,'$.stage') AS stage,json_extract(data,'$.status') AS status,json_extract(data,'$.retryAt') AS retryAt FROM environment_steps WHERE json_extract(data,'$.batchId')=? ORDER BY rowid",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "method": "all",
+          "rows": 4,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        }
+      ],
+      "plans": [
+        {
+          "sql": "SELECT data FROM environment_batches WHERE json_extract(data,'$.status')='active' ORDER BY rowid LIMIT 1",
+          "args": [],
+          "plan": [
+            {
+              "id": 5,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH environment_batches USING INDEX environment_batch_status (<expr>=?)"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT id,json_extract(data,'$.batchId') AS batchId,json_extract(data,'$.stage') AS stage,json_extract(data,'$.status') AS status,json_extract(data,'$.retryAt') AS retryAt FROM environment_steps WHERE json_extract(data,'$.batchId')=? ORDER BY rowid",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH environment_steps USING INDEX environment_step_batch (<expr>=?)"
+            }
+          ]
+        }
+      ],
+      "firstMs": 0.05629999999999313,
+      "hotMs": [
+        0.036100000000004684,
+        0.03289999999998372,
+        0.035899999999998045,
+        0.0438000000000045,
+        0.03340000000000032
+      ],
+      "medianMs": 0.035899999999998045
+    },
+    {
+      "kind": "environment",
+      "H": 180,
+      "name": "batchSteps",
+      "rows": 4,
+      "json": 4,
+      "queries": [
+        {
+          "sql": "SELECT data FROM environment_steps WHERE json_extract(data,'$.batchId')=? ORDER BY rowid",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "method": "all",
+          "rows": 4,
+          "jsonRows": 4,
+          "jsonBytes": 37862,
+          "writes": 0
+        }
+      ],
+      "plans": [
+        {
+          "sql": "SELECT data FROM environment_steps WHERE json_extract(data,'$.batchId')=? ORDER BY rowid",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH environment_steps USING INDEX environment_step_batch (<expr>=?)"
+            }
+          ]
+        }
+      ],
+      "firstMs": 0.05330000000000723,
+      "hotMs": [
+        0.032299999999992224,
+        0.03999999999999204,
+        0.044899999999984175,
+        0.03849999999999909,
+        0.041500000000013415
+      ],
+      "medianMs": 0.03999999999999204
+    },
+    {
+      "kind": "environment",
+      "H": 180,
+      "name": "ensureExisting",
+      "rows": 3,
+      "json": 3,
+      "queries": [
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "runtime"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 444,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM environment_batches WHERE id = ?",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 206,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM environment_batches WHERE json_extract(data,'$.status')='active' ORDER BY rowid",
+          "args": [],
+          "method": "all",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 206,
+          "writes": 0
+        }
+      ],
+      "plans": [
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "runtime"
+          ],
+          "plan": [
+            {
+              "id": 3,
+              "parent": 0,
+              "notused": 39,
+              "detail": "SEARCH state USING INDEX sqlite_autoindex_state_1 (key=?)"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT data FROM environment_batches WHERE id = ?",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "plan": [
+            {
+              "id": 3,
+              "parent": 0,
+              "notused": 39,
+              "detail": "SEARCH environment_batches USING INDEX sqlite_autoindex_environment_batches_1 (id=?)"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT data FROM environment_batches WHERE json_extract(data,'$.status')='active' ORDER BY rowid",
+          "args": [],
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH environment_batches USING INDEX environment_batch_status (<expr>=?)"
+            }
+          ]
+        }
+      ],
+      "firstMs": 0.45810000000000173,
+      "hotMs": [
+        0.1564000000000192,
+        0.13990000000001146,
+        0.1209999999999809,
+        0.1314999999999884,
+        0.15620000000001255
+      ],
+      "medianMs": 0.13990000000001146
+    },
+    {
+      "kind": "environment",
+      "H": 180,
+      "name": "fullSelect",
+      "rows": 6,
+      "json": 2,
+      "queries": [
+        {
+          "sql": "SELECT data FROM environment_batches WHERE json_extract(data,'$.status')='active' ORDER BY rowid LIMIT 1",
+          "args": [],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 206,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT id,json_extract(data,'$.batchId') AS batchId,json_extract(data,'$.stage') AS stage,json_extract(data,'$.status') AS status,json_extract(data,'$.retryAt') AS retryAt FROM environment_steps WHERE json_extract(data,'$.batchId')=? ORDER BY rowid",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "method": "all",
+          "rows": 4,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM environment_steps WHERE id = ?",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]world"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 9455,
+          "writes": 0
+        }
+      ],
+      "plans": [
+        {
+          "sql": "SELECT data FROM environment_batches WHERE json_extract(data,'$.status')='active' ORDER BY rowid LIMIT 1",
+          "args": [],
+          "plan": [
+            {
+              "id": 5,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH environment_batches USING INDEX environment_batch_status (<expr>=?)"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT id,json_extract(data,'$.batchId') AS batchId,json_extract(data,'$.stage') AS stage,json_extract(data,'$.status') AS status,json_extract(data,'$.retryAt') AS retryAt FROM environment_steps WHERE json_extract(data,'$.batchId')=? ORDER BY rowid",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH environment_steps USING INDEX environment_step_batch (<expr>=?)"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT data FROM environment_steps WHERE id = ?",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]world"
+          ],
+          "plan": [
+            {
+              "id": 3,
+              "parent": 0,
+              "notused": 39,
+              "detail": "SEARCH environment_steps USING INDEX sqlite_autoindex_environment_steps_1 (id=?)"
+            }
+          ]
+        }
+      ],
+      "firstMs": 0.08929999999998017,
+      "hotMs": [
+        0.04850000000001842,
+        0.05469999999999686,
+        0.04529999999999745,
+        0.043299999999987904,
+        0.04980000000000473
+      ],
+      "medianMs": 0.04850000000001842
+    },
+    {
+      "kind": "environment",
+      "H": 180,
+      "name": "partialCommit",
+      "queries": [
+        {
+          "sql": "SELECT data FROM environment_steps WHERE id = ?",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]world"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 4867,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM environment_batches WHERE id = ?",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 206,
+          "writes": 0
+        },
+        {
+          "sql": "INSERT INTO environment_steps(id, data) VALUES (?, ?) ON CONFLICT(id) DO UPDATE SET data = excluded.data",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]world",
+            "{\"id\":\"[\\\"UTC\\\",\\\"2026-10-07\\\"]world\",\"batchId\":\"[\\\"UTC\\\",\\\"2026-10-07\\\"]\",\"stage\":\"world\",\"status\":\"committed\",\"attempt\":0,\"startedAt\":null,\"completedAt\":\"2026-10-07T02:00:00.000Z\",\"retryAt\":null,\"lastError\":null,\"inputSnapshot\":{\"synthetic\":\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"},\"frozenResult\":{\"stage\":\"world\",\"changes\":[]}}"
+          ],
+          "method": "run",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 1
+        },
+        {
+          "sql": "SELECT id,json_extract(data,'$.batchId') AS batchId,json_extract(data,'$.stage') AS stage,json_extract(data,'$.status') AS status,json_extract(data,'$.retryAt') AS retryAt FROM environment_steps WHERE json_extract(data,'$.batchId')=? ORDER BY rowid",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "method": "all",
+          "rows": 4,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        }
+      ],
+      "plans": [
+        {
+          "sql": "SELECT data FROM environment_steps WHERE id = ?",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]world"
+          ],
+          "plan": [
+            {
+              "id": 3,
+              "parent": 0,
+              "notused": 39,
+              "detail": "SEARCH environment_steps USING INDEX sqlite_autoindex_environment_steps_1 (id=?)"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT data FROM environment_batches WHERE id = ?",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "plan": [
+            {
+              "id": 3,
+              "parent": 0,
+              "notused": 39,
+              "detail": "SEARCH environment_batches USING INDEX sqlite_autoindex_environment_batches_1 (id=?)"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT id,json_extract(data,'$.batchId') AS batchId,json_extract(data,'$.stage') AS stage,json_extract(data,'$.status') AS status,json_extract(data,'$.retryAt') AS retryAt FROM environment_steps WHERE json_extract(data,'$.batchId')=? ORDER BY rowid",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH environment_steps USING INDEX environment_step_batch (<expr>=?)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "environment",
+      "H": 180,
+      "name": "completeCommit",
+      "queries": [
+        {
+          "sql": "SELECT data FROM environment_steps WHERE id = ?",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]world"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 4889,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM environment_batches WHERE id = ?",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 206,
+          "writes": 0
+        },
+        {
+          "sql": "INSERT INTO environment_steps(id, data) VALUES (?, ?) ON CONFLICT(id) DO UPDATE SET data = excluded.data",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]world",
+            "{\"id\":\"[\\\"UTC\\\",\\\"2026-10-07\\\"]world\",\"batchId\":\"[\\\"UTC\\\",\\\"2026-10-07\\\"]\",\"stage\":\"world\",\"status\":\"committed\",\"attempt\":0,\"startedAt\":null,\"completedAt\":\"2026-10-07T02:00:00.000Z\",\"retryAt\":null,\"lastError\":null,\"inputSnapshot\":{\"synthetic\":\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"},\"frozenResult\":{\"stage\":\"world\",\"changes\":[]}}"
+          ],
+          "method": "run",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 1
+        },
+        {
+          "sql": "SELECT id,json_extract(data,'$.batchId') AS batchId,json_extract(data,'$.stage') AS stage,json_extract(data,'$.status') AS status,json_extract(data,'$.retryAt') AS retryAt FROM environment_steps WHERE json_extract(data,'$.batchId')=? ORDER BY rowid",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "method": "all",
+          "rows": 4,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        },
+        {
+          "sql": "INSERT INTO environment_batches(id, data) VALUES (?, ?) ON CONFLICT(id) DO UPDATE SET data = excluded.data",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]",
+            "{\"id\":\"[\\\"UTC\\\",\\\"2026-10-07\\\"]\",\"status\":\"committed\",\"timezone\":\"UTC\",\"localDate\":\"2026-10-07\",\"scheduledAt\":\"2026-10-07T02:00:00.000Z\",\"createdAt\":\"2026-10-07T02:00:00.000Z\",\"reason\":\"daily\",\"closedAt\":\"2026-10-07T02:00:00.000Z\"}"
+          ],
+          "method": "run",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 1
+        }
+      ],
+      "plans": [
+        {
+          "sql": "SELECT data FROM environment_steps WHERE id = ?",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]world"
+          ],
+          "plan": [
+            {
+              "id": 3,
+              "parent": 0,
+              "notused": 39,
+              "detail": "SEARCH environment_steps USING INDEX sqlite_autoindex_environment_steps_1 (id=?)"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT data FROM environment_batches WHERE id = ?",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "plan": [
+            {
+              "id": 3,
+              "parent": 0,
+              "notused": 39,
+              "detail": "SEARCH environment_batches USING INDEX sqlite_autoindex_environment_batches_1 (id=?)"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT id,json_extract(data,'$.batchId') AS batchId,json_extract(data,'$.stage') AS stage,json_extract(data,'$.status') AS status,json_extract(data,'$.retryAt') AS retryAt FROM environment_steps WHERE json_extract(data,'$.batchId')=? ORDER BY rowid",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH environment_steps USING INDEX environment_step_batch (<expr>=?)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "environment",
+      "H": 180,
+      "name": "supersedeFixedActive",
+      "queries": [
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "runtime"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 444,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM environment_batches WHERE id = ?",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 231,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM environment_batches WHERE json_extract(data,'$.status')='active' ORDER BY rowid",
+          "args": [],
+          "method": "all",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 190,
+          "writes": 0
+        },
+        {
+          "sql": "INSERT INTO environment_batches(id, data) VALUES (?, ?) ON CONFLICT(id) DO UPDATE SET data = excluded.data",
+          "args": [
+            "fixedOld",
+            "{\"id\":\"fixedOld\",\"status\":\"superseded\",\"timezone\":\"UTC\",\"localDate\":\"2026-10-06\",\"scheduledAt\":\"2026-10-07T02:00:00.000Z\",\"createdAt\":\"2026-10-07T02:00:00.000Z\",\"reason\":\"daily\",\"closedAt\":\"2026-10-07T02:00:00.000Z\"}"
+          ],
+          "method": "run",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 1
+        },
+        {
+          "sql": "SELECT id,json_extract(data,'$.batchId') AS batchId,json_extract(data,'$.stage') AS stage,json_extract(data,'$.status') AS status,json_extract(data,'$.retryAt') AS retryAt FROM environment_steps WHERE json_extract(data,'$.batchId')=? ORDER BY rowid",
+          "args": [
+            "fixedOld"
+          ],
+          "method": "all",
+          "rows": 4,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM environment_steps WHERE id = ?",
+          "args": [
+            "fixedOldschool_campus"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 4825,
+          "writes": 0
+        },
+        {
+          "sql": "INSERT INTO environment_steps(id, data) VALUES (?, ?) ON CONFLICT(id) DO UPDATE SET data = excluded.data",
+          "args": [
+            "fixedOldschool_campus",
+            "{\"id\":\"fixedOldschool_campus\",\"batchId\":\"fixedOld\",\"stage\":\"school_campus\",\"status\":\"superseded\",\"attempt\":0,\"startedAt\":null,\"completedAt\":\"2026-10-07T02:00:00.000Z\",\"retryAt\":null,\"lastError\":null,\"inputSnapshot\":{\"synthetic\":\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"},\"frozenResult\":null}"
+          ],
+          "method": "run",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 1
+        },
+        {
+          "sql": "SELECT data FROM environment_steps WHERE id = ?",
+          "args": [
+            "fixedOldschool_group"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 4823,
+          "writes": 0
+        },
+        {
+          "sql": "INSERT INTO environment_steps(id, data) VALUES (?, ?) ON CONFLICT(id) DO UPDATE SET data = excluded.data",
+          "args": [
+            "fixedOldschool_group",
+            "{\"id\":\"fixedOldschool_group\",\"batchId\":\"fixedOld\",\"stage\":\"school_group\",\"status\":\"superseded\",\"attempt\":0,\"startedAt\":null,\"completedAt\":\"2026-10-07T02:00:00.000Z\",\"retryAt\":null,\"lastError\":null,\"inputSnapshot\":{\"synthetic\":\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"},\"frozenResult\":null}"
+          ],
+          "method": "run",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 1
+        },
+        {
+          "sql": "SELECT data FROM environment_steps WHERE id = ?",
+          "args": [
+            "fixedOldschool_week"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 4821,
+          "writes": 0
+        },
+        {
+          "sql": "INSERT INTO environment_steps(id, data) VALUES (?, ?) ON CONFLICT(id) DO UPDATE SET data = excluded.data",
+          "args": [
+            "fixedOldschool_week",
+            "{\"id\":\"fixedOldschool_week\",\"batchId\":\"fixedOld\",\"stage\":\"school_week\",\"status\":\"superseded\",\"attempt\":0,\"startedAt\":null,\"completedAt\":\"2026-10-07T02:00:00.000Z\",\"retryAt\":null,\"lastError\":null,\"inputSnapshot\":{\"synthetic\":\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"},\"frozenResult\":null}"
+          ],
+          "method": "run",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 1
+        },
+        {
+          "sql": "INSERT INTO state(key, data) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET data = excluded.data",
+          "args": [
+            "runtime",
+            "{\"openBatch\":null,\"pendingBatchIds\":[],\"paused\":false,\"contactMisses\":0,\"stickerMisses\":0,\"nextWorldAt\":null,\"nextSchoolAt\":null,\"nextMaintenanceAt\":\"2026-10-09T20:30:00.000Z\",\"lastError\":null,\"dialogueContextVersion\":2,\"activeDialogueEpisodeId\":null,\"activeChatEpisodeId\":null,\"sharedActivityVersion\":1,\"sharedClock\":null,\"environmentPlanningVersion\":1,\"nextEnvironmentAt\":\"2026-10-08T06:00:00.000Z\",\"memoryCapacityVersion\":null,\"memoryIdle\":null}"
+          ],
+          "method": "run",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 1
+        }
+      ],
+      "plans": [
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "runtime"
+          ],
+          "plan": [
+            {
+              "id": 3,
+              "parent": 0,
+              "notused": 39,
+              "detail": "SEARCH state USING INDEX sqlite_autoindex_state_1 (key=?)"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT data FROM environment_batches WHERE id = ?",
+          "args": [
+            "[\"UTC\",\"2026-10-07\"]"
+          ],
+          "plan": [
+            {
+              "id": 3,
+              "parent": 0,
+              "notused": 39,
+              "detail": "SEARCH environment_batches USING INDEX sqlite_autoindex_environment_batches_1 (id=?)"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT data FROM environment_batches WHERE json_extract(data,'$.status')='active' ORDER BY rowid",
+          "args": [],
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH environment_batches USING INDEX environment_batch_status (<expr>=?)"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT id,json_extract(data,'$.batchId') AS batchId,json_extract(data,'$.stage') AS stage,json_extract(data,'$.status') AS status,json_extract(data,'$.retryAt') AS retryAt FROM environment_steps WHERE json_extract(data,'$.batchId')=? ORDER BY rowid",
+          "args": [
+            "fixedOld"
+          ],
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH environment_steps USING INDEX environment_step_batch (<expr>=?)"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT data FROM environment_steps WHERE id = ?",
+          "args": [
+            "fixedOldschool_campus"
+          ],
+          "plan": [
+            {
+              "id": 3,
+              "parent": 0,
+              "notused": 39,
+              "detail": "SEARCH environment_steps USING INDEX sqlite_autoindex_environment_steps_1 (id=?)"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT data FROM environment_steps WHERE id = ?",
+          "args": [
+            "fixedOldschool_group"
+          ],
+          "plan": [
+            {
+              "id": 3,
+              "parent": 0,
+              "notused": 39,
+              "detail": "SEARCH environment_steps USING INDEX sqlite_autoindex_environment_steps_1 (id=?)"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT data FROM environment_steps WHERE id = ?",
+          "args": [
+            "fixedOldschool_week"
+          ],
+          "plan": [
+            {
+              "id": 3,
+              "parent": 0,
+              "notused": 39,
+              "detail": "SEARCH environment_steps USING INDEX sqlite_autoindex_environment_steps_1 (id=?)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "school",
+      "H": 0,
+      "A": 0,
+      "queries": [
+        {
+          "sql": "SELECT rowid,data FROM school_notices WHERE json_extract(data,'$.status') IN ('scheduled','available') ORDER BY rowid",
+          "args": [],
+          "method": "all",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        }
+      ],
+      "consumerQueries": [
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "character"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 68,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "character"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 68,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "character"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 68,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "character"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 68,
+          "writes": 0
+        }
+      ],
+      "plans": [
+        {
+          "sql": "SELECT rowid,data FROM school_notices WHERE json_extract(data,'$.status') IN ('scheduled','available') ORDER BY rowid",
+          "args": [],
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 71,
+              "detail": "SEARCH school_notices USING INDEX school_notice_status (<expr>=?)"
+            },
+            {
+              "id": 28,
+              "parent": 0,
+              "notused": 0,
+              "detail": "USE TEMP B-TREE FOR ORDER BY"
+            }
+          ]
+        }
+      ],
+      "firstMs": 0.2551000000000272,
+      "hotMs": [
+        0.030000000000001137,
+        0.019100000000008777,
+        0.015799999999984493,
+        0.015099999999989677,
+        0.01079999999998904
+      ],
+      "medianMs": 0.015799999999984493
+    },
+    {
+      "kind": "school",
+      "H": 0,
+      "A": 3,
+      "queries": [
+        {
+          "sql": "SELECT rowid,data FROM school_notices WHERE json_extract(data,'$.status') IN ('scheduled','available') ORDER BY rowid",
+          "args": [],
+          "method": "all",
+          "rows": 3,
+          "jsonRows": 3,
+          "jsonBytes": 3414,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT json_extract(data,'$.snapshot') AS snapshot FROM school_knowledge WHERE json_extract(data,'$.snapshot.entityKind')=? AND json_extract(data,'$.snapshot.entityId')=? ORDER BY json_extract(data,'$.snapshot.value.deliveryRevision') DESC,json_extract(data,'$.snapshot.revision') DESC,hdsi_epoch_ms(json_extract(data,'$.acquiredAt')) DESC,rowid DESC LIMIT 1",
+          "args": [
+            "instance",
+            "instance"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 787,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT json_extract(data,'$.snapshot') AS snapshot FROM school_knowledge WHERE json_extract(data,'$.snapshot.entityKind')=? AND json_extract(data,'$.snapshot.entityId')=? ORDER BY json_extract(data,'$.snapshot.value.deliveryRevision') DESC,json_extract(data,'$.snapshot.revision') DESC,hdsi_epoch_ms(json_extract(data,'$.acquiredAt')) DESC,rowid DESC LIMIT 1",
+          "args": [
+            "plan_item",
+            "one"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 514,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT rowid,data FROM school_plan_items WHERE id IN (?,?) ORDER BY rowid",
+          "args": [
+            "one",
+            "two"
+          ],
+          "method": "all",
+          "rows": 2,
+          "jsonRows": 2,
+          "jsonBytes": 898,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT rowid,data FROM school_instances WHERE id IN (?) ORDER BY rowid",
+          "args": [
+            "instance"
+          ],
+          "method": "all",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 718,
+          "writes": 0
+        }
+      ],
+      "consumerQueries": [
+        {
+          "sql": "INSERT INTO school_notices(id, data) VALUES (?, ?) ON CONFLICT(id) DO UPDATE SET data = excluded.data",
+          "args": [
+            "issue",
+            "{\"id\":\"issue\",\"sourceItemId\":null,\"instanceId\":null,\"weekStart\":null,\"deliveryRevision\":1,\"kind\":\"issue\",\"reminderKey\":\"issue\",\"channel\":\"institution\",\"publishAt\":\"2026-10-07T02:00:00.000Z\",\"releasedAt\":\"2026-10-07T02:00:00.000Z\",\"payload\":{\"text\":\"合成通知\",\"snapshots\":[{\"entityKind\":\"plan_item\",\"entityId\":\"one\",\"revision\":1,\"value\":{\"id\":\"one\",\"planId\":\"semester\",\"owner\":\"campus\",\"kind\":\"meeting\",\"title\":\"合成班会\",\"description\":\"合成\",\"location\":\"学院\",\"requirement\":\"required\",\"issuedAt\":\"2026-10-07T02:00:00.000Z\",\"timing\":{\"kind\":\"once\",\"startsAt\":\"2026-10-08T02:00:00Z\",\"endsAt\":\"2026-10-08T03:00:00Z\"},\"noticePolicy\":{\"announceOnIssue\":true,\"announceOnChange\":true,\"reminders\":[]},\"revision\":1,\"deliveryRevision\":1,\"status\":\"open\",\"basis\":\"fiction\",\"sourceUrls\":[]}}]},\"status\":\"available\",\"nextWakeAt\":\"2026-10-07T02:00:00.000Z\",\"readAt\":null,\"readTurnId\":null}"
+          ],
+          "method": "run",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 1
+        },
+        {
+          "sql": "INSERT INTO school_notices(id, data) VALUES (?, ?) ON CONFLICT(id) DO UPDATE SET data = excluded.data",
+          "args": [
+            "digest",
+            "{\"id\":\"digest\",\"sourceItemId\":null,\"instanceId\":null,\"weekStart\":null,\"deliveryRevision\":1,\"kind\":\"week_digest\",\"reminderKey\":\"week_digest\",\"channel\":\"institution\",\"publishAt\":\"2026-10-07T02:00:00.000Z\",\"releasedAt\":\"2026-10-07T02:00:00.000Z\",\"payload\":{\"text\":\"合成通知\",\"snapshots\":[{\"entityKind\":\"plan_item\",\"entityId\":\"one\",\"revision\":1,\"value\":{\"id\":\"one\",\"planId\":\"semester\",\"owner\":\"campus\",\"kind\":\"meeting\",\"title\":\"合成班会\",\"description\":\"合成\",\"location\":\"学院\",\"requirement\":\"required\",\"issuedAt\":\"2026-10-07T02:00:00.000Z\",\"timing\":{\"kind\":\"once\",\"startsAt\":\"2026-10-08T02:00:00Z\",\"endsAt\":\"2026-10-08T03:00:00Z\"},\"noticePolicy\":{\"announceOnIssue\":true,\"announceOnChange\":true,\"reminders\":[]},\"revision\":1,\"deliveryRevision\":1,\"status\":\"open\",\"basis\":\"fiction\",\"sourceUrls\":[]}},{\"entityKind\":\"plan_item\",\"entityId\":\"two\",\"revision\":1,\"value\":{\"id\":\"two\",\"planId\":\"semester\",\"owner\":\"campus\",\"kind\":\"meeting\",\"title\":\"合成班会\",\"description\":\"合成\",\"location\":\"学院\",\"requirement\":\"required\",\"issuedAt\":\"2026-10-07T02:00:00.000Z\",\"timing\":{\"kind\":\"once\",\"startsAt\":\"2026-10-08T02:00:00Z\",\"endsAt\":\"2026-10-08T03:00:00Z\"},\"noticePolicy\":{\"announceOnIssue\":true,\"announceOnChange\":true,\"reminders\":[]},\"revision\":1,\"deliveryRevision\":1,\"status\":\"open\",\"basis\":\"fiction\",\"sourceUrls\":[]}}]},\"status\":\"available\",\"nextWakeAt\":\"2026-10-07T02:00:00.000Z\",\"readAt\":null,\"readTurnId\":null}"
+          ],
+          "method": "run",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 1
+        },
+        {
+          "sql": "INSERT INTO school_notices(id, data) VALUES (?, ?) ON CONFLICT(id) DO UPDATE SET data = excluded.data",
+          "args": [
+            "reminder",
+            "{\"id\":\"reminder\",\"sourceItemId\":null,\"instanceId\":\"instance\",\"weekStart\":null,\"deliveryRevision\":1,\"kind\":\"reminder\",\"reminderKey\":\"reminder\",\"channel\":\"personal_reminder\",\"publishAt\":\"2026-10-07T02:00:00.000Z\",\"releasedAt\":\"2026-10-07T02:00:00.000Z\",\"payload\":{\"text\":\"合成通知\",\"snapshots\":[{\"entityKind\":\"instance\",\"entityId\":\"instance\",\"revision\":1,\"value\":{\"id\":\"instance\",\"sourceItemId\":\"one\",\"sourceRevision\":1,\"deliveryRevision\":1,\"occurrenceKey\":\"synthetic\",\"weekStart\":null,\"startsAt\":\"2026-10-08T02:00:00Z\",\"endsAt\":\"2026-10-08T03:00:00Z\",\"sourceSnapshot\":{\"id\":\"one\",\"planId\":\"semester\",\"owner\":\"campus\",\"kind\":\"meeting\",\"title\":\"合成班会\",\"description\":\"合成\",\"location\":\"学院\",\"requirement\":\"required\",\"issuedAt\":\"2026-10-07T02:00:00.000Z\",\"timing\":{\"kind\":\"once\",\"startsAt\":\"2026-10-08T02:00:00Z\",\"endsAt\":\"2026-10-08T03:00:00Z\"},\"noticePolicy\":{\"announceOnIssue\":true,\"announceOnChange\":true,\"reminders\":[]},\"revision\":1,\"deliveryRevision\":1,\"status\":\"open\",\"basis\":\"fiction\",\"sourceUrls\":[]},\"status\":\"active\",\"needsExpansion\":false,\"legacyEventId\":null}}]},\"status\":\"available\",\"nextWakeAt\":\"2026-10-07T02:00:00.000Z\",\"readAt\":null,\"readTurnId\":null}"
+          ],
+          "method": "run",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 1
+        },
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "character"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 68,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "character"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 68,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "character"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 68,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "character"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 68,
+          "writes": 0
+        }
+      ],
+      "plans": [
+        {
+          "sql": "SELECT rowid,data FROM school_notices WHERE json_extract(data,'$.status') IN ('scheduled','available') ORDER BY rowid",
+          "args": [],
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 71,
+              "detail": "SEARCH school_notices USING INDEX school_notice_status (<expr>=?)"
+            },
+            {
+              "id": 28,
+              "parent": 0,
+              "notused": 0,
+              "detail": "USE TEMP B-TREE FOR ORDER BY"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT json_extract(data,'$.snapshot') AS snapshot FROM school_knowledge WHERE json_extract(data,'$.snapshot.entityKind')=? AND json_extract(data,'$.snapshot.entityId')=? ORDER BY json_extract(data,'$.snapshot.value.deliveryRevision') DESC,json_extract(data,'$.snapshot.revision') DESC,hdsi_epoch_ms(json_extract(data,'$.acquiredAt')) DESC,rowid DESC LIMIT 1",
+          "args": [
+            "instance",
+            "instance"
+          ],
+          "plan": [
+            {
+              "id": 5,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH school_knowledge USING INDEX school_knowledge_entity_version (<expr>=? AND <expr>=?)"
+            },
+            {
+              "id": 36,
+              "parent": 0,
+              "notused": 0,
+              "detail": "USE TEMP B-TREE FOR LAST 2 TERMS OF ORDER BY"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT json_extract(data,'$.snapshot') AS snapshot FROM school_knowledge WHERE json_extract(data,'$.snapshot.entityKind')=? AND json_extract(data,'$.snapshot.entityId')=? ORDER BY json_extract(data,'$.snapshot.value.deliveryRevision') DESC,json_extract(data,'$.snapshot.revision') DESC,hdsi_epoch_ms(json_extract(data,'$.acquiredAt')) DESC,rowid DESC LIMIT 1",
+          "args": [
+            "plan_item",
+            "one"
+          ],
+          "plan": [
+            {
+              "id": 5,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH school_knowledge USING INDEX school_knowledge_entity_version (<expr>=? AND <expr>=?)"
+            },
+            {
+              "id": 36,
+              "parent": 0,
+              "notused": 0,
+              "detail": "USE TEMP B-TREE FOR LAST 2 TERMS OF ORDER BY"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT rowid,data FROM school_plan_items WHERE id IN (?,?) ORDER BY rowid",
+          "args": [
+            "one",
+            "two"
+          ],
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 57,
+              "detail": "SEARCH school_plan_items USING INDEX sqlite_autoindex_school_plan_items_1 (id=?)"
+            },
+            {
+              "id": 28,
+              "parent": 0,
+              "notused": 0,
+              "detail": "USE TEMP B-TREE FOR ORDER BY"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT rowid,data FROM school_instances WHERE id IN (?) ORDER BY rowid",
+          "args": [
+            "instance"
+          ],
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 39,
+              "detail": "SEARCH school_instances USING INDEX sqlite_autoindex_school_instances_1 (id=?)"
+            }
+          ]
+        }
+      ],
+      "firstMs": 0.35310000000001196,
+      "hotMs": [
+        0.15749999999999886,
+        0.12489999999999668,
+        0.11400000000000432,
+        0.13760000000002037,
+        0.10710000000000264
+      ],
+      "medianMs": 0.12489999999999668
+    },
+    {
+      "kind": "school",
+      "H": 1000,
+      "A": 0,
+      "queries": [
+        {
+          "sql": "SELECT rowid,data FROM school_notices WHERE json_extract(data,'$.status') IN ('scheduled','available') ORDER BY rowid",
+          "args": [],
+          "method": "all",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        }
+      ],
+      "consumerQueries": [
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "character"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 68,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "character"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 68,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "character"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 68,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "character"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 68,
+          "writes": 0
+        }
+      ],
+      "plans": [
+        {
+          "sql": "SELECT rowid,data FROM school_notices WHERE json_extract(data,'$.status') IN ('scheduled','available') ORDER BY rowid",
+          "args": [],
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 71,
+              "detail": "SEARCH school_notices USING INDEX school_notice_status (<expr>=?)"
+            },
+            {
+              "id": 28,
+              "parent": 0,
+              "notused": 0,
+              "detail": "USE TEMP B-TREE FOR ORDER BY"
+            }
+          ]
+        }
+      ],
+      "firstMs": 0.09720000000004347,
+      "hotMs": [
+        0.016000000000019554,
+        0.009700000000009368,
+        0.00879999999995107,
+        0.008600000000001273,
+        0.008399999999994634
+      ],
+      "medianMs": 0.00879999999995107
+    },
+    {
+      "kind": "relatedKnowledge",
+      "H": 1000,
+      "queries": [
+        {
+          "sql": "SELECT json_extract(data,'$.snapshot') AS snapshot FROM school_knowledge WHERE json_extract(data,'$.snapshot.entityKind')=? AND json_extract(data,'$.snapshot.entityId')=? ORDER BY json_extract(data,'$.snapshot.value.deliveryRevision') DESC,json_extract(data,'$.snapshot.revision') DESC,hdsi_epoch_ms(json_extract(data,'$.acquiredAt')) DESC,rowid DESC LIMIT 1",
+          "args": [
+            "plan_item",
+            "one"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 514,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT json_extract(data,'$.snapshot') AS snapshot FROM school_knowledge WHERE json_extract(data,'$.snapshot.entityKind')=? AND json_extract(data,'$.snapshot.entityId')=? ORDER BY json_extract(data,'$.snapshot.value.deliveryRevision') DESC,json_extract(data,'$.snapshot.revision') DESC,hdsi_epoch_ms(json_extract(data,'$.acquiredAt')) DESC,rowid DESC LIMIT 1",
+          "args": [
+            "instance",
+            "instance"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 787,
+          "writes": 0
+        }
+      ],
+      "plans": [
+        {
+          "sql": "SELECT json_extract(data,'$.snapshot') AS snapshot FROM school_knowledge WHERE json_extract(data,'$.snapshot.entityKind')=? AND json_extract(data,'$.snapshot.entityId')=? ORDER BY json_extract(data,'$.snapshot.value.deliveryRevision') DESC,json_extract(data,'$.snapshot.revision') DESC,hdsi_epoch_ms(json_extract(data,'$.acquiredAt')) DESC,rowid DESC LIMIT 1",
+          "args": [
+            "plan_item",
+            "one"
+          ],
+          "plan": [
+            {
+              "id": 5,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH school_knowledge USING INDEX school_knowledge_entity_version (<expr>=? AND <expr>=?)"
+            },
+            {
+              "id": 36,
+              "parent": 0,
+              "notused": 0,
+              "detail": "USE TEMP B-TREE FOR LAST 2 TERMS OF ORDER BY"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT json_extract(data,'$.snapshot') AS snapshot FROM school_knowledge WHERE json_extract(data,'$.snapshot.entityKind')=? AND json_extract(data,'$.snapshot.entityId')=? ORDER BY json_extract(data,'$.snapshot.value.deliveryRevision') DESC,json_extract(data,'$.snapshot.revision') DESC,hdsi_epoch_ms(json_extract(data,'$.acquiredAt')) DESC,rowid DESC LIMIT 1",
+          "args": [
+            "instance",
+            "instance"
+          ],
+          "plan": [
+            {
+              "id": 5,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH school_knowledge USING INDEX school_knowledge_entity_version (<expr>=? AND <expr>=?)"
+            },
+            {
+              "id": 36,
+              "parent": 0,
+              "notused": 0,
+              "detail": "USE TEMP B-TREE FOR LAST 2 TERMS OF ORDER BY"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "school",
+      "H": 1000,
+      "A": 3,
+      "queries": [
+        {
+          "sql": "SELECT rowid,data FROM school_notices WHERE json_extract(data,'$.status') IN ('scheduled','available') ORDER BY rowid",
+          "args": [],
+          "method": "all",
+          "rows": 3,
+          "jsonRows": 3,
+          "jsonBytes": 3414,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT json_extract(data,'$.snapshot') AS snapshot FROM school_knowledge WHERE json_extract(data,'$.snapshot.entityKind')=? AND json_extract(data,'$.snapshot.entityId')=? ORDER BY json_extract(data,'$.snapshot.value.deliveryRevision') DESC,json_extract(data,'$.snapshot.revision') DESC,hdsi_epoch_ms(json_extract(data,'$.acquiredAt')) DESC,rowid DESC LIMIT 1",
+          "args": [
+            "instance",
+            "instance"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 787,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT json_extract(data,'$.snapshot') AS snapshot FROM school_knowledge WHERE json_extract(data,'$.snapshot.entityKind')=? AND json_extract(data,'$.snapshot.entityId')=? ORDER BY json_extract(data,'$.snapshot.value.deliveryRevision') DESC,json_extract(data,'$.snapshot.revision') DESC,hdsi_epoch_ms(json_extract(data,'$.acquiredAt')) DESC,rowid DESC LIMIT 1",
+          "args": [
+            "plan_item",
+            "one"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 514,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT rowid,data FROM school_plan_items WHERE id IN (?,?) ORDER BY rowid",
+          "args": [
+            "one",
+            "two"
+          ],
+          "method": "all",
+          "rows": 2,
+          "jsonRows": 2,
+          "jsonBytes": 898,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT rowid,data FROM school_instances WHERE id IN (?) ORDER BY rowid",
+          "args": [
+            "instance"
+          ],
+          "method": "all",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 718,
+          "writes": 0
+        }
+      ],
+      "consumerQueries": [
+        {
+          "sql": "INSERT INTO school_notices(id, data) VALUES (?, ?) ON CONFLICT(id) DO UPDATE SET data = excluded.data",
+          "args": [
+            "issue",
+            "{\"id\":\"issue\",\"sourceItemId\":null,\"instanceId\":null,\"weekStart\":null,\"deliveryRevision\":1,\"kind\":\"issue\",\"reminderKey\":\"issue\",\"channel\":\"institution\",\"publishAt\":\"2026-10-07T02:00:00.000Z\",\"releasedAt\":\"2026-10-07T02:00:00.000Z\",\"payload\":{\"text\":\"合成通知\",\"snapshots\":[{\"entityKind\":\"plan_item\",\"entityId\":\"one\",\"revision\":1,\"value\":{\"id\":\"one\",\"planId\":\"semester\",\"owner\":\"campus\",\"kind\":\"meeting\",\"title\":\"合成班会\",\"description\":\"合成\",\"location\":\"学院\",\"requirement\":\"required\",\"issuedAt\":\"2026-10-07T02:00:00.000Z\",\"timing\":{\"kind\":\"once\",\"startsAt\":\"2026-10-08T02:00:00Z\",\"endsAt\":\"2026-10-08T03:00:00Z\"},\"noticePolicy\":{\"announceOnIssue\":true,\"announceOnChange\":true,\"reminders\":[]},\"revision\":1,\"deliveryRevision\":1,\"status\":\"open\",\"basis\":\"fiction\",\"sourceUrls\":[]}}]},\"status\":\"available\",\"nextWakeAt\":\"2026-10-07T02:00:00.000Z\",\"readAt\":null,\"readTurnId\":null}"
+          ],
+          "method": "run",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 1
+        },
+        {
+          "sql": "INSERT INTO school_notices(id, data) VALUES (?, ?) ON CONFLICT(id) DO UPDATE SET data = excluded.data",
+          "args": [
+            "digest",
+            "{\"id\":\"digest\",\"sourceItemId\":null,\"instanceId\":null,\"weekStart\":null,\"deliveryRevision\":1,\"kind\":\"week_digest\",\"reminderKey\":\"week_digest\",\"channel\":\"institution\",\"publishAt\":\"2026-10-07T02:00:00.000Z\",\"releasedAt\":\"2026-10-07T02:00:00.000Z\",\"payload\":{\"text\":\"合成通知\",\"snapshots\":[{\"entityKind\":\"plan_item\",\"entityId\":\"one\",\"revision\":1,\"value\":{\"id\":\"one\",\"planId\":\"semester\",\"owner\":\"campus\",\"kind\":\"meeting\",\"title\":\"合成班会\",\"description\":\"合成\",\"location\":\"学院\",\"requirement\":\"required\",\"issuedAt\":\"2026-10-07T02:00:00.000Z\",\"timing\":{\"kind\":\"once\",\"startsAt\":\"2026-10-08T02:00:00Z\",\"endsAt\":\"2026-10-08T03:00:00Z\"},\"noticePolicy\":{\"announceOnIssue\":true,\"announceOnChange\":true,\"reminders\":[]},\"revision\":1,\"deliveryRevision\":1,\"status\":\"open\",\"basis\":\"fiction\",\"sourceUrls\":[]}},{\"entityKind\":\"plan_item\",\"entityId\":\"two\",\"revision\":1,\"value\":{\"id\":\"two\",\"planId\":\"semester\",\"owner\":\"campus\",\"kind\":\"meeting\",\"title\":\"合成班会\",\"description\":\"合成\",\"location\":\"学院\",\"requirement\":\"required\",\"issuedAt\":\"2026-10-07T02:00:00.000Z\",\"timing\":{\"kind\":\"once\",\"startsAt\":\"2026-10-08T02:00:00Z\",\"endsAt\":\"2026-10-08T03:00:00Z\"},\"noticePolicy\":{\"announceOnIssue\":true,\"announceOnChange\":true,\"reminders\":[]},\"revision\":1,\"deliveryRevision\":1,\"status\":\"open\",\"basis\":\"fiction\",\"sourceUrls\":[]}}]},\"status\":\"available\",\"nextWakeAt\":\"2026-10-07T02:00:00.000Z\",\"readAt\":null,\"readTurnId\":null}"
+          ],
+          "method": "run",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 1
+        },
+        {
+          "sql": "INSERT INTO school_notices(id, data) VALUES (?, ?) ON CONFLICT(id) DO UPDATE SET data = excluded.data",
+          "args": [
+            "reminder",
+            "{\"id\":\"reminder\",\"sourceItemId\":null,\"instanceId\":\"instance\",\"weekStart\":null,\"deliveryRevision\":1,\"kind\":\"reminder\",\"reminderKey\":\"reminder\",\"channel\":\"personal_reminder\",\"publishAt\":\"2026-10-07T02:00:00.000Z\",\"releasedAt\":\"2026-10-07T02:00:00.000Z\",\"payload\":{\"text\":\"合成通知\",\"snapshots\":[{\"entityKind\":\"instance\",\"entityId\":\"instance\",\"revision\":1,\"value\":{\"id\":\"instance\",\"sourceItemId\":\"one\",\"sourceRevision\":1,\"deliveryRevision\":1,\"occurrenceKey\":\"synthetic\",\"weekStart\":null,\"startsAt\":\"2026-10-08T02:00:00Z\",\"endsAt\":\"2026-10-08T03:00:00Z\",\"sourceSnapshot\":{\"id\":\"one\",\"planId\":\"semester\",\"owner\":\"campus\",\"kind\":\"meeting\",\"title\":\"合成班会\",\"description\":\"合成\",\"location\":\"学院\",\"requirement\":\"required\",\"issuedAt\":\"2026-10-07T02:00:00.000Z\",\"timing\":{\"kind\":\"once\",\"startsAt\":\"2026-10-08T02:00:00Z\",\"endsAt\":\"2026-10-08T03:00:00Z\"},\"noticePolicy\":{\"announceOnIssue\":true,\"announceOnChange\":true,\"reminders\":[]},\"revision\":1,\"deliveryRevision\":1,\"status\":\"open\",\"basis\":\"fiction\",\"sourceUrls\":[]},\"status\":\"active\",\"needsExpansion\":false,\"legacyEventId\":null}}]},\"status\":\"available\",\"nextWakeAt\":\"2026-10-07T02:00:00.000Z\",\"readAt\":null,\"readTurnId\":null}"
+          ],
+          "method": "run",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 1
+        },
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "character"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 68,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "character"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 68,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "character"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 68,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "character"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 68,
+          "writes": 0
+        }
+      ],
+      "plans": [
+        {
+          "sql": "SELECT rowid,data FROM school_notices WHERE json_extract(data,'$.status') IN ('scheduled','available') ORDER BY rowid",
+          "args": [],
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 71,
+              "detail": "SEARCH school_notices USING INDEX school_notice_status (<expr>=?)"
+            },
+            {
+              "id": 28,
+              "parent": 0,
+              "notused": 0,
+              "detail": "USE TEMP B-TREE FOR ORDER BY"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT json_extract(data,'$.snapshot') AS snapshot FROM school_knowledge WHERE json_extract(data,'$.snapshot.entityKind')=? AND json_extract(data,'$.snapshot.entityId')=? ORDER BY json_extract(data,'$.snapshot.value.deliveryRevision') DESC,json_extract(data,'$.snapshot.revision') DESC,hdsi_epoch_ms(json_extract(data,'$.acquiredAt')) DESC,rowid DESC LIMIT 1",
+          "args": [
+            "instance",
+            "instance"
+          ],
+          "plan": [
+            {
+              "id": 5,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH school_knowledge USING INDEX school_knowledge_entity_version (<expr>=? AND <expr>=?)"
+            },
+            {
+              "id": 36,
+              "parent": 0,
+              "notused": 0,
+              "detail": "USE TEMP B-TREE FOR LAST 2 TERMS OF ORDER BY"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT json_extract(data,'$.snapshot') AS snapshot FROM school_knowledge WHERE json_extract(data,'$.snapshot.entityKind')=? AND json_extract(data,'$.snapshot.entityId')=? ORDER BY json_extract(data,'$.snapshot.value.deliveryRevision') DESC,json_extract(data,'$.snapshot.revision') DESC,hdsi_epoch_ms(json_extract(data,'$.acquiredAt')) DESC,rowid DESC LIMIT 1",
+          "args": [
+            "plan_item",
+            "one"
+          ],
+          "plan": [
+            {
+              "id": 5,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH school_knowledge USING INDEX school_knowledge_entity_version (<expr>=? AND <expr>=?)"
+            },
+            {
+              "id": 36,
+              "parent": 0,
+              "notused": 0,
+              "detail": "USE TEMP B-TREE FOR LAST 2 TERMS OF ORDER BY"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT rowid,data FROM school_plan_items WHERE id IN (?,?) ORDER BY rowid",
+          "args": [
+            "one",
+            "two"
+          ],
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 57,
+              "detail": "SEARCH school_plan_items USING INDEX sqlite_autoindex_school_plan_items_1 (id=?)"
+            },
+            {
+              "id": 28,
+              "parent": 0,
+              "notused": 0,
+              "detail": "USE TEMP B-TREE FOR ORDER BY"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT rowid,data FROM school_instances WHERE id IN (?) ORDER BY rowid",
+          "args": [
+            "instance"
+          ],
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 39,
+              "detail": "SEARCH school_instances USING INDEX sqlite_autoindex_school_instances_1 (id=?)"
+            }
+          ]
+        }
+      ],
+      "firstMs": 0.2938000000000329,
+      "hotMs": [
+        0.12549999999998818,
+        0.1098999999999819,
+        0.10019999999997253,
+        0.11489999999997735,
+        0.09550000000001546
+      ],
+      "medianMs": 0.1098999999999819
+    },
+    {
+      "kind": "school",
+      "H": 5000,
+      "A": 0,
+      "queries": [
+        {
+          "sql": "SELECT rowid,data FROM school_notices WHERE json_extract(data,'$.status') IN ('scheduled','available') ORDER BY rowid",
+          "args": [],
+          "method": "all",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 0
+        }
+      ],
+      "consumerQueries": [
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "character"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 68,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "character"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 68,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "character"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 68,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "character"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 68,
+          "writes": 0
+        }
+      ],
+      "plans": [
+        {
+          "sql": "SELECT rowid,data FROM school_notices WHERE json_extract(data,'$.status') IN ('scheduled','available') ORDER BY rowid",
+          "args": [],
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 71,
+              "detail": "SEARCH school_notices USING INDEX school_notice_status (<expr>=?)"
+            },
+            {
+              "id": 28,
+              "parent": 0,
+              "notused": 0,
+              "detail": "USE TEMP B-TREE FOR ORDER BY"
+            }
+          ]
+        }
+      ],
+      "firstMs": 0.12030000000004293,
+      "hotMs": [
+        0.018200000000092587,
+        0.012899999999945067,
+        0.010199999999940701,
+        0.009000000000014552,
+        0.00879999999995107
+      ],
+      "medianMs": 0.010199999999940701
+    },
+    {
+      "kind": "relatedKnowledge",
+      "H": 5000,
+      "queries": [
+        {
+          "sql": "SELECT json_extract(data,'$.snapshot') AS snapshot FROM school_knowledge WHERE json_extract(data,'$.snapshot.entityKind')=? AND json_extract(data,'$.snapshot.entityId')=? ORDER BY json_extract(data,'$.snapshot.value.deliveryRevision') DESC,json_extract(data,'$.snapshot.revision') DESC,hdsi_epoch_ms(json_extract(data,'$.acquiredAt')) DESC,rowid DESC LIMIT 1",
+          "args": [
+            "plan_item",
+            "one"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 514,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT json_extract(data,'$.snapshot') AS snapshot FROM school_knowledge WHERE json_extract(data,'$.snapshot.entityKind')=? AND json_extract(data,'$.snapshot.entityId')=? ORDER BY json_extract(data,'$.snapshot.value.deliveryRevision') DESC,json_extract(data,'$.snapshot.revision') DESC,hdsi_epoch_ms(json_extract(data,'$.acquiredAt')) DESC,rowid DESC LIMIT 1",
+          "args": [
+            "instance",
+            "instance"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 787,
+          "writes": 0
+        }
+      ],
+      "plans": [
+        {
+          "sql": "SELECT json_extract(data,'$.snapshot') AS snapshot FROM school_knowledge WHERE json_extract(data,'$.snapshot.entityKind')=? AND json_extract(data,'$.snapshot.entityId')=? ORDER BY json_extract(data,'$.snapshot.value.deliveryRevision') DESC,json_extract(data,'$.snapshot.revision') DESC,hdsi_epoch_ms(json_extract(data,'$.acquiredAt')) DESC,rowid DESC LIMIT 1",
+          "args": [
+            "plan_item",
+            "one"
+          ],
+          "plan": [
+            {
+              "id": 5,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH school_knowledge USING INDEX school_knowledge_entity_version (<expr>=? AND <expr>=?)"
+            },
+            {
+              "id": 36,
+              "parent": 0,
+              "notused": 0,
+              "detail": "USE TEMP B-TREE FOR LAST 2 TERMS OF ORDER BY"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT json_extract(data,'$.snapshot') AS snapshot FROM school_knowledge WHERE json_extract(data,'$.snapshot.entityKind')=? AND json_extract(data,'$.snapshot.entityId')=? ORDER BY json_extract(data,'$.snapshot.value.deliveryRevision') DESC,json_extract(data,'$.snapshot.revision') DESC,hdsi_epoch_ms(json_extract(data,'$.acquiredAt')) DESC,rowid DESC LIMIT 1",
+          "args": [
+            "instance",
+            "instance"
+          ],
+          "plan": [
+            {
+              "id": 5,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH school_knowledge USING INDEX school_knowledge_entity_version (<expr>=? AND <expr>=?)"
+            },
+            {
+              "id": 36,
+              "parent": 0,
+              "notused": 0,
+              "detail": "USE TEMP B-TREE FOR LAST 2 TERMS OF ORDER BY"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "school",
+      "H": 5000,
+      "A": 3,
+      "queries": [
+        {
+          "sql": "SELECT rowid,data FROM school_notices WHERE json_extract(data,'$.status') IN ('scheduled','available') ORDER BY rowid",
+          "args": [],
+          "method": "all",
+          "rows": 3,
+          "jsonRows": 3,
+          "jsonBytes": 3414,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT json_extract(data,'$.snapshot') AS snapshot FROM school_knowledge WHERE json_extract(data,'$.snapshot.entityKind')=? AND json_extract(data,'$.snapshot.entityId')=? ORDER BY json_extract(data,'$.snapshot.value.deliveryRevision') DESC,json_extract(data,'$.snapshot.revision') DESC,hdsi_epoch_ms(json_extract(data,'$.acquiredAt')) DESC,rowid DESC LIMIT 1",
+          "args": [
+            "instance",
+            "instance"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 787,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT json_extract(data,'$.snapshot') AS snapshot FROM school_knowledge WHERE json_extract(data,'$.snapshot.entityKind')=? AND json_extract(data,'$.snapshot.entityId')=? ORDER BY json_extract(data,'$.snapshot.value.deliveryRevision') DESC,json_extract(data,'$.snapshot.revision') DESC,hdsi_epoch_ms(json_extract(data,'$.acquiredAt')) DESC,rowid DESC LIMIT 1",
+          "args": [
+            "plan_item",
+            "one"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 514,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT rowid,data FROM school_plan_items WHERE id IN (?,?) ORDER BY rowid",
+          "args": [
+            "one",
+            "two"
+          ],
+          "method": "all",
+          "rows": 2,
+          "jsonRows": 2,
+          "jsonBytes": 898,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT rowid,data FROM school_instances WHERE id IN (?) ORDER BY rowid",
+          "args": [
+            "instance"
+          ],
+          "method": "all",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 718,
+          "writes": 0
+        }
+      ],
+      "consumerQueries": [
+        {
+          "sql": "INSERT INTO school_notices(id, data) VALUES (?, ?) ON CONFLICT(id) DO UPDATE SET data = excluded.data",
+          "args": [
+            "issue",
+            "{\"id\":\"issue\",\"sourceItemId\":null,\"instanceId\":null,\"weekStart\":null,\"deliveryRevision\":1,\"kind\":\"issue\",\"reminderKey\":\"issue\",\"channel\":\"institution\",\"publishAt\":\"2026-10-07T02:00:00.000Z\",\"releasedAt\":\"2026-10-07T02:00:00.000Z\",\"payload\":{\"text\":\"合成通知\",\"snapshots\":[{\"entityKind\":\"plan_item\",\"entityId\":\"one\",\"revision\":1,\"value\":{\"id\":\"one\",\"planId\":\"semester\",\"owner\":\"campus\",\"kind\":\"meeting\",\"title\":\"合成班会\",\"description\":\"合成\",\"location\":\"学院\",\"requirement\":\"required\",\"issuedAt\":\"2026-10-07T02:00:00.000Z\",\"timing\":{\"kind\":\"once\",\"startsAt\":\"2026-10-08T02:00:00Z\",\"endsAt\":\"2026-10-08T03:00:00Z\"},\"noticePolicy\":{\"announceOnIssue\":true,\"announceOnChange\":true,\"reminders\":[]},\"revision\":1,\"deliveryRevision\":1,\"status\":\"open\",\"basis\":\"fiction\",\"sourceUrls\":[]}}]},\"status\":\"available\",\"nextWakeAt\":\"2026-10-07T02:00:00.000Z\",\"readAt\":null,\"readTurnId\":null}"
+          ],
+          "method": "run",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 1
+        },
+        {
+          "sql": "INSERT INTO school_notices(id, data) VALUES (?, ?) ON CONFLICT(id) DO UPDATE SET data = excluded.data",
+          "args": [
+            "digest",
+            "{\"id\":\"digest\",\"sourceItemId\":null,\"instanceId\":null,\"weekStart\":null,\"deliveryRevision\":1,\"kind\":\"week_digest\",\"reminderKey\":\"week_digest\",\"channel\":\"institution\",\"publishAt\":\"2026-10-07T02:00:00.000Z\",\"releasedAt\":\"2026-10-07T02:00:00.000Z\",\"payload\":{\"text\":\"合成通知\",\"snapshots\":[{\"entityKind\":\"plan_item\",\"entityId\":\"one\",\"revision\":1,\"value\":{\"id\":\"one\",\"planId\":\"semester\",\"owner\":\"campus\",\"kind\":\"meeting\",\"title\":\"合成班会\",\"description\":\"合成\",\"location\":\"学院\",\"requirement\":\"required\",\"issuedAt\":\"2026-10-07T02:00:00.000Z\",\"timing\":{\"kind\":\"once\",\"startsAt\":\"2026-10-08T02:00:00Z\",\"endsAt\":\"2026-10-08T03:00:00Z\"},\"noticePolicy\":{\"announceOnIssue\":true,\"announceOnChange\":true,\"reminders\":[]},\"revision\":1,\"deliveryRevision\":1,\"status\":\"open\",\"basis\":\"fiction\",\"sourceUrls\":[]}},{\"entityKind\":\"plan_item\",\"entityId\":\"two\",\"revision\":1,\"value\":{\"id\":\"two\",\"planId\":\"semester\",\"owner\":\"campus\",\"kind\":\"meeting\",\"title\":\"合成班会\",\"description\":\"合成\",\"location\":\"学院\",\"requirement\":\"required\",\"issuedAt\":\"2026-10-07T02:00:00.000Z\",\"timing\":{\"kind\":\"once\",\"startsAt\":\"2026-10-08T02:00:00Z\",\"endsAt\":\"2026-10-08T03:00:00Z\"},\"noticePolicy\":{\"announceOnIssue\":true,\"announceOnChange\":true,\"reminders\":[]},\"revision\":1,\"deliveryRevision\":1,\"status\":\"open\",\"basis\":\"fiction\",\"sourceUrls\":[]}}]},\"status\":\"available\",\"nextWakeAt\":\"2026-10-07T02:00:00.000Z\",\"readAt\":null,\"readTurnId\":null}"
+          ],
+          "method": "run",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 1
+        },
+        {
+          "sql": "INSERT INTO school_notices(id, data) VALUES (?, ?) ON CONFLICT(id) DO UPDATE SET data = excluded.data",
+          "args": [
+            "reminder",
+            "{\"id\":\"reminder\",\"sourceItemId\":null,\"instanceId\":\"instance\",\"weekStart\":null,\"deliveryRevision\":1,\"kind\":\"reminder\",\"reminderKey\":\"reminder\",\"channel\":\"personal_reminder\",\"publishAt\":\"2026-10-07T02:00:00.000Z\",\"releasedAt\":\"2026-10-07T02:00:00.000Z\",\"payload\":{\"text\":\"合成通知\",\"snapshots\":[{\"entityKind\":\"instance\",\"entityId\":\"instance\",\"revision\":1,\"value\":{\"id\":\"instance\",\"sourceItemId\":\"one\",\"sourceRevision\":1,\"deliveryRevision\":1,\"occurrenceKey\":\"synthetic\",\"weekStart\":null,\"startsAt\":\"2026-10-08T02:00:00Z\",\"endsAt\":\"2026-10-08T03:00:00Z\",\"sourceSnapshot\":{\"id\":\"one\",\"planId\":\"semester\",\"owner\":\"campus\",\"kind\":\"meeting\",\"title\":\"合成班会\",\"description\":\"合成\",\"location\":\"学院\",\"requirement\":\"required\",\"issuedAt\":\"2026-10-07T02:00:00.000Z\",\"timing\":{\"kind\":\"once\",\"startsAt\":\"2026-10-08T02:00:00Z\",\"endsAt\":\"2026-10-08T03:00:00Z\"},\"noticePolicy\":{\"announceOnIssue\":true,\"announceOnChange\":true,\"reminders\":[]},\"revision\":1,\"deliveryRevision\":1,\"status\":\"open\",\"basis\":\"fiction\",\"sourceUrls\":[]},\"status\":\"active\",\"needsExpansion\":false,\"legacyEventId\":null}}]},\"status\":\"available\",\"nextWakeAt\":\"2026-10-07T02:00:00.000Z\",\"readAt\":null,\"readTurnId\":null}"
+          ],
+          "method": "run",
+          "rows": 0,
+          "jsonRows": 0,
+          "jsonBytes": 0,
+          "writes": 1
+        },
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "character"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 68,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "character"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 68,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "character"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 68,
+          "writes": 0
+        },
+        {
+          "sql": "SELECT data FROM state WHERE key = ?",
+          "args": [
+            "character"
+          ],
+          "method": "get",
+          "rows": 1,
+          "jsonRows": 1,
+          "jsonBytes": 68,
+          "writes": 0
+        }
+      ],
+      "plans": [
+        {
+          "sql": "SELECT rowid,data FROM school_notices WHERE json_extract(data,'$.status') IN ('scheduled','available') ORDER BY rowid",
+          "args": [],
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 71,
+              "detail": "SEARCH school_notices USING INDEX school_notice_status (<expr>=?)"
+            },
+            {
+              "id": 28,
+              "parent": 0,
+              "notused": 0,
+              "detail": "USE TEMP B-TREE FOR ORDER BY"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT json_extract(data,'$.snapshot') AS snapshot FROM school_knowledge WHERE json_extract(data,'$.snapshot.entityKind')=? AND json_extract(data,'$.snapshot.entityId')=? ORDER BY json_extract(data,'$.snapshot.value.deliveryRevision') DESC,json_extract(data,'$.snapshot.revision') DESC,hdsi_epoch_ms(json_extract(data,'$.acquiredAt')) DESC,rowid DESC LIMIT 1",
+          "args": [
+            "instance",
+            "instance"
+          ],
+          "plan": [
+            {
+              "id": 5,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH school_knowledge USING INDEX school_knowledge_entity_version (<expr>=? AND <expr>=?)"
+            },
+            {
+              "id": 36,
+              "parent": 0,
+              "notused": 0,
+              "detail": "USE TEMP B-TREE FOR LAST 2 TERMS OF ORDER BY"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT json_extract(data,'$.snapshot') AS snapshot FROM school_knowledge WHERE json_extract(data,'$.snapshot.entityKind')=? AND json_extract(data,'$.snapshot.entityId')=? ORDER BY json_extract(data,'$.snapshot.value.deliveryRevision') DESC,json_extract(data,'$.snapshot.revision') DESC,hdsi_epoch_ms(json_extract(data,'$.acquiredAt')) DESC,rowid DESC LIMIT 1",
+          "args": [
+            "plan_item",
+            "one"
+          ],
+          "plan": [
+            {
+              "id": 5,
+              "parent": 0,
+              "notused": 61,
+              "detail": "SEARCH school_knowledge USING INDEX school_knowledge_entity_version (<expr>=? AND <expr>=?)"
+            },
+            {
+              "id": 36,
+              "parent": 0,
+              "notused": 0,
+              "detail": "USE TEMP B-TREE FOR LAST 2 TERMS OF ORDER BY"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT rowid,data FROM school_plan_items WHERE id IN (?,?) ORDER BY rowid",
+          "args": [
+            "one",
+            "two"
+          ],
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 57,
+              "detail": "SEARCH school_plan_items USING INDEX sqlite_autoindex_school_plan_items_1 (id=?)"
+            },
+            {
+              "id": 28,
+              "parent": 0,
+              "notused": 0,
+              "detail": "USE TEMP B-TREE FOR ORDER BY"
+            }
+          ]
+        },
+        {
+          "sql": "SELECT rowid,data FROM school_instances WHERE id IN (?) ORDER BY rowid",
+          "args": [
+            "instance"
+          ],
+          "plan": [
+            {
+              "id": 4,
+              "parent": 0,
+              "notused": 39,
+              "detail": "SEARCH school_instances USING INDEX sqlite_autoindex_school_instances_1 (id=?)"
+            }
+          ]
+        }
+      ],
+      "firstMs": 0.2927999999999429,
+      "hotMs": [
+        0.1225000000001728,
+        0.09850000000005821,
+        0.09110000000009677,
+        0.09300000000007458,
+        0.10100000000011278
+      ],
+      "medianMs": 0.09850000000005821
+    }
+  ]
+}
