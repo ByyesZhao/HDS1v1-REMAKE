@@ -1,31 +1,5 @@
 {
-  "checkedMarkdownFiles": 27,
-  "mainLocalReferences": [
-    {
-      "file": "README.md",
-      "target": "runtime/archive/README.md",
-      "resolvedIn": "main checkout: ignored local runtime/archive"
-    },
-    {
-      "file": "docs/README.md",
-      "target": "../runtime/archive/README.md",
-      "resolvedIn": "main checkout: ignored local runtime/archive"
-    },
-    {
-      "file": "docs/archive/README.md",
-      "target": "../../runtime/archive/README.md",
-      "resolvedIn": "main checkout: ignored local runtime/archive"
-    },
-    {
-      "file": "docs/v0.5/README.md",
-      "target": "../../runtime/archive/README.md",
-      "resolvedIn": "main checkout: ignored local runtime/archive"
-    },
-    {
-      "file": "docs/v0.5/records/document-organization-20261009/README.md",
-      "target": "../../../../runtime/archive/README.md",
-      "resolvedIn": "main checkout: ignored local runtime/archive"
-    }
-  ],
+  "checkedMarkdownFiles": 28,
+  "mainLocalReferences": [],
   "errors": []
 }
