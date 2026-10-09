@@ -11,6 +11,11 @@ function eventRange(rows:Array<{happenedAt:string;happenedUntil?:string}>){
   const latest=rows.flatMap(r=>[r.happenedAt,r.happenedUntil??r.happenedAt]).sort((a,b)=>milliseconds(b)-milliseconds(a))[0];
   return {happenedAt:earliest,happenedUntil:latest};
 }
+function resolveCreateEventRange(times:{happenedAt?:string;happenedUntil?:string},existing:Pick<MemoryCandidate,'happenedAt'|'happenedUntil'>|null,at:string):{happenedAt:string;happenedUntil:string}{
+  const known=[times.happenedAt,times.happenedUntil].filter((v):v is string=>v!==undefined).sort((a,b)=>milliseconds(a)-milliseconds(b));
+  if(known.length)return {happenedAt:known[0],happenedUntil:known[known.length-1]};
+  return existing?{happenedAt:existing.happenedAt,happenedUntil:existing.happenedUntil??existing.happenedAt}:{happenedAt:at,happenedUntil:at};
+}
 function requireSources(ids:string[],allowed:string[]) {if(!ids.length||ids.some(id=>!allowed.includes(id)))throw new Error('sourceIds: unknown or missing current source');}
 export class MemoryLifecycle {
   constructor(public readonly store:MemoryStore,public readonly capacity?:MemoryCapacity){}
@@ -25,7 +30,7 @@ export class MemoryLifecycle {
         const existing=change.existingLongId?this.store.canonical(change.existingLongId):null;
         if(change.existingLongId&&(!existing||existing.kind!=='long'))throw new Error('existingLongId: unknown memory');
         const longId=existing?.id??`${id}:long`;
-        const short=this.store.makeOwner({ownerType:'short',ownerId:id},{content:change.content,eventSummary:change.eventSummary,feelingSummary:change.feelingSummary,topics:change.topics,sourceIds:change.sourceIds,importance:change.importance,happenedAt:change.happenedAt??at,happenedUntil:change.happenedUntil??change.happenedAt??at,shortExpiresAt:addMs(at,7*day),linkedLongId:longId},at);
+        const short=this.store.makeOwner({ownerType:'short',ownerId:id},{content:change.content,eventSummary:change.eventSummary,feelingSummary:change.feelingSummary,topics:change.topics,sourceIds:change.sourceIds,importance:change.importance,...resolveCreateEventRange(change,existing,at),shortExpiresAt:addMs(at,7*day),linkedLongId:longId},at);
         this.store.saveOwner(short);this.store.queueIndex(short,at);this.store.queueDirty(short,'event',at);
         if(!change.existingLongId) {
           const start=change.importance==='high'?at:short.shortExpiresAt!;
