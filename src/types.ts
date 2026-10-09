@@ -36,8 +36,9 @@ export interface CharacterState {
   sleep: null | { sleepAt: ISOTime; wakeAt: ISOTime };
   nextAutonomousAt: ISOTime | null; plan: string;
 }
-export interface IncomingMessage { id: string; receivedAt: ISOTime; content: string; platformMessageIds?: string[]; hasVisualAttachment?: boolean }
+export interface IncomingMessage { id: string; receivedAt: ISOTime; content: string; platformMessageIds?: string[]; hasVisualAttachment?: boolean;attachments?:import('./input-media/types').IncomingAttachment[];contentParts?:import('./input-media/types').MessageContentPart[] }
 export interface Message {
+  attachmentIds?:string[];contentParts?:import('./input-media/types').MessageContentPart[];
   id: string; platformMessageIds: string[]; direction: 'incoming' | 'outgoing';
   receivedAt: ISOTime; content: string; batchId: string | null; seenTurnId: string | null;
   turnId: string | null; outboxSeq: number | null;
@@ -92,6 +93,7 @@ export interface Sticker { id: string; path: string; description: string; aliase
 export type TriggerKind = 'input' | 'autonomous' | 'sleep' | 'activity' | 'appointment' | 'check_messages' | 'scene_step' | 'environment'|'school_notification';
 export interface TurnRequest { schoolNoticeRefs?:import('./school/types').SchoolNoticeRef[];environmentStepId?:string; inputMessageIds: string[]; taskIds: string[]; triggerKinds: TriggerKind[]; batchIds?: string[]; environmentKind?: 'world' | 'school'; sharedMeta?: SharedTurnMeta | null }
 export interface TurnRecord {
+  visualContext?:import('./input-media/types').TurnVisualContext;
   dialogueBinding?:import('./dialogue/types').DialogueTurnBinding;
   dialogueWindowVersion?:1|2;
   chatBinding?:import('./dialogue/types').ChatTurnBinding;

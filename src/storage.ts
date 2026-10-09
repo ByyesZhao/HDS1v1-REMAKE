@@ -9,6 +9,7 @@ import type { SchoolPlan,SchoolPlanItem,SchoolInstance,SchoolNotice,SchoolKnowle
 import type { CharacterState, ControlRequest, Detail, DetailHistory, EnvironmentEvent, Experience, Memory, Message, OutboxItem, PostJob, Runtime, ScheduledTask, Sticker, TurnRecord } from './types';
 
 interface Tables {
+  message_attachments:import('./input-media/types').AttachmentRecord;image_assets:import('./input-media/types').ImageAsset;image_observations:import('./input-media/types').ObservationRecord;
   dialogue_episodes:import('./dialogue/types').DialogueEpisode;dialogue_activity_links:import('./dialogue/types').DialogueActivityLink;
   chat_episodes:import('./dialogue/types').ChatEpisode;chat_index_metadata:import('./dialogue/types').ChatIndexMetadata;
   messages: Message; turns: TurnRecord; outbox: OutboxItem; post_jobs: PostJob;
@@ -21,7 +22,7 @@ interface Tables {
 const tables: Array<keyof Tables> = ['messages', 'turns', 'outbox', 'post_jobs', 'tasks', 'details', 'detail_history', 'memories', 'events', 'experiences', 'stickers', 'control_requests'];
 export const isUnfinishedTurn=(t:TurnRecord)=>!t.done&&t.legacyDisposition!=='superseded';
 export const environmentTables = ['environment_batches','environment_steps','school_plans','school_plan_items','school_instances','school_notices','school_knowledge','school_progress','school_weeks'] as const;
-tables.push(...environmentTables,'dialogue_episodes','dialogue_activity_links','chat_episodes','chat_index_metadata');
+tables.push('message_attachments','image_assets','image_observations',...environmentTables,'dialogue_episodes','dialogue_activity_links','chat_episodes','chat_index_metadata');
 export class Storage {
   private readonly db: DatabaseSync;
   constructor(path: string,options:{readOnly?:boolean;dialogueIdleMinutes?:number}={}) {
@@ -33,6 +34,9 @@ export class Storage {
     this.db.exec('CREATE TABLE IF NOT EXISTS state (key TEXT PRIMARY KEY, data TEXT NOT NULL)');
     for (const table of tables) this.db.exec(`CREATE TABLE IF NOT EXISTS ${table} (id TEXT PRIMARY KEY, data TEXT NOT NULL)`);
     this.db.exec(`
+      CREATE INDEX IF NOT EXISTS attachment_message ON message_attachments(json_extract(data,'$.messageId'),json_extract(data,'$.order'));
+      CREATE INDEX IF NOT EXISTS attachment_asset ON message_attachments(json_extract(data,'$.assetRef'));
+      CREATE INDEX IF NOT EXISTS observation_hash_version ON image_observations(json_extract(data,'$.contentHash'),json_extract(data,'$.recognizerVersion'));
       CREATE INDEX IF NOT EXISTS school_notice_status ON school_notices(json_extract(data,'$.status'));
       CREATE INDEX IF NOT EXISTS school_knowledge_entity_version ON school_knowledge(json_extract(data,'$.snapshot.entityKind'),json_extract(data,'$.snapshot.entityId'),json_extract(data,'$.snapshot.value.deliveryRevision') DESC,json_extract(data,'$.snapshot.revision') DESC);
       CREATE INDEX IF NOT EXISTS environment_batch_status ON environment_batches(json_extract(data,'$.status'));
@@ -60,6 +64,7 @@ export class Storage {
     } satisfies Runtime);}
 
   }
+  hasTable(table:string):boolean {return !!this.db.prepare("SELECT 1 FROM sqlite_master WHERE type='table' AND name=?").get(table);}
   close(): void { this.db.close(); }
   prepare(sql: string) { return this.db.prepare(sql); }
   pragmas(): { journalMode: string; synchronous: number } {

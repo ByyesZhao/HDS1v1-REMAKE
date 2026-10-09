@@ -1,3 +1,4 @@
+import type {IncomingMediaStore} from '../input-media/store';
 import {assertRoutineWindow,windowOptions,assertActiveWindow} from '../dialogue/active-consistency';
 import { DialogueEpisodes } from '../dialogue/episodes';
 import {ChatEpisodes} from '../dialogue/chat-episodes';
@@ -19,13 +20,16 @@ export function incomingMessageId(session:{platform?:string;selfId?:string;userI
 
 export class InputBuffer {
   private readonly dialogue:DialogueEpisodes|ChatEpisodes;
-  constructor(private readonly storage: Storage,private readonly idle?:MemoryIdle,dialogue?:DialogueEpisodes,chat?:ChatEpisodes) {this.dialogue=storage.runtime().dialogueContextVersion===2?chat??new ChatEpisodes(new DialogueStore(storage)):dialogue??new DialogueEpisodes(new DialogueStore(storage));}
+  constructor(private readonly storage: Storage,private readonly idle?:MemoryIdle,dialogue?:DialogueEpisodes,chat?:ChatEpisodes,private readonly media?:IncomingMediaStore) {this.dialogue=storage.runtime().dialogueContextVersion===2?chat??new ChatEpisodes(new DialogueStore(storage)):dialogue??new DialogueEpisodes(new DialogueStore(storage));}
   async acceptInput(message: IncomingMessage): Promise<InputAcceptance> {
     if(this.storage.runtime().dialogueContextVersion===2)assertRoutineWindow(this.storage,windowOptions(this.storage));
     return this.storage.transaction(() => {
       const existing=this.storage.read('messages',message.id),control=this.storage.read('control_requests',message.id);
       if(existing||control)return {kind:control?'advance':'message',systemReply:null};
       this.idle?.record('input',message.receivedAt);
+      const {attachments,...persisted}=message;
+      if(attachments?.length)this.media?.register(attachments);
+      const stored={...persisted,...(attachments?.length?{attachmentIds:attachments.map(a=>a.id)}:{})};
       const activity = sharedRoutingActivity(this.storage);
       if (!message.hasVisualAttachment && message.content.trim() === '【推进】') {
         this.storage.save('control_requests', message.id, { id: message.id, receivedAt: message.receivedAt,
@@ -34,7 +38,7 @@ export class InputBuffer {
         return { kind: 'advance', systemReply: activity ? null : '当前没有共同活动' };
       }
       if (activity) {
-        this.dialogue.acceptMessage({ ...message, platformMessageIds: message.platformMessageIds ?? [],
+        this.dialogue.acceptMessage({ ...stored, platformMessageIds: message.platformMessageIds ?? [],
           direction: 'incoming', batchId: null, sharedActivityId: activity.activityId, seenTurnId: null, turnId: null, outboxSeq: null });
         const runtime = this.storage.runtime();
         if (runtime.sharedClock?.activityId === activity.activityId) {
@@ -49,7 +53,7 @@ export class InputBuffer {
       const runtime = this.storage.runtime();
       const batchId = runtime.openBatch?.id ?? randomUUID();
       this.dialogue.acceptMessage({
-        ...message, platformMessageIds: message.platformMessageIds ?? [], direction: 'incoming',
+        ...stored, platformMessageIds: message.platformMessageIds ?? [], direction: 'incoming',
         batchId, sharedActivityId: null, seenTurnId: null, turnId: null, outboxSeq: null,
       });
       runtime.activeDialogueEpisodeId=this.storage.runtime().activeDialogueEpisodeId;
