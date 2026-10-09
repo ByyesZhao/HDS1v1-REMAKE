@@ -26,6 +26,7 @@
   "historyBudget": null,
   "sharedIdleSeconds": 60,
   "sharedMaxSteps": 20,
+  "visualInput": { "enabled": false },
   "stickersEnabled": false,
   "models": {
     "narrative": {

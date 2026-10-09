@@ -31,6 +31,7 @@ export class SerialHost {
   }
   async start(): Promise<void> {this.checkDialogue();this.recover=true;await this.wake();}
   async acceptInput(message: IncomingMessage): Promise<InputAcceptance> {
+    if(this.stopped)throw Error('HDSI host stopped');
     this.checkDialogue(false);
     const accepted = await this.input.acceptInput(message);
     this.app.dependencies.incomingMedia?.prefetchForMessages([message.id]);

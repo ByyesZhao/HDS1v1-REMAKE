@@ -1,0 +1,20 @@
+import {strict as assert} from 'node:assert';import {mkdtempSync,readFileSync,mkdirSync,writeFileSync,rmSync} from 'node:fs';import {tmpdir} from 'node:os';import {join,resolve,dirname} from 'node:path';
+import {Storage} from '../src/storage';import {IncomingMediaStore} from '../src/input-media/store';import {IncomingAssets,AttachmentResolver} from '../src/input-media/assets';import {IncomingMediaService} from '../src/input-media/service';import {ChatCompletionsTransport,ModelClient} from '../src/model/client';import {loadSettings,connectionFor} from '../src/settings';import {hydrateVisualContext} from '../src/input-media/context';import {stageInput} from '../src/model/context-views';
+export async function validateIncomingMedia(options:{online?:boolean;config?:string;fixture?:string}={}){
+ const root=mkdtempSync(join(tmpdir(),'hdsi-media-validate-')),db=new Storage(join(root,'story.sqlite'));let calls=0,network=0;const start=performance.now();
+ const store=new IncomingMediaStore(db),assets=new IncomingAssets(store,join(root,'incoming-media'),new AttachmentResolver());
+ const settings=options.online&&options.config?loadSettings(resolve(options.config)):null;
+ if(options.online&&(!settings||!options.fixture))throw Error('online requires --config and --fixture');
+ const transport=new ChatCompletionsTransport(task=>settings?connectionFor(settings,task):{baseUrl:'https://offline.test',apiKey:'synthetic',model:'deepseek-flash',reasoningEffort:'high'},async(url,init)=>{calls++;if(options.online){network++;return fetch(url,init);}const body=JSON.parse(String(init?.body));assert.equal(body.messages[1].content[1].type,'image_url');assert.ok(!body.messages[1].content[0].text.includes('base64'));return new Response(JSON.stringify({choices:[{message:{content:JSON.stringify({description:'合成猫图片',visibleText:[],possibleTone:null,uncertain:false})}}]}));},ref=>assets.resolveImageAsset(ref));
+ const service=new IncomingMediaService(store,assets,new ModelClient(transport),{enabled:true});try{
+ const bytes=options.fixture?readFileSync(resolve(options.fixture)):Buffer.from('89504e470d0a1a0a00000000','hex');
+ store.register(['a','b'].map((id,order)=>({id,messageId:'m',order,kind:'image',sourceUrl:'data:image/png;base64,'+bytes.toString('base64')})));
+ db.save('turns','t',{id:'t',done:false,inputMessageIds:['m']} as any);
+ const prepared=await service.prepareForTurn('t',['m'],options.online?AbortSignal.timeout(300000):undefined);assert.equal(calls,1);
+ const view=hydrateVisualContext(stageInput('personal_chat',{visibleMessages:[{id:'m',content:'图图',direction:'incoming',receivedAt:'2026-10-09T00:00:00Z'}]}),prepared,[]);
+ assert.equal(view.resources.visualObservations?.length,1);assert.equal(view.resources.messages[0].visualAttachments?.length,2);
+ await service.prepareForTurn('t',['m']);assert.equal(calls,1);
+ return {mode:options.online?'online':'offline',passed:true,realNetworkRequests:network,modelCalls:calls,download:'data source; actual bytes hashed',context:'2 appearances / 1 body',terminalReuse:true,durationMs:performance.now()-start,observation:prepared[0].observation,model:settings?.incomingImageModel??settings?.stickerDescriptionModel??{model:'synthetic transport',reasoningEffort:'high'}};
+ }finally{await service.stop();db.close();rmSync(root,{recursive:true,force:true});}
+}
+if(process.argv[1]?.includes('validate-incoming-media')){const args=process.argv.slice(2),get=(k:string)=>args.includes(k)?args[args.indexOf(k)+1]:undefined;const report=get('--report');if(!report)throw Error('--report is required');validateIncomingMedia({online:args.includes('--online'),config:get('--config'),fixture:get('--fixture')}).then(result=>{mkdirSync(dirname(resolve(report)),{recursive:true});writeFileSync(resolve(report),JSON.stringify(result,null,2));console.log('incoming media validation passed');}).catch(error=>{mkdirSync(dirname(resolve(report)),{recursive:true});writeFileSync(resolve(report),JSON.stringify({passed:false,error:String(error)},null,2));console.error(error);process.exitCode=1;});}

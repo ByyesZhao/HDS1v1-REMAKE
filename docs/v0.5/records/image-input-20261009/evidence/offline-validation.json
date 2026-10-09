@@ -1,0 +1,20 @@
+{
+  "mode": "offline",
+  "passed": true,
+  "realNetworkRequests": 0,
+  "modelCalls": 1,
+  "download": "data source; actual bytes hashed",
+  "context": "2 appearances / 1 body",
+  "terminalReuse": true,
+  "durationMs": 57.38159999999999,
+  "observation": {
+    "description": "合成猫图片",
+    "visibleText": [],
+    "possibleTone": null,
+    "uncertain": false
+  },
+  "model": {
+    "model": "synthetic transport",
+    "reasoningEffort": "high"
+  }
+}

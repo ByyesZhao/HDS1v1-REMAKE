@@ -1,0 +1,3 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run tsx scripts/prepare-feature-check.ts --verify C:\Users\<user>\.codex\worktrees\image-local-search\HDSI-remake\.tmp\image-feature-check
+fixture unchanged

@@ -1,3 +1,7 @@
+import {dirname,join} from 'node:path';
+import {IncomingMediaStore} from './input-media/store';
+import {IncomingAssets,AttachmentResolver} from './input-media/assets';
+import {IncomingMediaService} from './input-media/service';
 import {parseIncomingContent} from './input-media/parse';
 import {initializeMissingBackgroundFacts} from './model/background-views';
 import {generateEnvironmentStep} from './directors/school';
@@ -42,6 +46,7 @@ export function apply(ctx: Context, config: Config): void {
   const settings = loadSettings(resolve(ctx.baseDir, config.storyConfigPath));
   // Validate deployment prerequisites before creating a formal story database.
   modelRoles.forEach(role => connectionFor(settings, role));
+  if(settings.visualInput.enabled)connectionFor(settings,'incoming_image');
   if(settings.webSearch.enabled)throw new Error('web search enabled but provider not configured; select and inject a provider first');
   const databasePath = resolve(ctx.baseDir, config.databasePath);
   if (existsSync(databasePath) && inspectSharedUpgrade(databasePath).version !== 1) throw new Error('Stop HDSI and run npm run shared:migrate -- --database <path> --check before enabling this existing database.');
@@ -75,8 +80,12 @@ export function apply(ctx: Context, config: Config): void {
     stickers = new StickerLibrary(storage, new HttpEmbeddingProvider(e.model, e.baseUrl, process.env[e.apiKeyEnv]!, fetch, e.dimensions));
     try { stickers.checkReady(); } catch (error) { storage.close(); throw error; }
   }
-  const models = new ModelClient(new ChatCompletionsTransport(task => connectionFor(settings, task)));
+  const mediaStore=new IncomingMediaStore(storage);
+  const mediaAssets=new IncomingAssets(mediaStore,join(dirname(databasePath),'incoming-media'),new AttachmentResolver(fetch,async file=>{const b=bot() as unknown as {getImage?:(file:string)=>Promise<{url?:string;base64?:string}>};return b.getImage?b.getImage(file):{};}));
+  const models = new ModelClient(new ChatCompletionsTransport(task => connectionFor(settings, task),fetch,ref=>mediaAssets.resolveImageAsset(ref)));
   const web=assembleWeb(storage,settings,clock);
+  const incomingMedia=new IncomingMediaService(mediaStore,mediaAssets,models,{enabled:settings.visualInput.enabled,recentSegments:settings.memory.contextLimits.recentDialogueSegments},web);
+  void incomingMedia.primeStickerObservations();
   let host:SerialHost;
   let memory:ReturnType<typeof assembleMemory>;
   try{memory=assembleMemory(storage,settings,models,clock,()=>void host.wake(),process.env,memoryStore,web);}catch(error){storage.close();throw error;}
@@ -99,7 +108,7 @@ export function apply(ctx: Context, config: Config): void {
     async sendError(message) { await bot().sendPrivateMessage(config.userId, message); },
   };
   const app = new HdsiApp({
-    chat:new ChatEpisodes(new DialogueStore(storage),settings.memory.contextLimits.dialogueIdleMinutes),dialogue:new DialogueEpisodes(new DialogueStore(storage),settings.memory.contextLimits.dialogueIdleMinutes),environmentStore:new EnvironmentStore(storage),schoolStore:new SchoolStore(storage),storage, clock, random, models, config: options, sender, stickers,web,memoryStore:memory.store,memoryLifecycle:memory.lifecycle,memoryCapacity:memory.capacity,memoryIdle:memory.idle,memoryCleanup:memory.cleanup,retrieval:memory.retrieval,maintenance:memory.maintenance,
+    incomingMedia,chat:new ChatEpisodes(new DialogueStore(storage),settings.memory.contextLimits.dialogueIdleMinutes),dialogue:new DialogueEpisodes(new DialogueStore(storage),settings.memory.contextLimits.dialogueIdleMinutes),environmentStore:new EnvironmentStore(storage),schoolStore:new SchoolStore(storage),storage, clock, random, models, config: options, sender, stickers,web,memoryStore:memory.store,memoryLifecycle:memory.lifecycle,memoryCapacity:memory.capacity,memoryIdle:memory.idle,memoryCleanup:memory.cleanup,retrieval:memory.retrieval,maintenance:memory.maintenance,
     wait: ms => new Promise(resolve => setTimeout(resolve, ms)),
   });
   app.dependencies.generateEnvironment=(input,execution)=>generateEnvironmentStep(app.dependencies,input,execution);
@@ -109,9 +118,9 @@ export function apply(ctx: Context, config: Config): void {
     if (!isTargetSession(session, config)) return next();
     const rawContent = session.content ?? '';
     if (/^hdsi\.(status|pause|resume)(?:\s|$)/.test(rawContent.trim())) return next();
-    const parsed=parseIncomingContent(incomingMessageId(session),rawContent),text=parsed.content;
+    const messageId=incomingMessageId(session),parsed=parseIncomingContent(messageId,rawContent),text=parsed.content;
     if (!text.trim()) return;
-    const accepted = await host.acceptInput({ id: parsed.attachments[0]?.messageId??incomingMessageId(session), receivedAt: clock.now(), ...parsed, platformMessageIds: session.messageId ? [session.messageId] : [] });
+    const accepted = await host.acceptInput({ id: messageId, receivedAt: clock.now(), ...parsed, platformMessageIds: session.messageId ? [session.messageId] : [] });
     if (accepted.systemReply) await bot().sendPrivateMessage(config.userId, accepted.systemReply);
   });
   for (const command of ['status', 'pause', 'resume'] as const) {
@@ -123,5 +132,5 @@ export function apply(ctx: Context, config: Config): void {
     });
   }
   ctx.on('ready', () => host.start());
-  ctx.on('dispose', async () => { await host.stop(); storage.close(); });
+  ctx.on('dispose', async () => { await host.stop(); await incomingMedia.stop(); storage.close(); });
 }
