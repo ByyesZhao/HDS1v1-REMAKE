@@ -1,0 +1,20 @@
+{
+  "date": "2026-10-09",
+  "query": "中国气象局",
+  "method": "Direct public HTTP requests; no browser rendering, no credential, no character/user content; not a production availability certification.",
+  "results": [
+    {
+      "engine": "duckduckgo",
+      "failed": true,
+      "errorName": "TypeError"
+    },
+    {
+      "engine": "bing",
+      "status": 200,
+      "finalHost": "cn.bing.com",
+      "htmlCharacters": 84588,
+      "resultMarkerOccurrences": 0,
+      "verificationMarker": false
+    }
+  ]
+}

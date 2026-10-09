@@ -1,0 +1,25 @@
+const Browser: Schema<BrowserConfig> = Schema.object({
+  enabled: Schema.boolean().default(false).description('启用 Puppeteer 只读网页观察。还需要在 Koishi 安装并启用 puppeteer 插件；未启用时聊天功能不受影响。'),
+  mode: Schema.union(['deferred-only', 'allow-immediate']).default('deferred-only').description('延后浏览不会增加当前回复等待；允许即时浏览时，主模型可为少数当前私聊额外读取一次网页，因此回复会更慢。'),
+  allowSearch: Schema.boolean().default(true).description('允许主角提出网页搜索意图。搜索结果会作为之后的网页观察进入剧本。'),
+  allowVisit: Schema.boolean().default(true).description('允许主角访问安全策略允许的公开网页 URL。不会登录、填写表单、下载或发布内容。'),
+  searchUrlTemplate: Schema.string().default('https://html.duckduckgo.com/html/?q={query}').description('搜索地址模板，必须包含 {query}。默认使用 DuckDuckGo 的轻量结果页。'),
+  allowedDomains: Schema.array(Schema.string()).role('table').default([]).description('允许访问的域名白名单；留空表示不额外限制。填入后，仅这些域名及其子域名可访问。'),
+  blockedDomains: Schema.array(Schema.string()).role('table').default([]).description('永远禁止访问的域名黑名单；localhost、私网地址和非 HTTP(S) 地址始终禁止。'),
+  maxConcurrentPages: Schema.natural().min(1).max(4).default(1).description('同时打开的网页页数上限。建议保持 1，避免浏览器占用影响 Koishi。'),
+  maxResearchPerSweep: Schema.natural().min(1).max(20).default(1).description('每轮后台最多处理的网页浏览意图数。保持 1 可避免网页积压拖慢剧本队列。'),
+  navigationTimeout: Schema.natural().min(1_000).max(120_000).default(15_000).role('ms').description('单页加载超时，单位毫秒。超时会记录失败观察，不会中断剧本。'),
+  waitUntil: Schema.union(['domcontentloaded', 'networkidle2']).default('domcontentloaded').description('读取网页的等待条件。domcontentloaded 更快；networkidle2 对动态页面更完整但更慢。'),
+  maxTextCharacters: Schema.natural().min(500).max(50_000).default(12_000).description('从网页正文提取的最大字符数。仅提取可见文本，不保存 HTML。'),
+  maxExcerptCharacters: Schema.natural().min(200).max(12_000).default(3_000).description('单条网页观察送给主模型的最大字符数。'),
+  maxObservationsInPrompt: Schema.natural().min(1).max(20).default(4).description('单次主叙事请求附带的最近网页观察数量。'),
+  cacheMinutes: Schema.natural().min(0).max(10_080).default(30).description('相同搜索或 URL 在此时间内复用已有观察，减少重复浏览；0 表示每次重新读取。'),
+  allowGroupTriggeredResearch: Schema.boolean().default(false).description('启用群聊浏览意图。默认关闭，避免群成员内容触发角色浏览。'),
+  logObservationPreview: Schema.boolean().default(false).description('在日志中显示网页观察的标题和节选；网页内容可能包含隐私或不可信文本，生产环境建议关闭。'),
+}).collapse(true)
+
+const Memory: Schema<MemoryConfig> = Schema.object({
+  enabled: Schema.boolean().default(true).description('启用场景压缩、长期事实和状态演化。'),
+  backgroundIntervalMinutes: Schema.natural().min(1).max(1_440).default(10).description('后台记忆整理检查周期，单位分钟。'),
+  sceneEntryThreshold: Schema.natural().min(1).max(500).default(16).description('未压缩剧本条目达到此数量时触发整理。默认 16 条，减少短对话中的频繁后台调用。'),
+  sceneCharacterThreshold: Schema.natural().min(500).max(200_000).default(10_000).description('未压缩剧本字符数达到此值时触发整理。默认 10000 字，长场景会优先保持连续性。'),

@@ -1,0 +1,27 @@
+{
+  "date": "2026-10-09",
+  "baseline": "ddde663",
+  "status": "planning_only",
+  "checks": {
+    "existingModelsAndEffortsUnchanged": true,
+    "imageAndSearchHaveIndependentPlans": true,
+    "currentVersusProposedBehaviorSeparated": true,
+    "legacyReferencesCopiedIntoNewProject": true,
+    "noLegacyRuntimeDependencyProposed": true,
+    "imageVisibilityAndAtomicIngressCovered": true,
+    "imageFreezeLatestTurnMergeCovered": true,
+    "imageAssetRefAvoidsCheckpointBase64": true,
+    "allModelSearchCapabilityPreserved": true,
+    "search20Success40FailuresPreserved": true,
+    "legacyTextTruncationNotImported": true,
+    "shutdownKeepsExistingForegroundContract": true,
+    "reviewFocusCasesMappedToTests": true,
+    "publicHttpProbeNotTreatedAsBrowserAcceptance": true
+  },
+  "verificationScope": "Plan consistency and current documentation links only; no product tests, no vision-model request, no browser launch, no QQ connection, no formal data/config mutation.",
+  "remainingAcceptance": [
+    "Incoming image connection using public or synthetic fixtures after implementation",
+    "Actual local browser search candidates and readable body, not HTTP status alone",
+    "Offline lifecycle, permissions, checkpoint and plugin regression suites during implementation"
+  ]
+}

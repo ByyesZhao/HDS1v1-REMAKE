@@ -49,7 +49,7 @@
 | --- | --- |
 | `architecture/`、`subsystems/` | 当前架构及8份功能规则 |
 | `reference/` | 实现对应、配置和必要参考 |
-| [plans/](plans/README.md) | 未实施或进行中合同；E1～E5及交付后两项修复已关闭；没有待执行合同 |
+| [plans/](plans/README.md) | 图片输入理解／本地搜索待审，尚未实施；E1～E5及交付后修复已关闭 |
 | [records/](records/README.md) | 最近交付、过程、最终日志及目录整理 |
 | [reviews/](reviews/README.md) | 本批独立报告、探针和原始证据 |
 | [../archive/](../archive/README.md) | 已完成计划、被替代交付、旧审核和早期红绿日志 |

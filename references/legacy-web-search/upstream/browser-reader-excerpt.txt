@@ -1,0 +1,46 @@
+    const puppeteer = (this.ctx as any).puppeteer
+    if (!puppeteer?.page) {
+      this.report('warn', story, 'intent-due', '网页浏览服务不可用：请安装并启用 koishi-plugin-puppeteer。')
+      return this.saveWebObservation(story.id, participantId, intentId, normalized.mode, normalized.query ?? '', target, '', '', '浏览器服务不可用。', 'failed', now, persist)
+    }
+
+    return this.withBrowserSlot(async () => {
+      let page: any
+      try {
+        page = await puppeteer.page()
+        await page.setUserAgent(`Mozilla/5.0 (compatible; HDS-Interlude/${HDS_INTERLUDE_VERSION}; +https://koishi.chat/)`)
+        await page.setRequestInterception(true)
+        page.on('request', (request: any) => {
+          const resourceType = request.resourceType?.() ?? 'document'
+          const requestUrl = request.url?.() ?? ''
+          const allowedResource = ['document', 'stylesheet', 'script', 'xhr', 'fetch', 'image'].includes(resourceType)
+          const allowedUrl = isSafePublicWebUrl(requestUrl, config)
+          const operation = allowedResource && allowedUrl ? request.continue() : request.abort('blocked')
+          void Promise.resolve(operation).catch(() => undefined)
+        })
+        page.on('popup', (popup: any) => void popup.close().catch(() => undefined))
+        await page.goto(target, { waitUntil: config.waitUntil, timeout: config.navigationTimeout })
+        const finalUrl = String(page.url?.() ?? target)
+        if (!isSafePublicWebUrl(finalUrl, config)) throw new Error('页面重定向到了不允许的地址。')
+        const result = await page.evaluate(() => ({
+          title: String(document.title || '').trim(),
+          text: String(document.body?.innerText || '').replace(/\r/g, '').replace(/\n{3,}/g, '\n\n').trim(),
+        }))
+        const text = clip(String(result?.text ?? ''), config.maxTextCharacters)
+        const title = clip(String(result?.title ?? ''), 500)
+        const excerpt = clip(text, config.maxExcerptCharacters)
+        const summary = clip(`${title ? `${title}。` : ''}${excerpt}`, config.maxExcerptCharacters)
+        const observation = await this.saveWebObservation(story.id, participantId, intentId, normalized.mode, normalized.query ?? '', finalUrl, title, excerpt, summary || '页面没有可提取的正文。', 'success', new Date(), persist)
+        this.reportOperation('standard', 'info', story, 'intent-due', '网页读取完成 标题=%s 正文=%d字', title || '未命名页面', text.length)
+        if (config.logObservationPreview) this.report('debug', story, 'intent-due', '网页观察节选：%s', excerpt)
+        return observation
+      } catch (error) {
+        this.report('warn', story, 'intent-due', '网页读取失败：%s', error)
+        return this.saveWebObservation(story.id, participantId, intentId, normalized.mode, normalized.query ?? '', target, '', '', `网页读取失败：${clip(String(error instanceof Error ? error.message : error), 500)}`, 'failed', new Date(), persist)
+      } finally {
+        if (page) await page.close().catch(() => undefined)
+      }
+    })
+  }
+
+  private async saveWebObservation(storyId: string, participantId: string, intentId: number | null, mode: 'search' | 'visit', query: string, url: string, title: string, excerpt: string, summary: string, status: WebObservation['status'], now: Date, persist = true): Promise<WebObservation> {
