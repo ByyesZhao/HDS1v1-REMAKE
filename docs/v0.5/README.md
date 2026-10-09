@@ -23,10 +23,13 @@
 
 背景用途参考为[已批准映射](reference/BACKGROUND_VIEW_MAPPING_20261008.md)，不是新审批。运行和显式升级命令见[项目README](../../README.md)。
 
+当日[文档与模型连接静态核对](records/document-model-audit-20261009/README.md)已补清调度／预约分工、前后台并发及搜索接入状态；模型列表和待选服务见[模型调用与网页搜索参考](reference/MODEL_CALLS_AND_WEB_OPTIONS_20261009.md)。该记录没有新增产品实现或在线验收，不替代上述代码交付证据。
+
 ## 最新交付与审核
 
 | 材料 | 状态 |
 | --- | --- |
+| [文档与模型连接核对](records/document-model-audit-20261009/README.md) | 文档静态核对与正式配置白名单解析；全部Flash，10个low／3个high；搜索候选尚未接入 |
 | [最新回复规则交付](records/reply-guidance-20261009/DELIVERY.md) | 三条固定口语规则、第四条程序附件分支、纯图输入与沉默控制；150文件840项；无正式迁移或在线调用 |
 | [前批修复／正式升级交付](records/environment-post-delivery-fixes-20261009/DELIVERY.md) | R1／R2及只读启动检查关闭；原批148文件826项；正式库环境2、67图库完整保留 |
 | [R1／R2独立差异复核](reviews/environment-async-20261009/post-delivery/FIX_DIFF_REVIEW.md) | 7文件40项、无新发现；未覆盖后续启动检查附加修复和正式部署 |
