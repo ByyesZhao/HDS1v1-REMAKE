@@ -1,0 +1,35 @@
+{
+  "files": 28,
+  "localLinks": 270,
+  "missing": [
+    {
+      "file": "README.md",
+      "target": "runtime/archive/README.md"
+    },
+    {
+      "file": "docs\\README.md",
+      "target": "../runtime/archive/README.md"
+    },
+    {
+      "file": "docs\\v0.5\\README.md",
+      "target": "../../runtime/archive/README.md"
+    }
+  ],
+  "deploymentOnlyLinks": [
+    {
+      "file": "README.md",
+      "target": "runtime/archive/README.md"
+    },
+    {
+      "file": "docs\\README.md",
+      "target": "../runtime/archive/README.md"
+    },
+    {
+      "file": "docs\\v0.5\\README.md",
+      "target": "../../runtime/archive/README.md"
+    }
+  ],
+  "deploymentOnlyResolvedAt": "D:\\HDSI-remake\\runtime\\archive\\README.md",
+  "missingTrackedLinks": [],
+  "note": "Native isolated checkout excludes ignored deployment archives; all 3 deployment-only links verified at actual project directory. Original missing list describes isolated checkout."
+}
