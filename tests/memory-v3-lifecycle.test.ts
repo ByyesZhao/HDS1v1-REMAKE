@@ -30,7 +30,7 @@ describe('memory lifecycle V0.3',()=>{
   });
   it('a new detailed record linked to an existing event updates the same summary without renewing or creating a duplicate long',()=>{
     const {store,life}=setup();life.apply(create('high'),'original',at,['e']);const id='original:short:0:long',expires=store.canonical(id)!.expiresAt;
-    const result=create();(result.shortTermChanges[0] as any).existingLongId=id;result.shortTermChanges[0].eventSummary='同一次考试增加了补考结果';life.apply(result,'next',addMs(at,10*day),['e']);
+    const result=create();Object.assign(result.shortTermChanges[0],{existingLongId:id,hasNewEventProgress:true});result.shortTermChanges[0].eventSummary='同一次考试增加了补考结果';life.apply(result,'next',addMs(at,10*day),['e']);
     expect(store.canonical(id)!.eventSummary).toContain('补考结果');expect(store.canonical(id)!.expiresAt).toBe(expires);expect(store.owner({ownerType:'long',ownerId:'next:short:0:long'})).toBeNull();
   });
   it('deduplicates Shanghai dates, renews after three distinct dates and does not reuse consumed dates',()=>{

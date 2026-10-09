@@ -38,7 +38,7 @@ const summary = {content:text,eventSummary:text,feelingSummary:text,topics:z.arr
 const eventTimes={happenedAt:time.optional(),happenedUntil:time.optional()};
 const memory = z.object({
   schemaVersion:z.literal(3),
-  shortTermChanges:z.array(z.discriminatedUnion('action',[z.object({action:z.literal('create'),clientRef:text,...summary,importance:z.enum(['normal','high']),existingLongId:text.optional(),...eventTimes}),z.object({action:z.literal('update'),id:text,...summary,hasNewEventProgress:z.boolean(),...eventTimes})])),
+  shortTermChanges:z.array(z.discriminatedUnion('action',[z.object({action:z.literal('create'),clientRef:text,...summary,importance:z.enum(['normal','high']),existingLongId:text.optional(),hasNewEventProgress:z.boolean().optional(),...eventTimes}),z.object({action:z.literal('update'),id:text,...summary,hasNewEventProgress:z.boolean(),...eventTimes})])),
   longTermChanges: z.array(z.object({action:z.literal('awaken'),id:text,reason:text,sourceIds:z.array(text).min(1)})),
   detailChanges: z.array(z.object({ action: z.enum(['create', 'update']), key: text, value: text, aliases: z.array(text), reason: text, sourceIds: z.array(text).min(1) })),
 });
@@ -130,7 +130,7 @@ export function memoryTask(sourceIds: string[], memoryIds: string[], shortIds:st
     const validateSources = (ids: string[], allowed=sourceIds) => requireControl(ids.length>0&&ids.every(id => allowed.includes(id)), 'sourceIds', 'unknown current source ID');
     const touched=new Set<string>();const refs=new Set<string>();
     r.shortTermChanges.forEach(c=>requireControl(!!c.eventSummary.trim()||!!c.feelingSummary.trim(),'summary','eventSummary or feelingSummary must be meaningful'));
-    r.shortTermChanges.forEach(c=>{validateSources(c.sourceIds,[...sourceIds,...selfReadIds]);if(c.action==='update'){requireControl(shortIds.includes(c.id)&&!touched.has(c.id),'shortTermChanges.id','unknown or duplicate memory ID');touched.add(c.id);}else{requireControl(!refs.has(c.clientRef),'shortTermChanges.clientRef','duplicate clientRef');refs.add(c.clientRef);if(c.existingLongId)requireControl(memoryIds.includes(c.existingLongId),'existingLongId','unknown memory ID');}});
+    r.shortTermChanges.forEach(c=>{validateSources(c.sourceIds,[...sourceIds,...selfReadIds]);if(c.action==='update'){requireControl(shortIds.includes(c.id)&&!touched.has(c.id),'shortTermChanges.id','unknown or duplicate memory ID');touched.add(c.id);}else{requireControl(!refs.has(c.clientRef),'shortTermChanges.clientRef','duplicate clientRef');refs.add(c.clientRef);if(c.existingLongId){requireControl(memoryIds.includes(c.existingLongId),'existingLongId','unknown memory ID');requireControl(typeof c.hasNewEventProgress==='boolean','shortTermChanges.hasNewEventProgress','required for existingLongId');}}});
     r.detailChanges.forEach(d=>validateSources(d.sourceIds));
     const awakened=new Set<string>();r.longTermChanges.forEach(c=>{validateSources(c.sourceIds);requireControl(memoryIds.includes(c.id)&&!awakened.has(c.id),'longTermChanges.id','unknown or duplicate memory ID');awakened.add(c.id);});
   });

@@ -42,7 +42,7 @@ it('secondary_canonical_evidence_change_requeues_understanding_once',()=>{
  const d=create(),a=long(d.store,'a'),b=long(d.store,'b');
  const learned=d.store.makeOwner({ownerType:'learned',ownerId:'understanding'},{content:'已有稳定认识',canonicalMemoryId:a.id,evidenceMemoryIds:[a.id,b.id],learnedKind:'stable_understanding',sourceIds:a.sourceIds},at);
  d.store.saveOwner(learned);d.store.queueDirty(learned,'learned',at);d.store.completeDirty(learned,learned);
- d.life.apply({schemaVersion:3,shortTermChanges:[{action:'create',clientRef:'s',existingLongId:b.id,content:'事件B真实新进展详细内容',eventSummary:'B的新摘要',feelingSummary:'有些困惑',topics:[],importance:'normal',sourceIds:['fresh']}],longTermChanges:[],detailChanges:[]},'new-turn',days(1),['fresh']);
+ d.life.apply({schemaVersion:3,shortTermChanges:[{action:'create',clientRef:'s',existingLongId:b.id,hasNewEventProgress:true,content:'事件B真实新进展详细内容',eventSummary:'B的新摘要',feelingSummary:'有些困惑',topics:[],importance:'normal',sourceIds:['fresh']}],longTermChanges:[],detailChanges:[]},'new-turn',days(1),['fresh']);
  const current=d.store.owner(learned)!;expect(current.content).toBe('已有稳定认识');expect(current.stateVersion).toBeGreaterThan(learned.stateVersion);expect(d.store.dirtyOwners().find(r=>r.ownerId===learned.id)?.status).toBe('pending');
  d.store.completeDirty(current,current);d.life.synchronizeProjections(d.store.canonical(b.id)!,days(1),true);expect(d.store.dirtyOwners().some(r=>r.ownerId===learned.id)).toBe(false);
 });

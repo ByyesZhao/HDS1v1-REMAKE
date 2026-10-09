@@ -98,6 +98,7 @@ schemaVersion: 3
 shortTermChanges:
   create: clientRef + content/eventSummary/feelingSummary/topics + sourceIds
           + importance: normal | high + 可选 existingLongId
+          + 引用 existingLongId 时必填 hasNewEventProgress: boolean
   update: id + content/eventSummary/feelingSummary/topics + sourceIds
           + hasNewEventProgress
 longTermChanges:
@@ -107,6 +108,8 @@ detailChanges:
 ```
 
 hasNewEventProgress=true 是模型的语义提议，程序检查其当前来源、按本轮 at 设置锚点；不能由模型直接给新的 expiresAt。没有新内容，三个变更数组均可为空。
+
+REVIEW26补充（2026-10-09）：create引用existingLongId与update一样区分真实进展，不能因新增sourceId自动判为true。false仍可更新关联长期正文和来源，但保留lastEventUpdateAt、retainedFrom、expiresAt及initial grant；true更新有意义进展时间，仅在at早于retainedFrom的预备期顺延到新短期截止，并替换原initial grant，已生效长期不重开窗口。首次新事件create无existingLongId时不要求该字段。新模型返回缺失／非布尔字段走既有格式修补；已保存post job的旧结果缺字段按false应用，完成后处理，不迁移数据或重新调用模型。
 
 来源校验按操作区分：shortTermChanges允许基础当前来源及§2.3的本轮self_web_read；detailChanges与longTermChanges.awaken仅允许基础当前来源，不将网页来源统一加入所有操作的白名单。压缩／合并可以延续已有查阅记忆来源，不重新要求一条当日聊天消息。
 

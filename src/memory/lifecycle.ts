@@ -33,9 +33,9 @@ export class MemoryLifecycle {
           this.store.saveOwner(long);this.store.queueIndex(long,at);this.grant(long,'initial',start,[]);this.store.queueDirty(long,'event',at);
         } else {
           const content=summary(change.eventSummary,change.feelingSummary),long=existing!;
-          const updated={...long,content,eventSummary:change.eventSummary,feelingSummary:change.feelingSummary,topics:change.topics,sourceIds:union(long.sourceIds,change.sourceIds),...eventRange([long,short]),lastEventUpdateAt:at,stateVersion:long.stateVersion+1};
+          const updated={...long,content,eventSummary:change.eventSummary,feelingSummary:change.feelingSummary,topics:change.topics,sourceIds:union(long.sourceIds,change.sourceIds),...eventRange([long,short]),lastEventUpdateAt:change.hasNewEventProgress===true?at:long.lastEventUpdateAt,stateVersion:long.stateVersion+1};
           const changed=memoryIndexText(long)!==memoryIndexText(updated);updated.revision=long.revision+(changed?1:0);
-          if(long.retainedFrom&&milliseconds(at)<milliseconds(long.retainedFrom)){updated.retainedFrom=short.shortExpiresAt;updated.expiresAt=addMs(updated.retainedFrom!,90*day);this.store.saveGrant({id:`${long.id}:initial`,canonicalMemoryId:long.id,kind:'initial',anchorAt:updated.retainedFrom!,expiresAt:updated.expiresAt,triggerDates:[]});}
+          if(change.hasNewEventProgress===true&&long.retainedFrom&&milliseconds(at)<milliseconds(long.retainedFrom)){updated.retainedFrom=short.shortExpiresAt;updated.expiresAt=addMs(updated.retainedFrom!,90*day);this.store.saveGrant({id:`${long.id}:initial`,canonicalMemoryId:long.id,kind:'initial',anchorAt:updated.retainedFrom!,expiresAt:updated.expiresAt,triggerDates:[]});}
           this.store.saveOwner(updated);if(changed)this.store.queueIndex(updated,at);this.store.queueDirty(updated,'event',at);this.synchronizeProjections(updated,at,true);
         }
       } else {
