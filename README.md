@@ -8,7 +8,9 @@ V0.5整理当前实现：普通最近4个完整对话段、活动完整授权原
 
 ## 1. 当前状态
 
-前批交付为[当前审核改进T1～T9](docs/archive/records/current-audit-improvements-20261009/DELIVERY.md)。此前REVIEW26的107／620、ASTRA T1～T13的121／681和R1的122／693保留各批历史含义。ASTRA随后已独立重跑137文件776项并[确认关闭](docs/archive/reviews/post-t1-t9-20261009/REVIEW.md)。环境异步E1～E5及交付后R1／R2、只读启动检查修复均已完成，最终148文件826项及离线验收通过，最新见[修复与正式升级交付](docs/v0.5/records/environment-post-delivery-fixes-20261009/DELIVERY.md)；初批过程见[本批记录](docs/v0.5/records/environment-async-20261009/README.md)。旧证据仍按原批次解释。
+前批交付为[当前审核改进T1～T9](docs/archive/records/current-audit-improvements-20261009/DELIVERY.md)。此前REVIEW26的107／620、ASTRA T1～T13的121／681和R1的122／693保留各批历史含义。ASTRA随后已独立重跑137文件776项并[确认关闭](docs/archive/reviews/post-t1-t9-20261009/REVIEW.md)。环境异步E1～E5及交付后R1／R2、只读启动检查修复均已完成，最终148文件826项及离线验收通过，该批见[修复与正式升级交付](docs/v0.5/records/environment-post-delivery-fixes-20261009/DELIVERY.md)；初批过程见[本批记录](docs/v0.5/records/environment-async-20261009/README.md)。旧证据仍按原批次解释。
+
+本批已加入三条固定回复规则及程序选择的图片／表情分支，纯附件可落库、收尾可已读不回。150文件840项、类型、构建及离线验收通过，见[最新回复规则交付](docs/v0.5/records/reply-guidance-20261009/DELIVERY.md)。附件类型检测不等于实时识图；没有新的正式库迁移或在线调用。
 
 67项旧图库的图片、说明、标签和1024维向量已在新项目复用；运行不依赖旧HDSI目录。角色背景和用途映射已批准启用，故事阶段完整背景保留，未迁移作者事实或覆盖已有细节。
 
@@ -51,7 +53,7 @@ demo是内存库和固定模型的合成故事；smoke使用真实Koishi Context
 .\start-snowluma.cmd --check
 ```
 
-Koishi控制台为http://127.0.0.1:5141。机器人1000000000、目标用户1000000001；仅匹配此目标私聊的文本进入故事。图片、语音等非文本附件当前不作为模型聊天输入。
+Koishi控制台为http://127.0.0.1:5141。机器人1000000000、目标用户1000000001；匹配此目标私聊的文本及图片／表情类型标记进入故事，纯图片／表情同样接受。当前不发送附件URL或图片字节、不实时识图；语音等其他非文本附件仍不作为模型聊天输入。
 
 SnowLuma登录该机器人，OneBot反向WebSocket对应`ws://127.0.0.1:5141/onebot-remake`。现有运行入口由`runtime/koishi.yml`配置，插件以本地项目引用；不启动旧项目或注册后台任务。
 
@@ -154,7 +156,7 @@ npm run stickers -- rebuild - config.local.json runtime/data/hdsi-remake.sqlite
 
 ## 8. 当前文档与复盘
 
-[V0.5总架构](docs/v0.5/architecture/REMAKE_V0.5.md)＋其8份子系统＋[实现对应](docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md)是当前说明。最新证据见[交付后修复与正式升级](docs/v0.5/records/environment-post-delivery-fixes-20261009/DELIVERY.md)；原E阶段证据在[环境异步交付](docs/v0.5/records/environment-async-20261009/DELIVERY.md)和[复核关闭](docs/v0.5/records/environment-async-20261009/REVIEW_CLOSURE.md)；版本重写过程在[文档修订日志](docs/archive/records/V0.5_DOCUMENT_REWRITE_LOG_20261009.md)。
+[V0.5总架构](docs/v0.5/architecture/REMAKE_V0.5.md)＋其8份子系统＋[实现对应](docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md)是当前说明。最新证据见[回复规则交付](docs/v0.5/records/reply-guidance-20261009/DELIVERY.md)；正式升级证据见[交付后修复与正式升级](docs/v0.5/records/environment-post-delivery-fixes-20261009/DELIVERY.md)；原E阶段证据在[环境异步交付](docs/v0.5/records/environment-async-20261009/DELIVERY.md)和[复核关闭](docs/v0.5/records/environment-async-20261009/REVIEW_CLOSURE.md)；版本重写过程在[文档修订日志](docs/archive/records/V0.5_DOCUMENT_REWRITE_LOG_20261009.md)。
 
 文档分类与新建原则见[文档总入口](docs/README.md)和[目录原则](docs/DIRECTORY_POLICY.md)。当前说明、最新交付和最终复核在docs/v0.5；过期说明、已完成合同、旧审核和过程日志在docs/archive。进行中的计划单独保留在当前plans，完成后按目录原则移入历史合同；最新交付见V0.5索引。
 

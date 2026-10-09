@@ -1,0 +1,34 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/reply-guidance.test.ts tests/visual-input-entry.test.ts
+failed to load config from D:\HDSI-remake\vitest.config.mts
+
+⎯⎯⎯⎯⎯⎯⎯ Startup Error ⎯⎯⎯⎯⎯⎯⎯⎯
+Error: Build failed with 1 error:
+
+[plugin externalize-deps]
+Error: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:458:11)
+    at spawn (node:child_process:813:9)
+    at Object.execFile (node:child_process:349:17)
+    at exec (node:child_process:236:25)
+    at optimizeSafeRealPathSync (file:///D:/HDSI-remake/node_modules/vite/dist/node/chunks/node.js:2481:2)
+    at windowsSafeRealPathSync (file:///D:/HDSI-remake/node_modules/vite/dist/node/chunks/node.js:2467:3)
+    at getRealPath (file:///D:/HDSI-remake/node_modules/vite/dist/node/chunks/node.js:29536:36)
+    at tryResolveRealFileOrType (file:///D:/HDSI-remake/node_modules/vite/dist/node/chunks/node.js:29530:9)
+    at tryCleanFsResolve (file:///D:/HDSI-remake/node_modules/vite/dist/node/chunks/node.js:29279:21)
+    at tryFsResolve (file:///D:/HDSI-remake/node_modules/vite/dist/node/chunks/node.js:29272:14)
+    at aggregateBindingErrorsIntoJsError (file:///D:/HDSI-remake/node_modules/rolldown/dist/shared/error-Bj1xBdEY.mjs:49:18)
+    at unwrapBindingResult (file:///D:/HDSI-remake/node_modules/rolldown/dist/shared/error-Bj1xBdEY.mjs:19:128)
+    at #build (file:///D:/HDSI-remake/node_modules/rolldown/dist/shared/rolldown-jmAeXo_f.mjs:133:34)
+    at async bundleConfigFile (file:///D:/HDSI-remake/node_modules/vite/dist/node/chunks/node.js:38037:12)
+    at async bundleAndLoadConfigFile (file:///D:/HDSI-remake/node_modules/vite/dist/node/chunks/node.js:37933:18)
+    at async loadConfigFromFile (file:///D:/HDSI-remake/node_modules/vite/dist/node/chunks/node.js:37894:42)
+    at async resolveConfig (file:///D:/HDSI-remake/node_modules/vite/dist/node/chunks/node.js:37495:22)
+    at async resolveConfig$1 (file:///D:/HDSI-remake/node_modules/vitest/dist/chunks/index.DpLw24bj.js:14851:25)
+    at async createVitest (file:///D:/HDSI-remake/node_modules/vitest/dist/chunks/cli-api.C4x4GGip.js:26:17)
+    at async prepareVitest (file:///D:/HDSI-remake/node_modules/vitest/dist/chunks/cli-api.C4x4GGip.js:421:14) {
+  errors: [Getter/Setter]
+}
+
+
+

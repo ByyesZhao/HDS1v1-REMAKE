@@ -1,6 +1,6 @@
 # HDSI V0.5：当前文档与审核入口
 
-更新：2026-10-09。当前实现包含 ASTRA T1～T13、R1、T1～T9及环境异步 E1～E5。最新离线验收为148文件／826项；独立复核提出的两处来源快照问题已修复，详见[关闭说明](records/environment-async-20261009/REVIEW_CLOSURE.md)。
+更新：2026-10-09。当前实现包含 ASTRA T1～T13、R1、T1～T9、环境异步 E1～E5及回复规则／图片表情分支。最新离线验收为150文件／840项，见[本批交付](records/reply-guidance-20261009/DELIVERY.md)。环境独立复核提出的两处来源快照问题已修复，详见[关闭说明](records/environment-async-20261009/REVIEW_CLOSURE.md)。
 
 交付后对 `cc963f8` 的[独立复核与修复实施方案](reviews/environment-async-20261009/post-delivery/REVIEW.md)已完成：全量146／804及公开离线验收重跑通过，其确认的P2 Host门禁竞态和P3报告计数错误已修复；独立差异复核无新发现。正式升级后的只读启动检查问题也已修复，详见[修复与正式升级关闭](records/environment-post-delivery-fixes-20261009/DELIVERY.md)。原报告的待修清单属于原基线。
 
@@ -27,7 +27,8 @@
 
 | 材料 | 状态 |
 | --- | --- |
-| [最新修复／正式升级交付](records/environment-post-delivery-fixes-20261009/DELIVERY.md) | R1／R2及只读启动检查关闭；主目录148文件826项；正式库环境2、67图库完整保留 |
+| [最新回复规则交付](records/reply-guidance-20261009/DELIVERY.md) | 三条固定口语规则、第四条程序附件分支、纯图输入与沉默控制；150文件840项；无正式迁移或在线调用 |
+| [前批修复／正式升级交付](records/environment-post-delivery-fixes-20261009/DELIVERY.md) | R1／R2及只读启动检查关闭；原批148文件826项；正式库环境2、67图库完整保留 |
 | [R1／R2独立差异复核](reviews/environment-async-20261009/post-delivery/FIX_DIFF_REVIEW.md) | 7文件40项、无新发现；未覆盖后续启动检查附加修复和正式部署 |
 | [交付后复核与修复实施方案](reviews/environment-async-20261009/post-delivery/REVIEW.md) | 基线cc963f8的原报告；1 P2／1 P3现已关闭，原复现／未勾选清单保留历史含义 |
 | [E阶段交付与复跑](records/environment-async-20261009/DELIVERY.md) | 已交付；前台聊天、环境准备、记忆准备可并行等待，业务写入仍串行 |
