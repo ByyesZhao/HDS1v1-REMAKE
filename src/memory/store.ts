@@ -1,3 +1,4 @@
+import {compactCompletedPayloads,installPayloadIndexes,type CompletedPayloadCompactionReport} from './payload-compaction';
 import {assertMessageSources} from '../dialogue/active-consistency';
 import { Storage } from '../storage';
 import { addMs, milliseconds, nextDaily } from '../time';
@@ -20,6 +21,7 @@ export class MemoryStore {
     storage.prepare('CREATE TABLE IF NOT EXISTS memory_index(ownerType TEXT NOT NULL,ownerId TEXT NOT NULL,revision INTEGER NOT NULL,configSignature TEXT NOT NULL,vector BLOB NOT NULL,PRIMARY KEY(ownerType,ownerId,revision,configSignature))').run();
     storage.prepare("CREATE INDEX IF NOT EXISTS memory_v3_visibility ON memories(json_extract(data,'$.kind'),json_extract(data,'$.status'),json_extract(data,'$.expiresAt'),json_extract(data,'$.shortExpiresAt'))").run();
     for(const table of ['memory_index_jobs','memory_maintenance_jobs']) storage.prepare(`CREATE INDEX IF NOT EXISTS ${table}_due ON ${table}(json_extract(data,'$.status'),json_extract(data,'$.retryAt'),json_extract(data,'$.createdAt'))`).run();
+    installPayloadIndexes(storage);
   }
   schemaVersion():number {return this.storage.get<number>('memory_schema_version')??2;}
   queueDirty(owner:OwnerVersion,reason:MemoryDirtyOwner['reasons'][number],at:string):void {
@@ -166,11 +168,12 @@ export class MemoryStore {
     let data:any=table==='memory_maintenance_jobs'?{kind:'consolidation',prunedOwnerKeys:[],...job}:job;
     if(data.status==='done')data=table==='memory_maintenance_jobs'?{...data,snapshot:[],readSet:[],result:null}:{...data,text:'',result:undefined};
     this.storage.prepare(`INSERT INTO ${table}(id,data) VALUES(?,?) ON CONFLICT(id) DO UPDATE SET data=excluded.data`).run(job.id,JSON.stringify(data));
+    if(table==='memory_maintenance_jobs'&&data.status==='done')this.compactMaintenanceCheckpoint(job.id);
   }
   pruneOwnerFromJobs(owner:MemoryOwnerRef,at:string):void {
     const key=`${owner.ownerType}:${owner.ownerId}`;
     this.storage.prepare("DELETE FROM memory_index_jobs WHERE json_extract(data,'$.owner.ownerType')=? AND json_extract(data,'$.owner.ownerId')=?").run(owner.ownerType,owner.ownerId);
-    for(const job of this.jobs<MaintenanceJob>('memory_maintenance_jobs')){
+    for(const job of this.activeMaintenanceJobsReferencing(owner)){
       if(!job.readSet.some(r=>`${r.ownerType}:${r.ownerId}`===key)&&!job.snapshot.some(r=>`${r.ownerType}:${r.ownerId}`===key))continue;
       const affected=(u:MaintenanceUnit)=>u.readSet.some(r=>`${r.ownerType}:${r.ownerId}`===key)||u.ids.includes(owner.ownerId)||u.canonicalId===owner.ownerId;
       const stale=(job.result??[]).filter(affected).map(u=>u.unitKey);
@@ -194,13 +197,13 @@ export class MemoryStore {
     this.storage.prepare('DELETE FROM memory_dirty_owners WHERE id=?').run(`${owner.ownerType}:${owner.ownerId}`);
     this.storage.prepare("DELETE FROM memory_audit_reports WHERE EXISTS(SELECT 1 FROM json_each(data,'$.readSet') r WHERE json_extract(r.value,'$.ownerType')=? AND json_extract(r.value,'$.ownerId')=?)").run(owner.ownerType,owner.ownerId);
   }
-  compactCompletedPayloads():void {
-    this.storage.prepare("UPDATE post_jobs SET data=json_set(data,'$.result',NULL) WHERE id IN (SELECT id FROM turns WHERE json_extract(data,'$.done')=1)").run();
-    for(const table of ['memory_index_jobs','memory_maintenance_jobs'] as const)for(const job of this.jobs<IndexJob|MaintenanceJob>(table,['done']))this.saveJob(table,job);
-    if(this.storage.prepare("SELECT 1 FROM sqlite_master WHERE name='web_sessions'").get()){
-      this.storage.prepare("UPDATE web_sessions SET data=json_set(data,'$.checkpoint',NULL) WHERE (json_extract(data,'$.ref.ownerType')='turn' AND json_extract(data,'$.ref.ownerId') IN(SELECT id FROM turns WHERE json_extract(data,'$.done')=1)) OR (json_extract(data,'$.ref.ownerType')='environment' AND json_extract(data,'$.ref.ownerId') IN(SELECT id FROM environment_steps WHERE json_extract(data,'$.status') IN('committed','superseded'))) OR (json_extract(data,'$.ref.ownerType')='maintenance' AND json_extract(data,'$.ref.ownerId') IN(SELECT id FROM memory_maintenance_jobs WHERE json_extract(data,'$.status')='done'))").run();
-    }
+  private compactMaintenanceCheckpoint(jobId:string):void {
+    if(this.storage.prepare("SELECT 1 FROM sqlite_master WHERE name='web_sessions'").get())this.storage.prepare("UPDATE web_sessions SET data=json_set(data,'$.checkpoint',NULL) WHERE json_extract(data,'$.ref.ownerType')='maintenance' AND json_extract(data,'$.ref.ownerId')=? AND json_extract(data,'$.checkpoint') IS NOT NULL").run(jobId);
   }
+  activeMaintenanceJobsReferencing(owner:MemoryOwnerRef):MaintenanceJob[]{
+    return this.storage.prepare("SELECT data FROM memory_maintenance_jobs WHERE json_extract(data,'$.status') IN ('pending','computing','ready') AND (EXISTS(SELECT 1 FROM json_each(data,'$.readSet') r WHERE json_extract(r.value,'$.ownerType')=? AND json_extract(r.value,'$.ownerId')=?) OR EXISTS(SELECT 1 FROM json_each(data,'$.snapshot') r WHERE json_extract(r.value,'$.ownerType')=? AND json_extract(r.value,'$.ownerId')=?)) ORDER BY julianday(json_extract(data,'$.createdAt')),id").all(owner.ownerType,owner.ownerId,owner.ownerType,owner.ownerId).map(r=>({kind:'consolidation',prunedOwnerKeys:[],...JSON.parse(String(r.data))}));
+  }
+  compactCompletedPayloads(limit=50):CompletedPayloadCompactionReport{return compactCompletedPayloads(this.storage,limit);}
   projections(canonicalMemoryId:string):MemoryCandidate[]{return this.storage.prepare("SELECT data FROM learned_background WHERE json_extract(data,'$.canonicalMemoryId')=? AND json_extract(data,'$.status')='active' ORDER BY rowid").all(canonicalMemoryId).map(r=>memoryOwnerData(JSON.parse(String(r.data))));}
   maintenanceCandidates(cutoff:string):MemoryCandidate[]{
     return this.storage.prepare("SELECT data FROM memories WHERE json_extract(data,'$.status')='active' AND ((json_extract(data,'$.kind')='short' AND julianday(json_extract(data,'$.shortExpiresAt'))<=julianday(?) AND (json_extract(data,'$.consolidatedRevision') IS NULL OR json_extract(data,'$.consolidatedRevision')!=json_extract(data,'$.revision'))) OR (json_extract(data,'$.kind')='long' AND julianday(json_extract(data,'$.createdAt'))<=julianday(?) AND json_extract(data,'$.totalAwakenings')>=30 AND (json_extract(data,'$.evaluatedEvidenceVersion') IS NULL OR json_extract(data,'$.evaluatedEvidenceVersion')<json_extract(data,'$.stateVersion')))) ORDER BY julianday(json_extract(data,'$.createdAt')),id").all(cutoff,cutoff).map(r=>memoryOwnerData(JSON.parse(String(r.data)))).filter(r=>r.kind!=='long'||promotionEligible(r,cutoff));

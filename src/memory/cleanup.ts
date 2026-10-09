@@ -28,7 +28,7 @@ export class MemoryCleanup {
   applyOne(now:string):'applied'|'blocked'|'none' {
     if(this.store.storage.runtime().paused||this.store.storage.unfinishedTurn()||this.store.storage.runtime().openBatch)return 'blocked';
     const {eligible,repairs}=this.candidates(now);const row=eligible[0];
-    if(row){this.store.storage.transaction(()=>{this.store.purgeOwner(row,now);this.store.compactCompletedPayloads();});return 'applied';}
+    if(row){this.store.storage.transaction(()=>{this.store.purgeOwner(row,now);});return 'applied';}
     if(repairs.length){this.store.storage.transaction(()=>{const short=repairs[0],long=this.store.canonical(short.linkedLongId!)!,updated={...short,stateVersion:short.stateVersion+1,summaryRepairBasis:''};updated.summaryRepairBasis=summaryRepairBasis(updated,long);this.store.saveOwner(updated);this.store.queueDirty(updated,'expiry',now);});return 'applied';}
     const result=this.store.storage.transaction(()=>this.capacity.normalize(now,[],1));if(result.changedOwners.length)return 'applied';
     return this.blocked.length||result.counts.longOverflow||result.counts.shortOverflow?'blocked':'none';

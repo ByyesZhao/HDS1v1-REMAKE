@@ -1,3 +1,4 @@
+import {webCheckpointIndex} from '../memory/payload-compaction';
 import { randomUUID } from 'node:crypto';
 import { Storage } from '../storage';
 import type { ModelRunRef,WebSessionSnapshot,WebOperationRequest,WebOperationRecord,WebConfirmedStep,WebModelCheckpoint,WebSearchResponse,WebMaterial,SelfWebReadSource,WebSessionMetrics,WebSearchCounters,WebOwnerRef,WebStatusSummary } from './types';
@@ -7,6 +8,7 @@ interface MaterialData {runId:string;material:WebMaterial;firstOperationId:strin
 export class WebSearchStore {
   constructor(public readonly storage:Storage){
     for(const table of ['web_sessions','web_operations','web_materials','self_web_read_sources'])storage.prepare(`CREATE TABLE IF NOT EXISTS ${table}(id TEXT PRIMARY KEY,data TEXT NOT NULL)`).run();
+    storage.prepare(webCheckpointIndex).run();
     storage.prepare("CREATE UNIQUE INDEX IF NOT EXISTS web_stage_identity ON web_sessions(json_extract(data,'$.ref.ownerType'),json_extract(data,'$.ref.ownerId'),json_extract(data,'$.ref.stageKey'))").run();
     for(const table of ['web_operations','web_materials'])storage.prepare(`CREATE INDEX IF NOT EXISTS ${table}_run ON ${table}(json_extract(data,'$.runId'))`).run();
   }
@@ -43,7 +45,7 @@ export class WebSearchStore {
   finishOperation(runId:string,id:string,response:WebSearchResponse):void {this.storage.transaction(()=>{const op=this.operation(runId,id);this.saveOperation({...op,status:'done',response});});}
   saveCheckpoint(runId:string,checkpoint:WebModelCheckpoint):void {const session=this.session(runId);this.put('web_sessions',runId,{...session,checkpoint});}
   compactOwnerCheckpoint(ownerType:ModelRunRef['ownerType'],ownerId:string):void {
-    this.storage.prepare("UPDATE web_sessions SET data=json_set(data,'$.checkpoint',NULL) WHERE json_extract(data,'$.ref.ownerType')=? AND json_extract(data,'$.ref.ownerId')=?").run(ownerType,ownerId);
+    this.storage.prepare("UPDATE web_sessions SET data=json_set(data,'$.checkpoint',NULL) WHERE json_extract(data,'$.ref.ownerType')=? AND json_extract(data,'$.ref.ownerId')=? AND json_extract(data,'$.checkpoint') IS NOT NULL").run(ownerType,ownerId);
   }
   incrementMetric(runId:string,metric:keyof WebSessionMetrics):void {const session=this.session(runId);session.metrics[metric]++;this.put('web_sessions',runId,session);}
   markProvided(runId:string,materialIds:string[]):void {

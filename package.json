@@ -16,6 +16,7 @@
     "stickers:catalog": "tsx scripts/import-catalog.ts",
     "check:models": "node scripts/check-models.cjs",
     "memory:migrate": "tsx scripts/migrate-memory.ts",
+    "memory:compact-payloads":"tsx scripts/compact-memory-payloads.ts",
     "memory:capacity":"tsx scripts/migrate-memory-capacity.ts",
     "validate:memory-capacity":"tsx scripts/validate-memory-capacity.ts",
     "validate:prompt-context": "tsx scripts/validate-prompt-context.ts",
