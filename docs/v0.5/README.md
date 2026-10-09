@@ -2,6 +2,8 @@
 
 更新：2026-10-09。当前实现包含 ASTRA T1～T13、R1、T1～T9及环境异步 E1～E5。最新离线验收为146文件／804项；独立复核提出的两处来源快照问题已修复，详见[关闭说明](records/environment-async-20261009/REVIEW_CLOSURE.md)。
 
+交付后对 `cc963f8` 的[独立复核与修复实施方案](reviews/environment-async-20261009/post-delivery/REVIEW.md)已完成：全量146／804及公开离线验收重跑通过，另确认 P2 Host 门禁竞态和 P3 迁移报告计数错误，**两项待修**。报告含可直接实施的任务、复现和关闭条件。
+
 默认提供整个 `docs/v0.5/`，从本文件阅读，并附[目录原则](../DIRECTORY_POLICY.md)。当前功能说明为以下10份；归档仅按疑点查阅。
 
 ## 当前说明与阅读顺序
@@ -25,6 +27,7 @@
 
 | 材料 | 状态 |
 | --- | --- |
+| [交付后复核与修复实施方案](reviews/environment-async-20261009/post-delivery/REVIEW.md) | 基线cc963f8；1 P2／1 P3待修；独立全量及离线验收通过，复现与修复步骤齐全 |
 | [E阶段交付与复跑](records/environment-async-20261009/DELIVERY.md) | 已交付；前台聊天、环境准备、记忆准备可并行等待，业务写入仍串行 |
 | [实施过程](records/environment-async-20261009/IMPLEMENTATION_LOG.md) | E1～E5、失败回归、裁决和验证 |
 | [独立复核原报告](reviews/environment-async-20261009/INDEPENDENT_REVIEW.md) | 基线272437f→2a6b981，1 Important／1 Minor；原结论保留 |
@@ -40,7 +43,7 @@
 | --- | --- |
 | `architecture/`、`subsystems/` | 当前架构及8份功能规则 |
 | `reference/` | 实现对应、配置和必要参考 |
-| [plans/](plans/README.md) | 未实施或进行中合同；本批关闭后无待执行E任务 |
+| [plans/](plans/README.md) | 未实施或进行中合同；E1～E5原合同已关闭，本次复核的两项修复任务见最新review |
 | [records/](records/README.md) | 最近交付、过程、最终日志及目录整理 |
 | [reviews/](reviews/README.md) | 本批独立报告、探针和原始证据 |
 | [../archive/](../archive/README.md) | 已完成计划、被替代交付、旧审核和早期红绿日志 |

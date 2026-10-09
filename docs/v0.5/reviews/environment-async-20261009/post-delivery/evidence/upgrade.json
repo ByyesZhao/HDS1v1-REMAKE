@@ -1,0 +1,24 @@
+{
+  "passed": true,
+  "checks": [
+    "check read-only",
+    "stopped required",
+    "backup round-trip old runtime and steps",
+    "markers 0/0/0/1",
+    "runtime preserved",
+    "repeated apply inert",
+    "unfinished async downgrade rejected",
+    "mixed old-ready/running/retry plus new-week completion",
+    "terminal downgrade",
+    "legacy week model contract 0 and 1"
+  ],
+  "calls": [
+    "school_campus",
+    "school_group"
+  ],
+  "contracts": [
+    0,
+    1
+  ],
+  "dir": "D:\\HDSI-remake\\.tmp\\review-e-upgrade\\f1ed5853-b827-4ef6-b93c-c2d7c33d4a07"
+}

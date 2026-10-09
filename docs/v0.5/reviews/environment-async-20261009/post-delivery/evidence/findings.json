@@ -1,0 +1,182 @@
+{
+  "baseline": "cc963f8",
+  "synthetic": true,
+  "results": [
+    {
+      "finding": "R1",
+      "initial": "ready",
+      "gate": "pause",
+      "before": {
+        "paused": true,
+        "openBatch": false,
+        "status": "ready",
+        "events": 0,
+        "calls": 0
+      },
+      "after": {
+        "paused": true,
+        "openBatch": false,
+        "status": "committed",
+        "events": 1,
+        "calls": 0
+      },
+      "gatesAtGeneration": [],
+      "passed": false
+    },
+    {
+      "finding": "R1",
+      "initial": "ready",
+      "gate": "input",
+      "before": {
+        "paused": false,
+        "openBatch": true,
+        "status": "ready",
+        "events": 0,
+        "calls": 0
+      },
+      "after": {
+        "paused": false,
+        "openBatch": true,
+        "status": "committed",
+        "events": 1,
+        "calls": 0
+      },
+      "gatesAtGeneration": [],
+      "passed": false
+    },
+    {
+      "finding": "R1",
+      "initial": "ready",
+      "gate": "stop",
+      "before": {
+        "paused": false,
+        "openBatch": false,
+        "status": "ready",
+        "events": 0,
+        "calls": 0
+      },
+      "after": {
+        "paused": false,
+        "openBatch": false,
+        "status": "committed",
+        "events": 1,
+        "calls": 0
+      },
+      "gatesAtGeneration": [],
+      "passed": false
+    },
+    {
+      "finding": "R1",
+      "initial": "pending",
+      "gate": "pause",
+      "before": {
+        "paused": true,
+        "openBatch": false,
+        "status": "pending",
+        "events": 0,
+        "calls": 0
+      },
+      "after": {
+        "paused": true,
+        "openBatch": false,
+        "status": "ready",
+        "events": 0,
+        "calls": 1
+      },
+      "gatesAtGeneration": [
+        {
+          "paused": true,
+          "openBatch": false
+        }
+      ],
+      "passed": false
+    },
+    {
+      "finding": "R1",
+      "initial": "pending",
+      "gate": "input",
+      "before": {
+        "paused": false,
+        "openBatch": true,
+        "status": "pending",
+        "events": 0,
+        "calls": 0
+      },
+      "after": {
+        "paused": false,
+        "openBatch": true,
+        "status": "ready",
+        "events": 0,
+        "calls": 1
+      },
+      "gatesAtGeneration": [
+        {
+          "paused": false,
+          "openBatch": true
+        }
+      ],
+      "passed": false
+    },
+    {
+      "finding": "R1",
+      "initial": "pending",
+      "gate": "stop",
+      "before": {
+        "paused": false,
+        "openBatch": false,
+        "status": "pending",
+        "events": 0,
+        "calls": 0
+      },
+      "after": {
+        "paused": false,
+        "openBatch": false,
+        "status": "pending",
+        "events": 0,
+        "calls": 0
+      },
+      "gatesAtGeneration": [],
+      "passed": true
+    },
+    {
+      "finding": "R2",
+      "states": [
+        {
+          "stage": "world",
+          "status": "ready",
+          "preparationVersion": 1
+        },
+        {
+          "stage": "school_campus",
+          "status": "pending",
+          "preparationVersion": 1
+        },
+        {
+          "stage": "school_group",
+          "status": "pending",
+          "preparationVersion": 1
+        },
+        {
+          "stage": "school_week",
+          "status": "pending",
+          "preparationVersion": 1
+        }
+      ],
+      "report": {
+        "version": 2,
+        "targetVersion": 2,
+        "legacyUnfinished": 1,
+        "unstarted": 3,
+        "asyncUnfinished": 4,
+        "canUpgrade": true,
+        "reasons": [],
+        "backupPaths": []
+      },
+      "expected": {
+        "legacyUnfinished": 0,
+        "asyncUnfinished": 4
+      },
+      "passed": false
+    }
+  ]
+}

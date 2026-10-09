@@ -1,0 +1,36 @@
+{
+  "results": [
+    {
+      "name": "detached parse and resolver reject live storage access",
+      "status": "passed"
+    },
+    {
+      "name": "JSON vectors, calibrated retrieval and lookup do not read live store",
+      "status": "passed"
+    },
+    {
+      "name": "messages deletion only invalidates returned sources",
+      "status": "passed"
+    },
+    {
+      "name": "experiences deletion only invalidates returned sources",
+      "status": "passed"
+    },
+    {
+      "name": "self_web_read_sources deletion only invalidates returned sources",
+      "status": "passed"
+    },
+    {
+      "name": "notification lifecycle is ignored but structure and invalidation are detected",
+      "status": "passed"
+    },
+    {
+      "name": "research, knowledge and pending appointments enter stage basis",
+      "status": "passed"
+    },
+    {
+      "name": "advance past issue catches hidden future update at apply",
+      "status": "passed"
+    }
+  ]
+}

@@ -2,9 +2,9 @@
 
 返回[版本索引](../README.md)。
 
-最新为[环境异步E阶段独立复核](environment-async-20261009/INDEPENDENT_REVIEW.md)，代码范围272437f→2a6b981。报告确认1 Important来源全文复制和1 Minor非消息来源依据缺口；原报告与原失败探针保留，不改写成通过。
+最新为[环境异步交付后复核与修复实施方案](environment-async-20261009/post-delivery/REVIEW.md)，基线cc963f8。独立重跑146文件804项、类型、构建、演示和双场景插件验收通过；另确认1 P2 Host门禁竞态和1 P3迁移报告计数错误，均待修。报告已列出SOL可直接执行的修改步骤、回归和关闭条件。
 
-两项随后均由实施者修复，见[关闭说明](../records/environment-async-20261009/REVIEW_CLOSURE.md)。独立审核只重跑8文件25项；修复后实施者重跑全量146文件804项、类型、构建、演示和双场景插件检查，二者证据范围分开。没有第二次独立重审。
+前轮[环境异步E阶段独立复核](environment-async-20261009/INDEPENDENT_REVIEW.md)的代码范围为272437f→2a6b981，确认1 Important来源全文复制和1 Minor非消息来源依据缺口，随后均由实施者修复，见[关闭说明](../records/environment-async-20261009/REVIEW_CLOSURE.md)。前轮独立审核只重跑8文件25项；修复后实施者重跑全量146文件804项。原报告与原失败探针保留，不改写成通过；本次交付后复核有单独基线与证据。
 
 前批[ASTRA T1～T9最终复核](../../archive/reviews/post-t1-t9-20261009/REVIEW.md)及旧ASTRA、R1、DSH材料在[历史审核](../../archive/reviews/)或[历史送审包](../../archive/dsh-review/)。旧缺陷断言按原基线使用。
 
