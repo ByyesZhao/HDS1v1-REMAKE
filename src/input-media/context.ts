@@ -6,9 +6,10 @@ import type {PreparedAttachment} from './types';
 import type {IncomingMediaService} from './service';
 export function hydrateVisualContext(input:StageModelInput,confirmed:PreparedAttachment[],frozen:PreparedAttachment[]):StageModelInput{
  const result=structuredClone(input),byAttachment=new Map(confirmed.map(e=>[e.attachmentId,e]));for(const e of frozen)byAttachment.set(e.attachmentId,e);
+ const byMessage=new Map<string,PreparedAttachment[]>();for(const entry of byAttachment.values()){const rows=byMessage.get(entry.messageId)??[];rows.push(entry);byMessage.set(entry.messageId,rows);}for(const rows of byMessage.values())rows.sort((a,b)=>a.order-b.order);
  const bodies=new Map<string,NonNullable<StageModelInput['resources']['visualObservations']>[number]>();
  result.resources.messages=result.resources.messages.map(m=>{
-  const entries=[...byAttachment.values()].filter(e=>e.messageId===m.id).sort((a,b)=>a.order-b.order);
+  const entries=byMessage.get(m.id)??[];
   if(!entries.length)return m;
   for(const e of entries)if(e.status==='ready'&&e.observationRef&&e.recognizerVersion&&e.observation)bodies.set(e.observationRef,{ref:e.observationRef,recognizerVersion:e.recognizerVersion,observation:e.observation});
   return {...m,visualAttachments:entries.map(({attachmentId,order,status,observationRef})=>({attachmentId,order,status,observationRef}))};

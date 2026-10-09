@@ -71,11 +71,29 @@ export class IncomingMediaService {
    return m.direction==='incoming'&&m.seenTurnId===null||recent.has(m.id)||!!m.sharedActivityId&&m.sharedActivityId===db.runtime().sharedClock?.activityId&&db.runtime().sharedClock?.status==='active'||!!turns&&turns.inputMessageIds.includes(m.id)||!!db.prepare("SELECT 1 FROM tasks WHERE json_extract(data,'$.status')='pending' AND EXISTS(SELECT 1 FROM json_each(json_extract(data,'$.messageIds')) WHERE value=?) LIMIT 1").get(m.id);
   });
  }
+ private cleanupCandidate():string|null {
+  const db=this.store.storage,turn=db.unfinishedTurn();
+  const ids=[...db.recentChatSnapshot({eligibility:'with_visible_inputs',count:this.config.recentSegments??4,visibleIds:[]}).messages.map(m=>m.id),...turn?.inputMessageIds??[]];
+  const pending=turn?.visualContext?.entries.flatMap(e=>e.status==='pending'&&e.imageAssetRef?[e.imageAssetRef]:[])??[];
+  const clock=db.runtime().sharedClock,activity=clock?.status==='active'?clock.activityId:null;
+  const row=db.prepare(`SELECT asset.id FROM image_assets asset
+   WHERE json_extract(asset.data,'$.state') IN ('ready','deleting')
+    AND asset.id NOT IN (SELECT value FROM json_each(?))
+    AND NOT EXISTS (
+     SELECT 1 FROM message_attachments a JOIN messages m ON m.id=json_extract(a.data,'$.messageId')
+     WHERE json_extract(a.data,'$.assetRef')=asset.id AND (
+      (json_extract(m.data,'$.direction')='incoming' AND json_extract(m.data,'$.seenTurnId') IS NULL)
+      OR m.id IN (SELECT value FROM json_each(?))
+      OR (? IS NOT NULL AND json_extract(m.data,'$.sharedActivityId')=?)
+      OR EXISTS(SELECT 1 FROM tasks t,json_each(json_extract(t.data,'$.messageIds')) member WHERE json_extract(t.data,'$.status')='pending' AND member.value=m.id)
+     )
+    ) LIMIT 1`).get(JSON.stringify(pending),JSON.stringify(ids),activity,activity);
+  return row?String(row.id):null;
+ }
  async cleanupOne(_now:string):Promise<'applied'|'none'> {
   if(this.stopped)return 'none';
-  const rows=this.store.storage.prepare("SELECT id FROM image_assets WHERE json_extract(data,'$.state')='ready'").iterate();
-  for(const r of rows){const ref=String(r.id);if(this.protectedAsset(ref))continue;return await this.assets.retire(ref,()=>!this.protectedAsset(ref))?'applied':'none';}
-  return 'none';
+  const ref=this.cleanupCandidate();if(!ref)return 'none';
+  return await this.assets.retire(ref,()=>!this.protectedAsset(ref))?'applied':'none';
  }
  async stop(){this.stopped=true;await this.assets.stop();await Promise.allSettled([...this.prefetched,...this.observations.values()]);}
 }

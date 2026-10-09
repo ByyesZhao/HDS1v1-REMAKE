@@ -55,7 +55,7 @@ export class IncomingAssets {
   try{const bytes=await readFile(join(this.root,asset.relativePath));return 'data:'+asset.mimeType+';base64,'+bytes.toString('base64');}finally{this.uses.set(ref,this.uses.get(ref)!-1);}
  }
  async retire(ref:string,eligible:()=>boolean):Promise<boolean> {
-  const asset=this.store.storage.read('image_assets',ref);if(!asset||asset.state!=='ready'||this.uses.get(ref)||this.jobs.size||!eligible())return false;
+  const asset=this.store.storage.read('image_assets',ref);if(!asset||!['ready','deleting'].includes(asset.state)||this.uses.get(ref)||this.jobs.size||!eligible())return false;
   let removed=false;const work=(async()=>{await Promise.resolve();if(!eligible()||this.uses.get(ref))return;
    this.store.storage.save('image_assets',ref,{...asset,state:'deleting'});
    await unlink(join(this.root,asset.relativePath)).catch(e=>{if(e.code!=='ENOENT')throw e;});

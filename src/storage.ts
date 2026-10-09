@@ -35,6 +35,7 @@ export class Storage {
     for (const table of tables) this.db.exec(`CREATE TABLE IF NOT EXISTS ${table} (id TEXT PRIMARY KEY, data TEXT NOT NULL)`);
     this.db.exec(`
       CREATE INDEX IF NOT EXISTS attachment_message ON message_attachments(json_extract(data,'$.messageId'),json_extract(data,'$.order'));
+      CREATE INDEX IF NOT EXISTS image_asset_state ON image_assets(json_extract(data,'$.state'));
       CREATE INDEX IF NOT EXISTS attachment_asset ON message_attachments(json_extract(data,'$.assetRef'));
       CREATE INDEX IF NOT EXISTS observation_hash_version ON image_observations(json_extract(data,'$.contentHash'),json_extract(data,'$.recognizerVersion'));
       CREATE INDEX IF NOT EXISTS school_notice_status ON school_notices(json_extract(data,'$.status'));

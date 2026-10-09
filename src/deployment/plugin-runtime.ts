@@ -39,7 +39,8 @@ import type {StorySettings} from '../settings';
 import type {ManagedBrowserProvider} from '../web/browser/types';
 const name='hdsi-remake';
 export interface PluginRuntime {host:SerialHost;stopAcceptingInput():void;close():Promise<void>}
-export async function createPluginRuntime(ctx:Context,config:Config,settings:StorySettings,managedBrowser?:ManagedBrowserProvider):Promise<PluginRuntime>{
+export async function createPluginRuntime(ctx:Context,config:Config,settings:StorySettings,managedBrowser?:ManagedBrowserProvider):Promise<PluginRuntime>{return createPluginRuntimeSync(ctx,config,settings,managedBrowser);}
+export function createPluginRuntimeSync(ctx:Context,config:Config,settings:StorySettings,managedBrowser?:ManagedBrowserProvider):PluginRuntime{
   // Validate deployment prerequisites before creating a formal story database.
   modelRoles.forEach(role => connectionFor(settings, role));
   if(settings.visualInput.enabled)connectionFor(settings,'incoming_image');

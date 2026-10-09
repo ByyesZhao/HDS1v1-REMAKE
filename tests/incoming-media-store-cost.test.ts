@@ -1,0 +1,4 @@
+import {it,expect,vi} from 'vitest';import {Storage} from '../src/storage';import {IncomingMediaStore} from '../src/input-media/store';
+it('loads attachments with one indexed batch query preserving requested message order and numeric positions',()=>{
+ const db=new Storage(':memory:'),store=new IncomingMediaStore(db),ids=Array.from({length:15},(_,i)=>'message-'+(15-i));try{store.register(ids.flatMap(messageId=>Array.from({length:12},(_,order)=>({id:JSON.stringify([messageId,order]),messageId,order,kind:'image' as const}))));const spy=vi.spyOn(db,'prepare');const entries=store.forMessages(ids);expect(entries.map(e=>e.messageId)).toEqual(ids.flatMap(id=>Array(12).fill(id)));expect(entries.slice(0,12).map(e=>e.order)).toEqual(Array.from({length:12},(_,i)=>i));expect(spy.mock.calls.length).toBeLessThanOrEqual(2);}finally{db.close();}
+});
