@@ -42,6 +42,7 @@ export class ChatEpisodes {
  closeDue(at:string):void{const s=this.store.storage;for(const e of this.store.openChatEpisodes())if(!this.held(e.id)&&time(at)>=time(this.deadline(e))){this.store.saveChatEpisode({...e,status:'closed',closedAt:this.deadline(e),closeReason:'idle'});if(s.runtime().activeChatEpisodeId===e.id)s.set('runtime',{...s.runtime(),activeChatEpisodeId:null});}}
  nextDeadline(_at:string):string|null{return this.store.openChatEpisodes().filter(e=>!this.held(e.id)).map(e=>this.deadline(e)).sort((a,b)=>time(a)-time(b))[0]??null;}
  recent(phase:string,_at:string,count:number,visibleIds:string[]=[]):ChatRecent {
-  const selected=recentFromSnapshot({messages:this.store.storage.messages(),episodes:this.store.chatEpisodes()},{eligibility:phase==='narrative'?'ordinary_narrative':'with_visible_inputs',count,visibleIds:new Set(visibleIds)});assertActiveWindow(this.store.storage,{requiredMessageIds:selected.messages.map(m=>m.id),touchedEpisodeIds:selected.episodeIds});return selected;
+  const eligibility=phase==='narrative'?'ordinary_narrative' as const:'with_visible_inputs' as const;
+  const selected=recentFromSnapshot(this.store.storage.recentChatSnapshot({eligibility,count,visibleIds}),{eligibility,count,visibleIds:new Set(visibleIds)});assertActiveWindow(this.store.storage,{requiredMessageIds:selected.messages.map(m=>m.id),touchedEpisodeIds:selected.episodeIds});return selected;
  }
 }

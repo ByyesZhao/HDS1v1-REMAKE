@@ -15,3 +15,5 @@ export type ChatEligibility='ordinary_narrative'|'with_visible_inputs';
 export interface ChatWindowSnapshot {messages:readonly Message[];episodes:readonly ChatEpisode[]}
 
 export interface ActiveWindowScope {touchedMessageIds:readonly string[];requiredMessageIds:readonly string[];sourceIds:readonly string[];touchedEpisodeIds:readonly string[]}
+
+export interface ChatWindowQuery {eligibility:ChatEligibility;count:number;visibleIds:readonly string[]}

@@ -1,3 +1,5 @@
+import {recentChatSnapshot} from './dialogue/chat-sql';
+import type {ChatWindowQuery,ChatWindowSnapshot} from './dialogue/types';
 import { DatabaseSync } from 'node:sqlite';
 import { mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
@@ -25,6 +27,7 @@ export class Storage {
   constructor(path: string,options:{readOnly?:boolean;dialogueIdleMinutes?:number}={}) {
     if (!options.readOnly&&path !== ':memory:') mkdirSync(dirname(path), { recursive: true });
     this.db = new DatabaseSync(path,{readOnly:options.readOnly??false});
+    this.db.function('hdsi_epoch_ms',{deterministic:true},value=>{const n=typeof value==='string'?Date.parse(value):NaN;return Number.isFinite(n)?n:null;});
     if(options.readOnly)return;
     this.db.exec('PRAGMA journal_mode = WAL; PRAGMA synchronous = FULL;');
     this.db.exec('CREATE TABLE IF NOT EXISTS state (key TEXT PRIMARY KEY, data TEXT NOT NULL)');
@@ -39,6 +42,7 @@ export class Storage {
       CREATE INDEX IF NOT EXISTS turn_active_work ON turns(COALESCE(json_extract(data,'$.done'),0)) WHERE COALESCE(json_extract(data,'$.done'),0)=0 AND COALESCE(json_extract(data,'$.legacyDisposition'),'')!='superseded';
       CREATE INDEX IF NOT EXISTS message_turn ON messages(json_extract(data,'$.turnId'));
       CREATE INDEX IF NOT EXISTS message_chat ON messages(json_extract(data,'$.chatEpisodeId'));
+      CREATE INDEX IF NOT EXISTS message_chat_rank ON messages(json_extract(data,'$.chatEpisodeId'),json_extract(data,'$.receivedAt')) WHERE COALESCE(json_extract(data,'$.sharedActivityId'),'')='' AND COALESCE(json_extract(data,'$.chatEpisodeId'),'')!='' AND (json_extract(data,'$.direction')='outgoing' OR COALESCE(json_type(data,'$.seenTurnId'),'missing')!='null');
       CREATE INDEX IF NOT EXISTS message_activity ON messages(json_extract(data,'$.sharedActivityId'));
       CREATE INDEX IF NOT EXISTS chat_open ON chat_episodes(json_extract(data,'$.status'));
       CREATE UNIQUE INDEX IF NOT EXISTS post_turn ON post_jobs(json_extract(data, '$.turnId'));
@@ -94,6 +98,7 @@ export class Storage {
     for(let i=0;i<unique.length;i+=500){const chunk=unique.slice(i,i+500);rows.push(...this.db.prepare('SELECT rowid,data FROM messages WHERE id IN ('+chunk.map(()=>'?').join(',')+')').all(...chunk));}
     return rows.sort((a,b)=>Number(a.rowid)-Number(b.rowid)).map(r=>JSON.parse(String(r.data)) as Message).sort((a,b)=>Date.parse(a.receivedAt)-Date.parse(b.receivedAt));
   }
+  recentChatSnapshot(options:ChatWindowQuery):ChatWindowSnapshot{return recentChatSnapshot(this,options);}
   unreadMessages(): Message[] {
     const open=this.runtime().openBatch?.id;
     return this.messageQuery("json_extract(data,'$.direction')='incoming' AND json_type(data,'$.seenTurnId')='null' AND json_extract(data,'$.seenTurnId') IS NULL AND NOT (COALESCE(json_extract(data,'$.sharedActivityId'),'')!='' AND COALESCE(json_type(data,'$.batchId')='null',0)) AND "+(open===undefined?"json_type(data,'$.batchId') IS NOT NULL":"json_extract(data,'$.batchId') IS NOT ?"),open===undefined?[]:[open]);

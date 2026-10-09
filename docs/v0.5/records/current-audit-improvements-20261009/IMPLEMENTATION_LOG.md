@@ -20,3 +20,7 @@ T1完成：修正缺日期／单日期默认；已通过真实canonical合并、
 ## T3：通道门禁
 先校正活动夹具的description/startsAt/phoneAccess，随后RED真实断言：recent关闭未实现、缺lookupForMemory API、免个人分支仍准备资料。GREEN8文件40项通过，typecheck退出0（测试触发名改为合法check_messages）。默认普通阶段结果保持，记忆补查只对发送的owner投影计一次可选预算。
 
+
+## T4：普通窗口SQL
+RED6项均因缺接口／UDF失败；GREEN9文件52项通过。新增1000/10000/50000段样本，每次窗口全文164消息+4段，写入0；3规模测试通过，typecheck0。JS原选择器对照覆盖未读、活动、missing/null、时间offset/小数、非BMP段ID、稳定outbox排序、回滚和非法日期兼容。SQL历史标量聚合仍随H增长。
+
