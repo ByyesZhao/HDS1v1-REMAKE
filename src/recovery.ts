@@ -10,7 +10,7 @@ import {applySchoolCommits} from './school/progress';
 import {activityChanged} from './memory/idle';
 
 export function freezeTurn(d: Dependencies, turn: TurnRecord, candidate: TurnCandidate, items: OutboxItem[]): TurnRecord {
-  const updated = { ...turn, frozenResult: candidate, outputComplete: items.length === 0,
+  const updated = { ...turn, ...d.storage.read('turns',turn.id), frozenResult: candidate, outputComplete: items.length === 0,
     autonomousIntervalMinutes: turn.autonomousIntervalMinutes === undefined ? candidate.autonomousIntervalMinutes : turn.autonomousIntervalMinutes };
   d.storage.transaction(() => {
     d.storage.save('turns', turn.id, updated);

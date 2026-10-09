@@ -1,3 +1,4 @@
+import {withTurnVisualContext} from './input-media/context';
 import {assertActiveWindow} from './dialogue/active-consistency';
 import { ModelRequestError } from './model/client';
 import { DialogueEpisodes } from './dialogue/episodes';
@@ -28,7 +29,7 @@ import { hasValidSharedScene } from './host/shared';
 import {narrativeSchoolContext,personalSchoolContext,personalEnvironmentEvents} from './school/context';
 import {prepareSchoolCommits} from './school/progress';
 
-export interface Dependencies { chat?:ChatEpisodes;dialogue?:DialogueEpisodes; generateEnvironment?:EnvironmentGenerator; environmentStore:EnvironmentStore;schoolStore:SchoolStore; storage: Storage; clock: Clock; random: Random; models: ModelRunner; config: AppConfig; sender: Sender; wait(ms: number): Promise<void>; web?:import('./web/service').WebSearchService; memoryStore?:import('./memory/store').MemoryStore; memoryLifecycle?:import('./memory/lifecycle').MemoryLifecycle; memoryCapacity?:import('./memory/capacity').MemoryCapacity;memoryIdle?:import('./memory/idle').MemoryIdle;memoryCleanup?:import('./memory/cleanup').MemoryCleanup;retrieval?:MemoryRetrieval; maintenance?:import('./memory/maintenance').MemoryMaintenance; stickers?: { findSticker(query: string): Promise<string> }; getSelfWebReadSources?(turnId:string):import('./memory/types').SelfWebReadSource[] }
+export interface Dependencies { incomingMedia?:import('./input-media/service').IncomingMediaService; chat?:ChatEpisodes;dialogue?:DialogueEpisodes; generateEnvironment?:EnvironmentGenerator; environmentStore:EnvironmentStore;schoolStore:SchoolStore; storage: Storage; clock: Clock; random: Random; models: ModelRunner; config: AppConfig; sender: Sender; wait(ms: number): Promise<void>; web?:import('./web/service').WebSearchService; memoryStore?:import('./memory/store').MemoryStore; memoryLifecycle?:import('./memory/lifecycle').MemoryLifecycle; memoryCapacity?:import('./memory/capacity').MemoryCapacity;memoryIdle?:import('./memory/idle').MemoryIdle;memoryCleanup?:import('./memory/cleanup').MemoryCleanup;retrieval?:MemoryRetrieval; maintenance?:import('./memory/maintenance').MemoryMaintenance; stickers?: { findSticker(query: string): Promise<string> }; getSelfWebReadSources?(turnId:string):import('./memory/types').SelfWebReadSource[] }
 export class HdsiApp {
   private busy = false;
   constructor(public readonly dependencies: Dependencies) { dependencies.dialogue??=new DialogueEpisodes(new DialogueStore(dependencies.storage));dependencies.chat??=new ChatEpisodes(new DialogueStore(dependencies.storage),dependencies.retrieval?.limits.dialogueIdleMinutes??15); }
@@ -91,6 +92,7 @@ export class HdsiApp {
   }
 }
 export async function generateTurn(d: Dependencies, request: TurnRequest, turnId: string, at = d.clock.now(), retainedInterval?: number | null): Promise<{ candidate: TurnCandidate; items: OutboxItem[] }> {
+  const models=withTurnVisualContext(d.models,d.incomingMedia,turnId);
   const state = structuredClone(d.storage.character());
   const entryMode = state.scene.mode;
   const shared = hasValidSharedScene(state);
@@ -125,7 +127,8 @@ export async function generateTurn(d: Dependencies, request: TurnRequest, turnId
   if (waking) state.sleep = null;
   const narrativeInput = { dialogueWindowVersion,currentActivityMessages:activityContextMessages(d.storage,activityContext,shared?'narrative_shared':'narrative',shared?messages.map(m=>m.id):[]),from: state.narratedUntil, at, background: d.config.background, state, waking, events,school:schoolContext, dueTasks: tasks, recent, history: narrativeHistory,
     ...(shared ? { visibleMessages: messages, sharedMeta: request.sharedMeta, remainingSteps: request.sharedMeta ? request.sharedMeta.maxSteps - request.sharedMeta.stepNumber : null } : {}) };
-  const narrative = await runNarrative(d.models, shared, state.narratedUntil, at, [...events.map(e=>e.id),...schoolContext.eventIds], narrativeInput,phaseOptions(d.web,'turn',turnId,'narrative',shared?'narrative_shared':'narrative',{lookup:q=>contextBuilder.retrieval.lookup(q,narrativeRequest)}), request.sharedMeta, state.scene.shared?.outline,
+  if(shared)await d.incomingMedia?.prepareForTurn(turnId,messages.map(m=>m.id));
+  const narrative = await runNarrative(models, shared, state.narratedUntil, at, [...events.map(e=>e.id),...schoolContext.eventIds], narrativeInput,phaseOptions(d.web,'turn',turnId,'narrative',shared?'narrative_shared':'narrative',{lookup:q=>contextBuilder.retrieval.lookup(q,narrativeRequest)}), request.sharedMeta, state.scene.shared?.outline,
     result=>{prepareSchoolCommits(d.storage,schoolTurn,result,result.experiences.map((e,i)=>({...e,id:`draft:${i}`})));});
   const experiences=narrative.experiences.map(e=>({...e,id:randomUUID()}));
   const schoolCommits=prepareSchoolCommits(d.storage,schoolTurn,narrative,experiences);
@@ -141,6 +144,7 @@ export async function generateTurn(d: Dependencies, request: TurnRequest, turnId
   const visible = shared || canRead(state, at) ? messages : [];
   const deferred = tasks.filter(t => t.checkReason === 'deferred_reply' && canRead(state, at));
   const reconsider = [...new Set(deferred.flatMap(t => t.messageIds ?? []))].map(id => d.storage.read('messages', id)!).filter(m => m.seenTurnId !== null);
+  if(!shared)await d.incomingMedia?.prepareForTurn(turnId,[...visible,...reconsider].map(m=>m.id));
   const contactEligible = request.triggerKinds.includes('autonomous') && !shared && visible.length === 0 && !tasks.some(t => t.kind === 'appointment') && canRead(state, at) && !isSleeping(state, at);
   const kind = shared ? 'shared' : visible.length || tasks.some(t => t.kind === 'appointment') || deferred.length > 0 ? 'chat' : 'life';
   const runPerson = shared || visible.length > 0 || tasks.some(t => t.kind === 'appointment') || request.triggerKinds.includes('autonomous') || request.triggerKinds.includes('sleep') || schoolCommits.observations.length>0 || tasks.some(t => t.checkReason === 'deferred_reply' && canRead(state, at));
@@ -157,7 +161,7 @@ export async function generateTurn(d: Dependencies, request: TurnRequest, turnId
   personalSchool=personalSchoolContext(d.storage,schoolCommits.observations,personalQuery);
   const personalEvents=personalEnvironmentEvents(d.storage,personalSchool.knownSnapshots);
 
-    personal = await runPersonal(d.models, kind, at, allTasks, entryMode, [...visible, ...reconsider].map(m => m.id), { dialogueWindowVersion,currentActivityMessages:activityContextMessages(d.storage,activityContext,shared?'personal_shared':'personal_chat',visible.map(m=>m.id)),at, background: d.config.background, state, experiences: narrative.experiences,school:personalSchool, visibleMessages: visible, reconsiderMessages: reconsider, dueTasks: tasks.filter(t => t.kind !== 'check_messages' || canRead(state, at)), tasks: allTasks, events:personalEvents, history: personalHistory, contactEligible,
+    personal = await runPersonal(models, kind, at, allTasks, entryMode, [...visible, ...reconsider].map(m => m.id), { dialogueWindowVersion,currentActivityMessages:activityContextMessages(d.storage,activityContext,shared?'personal_shared':'personal_chat',visible.map(m=>m.id)),at, background: d.config.background, state, experiences: narrative.experiences,school:personalSchool, visibleMessages: visible, reconsiderMessages: reconsider, dueTasks: tasks.filter(t => t.kind !== 'check_messages' || canRead(state, at)), tasks: allTasks, events:personalEvents, history: personalHistory, contactEligible,
       ...(shared ? { sharedMeta: request.sharedMeta, remainingSteps: request.sharedMeta ? request.sharedMeta.maxSteps - request.sharedMeta.stepNumber : null, outline: state.scene.shared?.outline, publicNarration: 'publicNarration' in narrative ? narrative.publicNarration : null } : {}) },phaseOptions(d.web,'turn',turnId,'personal',`personal_${kind}`,{lookup:async q=>({...await contextBuilder.retrieval.lookup(q,personalRequest),school:personalSchoolContext(d.storage,schoolCommits.observations,typeof q==='string'?q:q.query)})}), request.sharedMeta, 'publicNarration' in narrative ? narrative.publicNarration : null,{contactEligible});
     state.emotions = personal.emotions;
     if (typeof personal.nextPlan === 'string') state.plan = personal.nextPlan;
@@ -169,7 +173,7 @@ export async function generateTurn(d: Dependencies, request: TurnRequest, turnId
   }
   const change = personal?.sharedChange;
   const outputMode = change?.action === 'start' ? change.mode : entryMode;
-  const expression = intent ? await runExpression(d.models, { dialogueWindowVersion,currentActivityMessages:activityContextMessages(d.storage,activityContext,'expression',visible.map(m=>m.id)),intent, mode: outputMode, state,school:personalSchool, visibleMessages: visible, reconsiderMessages: reconsider, history: personalHistory, chatExamples: d.config.chatExamples,style:d.config.backgroundViews?.status==='approved'?d.config.backgroundViews.style:undefined },phaseOptions(d.web,'turn',turnId,'expression','expression',{lookup:null})) : null;
+  const expression = intent ? await runExpression(models, { dialogueWindowVersion,currentActivityMessages:activityContextMessages(d.storage,activityContext,'expression',visible.map(m=>m.id)),intent, mode: outputMode, state,school:personalSchool, visibleMessages: visible, reconsiderMessages: reconsider, history: personalHistory, chatExamples: d.config.chatExamples,style:d.config.backgroundViews?.status==='approved'?d.config.backgroundViews.style:undefined },phaseOptions(d.web,'turn',turnId,'expression','expression',{lookup:null})) : null;
   const candidate: TurnCandidate = {
     visibleMessageIds: visible.map(m => m.id), reconsiderMessageIds: reconsider.map(m => m.id), narrative, personal, expression,
     experiences,schoolNoticeRefs:request.schoolNoticeRefs??[],schoolObservations:schoolCommits.observations,schoolProgress:schoolCommits.progress,nextState: state,

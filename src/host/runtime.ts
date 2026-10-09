@@ -22,7 +22,7 @@ export class SerialHost {
   private readonly scheduler: Scheduler;
   constructor(private app: HdsiApp, private options: { timers?: boolean; onError?: (error: unknown) => void; onWarning?: (warning:string)=>void; yieldToEvents?:()=>Promise<void> } = {}) {
     this.environment=new EnvironmentPreparation(app.dependencies,{onReady:()=>{void this.wake();}});
-    this.input = new InputBuffer(app.dependencies.storage,app.dependencies.memoryIdle,app.dependencies.dialogue,app.dependencies.chat); this.scheduler = new Scheduler(app.dependencies.storage,app.dependencies.config);
+    this.input = new InputBuffer(app.dependencies.storage,app.dependencies.memoryIdle,app.dependencies.dialogue,app.dependencies.chat,app.dependencies.incomingMedia?.store); this.scheduler = new Scheduler(app.dependencies.storage,app.dependencies.config);
   }
   private checkDialogue(full=true):void {
     const d=this.app.dependencies;
@@ -33,6 +33,7 @@ export class SerialHost {
   async acceptInput(message: IncomingMessage): Promise<InputAcceptance> {
     this.checkDialogue(false);
     const accepted = await this.input.acceptInput(message);
+    this.app.dependencies.incomingMedia?.prefetchForMessages([message.id]);
     void this.wake();
     return accepted;
   }
@@ -78,6 +79,8 @@ export class SerialHost {
       }
       if (ready) {this.currentEnvironmentStepId=ready.environmentStepId??null;try{await this.app.runTurn(ready);}finally{this.currentEnvironmentStepId=null;}if(ready.environmentStepId)await (this.options.yieldToEvents??setImmediate)();continue;}
       if(this.stopped||d.storage.runtime().paused||d.storage.runtime().openBatch)break;
+      const mediaCleaned=await d.incomingMedia?.cleanupOne(d.clock.now())??'none';
+      if(mediaCleaned==='applied'){await (this.options.yieldToEvents??setImmediate)();continue;}
       const cleaned=d.memoryCleanup?.applyOne(d.clock.now())??'none';
       if(cleaned==='applied'){await (this.options.yieldToEvents??setImmediate)();continue;}
       const applied=d.maintenance?.applyOneReady(d.clock.now())??'none';

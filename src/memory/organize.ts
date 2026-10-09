@@ -1,3 +1,5 @@
+import {withTurnVisualContext} from '../input-media/context';
+import {isStageModelInput} from '../model/context-types';
 import {assertActiveWindow,assertMessageSources} from '../dialogue/active-consistency';
 import {activityContextMessages} from '../dialogue/activity-context';
 import { stageInput } from '../model/context-views';
@@ -30,9 +32,9 @@ export async function organizeMemory(d: Dependencies, turn: TurnRecord): Promise
   const shortIds=memories.filter(m=>m.ownerType==='short').map(m=>m.id);
   const longIds=memories.filter(m=>m.ownerType==='long'||m.ownerType==='learned').map(m=>m.id);
   const options=phaseOptions(d.web,'turn',turn.id,'memory','memory',{lookup:async q=>{const result={...await builder.lookupForMemory(q,base),school:personalSchoolContext(d.storage,c.schoolObservations??[],typeof q==='string'?q:q.query)};includeLookupIds(result);return result;}});
-  function includeLookupIds(result:unknown){if(!result||typeof result!=='object'||!('retrieved' in result)||!Array.isArray(result.retrieved))return;for(const row of result.retrieved){const ids=row.kind==='short'?shortIds:longIds;if(['short','long','learned'].includes(row.kind)&&!ids.includes(row.id))ids.push(row.id);}}
+  function includeLookupIds(result:unknown){const rows=isStageModelInput(result)?result.resources.owners:result&&typeof result==='object'&&'retrieved' in result&&Array.isArray(result.retrieved)?result.retrieved:[];for(const row of rows){const ids=row.kind==='short'?shortIds:longIds;if(['short','long','learned'].includes(row.kind)&&!ids.includes(row.id))ids.push(row.id);}}
   includeLookupIds(options.web?.snapshot().checkpoint?.privateLookupResult);
-  return d.models.runModel(memoryTask(sourceIds,longIds,shortIds,selfWebReadSources.map(s=>s.id)), stageInput('memory',{
+  return withTurnVisualContext(d.models,d.incomingMedia,turn.id).runModel(memoryTask(sourceIds,longIds,shortIds,selfWebReadSources.map(s=>s.id)), stageInput('memory',{
     dialogueWindowVersion:turn.dialogueWindowVersion??1,currentActivityMessages:turn.dialogueWindowVersion===2?activityContextMessages(d.storage,turn.activityContext,'memory',c.visibleMessageIds):[],at: turn.at, background: d.config.background, experiences: c.experiences, visibleMessages, reconsiderMessages, outgoing,
     school:personalSchoolContext(d.storage,c.schoolObservations??[],query),
     arrangementsAndIntent: { plan: c.nextState.plan, tasks: c.taskChanges, outline: c.narrative && 'outline' in c.narrative ? c.narrative.outline : null },

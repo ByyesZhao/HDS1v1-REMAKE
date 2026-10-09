@@ -1,17 +1,18 @@
 import type { ModelResourcePool,ModelMessage,ModelScheduledTask,ModelOwnerView } from './context-types';
 import type { WebMaterial } from '../web/types';
-export const emptyResourcePool=():ModelResourcePool=>({messages:[],tasks:[],owners:[],materials:[]});
+export const emptyResourcePool=():ModelResourcePool=>({messages:[],tasks:[],owners:[],materials:[],visualObservations:[]});
 export class ResourcePool {
  readonly data:ModelResourcePool=emptyResourcePool();
  private messageIds=new Set<string>();
+ private messageById=new Map<string,ModelMessage>();
  private taskIds=new Set<string>();
  private ownerRefs=new Set<string>();
  private materialIds=new Set<string>();
- message(row:ModelMessage):string {if(!this.messageIds.has(row.id)){this.data.messages.push({id:row.id,direction:row.direction,content:row.content,receivedAt:row.receivedAt,...(row.hasVisualAttachment?{hasVisualAttachment:true}:{})});this.messageIds.add(row.id);}return row.id;}
+ message(row:ModelMessage):string {const old=this.messageIds.has(row.id)?this.messageById.get(row.id):undefined;if(!old){const {id,direction,content,receivedAt,hasVisualAttachment,contentParts,visualAttachments}=row;this.data.messages.push({id,direction,content,receivedAt,...(hasVisualAttachment?{hasVisualAttachment:true}:{}),...(contentParts?{contentParts:structuredClone(contentParts)}:{}),...(visualAttachments?{visualAttachments:structuredClone(visualAttachments)}:{})});this.messageIds.add(row.id);this.messageById.set(row.id,this.data.messages[this.data.messages.length-1]);}else {old.contentParts??=row.contentParts?structuredClone(row.contentParts):undefined;for(const binding of row.visualAttachments??[]){old.visualAttachments??=[];const existing=old.visualAttachments.find(a=>a.attachmentId===binding.attachmentId);if(existing&&JSON.stringify(existing)!==JSON.stringify(binding))throw Error('conflicting terminal visual binding');if(!existing)old.visualAttachments.push(structuredClone(binding));}old.visualAttachments?.sort((a,b)=>a.order-b.order);}return row.id;}
  task(row:ModelScheduledTask):string{if(!this.taskIds.has(row.id)){const {id,kind,at,description,checkReason,messageIds,sharedActivityId}=row;this.data.tasks.push({id,kind,at,description,...(checkReason?{checkReason}:{}),...(messageIds?{messageIds}:{}),...(sharedActivityId?{sharedActivityId}:{})});this.taskIds.add(row.id);}return row.id;}
  owner(row:ModelOwnerView):string{if(!this.ownerRefs.has(row.ref)){this.data.owners.push(structuredClone(row));this.ownerRefs.add(row.ref);}return row.ref;}
  material(row:WebMaterial):string{if(!this.materialIds.has(row.id)){this.data.materials.push(structuredClone(row));this.materialIds.add(row.id);}return row.id;}
- merge(pool:ModelResourcePool):void{pool.messages.forEach(m=>this.message(m));pool.tasks.forEach(t=>this.task(t));pool.owners.forEach(o=>this.owner(o));pool.materials.forEach(m=>this.material(m));}
+ merge(pool:ModelResourcePool):void{pool.messages.forEach(m=>this.message(m));pool.tasks.forEach(t=>this.task(t));pool.owners.forEach(o=>this.owner(o));pool.materials.forEach(m=>this.material(m));for(const body of pool.visualObservations??[]){const old=this.data.visualObservations!.find(b=>b.ref===body.ref);if(old&&JSON.stringify(old)!==JSON.stringify(body))throw Error('conflicting visual observation');if(!old)this.data.visualObservations!.push(structuredClone(body));}}
 }
 
 import type { CompletionRequest } from './client';
@@ -30,10 +31,11 @@ export function buildCompletionEnvelope(request:CompletionRequest):ModelCompleti
  let lookupResult=request.lookupResult;
  if(lookupResult&&typeof lookupResult==='object'){
   const lookup=lookupResult as Record<string,unknown>,stage=(request.task.promptPolicy?.stage??request.task.name) as PromptStage;
+  const projected=isStageModelInput(lookup)?lookup:null;
   const {materials,webMaterials,...raw}=lookup;
   const materialIds:string[]=[];for(const rows of [materials,webMaterials])if(Array.isArray(rows))for(const m of rows)materialIds.push(pool.material(m as WebMaterial));
-  if(['details','retrieved','shortTerm','longTerm','learned','detailHistory','school','history','recent','visibleMessages','reconsiderMessages','tasks','dueTasks','snapshot'].some(k=>k in raw)){
-   const view=stageInput(stage,raw);pool.merge(view.resources);
+  if(projected||['details','retrieved','shortTerm','longTerm','learned','detailHistory','school','history','recent','visibleMessages','reconsiderMessages','tasks','dueTasks','snapshot'].some(k=>k in raw)){
+   const view=projected??stageInput(stage,raw);pool.merge(view.resources);
    const context={...view.context},contextRefs:Record<string,string>={};
    for(const key of ['school','detailHistory'])if(input&&key in context&&key in input.context&&JSON.stringify(stableValue(context[key]))===JSON.stringify(stableValue(input.context[key]))){delete context[key];contextRefs[key]=`input.context.${key}`;}
    lookupResult={context,roles:view.roles,...(Object.keys(contextRefs).length?{contextRefs}:{}),...(materialIds.length?{materialIds:[...new Set(materialIds)]}:{})};
