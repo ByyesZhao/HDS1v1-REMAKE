@@ -1,7 +1,7 @@
 import { addMs, milliseconds, localParts } from '../time';
 import { MemoryStore,memoryIndexText } from './store';
 import {MemoryCapacity,archiveStart,promotionEligible} from './capacity';
-import type { AwakeningInput, MemoryCandidate, MemoryResultV3, RetentionGrant } from './types';
+import type { AwakeningInput, MemoryCandidate, MemoryResultV3, RetentionGrant, ProjectionRepairReport } from './types';
 
 const day=86400_000;
 const union=(...arrays:string[][])=>[...new Set(arrays.flat())];
@@ -127,18 +127,33 @@ export class MemoryLifecycle {
     this.refresh(main.id);const current=this.store.canonical(main.id)!;if(textChanged)this.store.queueIndex(current,at??main.createdAt);this.synchronizeProjections(current,at??main.createdAt);
   }
   promotionCandidates(at:string):MemoryCandidate[]{return this.store.storage.prepare("SELECT data FROM memories WHERE json_extract(data,'$.kind')='long' AND json_extract(data,'$.status')='active' AND json_extract(data,'$.totalAwakenings')>=30 AND (json_extract(data,'$.evaluatedEvidenceVersion') IS NULL OR json_extract(data,'$.evaluatedEvidenceVersion')<json_extract(data,'$.stateVersion'))").all().map(r=>JSON.parse(String(r.data))).filter(r=>promotionEligible(r,at));}
+  private projectionEvidence(projection:MemoryCandidate,current?:MemoryCandidate):MemoryCandidate|null {
+    const resolved=projection.canonicalMemoryId?this.store.canonical(projection.canonicalMemoryId):null;const main=resolved&&current?.id===resolved.id?current:resolved;if(!main)return null;
+    const evidence=union([main.id],...(projection.evidenceMemoryIds??[]).map(id=>{const r=this.store.canonicalEvidence(id);return r?[r.id]:[]}));
+    const rows=evidence.map(id=>current?.id===id?current:this.store.canonical(id)!).filter(Boolean);
+    return {...projection,canonicalMemoryId:main.id,evidenceMemoryIds:evidence,projectionBasis:{content:main.content,sourceIds:main.sourceIds,revision:main.revision},
+      evidenceVersions:rows.map(r=>({ownerType:r.ownerType,ownerId:r.id,revision:r.revision,stateVersion:r.stateVersion})).sort((a,b)=>a.ownerId.localeCompare(b.ownerId)),
+      sourceIds:union(projection.sourceIds,...rows.map(r=>r.sourceIds)),topics:union(projection.topics,...rows.map(r=>r.topics))};
+  }
+  private saveProjection(old:MemoryCandidate,updated:MemoryCandidate,at:string,dirty:boolean):boolean {
+    if(JSON.stringify(updated)===JSON.stringify(old))return false;
+    const changed=memoryIndexText(old)!==memoryIndexText(updated);
+    updated.revision=old.revision+(changed?1:0);updated.stateVersion=old.stateVersion+1;
+    this.store.saveOwner(updated);if(changed)this.store.queueIndex(updated,at);if(dirty)this.store.queueDirty(updated,'learned',at);return changed;
+  }
+  repairLearnedProjections(at:string):ProjectionRepairReport {
+    const report:ProjectionRepairReport={changedOwnerIds:[],reindexedOwnerIds:[],missingCanonicalIds:[]};
+    this.store.storage.transaction(()=>{for(const old of this.store.allOwners().filter(r=>r.kind==='learned'&&r.status==='active')){
+      const updated=this.projectionEvidence(old);if(!updated){report.missingCanonicalIds.push(old.canonicalMemoryId??old.id);continue;}
+      if(JSON.stringify(old)===JSON.stringify(updated))continue;
+      report.changedOwnerIds.push(old.id);if(this.saveProjection(old,updated,at,true))report.reindexedOwnerIds.push(old.id);
+    }});report.missingCanonicalIds=union(report.missingCanonicalIds);return report;
+  }
   synchronizeProjections(row:MemoryCandidate,at:string,dirty=false):void {
-    for(const projection of this.store.allOwners().filter(p=>p.kind==='learned'&&p.status==='active'&&(p.canonicalMemoryId===row.id||p.evidenceMemoryIds?.includes(row.id)))){
-      const basis={content:row.content,sourceIds:row.sourceIds,revision:row.revision};
-      const primary=projection.canonicalMemoryId===row.id;
-      const evidenceIds=new Set([projection.canonicalMemoryId,...projection.evidenceMemoryIds??[]]);
-      const evidenceVersions=[...(projection.evidenceVersions??[]).filter(ref=>ref.ownerId!==row.id&&evidenceIds.has(ref.ownerId)),{ownerType:row.ownerType,ownerId:row.id,revision:row.revision,stateVersion:row.stateVersion}].sort((a,b)=>a.ownerId.localeCompare(b.ownerId));
-      const updated={...projection,sourceIds:union(projection.sourceIds,row.sourceIds),topics:union(projection.topics,row.topics),evidenceVersions,...(primary?{projectionBasis:basis}:{})};
-      // Single-event experience follows its current summary; a multi-event understanding retains its conclusion and exposes the updated basis explicitly.
-      if(primary&&projection.learnedKind==='durable_experience'){updated.content=row.content;updated.eventSummary=row.eventSummary;updated.feelingSummary=row.feelingSummary;Object.assign(updated,eventRange([row]),{lastEventUpdateAt:row.lastEventUpdateAt});}
-      if(JSON.stringify(updated)===JSON.stringify(projection))continue;
-      const textChanged=memoryIndexText(projection)!==memoryIndexText(updated);updated.revision=projection.revision+(textChanged?1:0);updated.stateVersion=projection.stateVersion+1;
-      this.store.saveOwner(updated);if(textChanged)this.store.queueIndex(updated,at);if(dirty)this.store.queueDirty(updated,'learned',at);
+    for(const old of this.store.allOwners().filter(p=>p.kind==='learned'&&p.status==='active'&&(p.canonicalMemoryId===row.id||p.evidenceMemoryIds?.includes(row.id)))){
+      const updated=this.projectionEvidence(old,row);if(!updated)continue;
+      if(updated.canonicalMemoryId===row.id&&old.learnedKind==='durable_experience')Object.assign(updated,{content:row.content,eventSummary:row.eventSummary,feelingSummary:row.feelingSummary,...eventRange([row]),lastEventUpdateAt:row.lastEventUpdateAt});
+      this.saveProjection(old,updated,at,dirty);
     }
   }
   evaluateRetain(id:string):void {const row=this.store.canonical(id)!;this.store.saveOwner({...row,evaluatedEvidenceVersion:row.stateVersion+1,stateVersion:row.stateVersion+1});}
@@ -147,7 +162,7 @@ export class MemoryLifecycle {
     const evidence=union(evidenceIds.flatMap(id=>{const l=this.store.canonicalEvidence(id);return l?[l.id]:[];}));
     if(kind==='stable_understanding'&&evidence.length<2)throw new Error('stable understanding requires distinct events');
     const learned=this.store.makeOwner({ownerType:'learned',ownerId:learnedId},{content,eventSummary:content,sourceIds:union(row.sourceIds,...evidence.map(id=>this.store.canonical(id)!.sourceIds)),evidenceMemoryIds:evidence,canonicalMemoryId:row.id,learnedKind:kind,alwaysInclude:kind==='stable_understanding'&&alwaysInclude,topics:row.topics,...(kind==='durable_experience'?{...eventRange([row]),lastEventUpdateAt:row.lastEventUpdateAt}:{})},at);
-    this.store.saveOwner({...row,status:'durable',expiresAt:null,windowAwakenings:0,stateVersion:row.stateVersion+1});this.store.saveOwner(learned);this.store.queueIndex(learned,at);this.store.queueDirty(learned,'learned',at);
+    this.store.saveOwner({...row,status:'durable',expiresAt:null,windowAwakenings:0,stateVersion:row.stateVersion+1});const projected=this.projectionEvidence(learned)!;this.store.saveOwner(projected);this.store.queueIndex(projected,at);this.store.queueDirty(projected,'learned',at);
   }
   mergeShort(ids:string[],canonicalShortId:string,content:string,eventSummary:string,feelingSummary:string,sourceIds:string[],at:string):MemoryCandidate {
     const shorts=[...new Set(ids)].map(ownerId=>this.store.owner({ownerType:'short',ownerId})).filter((r):r is MemoryCandidate=>!!r&&r.kind==='short'&&r.status==='active'&&!r.mergedInto);

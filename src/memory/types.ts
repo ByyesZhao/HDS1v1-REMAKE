@@ -53,3 +53,5 @@ export interface ModelRunOptions {signal?:AbortSignal;lookup?:((request:LookupRe
 export interface ShortCreate {action:'create';clientRef:string;content:string;eventSummary:string;feelingSummary:string;topics:string[];sourceIds:string[];importance:'normal'|'high';existingLongId?:string;hasNewEventProgress?:boolean;happenedAt?:string;happenedUntil?:string}
 export interface ShortUpdate {action:'update';id:string;content:string;eventSummary:string;feelingSummary:string;topics:string[];sourceIds:string[];hasNewEventProgress:boolean;happenedAt?:string;happenedUntil?:string}
 export interface MemoryResultV3 {schemaVersion:3;shortTermChanges:Array<ShortCreate|ShortUpdate>;longTermChanges:Array<{action:'awaken';id:string;reason:string;sourceIds:string[]}>;detailChanges:Array<{action:'create'|'update';key:string;value:string;aliases:string[];reason:string;sourceIds:string[]}>}
+
+export interface ProjectionRepairReport {changedOwnerIds:string[];reindexedOwnerIds:string[];missingCanonicalIds:string[]}

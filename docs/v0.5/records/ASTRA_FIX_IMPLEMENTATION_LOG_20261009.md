@@ -30,4 +30,7 @@ T3: in progress — 生产V1更正阅读后现场旧课次，即时visibleSnapsh
 
 T3: complete — 共用纯已知版本选择器；生产观察链即刻/持久不回退，真实App个人/表达/lookup输入保持V2＋历史V1。5组回归覆盖未读隔离、顺序/同公开版本记录差异、独立历史实例、重复知识提交。指定4文件20项GREEN；完整110文件636项通过（56.36s），typecheck通过。同步导演/上下文及旧细化被替代定位。补修T1测试CommonJS加载，T1五项重新通过。证据：t3-red、t3-targets、t3-suite、t3-types、t1-cjs-green。
 T4: in progress — V1只读plan issue后，personal reminder仍scheduled，正向RED已取得。
-T4: complete — V1计划通知实际阅读后推导个人提醒；共用时区展开，覆盖跨午夜、successor、内部/公开版本、取消/待定/日期、精确边界。实际提醒阅读失败回滚与重放幂等通过，资格检查不产生知识。指定8文件47项和阅读事务测试通过；全量111文件639项通过；typecheck通过。验收脚本同步必需timezone参数；D1区分未保存过期提醒与已保存合法延迟发布。日志t4-red/t4-expanded/t4-transaction/t4-types/t4-suite。
+T4: complete — V1计划通知实际阅读后推导个人提醒；共用时区展开，覆盖跨午夜、successor、内部/公开版本、取消/待定/日期、精确边界。实际提醒阅读失败回滚与重放幂等通过，资格检查不产生知识。指定8文件47项和阅读事务测试通过；全量112文件640项通过（56.50s）；typecheck通过。验收脚本同步必需timezone参数；D1区分未保存过期提醒与已保存合法延迟发布。日志t4-red/t4-expanded/t4-transaction/t4-types/t4-suite。
+
+T5: in progress — 未标定词法场景中具体事件词不命中晋升记录RED；兼容补齐新增接口测试亦失败，开始修复。
+T5: complete — 同候选事件依据与结论可召回，旧补齐幂等/不改durable措辞/无唤醒续期；前台先恢复、后台inFlight延期、ready/started快照保留。指定9文件51项，追加恢复/冻结测试通过。首次全回归发现既有同步接口接受尚未保存的当前owner，已保留该合同，memory-final-review重新通过；最终联合全量114文件649项通过（57.57s）。类型检查通过。日志t5-red/targets/sync-green/types、t56-extra-green/suite。

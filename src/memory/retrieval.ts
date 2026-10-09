@@ -4,7 +4,7 @@ import { defaultContextLimits,memoryOwnerData } from './types';
 import {ChatEpisodes} from '../dialogue/chat-episodes';
 import { DialogueEpisodes } from '../dialogue/episodes';
 import { DialogueStore } from '../dialogue/store';
-import { MemoryStore } from './store';
+import { MemoryStore,memoryIndexText } from './store';
 import { MemoryIndex } from './index';
 import { lexicalCoverage } from './lexical';
 export { queryTerms } from './lexical';
@@ -41,7 +41,7 @@ export class MemoryRetrieval {
     for(const row of candidates.filter(r=>!always.includes(r))) {
       const facts=row.ownerType==='detail';
       if(facts&&[row.key,...row.aliases??[]].filter(Boolean).some(alias=>request.query.toLowerCase().includes(alias!.toLowerCase()))) {direct.push(row);continue;}
-      const score=lexicalCoverage(request.query,`${row.content} ${row.topics.join(' ')} ${row.feelingSummary} ${row.key??''} ${row.aliases?.join(' ')??''}`);
+      const score=lexicalCoverage(request.query,row.kind==='learned'?memoryIndexText(row):`${row.content} ${row.topics.join(' ')} ${row.feelingSummary} ${row.key??''} ${row.aliases?.join(' ')??''}`);
       if(score>0&&score>=this.calibration.lexical[facts?'fact':'experience'])lexical.push({row,score});
       const threshold=this.calibration.semantic;
       if(vector&&row.normalizedVector&&threshold&&threshold.configSignature===this.index?.configSignature&&vector.length===row.normalizedVector.length){

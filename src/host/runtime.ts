@@ -1,3 +1,4 @@
+import {renderWebStatus} from '../web/status';
 import {checkWindowConsistency} from '../dialogue/window-consistency';
 import type { IncomingMessage, InputAcceptance } from '../types';
 import { HdsiApp } from '../app';
@@ -12,6 +13,8 @@ export class SerialHost {
   private stopped = false;
   private requested = false;
   private recover = false;
+  private projectionRepairPending = true;
+  private currentEnvironmentStepId:string|null=null;
   private readonly input: InputBuffer;
   private readonly scheduler: Scheduler;
   constructor(private app: HdsiApp, private options: { timers?: boolean; onError?: (error: unknown) => void; onWarning?: (warning:string)=>void; yieldToEvents?:()=>Promise<void> } = {}) {
@@ -55,8 +58,12 @@ export class SerialHost {
         this.recover = false; await this.app.resumeUnfinishedTurn();continue;
       }
       this.recover = false;
+      if(this.projectionRepairPending&&!d.maintenance?.inFlight){
+        const report=d.memoryLifecycle?.repairLearnedProjections(d.clock.now());this.projectionRepairPending=false;
+        if(report?.missingCanonicalIds.length)this.options.onWarning?.('记忆依据缺失：'+report.missingCanonicalIds.join(', '));
+      }
       const ready = await this.scheduler.collectReady(d.clock.now());
-      if (ready) {await this.app.runTurn(ready);if(ready.environmentStepId)await (this.options.yieldToEvents??setImmediate)();continue;}
+      if (ready) {this.currentEnvironmentStepId=ready.environmentStepId??null;try{await this.app.runTurn(ready);}finally{this.currentEnvironmentStepId=null;}if(ready.environmentStepId)await (this.options.yieldToEvents??setImmediate)();continue;}
       if(this.stopped||d.storage.runtime().paused||d.storage.runtime().openBatch)break;
       const cleaned=d.memoryCleanup?.applyOne(d.clock.now())??'none';
       if(cleaned==='applied'){await (this.options.yieldToEvents??setImmediate)();continue;}
@@ -101,9 +108,10 @@ export class SerialHost {
     const next = await this.nextDeadline();
     const display = next ? new Intl.DateTimeFormat('zh-CN', { timeZone: d.config.timezone, dateStyle: 'short', timeStyle: 'medium' }).format(new Date(next)) : '无';
     const maintenance=d.maintenance?.status();
-    const web=d.web?.status();
+    const owners:import('../web/types').WebOwnerRef[]=[];if(t)owners.push({ownerType:'turn',ownerId:t.id});if(this.currentEnvironmentStepId)owners.push({ownerType:'environment',ownerId:this.currentEnvironmentStepId});const backOwner=d.maintenance?.currentWebOwner();if(backOwner)owners.push(backOwner);
+    const web=d.web?.statusSummary(owners);
     const capacity=d.memoryCapacity?.counts(d.clock.now()),idle=d.memoryIdle?.eligibility(d.clock.now()),cleanup=d.memoryCleanup?.status();
-    return `状态：${d.storage.runtime().paused ? '暂停' : '运行'}；阶段：${stage}；下次调度：${display}`+(d.storage.runtime().lastFailure?`；前台失败：${d.storage.runtime().lastFailure!.kind}／${d.storage.runtime().lastFailure!.task??'无模型任务'}／${d.storage.runtime().lastFailure!.safeSummary}`:'')+(maintenance?`；维护：待办${maintenance.pending}／就绪${maintenance.ready}／在途${maintenance.inFlight?1:0}／重试${maintenance.retries}／后台请求${maintenance.backendRequests}；后台错误：${maintenance.lastError??'无'}；检索：查询${maintenance.retrieval.queries}／缓存${maintenance.retrieval.cacheHits}／远程${maintenance.retrieval.remoteRequests}／超时${maintenance.retrieval.timeouts}／失败${maintenance.retrieval.failures}／词法降级${maintenance.retrieval.lexicalFallbacks}／主动跳过${maintenance.retrieval.semanticSkipped??0}`:'')+(capacity?`；短期活跃${capacity.shortActive}；长期占用${capacity.longOccupied}／预备${capacity.longPreview}／可见${capacity.longVisible}／归档${capacity.longArchive}；容量目标${JSON.stringify(d.memoryCapacity!.config)}；超量${capacity.shortOverflow}/${capacity.longOverflow}/${capacity.archiveOverflow}；保护${capacity.protectedLong}；清理阻挡${cleanup?.oldestBlock??'无'}`:'')+(idle?`；空闲资格${idle.reason}／截止${idle.readyAt??'无'}；增量待办${d.memoryStore?.dirtyOwners().length??0}`:'')+(web?`；网页（页面额度，非费用）：${JSON.stringify(web)}`:'');
+    return `状态：${d.storage.runtime().paused ? '暂停' : '运行'}；阶段：${stage}；下次调度：${display}`+(d.storage.runtime().lastFailure?`；前台失败：${d.storage.runtime().lastFailure!.kind}／${d.storage.runtime().lastFailure!.task??'无模型任务'}／${d.storage.runtime().lastFailure!.safeSummary}`:'')+(maintenance?`；维护：待办${maintenance.pending}／就绪${maintenance.ready}／在途${maintenance.inFlight?1:0}／重试${maintenance.retries}／后台请求${maintenance.backendRequests}；后台错误：${maintenance.lastError??'无'}；检索：查询${maintenance.retrieval.queries}／缓存${maintenance.retrieval.cacheHits}／远程${maintenance.retrieval.remoteRequests}／超时${maintenance.retrieval.timeouts}／失败${maintenance.retrieval.failures}／词法降级${maintenance.retrieval.lexicalFallbacks}／主动跳过${maintenance.retrieval.semanticSkipped??0}`:'')+(capacity?`；短期活跃${capacity.shortActive}；长期占用${capacity.longOccupied}／预备${capacity.longPreview}／可见${capacity.longVisible}／归档${capacity.longArchive}；容量目标${JSON.stringify(d.memoryCapacity!.config)}；超量${capacity.shortOverflow}/${capacity.longOverflow}/${capacity.archiveOverflow}；保护${capacity.protectedLong}；清理阻挡${cleanup?.oldestBlock??'无'}`:'')+(idle?`；空闲资格${idle.reason}／截止${idle.readyAt??'无'}；增量待办${d.memoryStore?.dirtyOwners().length??0}`:'')+(web?renderWebStatus(web):'');
   }
   async stop(): Promise<void> {
     this.stopped = true;
