@@ -58,6 +58,8 @@ const settingsSchema = z.object({
   historyBudget: nullableLimit, stickersEnabled: z.boolean().default(false),memory:memorySettings,memoryEmbedding:embedding.prefault({}),
   sharedIdleSeconds: z.number().int().positive().default(60), sharedMaxSteps: z.number().int().min(1).max(20).default(20),
   models: z.object(Object.fromEntries(modelRoles.map(role => [role, role.startsWith('school_')?connection.extend({reasoningEffort:z.enum(['none','low','high','max']).default('low')}):connection])) as Record<typeof modelRoles[number], typeof connection>),
+  visualInput:z.object({enabled:z.boolean().default(false)}).prefault({}),
+  incomingImageModel:connection.optional(),
   stickerDescriptionModel: connection.optional(),
   embedding: embedding.optional(),
   webSources: z.array(z.url({protocol:/^https?$/})).default([]),
@@ -77,7 +79,7 @@ export function loadSettings(path: string, environment: Record<string, string | 
 }
 export function appConfig(settings: StorySettings): AppConfig { return { ...defaultConfig, ...settings,background:backgroundFor(settings,'narrative') }; }
 export function connectionFor(settings: StorySettings, task: string, environment = process.env): ModelConnection {
-  const c = task === 'sticker_description' ? settings.stickerDescriptionModel : settings.models[task as typeof modelRoles[number]];
+  const c = task === 'incoming_image' ? settings.incomingImageModel??settings.stickerDescriptionModel : task === 'sticker_description' ? settings.stickerDescriptionModel : settings.models[task as typeof modelRoles[number]];
   if (!c) throw new Error(`configure model for ${task}`);
   const apiKey = environment[c.apiKeyEnv];
   if (!apiKey) throw new Error(`set ${c.apiKeyEnv} before enabling HDSI`);

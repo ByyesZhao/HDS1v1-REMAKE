@@ -2,7 +2,7 @@ import type { Message,ScheduledTask } from '../types';
 import type { MemoryCandidate,SelfWebReadSource,RetrievedContext } from '../memory/types';
 import type { WebMaterial } from '../web/types';
 export type OwnerViewPurpose='narrative'|'personal'|'expression'|'memory'|'maintenance';
-export type PromptStage='narrative'|'narrative_shared'|'personal_chat'|'personal_life'|'personal_shared'|'expression'|'memory'|'memory_consolidation'|'memory_audit'|'world'|'school_campus'|'school_group'|'school_week'|'sticker_description';
+export type PromptStage='narrative'|'narrative_shared'|'personal_chat'|'personal_life'|'personal_shared'|'expression'|'memory'|'memory_consolidation'|'memory_audit'|'world'|'school_campus'|'school_group'|'school_week'|'sticker_description'|'incoming_image';
 export interface ModelOwnerView {ref:string;id:string;kind:MemoryCandidate['kind'];content?:string;eventSummary?:string;feelingSummary?:string;topics:string[];importance:MemoryCandidate['importance'];happenedAt:string;happenedUntil?:string;key?:string;value?:string;aliases?:string[];effectiveAt?:string;learnedKind?:MemoryCandidate['learnedKind'];canonicalMemoryId?:string;projectionBasis?:MemoryCandidate['projectionBasis'];sourceIds?:string[];linkedLongId?:string|null;createdAt?:string;summaryQuality?:MemoryCandidate['summaryQuality'];evidenceMemoryIds?:string[];totalAwakenings?:number;windowAwakenings?:number;summaryRepairBasis?:string}
 export type ModelMessage=Pick<Message,'id'|'direction'|'content'|'receivedAt'|'hasVisualAttachment'>;
 export type ModelScheduledTask=Pick<ScheduledTask,'id'|'kind'|'at'|'description'|'checkReason'|'messageIds'|'sharedActivityId'>;

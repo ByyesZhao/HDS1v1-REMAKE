@@ -72,15 +72,17 @@ export class ModelClient implements ModelRunner {
 }
 
 export class ChatCompletionsTransport implements Transport {
-  constructor(private connectionFor: (taskName: string) => ModelConnection, private fetcher: typeof fetch = fetch) {}
+  constructor(private connectionFor: (taskName: string) => ModelConnection, private fetcher: typeof fetch = fetch,private resolveImageAsset?:(ref:string)=>Promise<string>) {}
   async complete(request: CompletionRequest, options: {signal?:AbortSignal} = {}): Promise<unknown> {
     const c = this.connectionFor(request.task.name);
     const envelope=buildCompletionEnvelope(request);
     const view=isStageModelInput(request.input)?request.input:undefined;
-    const imageUrl=view&&typeof view.context.imageDataUrl==='string'?view.context.imageDataUrl:request.input&&typeof request.input==='object'&&'imageDataUrl' in request.input?String(request.input.imageDataUrl):undefined;
+    const transferContext=view?.context??(request.input&&typeof request.input==='object'?request.input as Record<string,unknown>:{});
+    const assetUrl=request.task.name==='incoming_image'&&typeof transferContext.imageAssetRef==='string'&&this.resolveImageAsset?await this.resolveImageAsset(transferContext.imageAssetRef):undefined;
+    const imageUrl=assetUrl??(view&&typeof view.context.imageDataUrl==='string'?view.context.imageDataUrl:request.input&&typeof request.input==='object'&&'imageDataUrl' in request.input?String(request.input.imageDataUrl):undefined);
     if(imageUrl&&envelope.input&&typeof envelope.input==='object'){
       const textInput={...envelope.input as Record<string,unknown>};
-      if(view){const context={...view.context};delete context.imageDataUrl;textInput.context=context;}else delete textInput.imageDataUrl;
+      if(view){const context={...view.context};delete context.imageDataUrl;delete context.imageAssetRef;textInput.context=context;}else {delete textInput.imageDataUrl;delete textInput.imageAssetRef;}
       envelope.input=textInput;
     }
     const branches=[request.task.schema,...(request.tools?.web?[z.toJSONSchema(webSearchToolSchema),z.toJSONSchema(webReadToolSchema)]:[]),...(request.tools?.lookup?[z.toJSONSchema(z.object({lookupDetails:lookupRequestSchema}))]:[])];
