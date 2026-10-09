@@ -150,7 +150,13 @@ export class MemoryMaintenance {
       }
       this.options.onReady?.();
     }catch(error){if(!this.stopped){const current=this.store.job<IndexJob|MaintenanceJob>(work.table,work.job.id);if(current&&current.status!=='done'){this.store.saveJob(work.table,{...current,status:'pending',retryAt:addMs(this.options.clock.now(),this.options.retryDelayMs??300000),lastError:error instanceof Error?error.message:String(error)});this.options.onReady?.();}}}
-    finally{clearTimeout(timer);controller.signal.removeEventListener('abort',onAbort);if(work.table==='memory_maintenance_jobs')this.options.web?.compactOwnerCheckpoint('maintenance',work.job.id);}
+    finally{
+      clearTimeout(timer);controller.signal.removeEventListener('abort',onAbort);
+      if(work.table==='memory_maintenance_jobs'&&this.options.web){
+        const current=this.store.job<MaintenanceJob>(work.table,work.job.id);
+        if(current?.status==='ready'||current?.status==='done')this.options.web.compactOwnerCheckpoint('maintenance',work.job.id);
+      }
+    }
   }
   applyOneReady(now:string):'applied'|'stale'|'none' {
     if(this.stopped||this.blocked())return 'none';const works=this.work();const work=works.find(w=>w.job.status==='ready'&&this.due(w.job,now)&&this.eligible(w,now))??works.find(w=>w.table==='memory_index_jobs'&&w.job.status==='pending'&&w.job.configSignature!==this.index.configSignature&&this.due(w.job,now));if(!work)return 'none';
