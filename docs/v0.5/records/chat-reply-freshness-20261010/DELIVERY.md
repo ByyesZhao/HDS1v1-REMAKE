@@ -1,6 +1,6 @@
 # 普通回复跟进新消息交付
 
-基线3fb4e1c；依据[ASTRA细化方案](../../reviews/chat-reply-freshness-20261010/EXECUTION_PLAN.md)。任务T1～T5已实现，完整离线工程检查通过，独立复核正在进行；不以原8文件35项代替新增验收。
+基线3fb4e1c；依据[ASTRA细化方案](../../reviews/chat-reply-freshness-20261010/EXECUTION_PLAN.md)。任务T1～T5已实现，完整离线工程检查及独立复核通过；不以原8文件35项代替新增验收。
 
 - 输入版本与普通合批选择：41cf1f0。
 - 候选换代与发送边界：cb9ec0b。
@@ -23,3 +23,9 @@
 184文件／990项全部通过（full-final.txt，退出码0）；typecheck、build、demo、双场景Koishi smoke、合成库只读启动检查及hash verify均退出码0。新增五文件36项含11项文件库重开；准备图片pending阶段保留及新图一次识别有实际DTO断言。无需提示词改动，判断全部在模型阶段外程序执行。
 
 原始输出见logs。共享依赖junction使静态check的插件导出检查仍从主目录载入，项目settings从工作树读取；真实smoke明确载入工作树lib/index.js。此限制已单列，不把静态check说成完整工作树服务启动。正式配置、库、QQ与供应商均未调用／修改。
+
+## 最终复核
+
+[独立审查](INDEPENDENT_REVIEW.md)未发现Critical／Important／需修复Minor；独立重跑7文件44项及三组状态边界探针通过。它未重复全量验收，990项为执行者证据。新增[合成时间线](evidence/synthetic-timeline.json)以真实DTO验证14999ms仍等待、15000ms同轮换代并回复最新消息；脚本[verify-timeline.ts](verify-timeline.ts)可重跑。
+
+源码合并与正式部署状态以本文件的后续部署记录为准。

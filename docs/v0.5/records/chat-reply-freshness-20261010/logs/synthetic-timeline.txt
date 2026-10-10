@@ -1,0 +1,3 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run tsx docs/v0.5/records/chat-reply-freshness-20261010/verify-timeline.ts
+latest input selected after full 15000ms; generation=2; one current reply; no error
