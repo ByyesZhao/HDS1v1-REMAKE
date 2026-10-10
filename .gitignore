@@ -35,3 +35,6 @@ runtime/archive/
 
 # Reviewed phone-access regression evidence
 !docs/v0.5/records/phone-access-20261010/logs/*.log
+
+# Ephemeral local stop-control descriptor
+hdsi-control/

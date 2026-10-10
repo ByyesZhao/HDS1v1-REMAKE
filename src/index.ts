@@ -1,4 +1,5 @@
 import {Context,Schema} from 'koishi';
+import {installStopControl} from './deployment/stop-control';
 import {resolve} from 'node:path';
 import {loadSettings,connectionFor,modelRoles} from './settings';
 import {createPluginRuntimeSync} from './deployment/plugin-runtime';
@@ -21,6 +22,7 @@ export function apply(ctx:Context,config:Config):void{
   installBrowserRuntime(ctx,config,settings);return;
  }
  const created=Promise.resolve(createPluginRuntimeSync(ctx,config,settings));let disposed=false;
+ installStopControl(ctx,async()=>{disposed=true;await (await created).close({graceful:true});});
  ctx.on('ready',async()=>{const runtime=await created;if(!disposed)await runtime.host.start();});
  ctx.on('dispose',async()=>{disposed=true;await (await created).close();});
 }

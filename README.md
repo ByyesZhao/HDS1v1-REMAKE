@@ -41,16 +41,17 @@ npm run check --prefix runtime
 npm run smoke --prefix runtime
 ```
 
-demo是内存库和固定模型的合成故事；smoke使用真实Koishi Context及临时库，模型HTTP以离线返回替代，不连接QQ。更新代码后先build再重启Koishi。
+demo是内存库和固定模型的合成故事；smoke使用真实Koishi Context及临时库，模型HTTP以离线返回替代，不连接QQ。更新代码前先用stop-hdsi.cmd停HDSI，再build，最后由用户重新启动Koishi。
 
 ## 3. 手动启动
 
 根目录双击：
 
 - `start-hdsi.cmd`：启动`D:\HDSI-remake\runtime`中的Koishi与故事插件。
+- `stop-hdsi.cmd`：请求安全停止HDSI，等待当前工作保存。
 - `start-snowluma.cmd`：启动独立`D:\SNOWLUMA`的SnowLuma。
 
-各自有控制台，Ctrl+C停止。传入`--check`只核对本地依赖／配置／图库，不启动服务、登录账号或调用模型。
+各自有控制台。HDSI建议双击`stop-hdsi.cmd`安全停止：先禁止新输入与新任务，等待当前故事整轮、世界／学校及记忆后台当前阶段和取图工作完成保存，再退出；未来预约、静默等待和未开始的后续链留待重启。Ctrl+C有退出等待钩子，但Windows控制台直接关闭不保证等待。SnowLuma仍按其控制台方式停止。传入`--check`只核对本地依赖／配置／图库，不启动服务、登录账号或调用模型。
 
 ```powershell
 .\start-hdsi.cmd --check

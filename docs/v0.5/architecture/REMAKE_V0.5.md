@@ -129,3 +129,7 @@ flowchart TD
 | [报错与恢复](../subsystems/REMAKE_V0.5_RECOVERY.md) | 修补、暂停、生成／发送／提交及环境／后台恢复 |
 
 实现和验收限制见[对应清单](../reference/V0.5_IMPLEMENTATION_MAP_20261009.md)，完整阅读顺序见[当前索引](../README.md)。最新代码交付为[图片／搜索复核修复](../records/image-search-post-review-fixes-20261010/DELIVERY.md)；本次[文档核对](../records/document-final-audit-20261010/README.md)只同步说明，不新增运行规则或产品验收。旧修订／检查记录在[历史归档](../../archive/README.md)，目录原则见[文档规范](../../DIRECTORY_POLICY.md)。
+
+## 安全停止规则
+
+显式停止先禁止新输入与新任务，再等待当前故事整轮及世界／学校、记忆后台和图片在途工作保存结果，最后关闭资源。未开始的任务、未来预约和静默等待留待下次启动。当前后台阶段保存后按原资格恢复，停止不替代业务结果有效性校验，也不强制取消正常请求。

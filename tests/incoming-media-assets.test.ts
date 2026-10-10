@@ -19,3 +19,9 @@ it('deduplicates actual bytes, stores reopenable data URLs and excludes legacy m
 it('missing or arbitrary filesystem sources are explicitly unavailable',async()=>{
  const resolver=new AttachmentResolver();await expect(resolver.resolve({id:'a',messageId:'m',order:0,kind:'image',sourceUrl:'D:/secret.txt'})).rejects.toThrow('unavailable');
 });
+
+it('graceful asset stop lets existing download finish and prevents new downloads',async()=>{
+ const root=mkdtempSync(join(tmpdir(),'hdsi-img-')),db=new Storage(':memory:'),store=new IncomingMediaStore(db);let release!:(r:Response)=>void;let signal:AbortSignal|undefined;
+ const response=new Promise<Response>(r=>release=r);const resolver=new AttachmentResolver(async(_url,options)=>{signal=options?.signal as AbortSignal;return response;});const assets=new IncomingAssets(store,root,resolver);
+ try{store.register([{id:'a',messageId:'m',order:0,kind:'image',sourceUrl:'https://offline.test/a'}]);const downloading=assets.ensureAsset('a');const stopping=assets.stop({graceful:true});expect(signal?.aborted).toBe(false);await expect(assets.ensureAsset('b')).rejects.toThrow('stopped');release(new Response(png));const id=await downloading;await stopping;expect(db.read('image_assets',id)!.state).toBe('ready');}finally{release?.(new Response(png));await assets.stop();db.close();rmSync(root,{recursive:true,force:true});}
+});

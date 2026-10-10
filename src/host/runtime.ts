@@ -64,6 +64,7 @@ export class SerialHost {
       const unfinished=d.storage.unfinishedTurn();
       if(unfinished?.replyFreshness?.state==='waiting'){
         const continuation=await this.scheduler.collectWaitingContinuation(unfinished.id,d.clock.now());
+        if(this.stopped)break;
         if(continuation.kind==='wait')break;
         this.recover=false;await this.app.continueWaitingTurn(unfinished.id,continuation.request,continuation.scope);continue;
       }
@@ -77,6 +78,7 @@ export class SerialHost {
         if(report?.missingCanonicalIds.length)this.options.onWarning?.('记忆依据缺失：'+report.missingCanonicalIds.join(', '));
       }
       const ready = await this.scheduler.collectReady(d.clock.now(),{environmentInFlightStepId:this.environment.inFlightStepId});
+      if(this.stopped)break;
       if(ready?.environmentStepId&&d.environmentStore.stepMetadata(d.environmentStore.firstActiveBatch()!.id).find(s=>s.id===ready.environmentStepId)?.preparationVersion===1){
         const runtime=d.storage.runtime();
         if(this.stopped||runtime.paused||runtime.openBatch||d.storage.unfinishedTurn())break;
@@ -136,10 +138,10 @@ export class SerialHost {
     const capacity=d.memoryCapacity?.counts(d.clock.now()),idle=d.memoryIdle?.eligibility(d.clock.now()),cleanup=d.memoryCleanup?.status();
     return `状态：${d.storage.runtime().paused ? '暂停' : '运行'}；阶段：${stage}；下次调度：${display}`+(d.storage.runtime().lastFailure?`；前台失败：${d.storage.runtime().lastFailure!.kind}／${d.storage.runtime().lastFailure!.task??'无模型任务'}／${d.storage.runtime().lastFailure!.safeSummary}`:'')+(environment?`；环境：${environment.mode}／${environment.stage}／attempt ${environment.attempt}／retry ${environment.retryAt??'无'}`:'')+(maintenance?`；维护：待办${maintenance.pending}／就绪${maintenance.ready}／在途${maintenance.inFlight?1:0}／重试${maintenance.retries}／后台请求${maintenance.backendRequests}；后台错误：${maintenance.lastError??'无'}；检索：查询${maintenance.retrieval.queries}／缓存${maintenance.retrieval.cacheHits}／远程${maintenance.retrieval.remoteRequests}／超时${maintenance.retrieval.timeouts}／失败${maintenance.retrieval.failures}／词法降级${maintenance.retrieval.lexicalFallbacks}／主动跳过${maintenance.retrieval.semanticSkipped??0}`:'')+(capacity?`；短期活跃${capacity.shortActive}；长期占用${capacity.longOccupied}／预备${capacity.longPreview}／可见${capacity.longVisible}／归档${capacity.longArchive}；容量目标${JSON.stringify(d.memoryCapacity!.config)}；超量${capacity.shortOverflow}/${capacity.longOverflow}/${capacity.archiveOverflow}；保护${capacity.protectedLong}；清理阻挡${cleanup?.oldestBlock??'无'}`:'')+(idle?`；空闲资格${idle.reason}／截止${idle.readyAt??'无'}；增量待办${d.memoryStore?.dirtyOwners().length??0}`:'')+(web?renderWebStatus(web):'');
   }
-  async stop(): Promise<void> {
+  async stop(options:{graceful?:boolean}={}): Promise<void> {
     this.stopped = true;
     if (this.timer) { clearTimeout(this.timer); this.timer = null; }
-    const environment=this.environment.stop(),background=this.app.dependencies.maintenance?.stop();
+    const environment=this.environment.stop(options),background=this.app.dependencies.maintenance?.stop(options);
     await Promise.all([this.active,background,environment]);
   }
 }

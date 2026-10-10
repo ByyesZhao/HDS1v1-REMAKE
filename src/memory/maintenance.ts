@@ -19,6 +19,7 @@ export class MemoryMaintenance {
   private active:Promise<void>|null=null;
   private controller:AbortController|null=null;
   private stopped=false;
+ private draining=false;
   private backendRequests=0;
   private webOwner:import('../web/types').WebOwnerRef|null=null;
   currentWebOwner(){return this.webOwner;}
@@ -105,7 +106,7 @@ export class MemoryMaintenance {
     this.store.saveJob('memory_maintenance_jobs',updated);for(const row of rows)this.store.reserveDirty(row);return updated;
   }
   startOne(now:string):boolean {
-    if(this.stopped||this.active||this.blocked())return false;
+    if(this.stopped||this.draining||this.active||this.blocked())return false;
     this.ensureCycle(now);
     if(this.work().some(w=>w.job.status==='ready'&&this.due(w.job,now)&&this.eligible(w,now)))return false;
     let work:Work|undefined,cleaned=0;
@@ -164,7 +165,7 @@ export class MemoryMaintenance {
     }
   }
   applyOneReady(now:string):'applied'|'stale'|'none' {
-    if(this.stopped||this.blocked())return 'none';const works=this.work();const work=works.find(w=>w.job.status==='ready'&&this.due(w.job,now)&&this.eligible(w,now))??works.find(w=>w.table==='memory_index_jobs'&&w.job.status==='pending'&&w.job.configSignature!==this.index.configSignature&&this.due(w.job,now));if(!work)return 'none';
+    if(this.stopped||this.draining||this.blocked())return 'none';const works=this.work();const work=works.find(w=>w.job.status==='ready'&&this.due(w.job,now)&&this.eligible(w,now))??works.find(w=>w.table==='memory_index_jobs'&&w.job.status==='pending'&&w.job.configSignature!==this.index.configSignature&&this.due(w.job,now));if(!work)return 'none';
     try{return this.store.storage.transaction(()=>{
       if(work.table==='memory_index_jobs'){
         const owner=this.store.owner(work.job.owner),valid=owner&&owner.revision===work.job.owner.revision&&owner.status!=='merged'&&owner.status!=='discarded'&&work.job.configSignature===this.index.configSignature;
@@ -224,7 +225,7 @@ export class MemoryMaintenance {
     const changed=content!==row.content||feelingSummary!==row.feelingSummary;const updated={...row,content,eventSummary,feelingSummary,summaryQuality:'refined' as const,sourceIds:[...new Set([...row.sourceIds,...unit.sourceIds])],revision:row.revision+(changed?1:0),stateVersion:row.stateVersion+1};this.store.saveOwner(updated);if(changed)this.store.queueIndex(updated,now);this.lifecycle.synchronizeProjections(updated,now);
   }
   nextDeadline(now:string):string|null {
-    if(this.stopped||this.active||this.blocked())return null;const works=this.metadataWork();
+    if(this.stopped||this.draining||this.active||this.blocked())return null;const works=this.metadataWork();
     const deadlines:string[]=[];
     for(const work of works.filter(w=>w.job.status==='pending'||w.job.status==='ready')){
       const retry=work.job.retryAt??now;
@@ -239,5 +240,5 @@ export class MemoryMaintenance {
     return deadlines.sort((a,b)=>milliseconds(a)-milliseconds(b))[0]??null;
   }
   status(){const jobs=this.metadataWork();return {pending:jobs.filter(w=>w.job.status==='pending').length,ready:jobs.filter(w=>w.job.status==='ready').length,inFlight:this.inFlight,retries:jobs.filter(w=>w.job.retryAt).length,backendRequests:this.backendRequests,lastError:[...jobs].reverse().find(w=>w.job.lastError)?.job.lastError??null,retrieval:this.index.stats};}
-  async stop():Promise<void>{this.stopped=true;this.controller?.abort(new Error('backend stopped'));await this.active;}
+  async stop(options:{graceful?:boolean}={}):Promise<void>{this.draining=true;if(!options.graceful){this.stopped=true;this.controller?.abort(new Error('backend stopped'));}await this.active;this.stopped=true;}
 }

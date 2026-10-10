@@ -1,0 +1,69 @@
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/graceful-stop/HDSI-remake
+
+xx··xx
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/graceful-stop-host.test.ts > graceful environment stop completes current preparation without starting next stage
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/graceful-stop-host.test.ts:19:125
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/graceful-stop-host.test.ts > host graceful stop waits for running world director and leaves next director pending
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/graceful-stop-host.test.ts:26:140
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  tests/graceful-stop-host.test.ts > memory index preparation completes and persists ready result during graceful stop
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/graceful-stop-host.test.ts:45:151
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  tests/graceful-stop-host.test.ts > stop during async selection cannot start a new ordinary/event turn
+AssertionError: expected [ { name: 'narrative', …(2) }, …(1) ] to have a length of +0 but got 2
+
+- Expected
++ Received
+
+- 0
++ 2
+
+ ❯ tests/graceful-stop-host.test.ts:50:293
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 2 passed (6)
+   Start at  17:42:24
+   Duration  776ms (transform 62%, import 24%, tests 13%, worker 1%)
+

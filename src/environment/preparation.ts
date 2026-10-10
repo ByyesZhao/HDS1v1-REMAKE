@@ -11,6 +11,7 @@ type Execution={stepId:string;batchId:string;generation:number;lease:symbol;cont
 export class EnvironmentPreparation {
  private active:Execution|null=null;
  private stopped=false;
+ private draining=false;
  private errors:unknown[]=[];
  constructor(private d:Dependencies,private options:{onReady?:()=>void}={}){}
  get inFlight(){return !!this.active;}
@@ -48,7 +49,7 @@ export class EnvironmentPreparation {
  this.d.storage.transaction(()=>{const step=this.canPublish(execution);if(!step){execution.controller.abort(new DOMException('Environment lease ended','AbortError'));throw execution.controller.signal.reason;}fn(step);});
  }
  startOne(stepId:string,now:string):boolean{
- if(this.stopped||this.active)return false;
+ if(this.stopped||this.draining||this.active)return false;
  const d=this.d;
  let step=d.environmentStore.step(stepId);
  if(!step||step.preparationVersion!==1||!['pending','running'].includes(step.status)||step.retryAt&&milliseconds(step.retryAt)>milliseconds(now))return false;
@@ -130,5 +131,5 @@ export class EnvironmentPreparation {
  return outcome;
  }
  async wait():Promise<void>{await this.active?.promise;}
- async stop():Promise<void>{this.stopped=true;this.active?.controller.abort(new DOMException('Environment stopped','AbortError'));await this.active?.promise;}
+ async stop(options:{graceful?:boolean}={}):Promise<void>{this.draining=true;if(!options.graceful){this.stopped=true;this.active?.controller.abort(new DOMException('Environment stopped','AbortError'));}await this.active?.promise;this.stopped=true;}
 }

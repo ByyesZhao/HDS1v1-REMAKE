@@ -15,3 +15,10 @@ it.each([true,false])('required service gates and serially replaces real Context
  }finally{closing=false;release?.();await ctx.stop();}
  expect(alive).toBe(0);
 });
+
+it('exit hook drains browser runtime before close and awaits current work',async()=>{
+ const ctx=new Context();ctx.baseDir=process.cwd();let release!:()=>void,options:any,closed=false;const gate=new Promise<void>(r=>release=r);
+ class Browser extends Service{static [Service.provide]='puppeteer';constructor(c:any){super(c,'puppeteer');}page=async()=>{throw Error('unused');};}
+ const factory=async()=>({host:{start:async()=>{},status:async()=> 'running'},stopAcceptingInput(){},close:async(o:any)=>{options??=o;await gate;closed=true;}} as any);
+ try{ctx.plugin(Browser);installBrowserRuntime(ctx,{} as any,settings,factory);await ctx.start();for(let i=0;i<5;i++)await tick();let done=false;const exiting=ctx.parallel('exit','SIGINT').then(()=>done=true);for(let i=0;i<5;i++)await tick();expect(options).toEqual({graceful:true});expect(done).toBe(false);release();await exiting;expect(closed).toBe(true);}finally{release?.();await ctx.stop();}
+});

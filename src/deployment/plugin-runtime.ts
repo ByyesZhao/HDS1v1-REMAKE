@@ -38,7 +38,7 @@ import type {Config} from '../index';
 import type {StorySettings} from '../settings';
 import type {ManagedBrowserProvider} from '../web/browser/types';
 const name='hdsi-remake';
-export interface PluginRuntime {host:SerialHost;stopAcceptingInput():void;close():Promise<void>}
+export interface PluginRuntime {host:SerialHost;stopAcceptingInput():void;close(options?:{graceful?:boolean}):Promise<void>}
 export async function createPluginRuntime(ctx:Context,config:Config,settings:StorySettings,managedBrowser?:ManagedBrowserProvider):Promise<PluginRuntime>{return createPluginRuntimeSync(ctx,config,settings,managedBrowser);}
 export function createPluginRuntimeSync(ctx:Context,config:Config,settings:StorySettings,managedBrowser?:ManagedBrowserProvider):PluginRuntime{
   // Validate deployment prerequisites before creating a formal story database.
@@ -131,5 +131,5 @@ export function createPluginRuntimeSync(ctx:Context,config:Config,settings:Story
     });
   }
   let closing:Promise<void>|null=null;
-  return {host,stopAcceptingInput(){accepting=false;},close(){accepting=false;return closing??=(async()=>{await host.stop();await incomingMedia.stop();await managedBrowser?.dispose();storage.close();})();}};
+  return {host,stopAcceptingInput(){accepting=false;},close(options:{graceful?:boolean}={}){accepting=false;return closing??=(async()=>{await host.stop(options);await incomingMedia.stop(options);await managedBrowser?.dispose();storage.close();})();}};
 }

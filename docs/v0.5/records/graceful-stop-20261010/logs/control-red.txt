@@ -1,0 +1,25 @@
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/graceful-stop/HDSI-remake
+
+
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/graceful-stop-control.test.ts [ tests/graceful-stop-control.test.ts ]
+Error: Cannot find module '../src/deployment/stop-control' imported from C:/Users/<user>/.codex/worktrees/graceful-stop/HDSI-remake/tests/graceful-stop-control.test.ts
+ ❯ tests/graceful-stop-control.test.ts:3:1
+      1| import {it,expect,vi} from 'vitest';
+      2| import {mkdtemp,readFile,rm} from 'node:fs/promises';import {tmpdir} f…
+      3| import {startStopControl} from '../src/deployment/stop-control';
+       | ^
+      4| const tick=()=>new Promise<void>(r=>setImmediate(r));
+      5| it('local authenticated request waits for completed work; repeated req…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  17:43:48
+   Duration  147ms (worker 96%, environment 4%)
+

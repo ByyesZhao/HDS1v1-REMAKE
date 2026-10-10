@@ -1,0 +1,13 @@
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/graceful-stop/HDSI-remake
+
+·························
+
+ Test Files  4 passed (4)
+      Tests  25 passed (25)
+   Start at  17:42:42
+   Duration  1.99s (tests 37%, import 35%, transform 28%, worker 1%)
+
+    Isolate  4 workers spawned · ~95ms startup each (spawn + environment, per file)
+             at least ~284ms faster with isolate: false — reuses workers across files instead of one per file
+

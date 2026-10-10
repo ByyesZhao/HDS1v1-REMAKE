@@ -1,6 +1,6 @@
 # HDSI V0.5：当前文档与审核入口
 
-核对日期：2026-10-10。最新普通回复跟进新消息 T1～T5已实现；184文件990项、类型、构建、演示、双场景插件和隔离只读启动检查通过，见[交付](records/chat-reply-freshness-20261010/DELIVERY.md)。独立复核与部署状态以交付页为准，正式服务尚未更新；此前查看资格正式修正保留原证据。
+核对日期：2026-10-10。新增[安全停止](records/graceful-stop-20261010/DELIVERY.md)：stop-hdsi.cmd等待当前整轮及后台阶段保存，最终验证／部署状态见交付。最新普通回复跟进新消息 T1～T5已实现；184文件990项、类型、构建、演示、双场景插件和隔离只读启动检查通过，见[交付](records/chat-reply-freshness-20261010/DELIVERY.md)。独立复核与部署状态以交付页为准，此前普通回复批已停服部署，服务未由程序启动；此前查看资格正式修正保留原证据。
 
 前次[文档核对](records/document-final-audit-20261010/README.md)和[图片／搜索修复交付](records/image-search-post-review-fixes-20261010/DELIVERY.md)保留原基线、原证据及未执行范围，不以本批覆盖历史结论。
 

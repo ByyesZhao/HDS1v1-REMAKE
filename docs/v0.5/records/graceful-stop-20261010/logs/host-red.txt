@@ -1,0 +1,55 @@
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/graceful-stop/HDSI-remake
+
+xx··x
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/graceful-stop-host.test.ts > graceful environment stop completes current preparation without starting next stage
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/graceful-stop-host.test.ts:19:125
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/graceful-stop-host.test.ts > host graceful stop waits for running world director and leaves next director pending
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/graceful-stop-host.test.ts:26:140
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  tests/graceful-stop-host.test.ts > memory index preparation completes and persists ready result during graceful stop
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/graceful-stop-host.test.ts:45:151
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 2 passed (5)
+   Start at  17:40:27
+   Duration  752ms (transform 64%, import 25%, tests 11%, worker 1%)
+
