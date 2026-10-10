@@ -37,11 +37,12 @@ export class IncomingMediaService {
    const base={messageId:a.messageId,attachmentId:a.id,order:a.order};
    const face=a.kind==='native_face'?faceObservation(a.faceId):null;
    let row:ObservationRecord|undefined,origin:PreparedAttachment['origin']='vision';
-   if(face){row={id:'face:'+a.faceId+':'+PLATFORM_FACE_VERSION,contentHash:null,recognizerVersion:PLATFORM_FACE_VERSION,origin:'platform',observation:face,confirmedAt:new Date().toISOString()};const old=this.store.storage.read('image_observations',row.id);if(old)row=old;origin='platform';}
-   else if(a.kind==='native_face'||!this.config.enabled){
+   if(!frozen&&a.confirmedObservationRef){row=this.store.storage.read('image_observations',a.confirmedObservationRef)??undefined;if(!row||row.recognizerVersion!==a.confirmedRecognizerVersion)throw Error('confirmed image observation missing or incompatible');origin='cache';}
+   else if(face){row={id:'face:'+a.faceId+':'+PLATFORM_FACE_VERSION,contentHash:null,recognizerVersion:PLATFORM_FACE_VERSION,origin:'platform',observation:face,confirmedAt:new Date().toISOString()};const old=this.store.storage.read('image_observations',row.id);if(old)row=old;origin='platform';}
+   else if(!frozen&&(a.kind==='native_face'||!this.config.enabled)){
     const entry:PreparedAttachment={...base,status:'unrecognized',origin:'unavailable',observationRef:null,recognizerVersion:null,observation:null};this.freeze(turnId,entry);result.push(entry);continue;
    }
-   else if(!frozen&&a.confirmedObservationRef){row=this.store.storage.read('image_observations',a.confirmedObservationRef)??undefined;if(!row)throw Error('confirmed image observation missing');origin='cache';}
+   
    else {
     let ref:string;
     try{ref=frozen?.status==='pending'&&frozen.imageAssetRef?frozen.imageAssetRef:await this.assets.ensureAsset(a.id,signal);}

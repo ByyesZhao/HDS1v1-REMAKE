@@ -184,3 +184,5 @@ expect(unreadSameHashInNarrative).toBe(false);
 - [ ] **执行本批完整离线门禁。** 严格用 [执行指南 §4](EXECUTION_GUIDE.md) 的 build 在先顺序和显式隔离路径；不能跑无参数 runtime/check 作为“隔离验收”。
 - [ ] **记录在线层。** 如本次执行授权包含真实视觉验收，用公开／合成表情、动物照、带字图、多图位置和 GIF；记录实际模型／强度、调用／修补数、耗时和误识别。不包含时标“在线质量未执行”，不假借离线测试称真实识别已验收。
 - [ ] **同步规则并提交。** 更新当前上下文／记忆／表达／恢复／实现对应及模型用途表，保留“13 个既有连接不变，incoming_image 新用途可复用连接”的区分。形成独立图片 DELIVERY／IMPLEMENTATION_LOG／REVIEW_CLOSURE 和证据；提交 `feat: integrate incoming image understanding`。正式启用步骤见执行指南，不自动启动服务。
+
+后续裁决（2026-10-10）：关闭时仅 face 可新建 ready，适用于没有既存确认的附件；关闭不撤销历史确认，pending 沿原冻结素材恢复。见 [交付后修复方案 T2](../../reviews/image-search-post-implementation-20261010/FIX_PLAN.md#t2已确认观察优先于新识别开关)。
