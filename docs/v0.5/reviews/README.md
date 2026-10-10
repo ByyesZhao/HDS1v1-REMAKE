@@ -2,7 +2,9 @@
 
 返回[版本索引](../README.md)。
 
-最新为[查看消息资格计划审核](phone-access-20261010/PLAN_REVIEW.md)，源码基线a66a89c，计划仍未实施。结论为设计可继续，无阻断问题；1处恢复验收措辞需收窄，附协议2回归及现场查询接点建议。既有定向回归5文件／23项通过，不代表新规则或正式状态已变更。
+最新为[普通回复跟进新消息方案审核](chat-reply-freshness-20261010/REVIEW.md)，源码基线3fb4e1c；保留原方案 B，补齐 4 项重要合同，附[细化执行方案 T1～T5](chat-reply-freshness-20261010/EXECUTION_PLAN.md)。当前基线定向回归8文件35项通过，合成探针复核旧行为与重算接点；新功能尚未实施。
+
+前次[查看消息资格计划审核](phone-access-20261010/PLAN_REVIEW.md)，源码基线a66a89c。审核当时未实施，结论为设计可继续，无阻断问题；1处恢复验收措辞需收窄，附协议2回归及现场查询接点建议。审核当时既有定向回归5文件／23项通过；现已实施，实际交付与部署状态见[记录](../records/phone-access-20261010/DELIVERY.md)。
 
 前次[图片输入与本地搜索交付后复核](image-search-post-implementation-20261010/REVIEW.md)，基线2a2e77e；确认的4项P2、1项P3已按方案修复，见[修复关闭](../records/image-search-post-review-fixes-20261010/REVIEW_CLOSURE.md)与[最终交付](../records/image-search-post-review-fixes-20261010/DELIVERY.md)；原报告保留基线含义，附[修复执行方案](image-search-post-implementation-20261010/FIX_PLAN.md)。真实协议2 App、Chrome页面提取与Koishi启动失败均有离线复现。原173文件／882项均有独立通过记录，其中2项因沙箱限制单独复跑；构建、类型、演示及双场景插件验收通过。主体架构保留；执行者逐项回归已完成，整批175文件920项及类型/构建/demo/双场景smoke通过，一次独立审查补修完成（原报告与TDD关闭分别保留）。
 

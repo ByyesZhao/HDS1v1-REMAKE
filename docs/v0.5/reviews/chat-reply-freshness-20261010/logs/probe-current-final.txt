@@ -1,0 +1,34 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run tsx docs/v0.5/reviews/chat-reply-freshness-20261010/probe-current.ts
+{
+  "sourceRevision": "3fb4e1c71c5b82ba4408f75e581a0cdc4021ca35",
+  "synthetic": true,
+  "protocol": 2,
+  "selection": {
+    "startsOldAtNewInputAgeMs": 0,
+    "selectedWhenBothReady": [
+      "old-ready"
+    ],
+    "pendingBatches": 2
+  },
+  "inFlight": {
+    "newInputBeforeFirstSend": true,
+    "oldAnswerStillSent": true,
+    "newInputRemainsUnread": true
+  },
+  "unfinishedContract": {
+    "dueAppointmentBlocked": true,
+    "schedulerDeadline": null
+  },
+  "stageIdentity": {
+    "sameStageReusesPrivateLookup": true,
+    "sameStageInjectsOldPublicMaterials": true,
+    "sameStageReusesToolResults": true,
+    "newStageStartsWithoutOldPayload": true
+  },
+  "visualFreeze": {
+    "terminalUnknownPreservedWithSnapshot": true,
+    "clearingSnapshotChangesUnknownToReady": true,
+    "modelCalls": 0
+  }
+}

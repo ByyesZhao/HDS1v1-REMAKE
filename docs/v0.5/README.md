@@ -29,6 +29,7 @@
 
 | 材料 | 状态 |
 | --- | --- |
+| [普通回复新鲜度方案审核](reviews/chat-reply-freshness-20261010/REVIEW.md)与[细化执行方案](reviews/chat-reply-freshness-20261010/EXECUTION_PLAN.md) | 保留方案 B，补齐等待／事件接管、业务代际、图片冻结、资格重选 4 项合同；当前基线8文件35项通过；新规则未实施，交 SOL 按 T1～T5执行 |
 | [回复错位诊断](records/chat-reply-order-20261010/README.md)与[改动方案](plans/chat-reply-freshness-20261010/README.md) | 15秒合批符合本次记录；新消息在生成期间另轮排队，旧候选仍发送；正式只读时间线及4组合成探针，未改产品／服务 |
 | [查看消息资格交付](records/phone-access-20261010/DELIVERY.md)及[独立复核关闭](records/phone-access-20261010/REVIEW_CLOSURE.md) | 新规则已实施，合同／协议2／磁盘恢复及停服修复工具有回归；最终测试与正式部署状态见交付页 |
 | [查看消息资格计划审核](reviews/phone-access-20261010/PLAN_REVIEW.md) | 设计可继续，无阻断问题；1处非阻断验收措辞澄清，审核时既有定向回归5文件／23项通过；新规则现已实施，见交付记录 |
@@ -55,7 +56,7 @@
 
 ## 目录与后续工作
 
-待审核：[普通聊天回复跟进新消息方案](plans/chat-reply-freshness-20261010/README.md)。当前实现仍按旧轮串行完成；方案不冒充已生效。
+待实施：[普通聊天回复跟进新消息方案](plans/chat-reply-freshness-20261010/README.md)已经[审核](reviews/chat-reply-freshness-20261010/REVIEW.md)，保留方向并补齐合同；按[细化执行方案 T1～T5](reviews/chat-reply-freshness-20261010/EXECUTION_PLAN.md)交接。当前实现仍按旧轮串行完成，方案不冒充已生效。
 
 最新实施合同：[查看消息资格与专注场景](plans/phone-access-20261010/README.md)。针对首次聊天中普通文献整理被设为无结束时间不可读状态的问题，已区分查看资格与回应意愿，并强制不可读活动指定结束时间；代码及正式停服修正已完成，实际状态和未验证范围见[交付](records/phone-access-20261010/DELIVERY.md)。
 

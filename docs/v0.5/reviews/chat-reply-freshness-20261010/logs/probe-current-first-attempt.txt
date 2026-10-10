@@ -1,0 +1,8 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run tsx docs/v0.5/reviews/chat-reply-freshness-20261010/probe-current.ts
+DOMException [DataCloneError]: x=>x could not be cloned.
+    at new DOMException (node:internal/per_context/domexception:76:18)
+    at structuredClone (node:internal/worker/js_transferable:127:26)
+    at Object.complete (D:\HDSI-remake\docs\v0.5\reviews\chat-reply-freshness-20261010\probe-current.ts:83:19)
+    at ModelClient.runModel (D:\HDSI-remake\src\model\client.ts:50:38)
+    at main (D:\HDSI-remake\docs\v0.5\reviews\chat-reply-freshness-20261010\probe-current.ts:90:20)
