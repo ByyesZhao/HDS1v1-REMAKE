@@ -1,0 +1,33 @@
+{
+  "stopped": true,
+  "backup": "D:\\HDSI-remake\\runtime\\archive\\batches\\offline-action-only-20261010-235148",
+  "backedUpFiles": 228,
+  "before": {
+    "config.local.json": "358B1D9A4CF7D1341550F25E29532EDC96DF1C7B989F2441EB38747E221C22F7",
+    "runtime/koishi.yml": "9C9D932103879723B8BF44E78F34174394413379FD80C92AAEFA3D48F141F019",
+    "runtime/data/hdsi-remake.sqlite": "E7C4B975CF02831718961FB1DB7A3179937556E3495640C995FEC1FF57ADD29A"
+  },
+  "after": {
+    "runtime/data/hdsi-remake.sqlite": "E7C4B975CF02831718961FB1DB7A3179937556E3495640C995FEC1FF57ADD29A",
+    "config.local.json": "358B1D9A4CF7D1341550F25E29532EDC96DF1C7B989F2441EB38747E221C22F7",
+    "runtime/koishi.yml": "9C9D932103879723B8BF44E78F34174394413379FD80C92AAEFA3D48F141F019"
+  },
+  "unchanged": {
+    "runtime/data/hdsi-remake.sqlite": true,
+    "config.local.json": true,
+    "runtime/koishi.yml": true
+  },
+  "compiledFiles": 228,
+  "compiledMismatch": [
+    "model\\reply-guidance.js"
+  ],
+  "listeners5141": 0,
+  "lineEndingComparison": [
+    {
+      "file": "model\\reply-guidance.js",
+      "onlyCrLfDifference": true
+    }
+  ],
+  "compiledEquivalent": true,
+  "note": "reply-guidance template literals retain checkout line endings; tracked source is identical, compiled contents differ only by CRLF versus LF."
+}
