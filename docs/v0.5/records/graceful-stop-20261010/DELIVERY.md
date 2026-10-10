@@ -11,3 +11,11 @@
 187文件1004项通过，退出0，128.50秒（full-final.txt）；typecheck-complete、build-complete、demo-final和smoke-final均退出0。六文件20项包括连接中断、重复请求、真实子进程SQLite重开、后台未取消、前台完整轮和新派发门禁。文档666条链接无缺失（两处ignored部署归档在主目录核实）。本批新增14项，首轮1002项为修复前历史证据。
 
 [独立报告](INDEPENDENT_REVIEW.md)有1项Important（停止客户端断开后不退出），没有其他Critical／Minor；[关闭记录](REVIEW_CLOSURE.md)保存I1双RED及20项GREEN。独立报告不改写为新版复核；未做第二次审查。全部原失败日志保留，源码／测试diff-check通过。
+
+## 主目录部署完成
+
+2026-10-10：以`463a2f9`并入main，产品与隔离复验版本一致。确认Koishi／5141未运行后，旧226个lib文件备份至`D:/HDSI-remake/runtime/archive/batches/graceful-stop-20261010-180414`，主目录typecheck、build、187文件1004项（127.41秒）、demo、双场景插件smoke与禁止fetch的正式只读启动检查全部退出0。正式配置、数据库及WAL前后指纹一致，67个表情包检查通过，没有数据库升级或模型／搜索配置改动。详见[部署证据](evidence/deployment.json)。
+
+服务未由程序启动。现在可双击根目录start-hdsi.cmd；之后双击stop-hdsi.cmd停止，等提示完成再关HDSI控制台。SnowLuma继续独立运行，无需因此重启。已接受的停止请求不依赖停止窗口保持连接；直接关闭HDSI窗口／任务管理器硬结束仍不保证等待。
+
+[独立审查](INDEPENDENT_REVIEW.md)保留5703630原结论，I1通过执行者[失败与关闭证据](REVIEW_CLOSURE.md)关闭，不冒充第二次独立审查。源码／测试diff-check通过；原始失败日志与输出空白保留。

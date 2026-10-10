@@ -1,0 +1,39 @@
+{
+  "at": "2026-10-10T18:04:14.608627",
+  "backupPath": "D:\\HDSI-remake\\runtime\\archive\\batches\\graceful-stop-20261010-180414",
+  "sourceCommit": "463a2f982bca44370ca75247f5f3904640b8cd26",
+  "userConfirmedStopped": true,
+  "processPrecheck": "no Koishi instance or 5141 listener",
+  "backupContents": "previous compiled lib only; no DB upgrade",
+  "formalBefore": {
+    "config.local.json": "358b1d9a4cf7d1341550f25e29532edc96df1c7b989f2441eb38747e221c22f7",
+    "runtime/koishi.yml": "9c9d932103879723b8bf44e78f34174394413379fd80c92aaefa3d48f141f019",
+    "runtime/data/hdsi-remake.sqlite": "e5f4815e6e33e92af19bd7f220dd52003945ccc4c7aed47b8264833b899c9661",
+    "runtime/data/hdsi-remake.sqlite-wal": "c438dd0b915167543da1aa5e2cc839aff338a243ef80b72c1754c53936e4b4ff",
+    "runtime/data/hdsi-remake.sqlite-shm": "4ec609bb7e742e30fa33df3804f7491f47878214308fcf304cd19db16fa50b60"
+  },
+  "formalAfter": {
+    "config.local.json": "358b1d9a4cf7d1341550f25e29532edc96df1c7b989f2441eb38747e221c22f7",
+    "runtime/koishi.yml": "9c9d932103879723b8bf44e78f34174394413379fd80c92aaefa3d48f141f019",
+    "runtime/data/hdsi-remake.sqlite": "e5f4815e6e33e92af19bd7f220dd52003945ccc4c7aed47b8264833b899c9661",
+    "runtime/data/hdsi-remake.sqlite-wal": "c438dd0b915167543da1aa5e2cc839aff338a243ef80b72c1754c53936e4b4ff",
+    "runtime/data/hdsi-remake.sqlite-shm": "4ec609bb7e742e30fa33df3804f7491f47878214308fcf304cd19db16fa50b60"
+  },
+  "changedFiles": [],
+  "formalBusinessDataAndConfigUnchanged": true,
+  "shmNote": "Readonly SQLite readers may change shared reader-lock/index bytes; DB and WAL contents verified unchanged.",
+  "compiledStopControlExists": true,
+  "stopCommandExists": true,
+  "updatedAt": "2026-10-10T18:06:36.969780",
+  "mergedCommit": "463a2f982bca44370ca75247f5f3904640b8cd26",
+  "checks": {
+    "mainFullTests": "187 files / 1004 tests passed; 127.41s",
+    "typecheck": true,
+    "build": true,
+    "demo": true,
+    "pluginSmoke": true,
+    "formalStartupReadonlyNoFetch": true,
+    "stickersReady": 67,
+    "serviceStartedByAgent": false
+  }
+}
