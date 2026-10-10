@@ -27,3 +27,15 @@ Final: Ruling: 本轮保持基线falsy拒绝值语义，修复真实页面槽的
 Final: fixed reviewer timing barrier — queued-rejection RED→GREEN; final suite pending.
 
 Final: fixed timing barrier — queued-rejection-red exit1 (actual unhandled Error) → focused-final 25/25 exit0; final suite188 files/1009 tests exit0,130.62s. Independent Important closed by executor evidence; no further product changes or re-review. No deferred minors.
+
+## 正式停服与部署
+
+用户本轮明确授权直接停止HDSI。工程测试仍隔离；正式停服另用node runtime/stop.cjs，未输出token；formal-stop.txt退出0。随后确认Koishi进程及5141监听均0，228个旧lib文件备份至runtime/archive/batches/graceful-stop-r1-20261010-183659/lib。无强杀、无自动启动、无数据库升级。
+
+59db942实现、722380a补实测试并本地合并；main的src/tests与分支一致，lib/deployment/browser-runtime.js SHA与隔离构建相同。main类型、构建、demo退出0。主目录第一次默认沙箱验收受阻：全量SSR临时缓存ENOENT，183文件无法加载；smoke临时stop描述文件rename EPERM，继而环境验收超时。单列main-sandbox-failure及main-smoke-sandbox-failure保留，不算通过；放开执行环境后双场景smoke及禁fetch正式只读启动检查退出0，67图库可用。主目录完整测试重跑中，最终结果见下一节。
+
+正式配置及数据库主文件前后SHA完全相同。只读SQLite检查使原本不存在的WAL／SHM出现：WAL为空0字节，SHM为读者锁／索引辅助文件；首次“任一WAL变化都失败”的部署断言误把空文件创建当业务变化，已按实际文件长度及主库指纹修正。未删这些文件，未掩盖指纹差异。deployment.json保留前后指纹、changedFiles和emptyWalCreatedByReadonlyCheck，不能写成“所有文件逐字节不变”。
+
+## 最终关闭
+
+main 188文件1009项退出0、128.28s；类型、构建、demo、双场景插件及禁止fetch正式只读启动检查均退出0。源代码与隔离分支一致，部署编译一致。R1实际页面失败组合／原探针、启动队列拒绝、重复失败、成功等待和失败断连均关闭；原成功断连、前台整轮、后台阶段、取图及服务换代保持通过。实际停止与旧lib备份完成，正式配置及业务数据保持，无DB升级；SQLite辅助文件变化如上明确。服务保持停止，用户可双击start-hdsi.cmd手动运行。概要见[交付](DELIVERY.md)。

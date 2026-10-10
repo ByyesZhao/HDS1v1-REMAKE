@@ -1,0 +1,42 @@
+{
+  "sourceBefore": "fefbb65d19b8d63b5567bdac4d583f9eaf56522b",
+  "at": "2026-10-10T18:36:59.8885925+08:00",
+  "listeners": 0,
+  "stopExit": 0,
+  "backupContents": "Previous lib only; no database migration",
+  "backupFiles": 228,
+  "backupPath": "D:\\HDSI-remake\\runtime\\archive\\batches\\graceful-stop-r1-20261010-183659",
+  "formalBefore": {
+    "runtime/data/hdsi-remake.sqlite-shm": null,
+    "runtime/data/hdsi-remake.sqlite-wal": null,
+    "runtime/koishi.yml": "9C9D932103879723B8BF44E78F34174394413379FD80C92AAEFA3D48F141F019",
+    "config.local.json": "358B1D9A4CF7D1341550F25E29532EDC96DF1C7B989F2441EB38747E221C22F7",
+    "runtime/data/hdsi-remake.sqlite": "13369BA855DC786758B9B751543977BBC095AA3DADF1E4210A14BF158217D130"
+  },
+  "processes": 0,
+  "formalAfter": {
+    "runtime/data/hdsi-remake.sqlite": "13369BA855DC786758B9B751543977BBC095AA3DADF1E4210A14BF158217D130",
+    "runtime/data/hdsi-remake.sqlite-wal": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "config.local.json": "358B1D9A4CF7D1341550F25E29532EDC96DF1C7B989F2441EB38747E221C22F7",
+    "runtime/data/hdsi-remake.sqlite-shm": "FD4C9FDA9CD3F9AE7C962B0DDF37232294D55580E1AA165AA06129B8549389EB",
+    "runtime/koishi.yml": "9C9D932103879723B8BF44E78F34174394413379FD80C92AAEFA3D48F141F019"
+  },
+  "changedFiles": [
+    "runtime/data/hdsi-remake.sqlite-wal",
+    "runtime/data/hdsi-remake.sqlite-shm"
+  ],
+  "formalBusinessDataAndConfigUnchanged": true,
+  "mergedCommit": "7aaf9e2699a408944e68e557faf3a7bfae66f729",
+  "emptyWalCreatedByReadonlyCheck": true,
+  "shmNote": "Readonly SQLite check created an empty WAL and shared reader-lock/index SHM; main database and configs retained exact hashes.",
+  "checks": {
+    "mainFull": "188 files /1009 tests; exit0;128.28s",
+    "formalStartupReadonlyNoFetch": 0,
+    "typecheck": 0,
+    "demo": 0,
+    "pluginSmoke": 0,
+    "build": 0
+  },
+  "serviceLeftStopped": true,
+  "updatedAt": "2026-10-10T18:46:52.9295536+08:00"
+}

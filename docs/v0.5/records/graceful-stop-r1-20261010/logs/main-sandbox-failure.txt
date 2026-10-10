@@ -1,0 +1,2153 @@
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ❯ tests/review24-dialogue.test.ts (0 test)
+ ❯ tests/chat-input-cost.test.ts (0 test)
+ ❯ tests/memory-capacity-idle-integration.test.ts (0 test)
+ ❯ tests/memory-capacity-upgrade.test.ts (0 test)
+ ❯ tests/shared-v3-upgrade.test.ts (0 test)
+ ❯ tests/chat-upgrade.test.ts (0 test)
+ ❯ tests/context-query-cost.test.ts (0 test)
+ ❯ tests/reply-freshness-recovery.test.ts (0 test)
+ ❯ tests/runtime-check-readonly.test.ts (0 test)
+ ❯ tests/browser-visible-dom.test.ts (0 test)
+ ❯ tests/world-school-upgrade.test.ts (0 test)
+ ❯ tests/scheduling-query-workload.test.ts (0 test)
+ ❯ tests/memory-payload-compaction-cli.test.ts (0 test)
+ ❯ tests/graceful-stop-process.test.ts (0 test)
+ ❯ tests/review17-identities.test.ts (0 test)
+ ❯ tests/plugin-smoke-contract.test.ts (0 test)
+ ❯ tests/memory-cleanup-write-amplification.test.ts (0 test)
+ ❯ tests/chat-recovery.test.ts (0 test)
+ ❯ tests/shared-v3-recovery.test.ts (0 test)
+ ❯ tests/memory-v3-retrieval.test.ts (0 test)
+ ❯ tests/query-index-compatibility.test.ts (0 test)
+ ❯ tests/browser-graceful-stop-failure.test.ts (0 test)
+ ❯ tests/memory-maintenance-checkpoint.test.ts (0 test)
+ ❯ tests/local-web-validation-startup.test.ts (0 test)
+ ❯ tests/review-recovery.test.ts (0 test)
+ ❯ tests/visual-input-entry.test.ts (0 test)
+ ❯ tests/incoming-media-smoke.test.ts (0 test)
+ ❯ tests/phone-access-flow.test.ts (0 test)
+ ❯ tests/feature-check-fixture.test.ts (0 test)
+ ❯ tests/web-integration.test.ts (0 test)
+ ❯ tests/shared-v3-flow.test.ts (0 test)
+ ❯ tests/dialogue-upgrade.test.ts (0 test)
+ ❯ tests/graceful-stop-control.test.ts (0 test)
+ ❯ tests/browser-web-plugin.test.ts (0 test)
+ ❯ tests/storage.test.ts (0 test)
+ ❯ tests/incoming-media-integration.test.ts (0 test)
+ ❯ tests/incoming-media-onebot-review.test.ts (0 test)
+ ❯ tests/environment-async-recovery.test.ts (0 test)
+ ❯ tests/web-status.test.ts (0 test)
+ ❯ tests/web-store.test.ts (0 test)
+ ❯ tests/memory-v3-store.test.ts (0 test)
+ ❯ tests/memory-v3-recovery.test.ts (0 test)
+ ❯ tests/shared-v3-state.test.ts (0 test)
+ ❯ tests/incoming-media-turn.test.ts (0 test)
+ ❯ tests/prompt-context-integration.test.ts (0 test)
+ ❯ tests/memory-capacity-lifecycle.test.ts (0 test)
+ ❯ tests/memory-v3-maintenance.test.ts (0 test)
+ ❯ tests/memory-v3-host.test.ts (0 test)
+ ❯ tests/browser-koishi-port.test.ts (0 test)
+ ❯ tests/resource-pool-index.test.ts (0 test)
+ ❯ tests/reply-freshness-host.test.ts (0 test)
+ ❯ tests/reply-freshness-context.test.ts (0 test)
+ ❯ tests/memory-batch-characters.test.ts (0 test)
+ ❯ tests/shared-v3-cross-activity.test.ts (0 test)
+ ❯ tests/memory-idle-host.test.ts (0 test)
+ ❯ tests/web-host.test.ts (0 test)
+ ❯ tests/reply-freshness-turn.test.ts (0 test)
+ ❯ tests/browser-final-review.test.ts (0 test)
+ ❯ tests/environment-async-host-gates.test.ts (0 test)
+ ❯ tests/activity-context.test.ts (0 test)
+ ❯ tests/review17-summary-repair.test.ts (0 test)
+ ❯ tests/review17-capacity-cost.test.ts (0 test)
+ ❯ tests/shared-v3-contracts.test.ts (0 test)
+ ❯ tests/memory-capacity-cleanup.test.ts (0 test)
+ ❯ tests/memory-v3-lifecycle.test.ts (0 test)
+ ❯ tests/model-settings.test.ts (0 test)
+ ❯ tests/activity-memory-context.test.ts (0 test)
+ ❯ tests/world-school-integration.test.ts (0 test)
+ ❯ tests/memory-idle-fairness.test.ts (0 test)
+ ❯ tests/world-school-calendar.test.ts (0 test)
+ ❯ tests/environment-async-phases.test.ts (0 test)
+ ❯ tests/memory.test.ts (0 test)
+ ❯ tests/memory-payload-recovery-matrix.test.ts (0 test)
+ ❯ tests/probability.test.ts (0 test)
+ ❯ tests/personal-stage-preparation.test.ts (0 test)
+ ❯ tests/world-school-review14-contracts.test.ts (0 test)
+ ❯ tests/memory-event-time.test.ts (0 test)
+ ❯ tests/browser-web-integration.test.ts (0 test)
+ ❯ tests/shared-scene.test.ts (0 test)
+ ❯ tests/chat-flow.test.ts (0 test)
+ ❯ tests/local-web-acceptance.test.ts (0 test)
+ ❯ tests/world-school-story.test.ts (0 test)
+ ❯ tests/web-session.test.ts (0 test)
+ ❯ tests/world-school-review14-calendar.test.ts (0 test)
+ ❯ tests/world-school-batch.test.ts (0 test)
+ ❯ tests/web-phases.test.ts (0 test)
+ ❯ tests/review-fixes.test.ts (0 test)
+ ❯ tests/dialogue-flow.test.ts (0 test)
+ ❯ tests/recovery.test.ts (0 test)
+ ❯ tests/review7-memory.test.ts (0 test)
+ ❯ tests/memory-payload-compaction.test.ts (0 test)
+ ❯ tests/memory-final-review.test.ts (0 test)
+ ❯ tests/memory-idle-consolidation.test.ts (0 test)
+ ❯ tests/review7-maintenance.test.ts (0 test)
+ ❯ tests/review7-web.test.ts (0 test)
+ ❯ tests/reply-guidance.test.ts (0 test)
+ ❯ tests/environment-async-boundaries.test.ts (0 test)
+ ❯ tests/memory-v3-deployment.test.ts (0 test)
+ ❯ tests/graceful-stop-host.test.ts (0 test)
+ ❯ tests/prompt-context-errors.test.ts (0 test)
+ ❯ tests/web-model-tools.test.ts (0 test)
+ ❯ tests/prompt-context-call-skip.test.ts (0 test)
+ ❯ tests/stickers.test.ts (0 test)
+ ❯ tests/browser-web-plugin-extra.test.ts (0 test)
+ ❯ tests/integration.test.ts (0 test)
+ ❯ tests/phone-access-deployment.test.ts (0 test)
+ ❯ tests/review10-public.test.ts (0 test)
+ ❯ tests/scheduler.test.ts (0 test)
+ ❯ tests/environment-async-tools.test.ts (0 test)
+ ❯ tests/dialogue-recovery.test.ts (0 test)
+ ❯ tests/world-school-models.test.ts (0 test)
+ ❯ tests/web-recovery.test.ts (0 test)
+ ❯ tests/chat-active-consistency.test.ts (0 test)
+ ❯ tests/memory-capacity-prune-race.test.ts (0 test)
+ ❯ tests/review17-promotion-audit.test.ts (0 test)
+ ❯ tests/tasks.test.ts (0 test)
+ ❯ tests/memory-pending-refresh.test.ts (0 test)
+ ❯ tests/review26-memory-create.test.ts (0 test)
+ ❯ tests/environment-async-slots.test.ts (0 test)
+ ❯ tests/world-school-knowledge-version.test.ts (0 test)
+ ❯ tests/shared-v3-scheduler.test.ts (0 test)
+ ❯ tests/storage-queries.test.ts (0 test)
+ ❯ tests/memory-projection-retrieval.test.ts (0 test)
+ ❯ tests/web-memory-sources.test.ts (0 test)
+ ❯ tests/memory-v3-index.test.ts (0 test)
+ ❯ tests/memory-idle-contracts.test.ts (0 test)
+ ❯ tests/phone-access-contracts.test.ts (0 test)
+ ❯ tests/turn.test.ts (0 test)
+ ❯ tests/incoming-media-assets.test.ts (0 test)
+ ❯ tests/school-week-text-contract.test.ts (0 test)
+ ❯ tests/environment-async-provenance.test.ts (0 test)
+ ❯ tests/environment-async-host.test.ts (0 test)
+ ❯ tests/browser-page-slots.test.ts (0 test)
+ ❯ tests/chat-window-sql.test.ts (0 test)
+ ❯ tests/school-week-contract-recovery.test.ts (0 test)
+ ❯ tests/world-school-notices.test.ts (0 test)
+ ❯ tests/chat-consistency.test.ts (0 test)
+ ❯ tests/world-school-perspective.test.ts (0 test)
+ ❯ tests/memory-index-coalescing.test.ts (0 test)
+ ❯ tests/world-school-review14-time.test.ts (0 test)
+ ❯ tests/chat-episodes.test.ts (0 test)
+ ❯ tests/dialogue-episodes.test.ts (0 test)
+ ❯ tests/deployment.test.ts (0 test)
+ ❯ tests/memory-capacity-deployment.test.ts (0 test)
+ ❯ tests/memory-idle-recovery.test.ts (0 test)
+ ❯ tests/prompt-context-views.test.ts (0 test)
+ ❯ tests/school-notice-evaluation.test.ts (0 test)
+ ❯ tests/reply-freshness-scheduler.test.ts (0 test)
+ ❯ tests/context-channels.test.ts (0 test)
+ ❯ tests/environment-queries.test.ts (0 test)
+ ❯ tests/incoming-media-cleanup.test.ts (0 test)
+ ❯ tests/shared-v3-input.test.ts (0 test)
+ ❯ tests/world-school-review14-environment.test.ts (0 test)
+ ❯ tests/school-notice-queries.test.ts (0 test)
+ ❯ tests/prompt-policy.test.ts (0 test)
+ ❯ tests/memory-idle-policy.test.ts (0 test)
+ ❯ tests/input.test.ts (0 test)
+ ❯ tests/memory-capacity-state.test.ts (0 test)
+ ❯ tests/web-deployment.test.ts (0 test)
+ ❯ tests/memory-capacity-retrieval.test.ts (0 test)
+ ❯ tests/browser-web-config.test.ts (0 test)
+ ❯ tests/prompt-context-transport.test.ts (0 test)
+ ❯ tests/incoming-media-store-cost.test.ts (0 test)
+ ❯ tests/world-school-state.test.ts (0 test)
+ ❯ tests/world-school-personal-reminder.test.ts (0 test)
+ ❯ tests/background-stage-views.test.ts (0 test)
+ ❯ tests/incoming-media-entry.test.ts (0 test)
+ ❯ tests/environment-preparation-snapshot.test.ts (0 test)
+ ❯ tests/chat-window-snapshot.test.ts (0 test)
+ ❯ tests/incoming-image-model.test.ts (0 test)
+ ❯ tests/model-call-context.test.ts (0 test)
+ ❯ tests/environment.test.ts (0 test)
+ ❯ tests/browser-page-extraction.test.ts (0 test)
+ ❯ tests/world-school-reminder-timing.test.ts (0 test)
+ ❯ tests/browser-search-provider.test.ts (0 test)
+ ❯ tests/web-content.test.ts (0 test)
+ ❯ tests/incoming-media-context.test.ts (0 test)
+ ❯ tests/environment-context-view.test.ts (0 test)
+ ❯ tests/shared-story-seed.test.ts (0 test)
+ ❯ tests/expression-context-view.test.ts (0 test)
+ ❯ tests/web-provider.test.ts (0 test)
+ ❯ tests/output.test.ts (0 test)
+ ❯ tests/plugin.test.ts (0 test)
+
+⎯⎯⎯⎯⎯ Failed Suites 183 ⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/activity-context.test.ts [ tests/activity-context.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\77fbf5b8fe3b8413205acf6e7f51e3a3214a82d9'
+ ❯ tests/activity-context.test.ts:2:1
+      1| import {it,expect} from 'vitest';
+      2| import {modern} from './chat-fixture';
+       | ^
+      3| import {NOW} from './helpers';
+      4| import {makeSharedFixture,configureSharedModels} from './shared-v3-fix…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/183]⎯
+
+ FAIL  tests/activity-memory-context.test.ts [ tests/activity-memory-context.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\77fbf5b8fe3b8413205acf6e7f51e3a3214a82d9'
+ ❯ tests/activity-memory-context.test.ts:2:1
+      1| import {it,expect} from 'vitest';
+      2| import {modern} from './chat-fixture';
+       | ^
+      3| import {emptyMemory,narrative,NOW} from './helpers';
+      4| import {makeSharedFixture,configureSharedModels} from './shared-v3-fix…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/183]⎯
+
+ FAIL  tests/background-stage-views.test.ts [ tests/background-stage-views.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\0109c6a8b743a51b038e2b3d03bb3d1c2414d63b'
+ ❯ tests/background-stage-views.test.ts:2:1
+      1| import {it,expect} from 'vitest';
+      2| import {backgroundFor} from '../src/model/background-views';
+       | ^
+      3| import {prepareBackgroundViews} from '../src/deployment/character-back…
+      4| it('no_mapping_full_background_fallback',()=>{expect(backgroundFor({ba…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/183]⎯
+
+ FAIL  tests/browser-final-review.test.ts [ tests/browser-final-review.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\d38fa18d549596018fbb286594a2d5f22c5628ad'
+ ❯ tests/browser-final-review.test.ts:2:1
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/183]⎯
+
+ FAIL  tests/browser-graceful-stop-failure.test.ts [ tests/browser-graceful-stop-failure.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\0109c6a8b743a51b038e2b3d03bb3d1c2414d63b'
+ ❯ src/deployment/plugin-runtime.ts:6:1
+      4| import {IncomingMediaService} from '../input-media/service';
+      5| import {parseIncomingContent} from '../input-media/parse';
+      6| import {initializeMissingBackgroundFacts} from '../model/background-vi…
+       | ^
+      7| import {generateEnvironmentStep} from '../directors/school';
+      8| import {importLegacySchoolEvents} from '../deployment/environment-upgr…
+ ❯ src/deployment/browser-runtime.ts:2:121
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/183]⎯
+
+ FAIL  tests/browser-koishi-port.test.ts [ tests/browser-koishi-port.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\9cbd399fce0bc8192236d132e9b353d56c2204e9'
+ ❯ tests/browser-koishi-port.test.ts:1:34
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/183]⎯
+
+ FAIL  tests/browser-page-extraction.test.ts [ tests/browser-page-extraction.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\d38fa18d549596018fbb286594a2d5f22c5628ad'
+ ❯ tests/browser-page-extraction.test.ts:1:278
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/183]⎯
+
+ FAIL  tests/browser-page-slots.test.ts [ tests/browser-page-slots.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\26b21cea0192cb1e19d2f5bd76c498b4f8f01ed0'
+ ❯ tests/browser-page-slots.test.ts:1:34
+      1| import {it,expect} from 'vitest';import {BrowserPageSlots} from '../sr…
+       |                                  ^
+      2| const tick=()=>new Promise(r=>setImmediate(r));function deferred<T>(){…
+      3| const request={kind:'article' as const,url:'https://example.org'};
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/183]⎯
+
+ FAIL  tests/browser-search-provider.test.ts [ tests/browser-search-provider.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\906742a02e3cb20f2fbaffa769bdf90053bcdcd5'
+ ❯ tests/browser-search-provider.test.ts:1:34
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/183]⎯
+
+ FAIL  tests/browser-visible-dom.test.ts [ tests/browser-visible-dom.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\3e0af2954b78f2750489a403db3fab7bb3f5eb37'
+ ❯ tests/browser-visible-dom.test.ts:2:221
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/183]⎯
+
+ FAIL  tests/browser-web-config.test.ts [ tests/browser-web-config.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\4f1a377f4285d190fe78d266ded3e05acd987243'
+ ❯ tests/browser-web-config.test.ts:1:166
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/183]⎯
+
+ FAIL  tests/browser-web-integration.test.ts [ tests/browser-web-integration.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\3e0af2954b78f2750489a403db3fab7bb3f5eb37'
+ ❯ tests/browser-web-integration.test.ts:1:34
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/183]⎯
+
+ FAIL  tests/browser-web-plugin-extra.test.ts [ tests/browser-web-plugin-extra.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\c4b272117de76b3aa202a56a0cf83b02e77a6931'
+ ❯ tests/browser-web-plugin-extra.test.ts:1:232
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/183]⎯
+
+ FAIL  tests/browser-web-plugin.test.ts [ tests/browser-web-plugin.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\c4b272117de76b3aa202a56a0cf83b02e77a6931'
+ ❯ tests/browser-web-plugin.test.ts:1:232
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/183]⎯
+
+ FAIL  tests/chat-active-consistency.test.ts [ tests/chat-active-consistency.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\77fbf5b8fe3b8413205acf6e7f51e3a3214a82d9'
+ ❯ tests/chat-active-consistency.test.ts:2:1
+      1| import {it,expect} from 'vitest';
+      2| import {modern} from './chat-fixture';
+       | ^
+      3| import {NOW} from './helpers';
+      4| import {checkWindowConsistency} from '../src/dialogue/window-consisten…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/183]⎯
+
+ FAIL  tests/chat-consistency.test.ts [ tests/chat-consistency.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\77fbf5b8fe3b8413205acf6e7f51e3a3214a82d9'
+ ❯ tests/chat-consistency.test.ts:2:1
+      1| import {it,expect} from 'vitest';
+      2| import {modern} from './chat-fixture';
+       | ^
+      3| import {NOW} from './helpers';
+      4| import {checkWindowConsistency} from '../src/dialogue/window-consisten…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/183]⎯
+
+ FAIL  tests/chat-episodes.test.ts [ tests/chat-episodes.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\3e0af2954b78f2750489a403db3fab7bb3f5eb37'
+ ❯ tests/chat-episodes.test.ts:2:1
+      1| import {it,expect} from 'vitest';
+      2| import {Storage} from '../src/storage';
+       | ^
+      3| import {DialogueStore} from '../src/dialogue/store';
+      4| import {ChatEpisodes} from '../src/dialogue/chat-episodes';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/183]⎯
+
+ FAIL  tests/chat-flow.test.ts [ tests/chat-flow.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\cdd5886cff97a54880f6b68a56ec59c9f0b0362f'
+ ❯ tests/chat-flow.test.ts:2:1
+      1| import {it,expect} from 'vitest';
+      2| import {NOW} from './helpers';
+       | ^
+      3| import {InputBuffer} from '../src/host/input';
+      4| import {HdsiApp} from '../src/app';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/183]⎯
+
+ FAIL  tests/chat-input-cost.test.ts [ tests/chat-input-cost.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\cdd5886cff97a54880f6b68a56ec59c9f0b0362f'
+ ❯ tests/chat-fixture.ts:1:1
+      1| import {setup} from './helpers';
+       | ^
+      2| import {ChatEpisodes} from '../src/dialogue/chat-episodes';
+      3| import {DialogueStore} from '../src/dialogue/store';
+ ❯ tests/chat-input-cost.test.ts:2:1
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/183]⎯
+
+ FAIL  tests/chat-recovery.test.ts [ tests/chat-recovery.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\77fbf5b8fe3b8413205acf6e7f51e3a3214a82d9'
+ ❯ tests/chat-recovery.test.ts:2:1
+      1| import {it,expect} from 'vitest';
+      2| import {modern} from './chat-fixture';
+       | ^
+      3| import {NOW,emptyMemory} from './helpers';
+      4| import {initialCharacter} from '../src/config';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/183]⎯
+
+ FAIL  tests/chat-upgrade.test.ts [ tests/chat-upgrade.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\3e0af2954b78f2750489a403db3fab7bb3f5eb37'
+ ❯ tests/chat-upgrade.test.ts:7:1
+      5| import {join} from 'node:path';
+      6| import {DatabaseSync} from 'node:sqlite';
+      7| import {Storage} from '../src/storage';
+       | ^
+      8| import {DialogueEpisodes} from '../src/dialogue/episodes';
+      9| import {DialogueStore} from '../src/dialogue/store';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/183]⎯
+
+ FAIL  tests/chat-window-snapshot.test.ts [ tests/chat-window-snapshot.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\77fbf5b8fe3b8413205acf6e7f51e3a3214a82d9'
+ ❯ tests/chat-window-snapshot.test.ts:2:1
+      1| import {it,expect} from 'vitest';
+      2| import {modern} from './chat-fixture';
+       | ^
+      3| import {checkWindowConsistency} from '../src/dialogue/window-consisten…
+      4| import {recentFromSnapshot} from '../src/dialogue/chat-window';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/183]⎯
+
+ FAIL  tests/chat-window-sql.test.ts [ tests/chat-window-sql.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\3e0af2954b78f2750489a403db3fab7bb3f5eb37'
+ ❯ tests/chat-window-sql.test.ts:2:1
+      1| import {it,expect} from 'vitest';
+      2| import {Storage} from '../src/storage';
+       | ^
+      3| import {recentFromSnapshot} from '../src/dialogue/chat-window';
+      4| import type {Message} from '../src/types';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[23/183]⎯
+
+ FAIL  tests/context-channels.test.ts [ tests/context-channels.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\77fbf5b8fe3b8413205acf6e7f51e3a3214a82d9'
+ ❯ tests/context-channels.test.ts:2:1
+      1| import {it,expect,vi} from 'vitest';
+      2| import {modern} from './chat-fixture';
+       | ^
+      3| import {setup,NOW,saveInput} from './helpers';
+      4| import {ContextBuilder} from '../src/memory/context';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[24/183]⎯
+
+ FAIL  tests/context-query-cost.test.ts [ tests/context-query-cost.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\3e0af2954b78f2750489a403db3fab7bb3f5eb37'
+ ❯ tests/context-query-cost.test.ts:2:1
+      1| import {it,expect} from 'vitest';
+      2| import {Storage} from '../src/storage';
+       | ^
+      3| import {MemoryRetrieval,makeRetrievalRequest} from '../src/memory/retr…
+      4| import {MemoryStore} from '../src/memory/store';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[25/183]⎯
+
+ FAIL  tests/deployment.test.ts [ tests/deployment.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\4f1a377f4285d190fe78d266ded3e05acd987243'
+ ❯ tests/deployment.test.ts:6:1
+      4| import { join } from 'node:path';
+      5| import { loadLocalCredentials } from '../src/deployment/credentials';
+      6| import { loadSettings, connectionFor } from '../src/settings';
+       | ^
+      7| import { importLegacyCatalog } from '../src/deployment/sticker-catalog…
+      8| import { Storage } from '../src/storage';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[26/183]⎯
+
+ FAIL  tests/dialogue-episodes.test.ts [ tests/dialogue-episodes.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\3e0af2954b78f2750489a403db3fab7bb3f5eb37'
+ ❯ tests/dialogue-episodes.test.ts:2:1
+      1| import { it,expect } from 'vitest';
+      2| import { Storage } from '../src/storage';
+       | ^
+      3| import { DialogueStore } from '../src/dialogue/store';
+      4| import { DialogueEpisodes } from '../src/dialogue/episodes';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[27/183]⎯
+
+ FAIL  tests/dialogue-flow.test.ts [ tests/dialogue-flow.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\abd54361192a5842e211ec58c76f2ecc9dd5bc45'
+ ❯ tests/dialogue-flow.test.ts:2:1
+      1| import { it,expect } from 'vitest';
+      2| import { HdsiApp } from '../src/app';
+       | ^
+      3| import { InputBuffer } from '../src/host/input';
+      4| import { DialogueStore } from '../src/dialogue/store';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[28/183]⎯
+
+ FAIL  tests/dialogue-recovery.test.ts [ tests/dialogue-recovery.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\3e0af2954b78f2750489a403db3fab7bb3f5eb37'
+ ❯ tests/dialogue-recovery.test.ts:1:1
+      1| import { Storage } from '../src/storage';
+       | ^
+      2| import { it,expect } from 'vitest';
+      3| import { setup,NOW,saveInput } from './helpers';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[29/183]⎯
+
+ FAIL  tests/dialogue-upgrade.test.ts [ tests/dialogue-upgrade.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\0109c6a8b743a51b038e2b3d03bb3d1c2414d63b'
+ ❯ src/settings.ts:1:1
+      1| import {backgroundViewsSchema,backgroundFor} from './model/background-…
+       | ^
+      2| import { readFileSync } from 'node:fs';
+      3| import { dirname, join, resolve } from 'node:path';
+ ❯ tests/dialogue-upgrade.test.ts:6:1
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[30/183]⎯
+
+ FAIL  tests/environment-async-boundaries.test.ts [ tests/environment-async-boundaries.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\04b2c6553d14bcfa83b36bc492d5288b8a5e9b5f'
+ ❯ tests/environment-async-boundaries.test.ts:2:1
+      1| import {it,expect,vi} from 'vitest';
+      2| import {asyncFixture} from './environment-async-fixture';
+       | ^
+      3| import {NOW} from './helpers';
+      4| import {EnvironmentPreparation} from '../src/environment/preparation';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[31/183]⎯
+
+ FAIL  tests/environment-async-host-gates.test.ts [ tests/environment-async-host-gates.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\04b2c6553d14bcfa83b36bc492d5288b8a5e9b5f'
+ ❯ tests/environment-async-host-gates.test.ts:2:1
+      1| import {it,expect} from 'vitest';
+      2| import {asyncFixture} from './environment-async-fixture';
+       | ^
+      3| import {NOW} from './helpers';
+      4| import {EnvironmentPreparation} from '../src/environment/preparation';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[32/183]⎯
+
+ FAIL  tests/environment-async-host.test.ts [ tests/environment-async-host.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\cdd5886cff97a54880f6b68a56ec59c9f0b0362f'
+ ❯ tests/environment-async-host.test.ts:2:1
+      1| import {it,expect} from 'vitest';
+      2| import {setup} from './helpers';
+       | ^
+      3| import {HdsiApp} from '../src/app';
+      4| import {SerialHost} from '../src/host/runtime';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[33/183]⎯
+
+ FAIL  tests/environment-async-phases.test.ts [ tests/environment-async-phases.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\04b2c6553d14bcfa83b36bc492d5288b8a5e9b5f'
+ ❯ tests/environment-async-phases.test.ts:2:1
+      1| import {it,expect,vi} from 'vitest';
+      2| import {asyncFixture} from './environment-async-fixture';
+       | ^
+      3| import {EnvironmentPreparation} from '../src/environment/preparation';
+      4| import {selectEnvironmentStep} from '../src/environment/scheduler';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[34/183]⎯
+
+ FAIL  tests/environment-async-provenance.test.ts [ tests/environment-async-provenance.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\04b2c6553d14bcfa83b36bc492d5288b8a5e9b5f'
+ ❯ tests/environment-async-provenance.test.ts:2:1
+      1| import {it,expect} from 'vitest';
+      2| import {asyncFixture} from './environment-async-fixture';
+       | ^
+      3| import {NOW} from './helpers';
+      4| import {MemoryStore} from '../src/memory/store';import {MemoryRetrieva…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[35/183]⎯
+
+ FAIL  tests/environment-async-recovery.test.ts [ tests/environment-async-recovery.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\cdd5886cff97a54880f6b68a56ec59c9f0b0362f'
+ ❯ tests/environment-async-recovery.test.ts:3:1
+      1| import {it,expect,vi} from 'vitest';
+      2| import {mkdtempSync,rmSync} from 'node:fs';import {tmpdir} from 'node:…
+      3| import {setup,NOW} from './helpers';
+       | ^
+      4| import {Storage} from '../src/storage';import {EnvironmentStore} from …
+      5| import {EnvironmentPreparation} from '../src/environment/preparation';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[36/183]⎯
+
+ FAIL  tests/environment-async-slots.test.ts [ tests/environment-async-slots.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\04b2c6553d14bcfa83b36bc492d5288b8a5e9b5f'
+ ❯ tests/environment-async-slots.test.ts:2:1
+      1| import {it,expect} from 'vitest';
+      2| import {asyncFixture} from './environment-async-fixture';
+       | ^
+      3| import {NOW} from './helpers';
+      4| import {MemoryStore} from '../src/memory/store';import {MemoryIndex} f…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[37/183]⎯
+
+ FAIL  tests/environment-async-tools.test.ts [ tests/environment-async-tools.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\04b2c6553d14bcfa83b36bc492d5288b8a5e9b5f'
+ ❯ tests/environment-async-tools.test.ts:2:1
+      1| import {it,expect,vi} from 'vitest';
+      2| import {asyncFixture} from './environment-async-fixture';
+       | ^
+      3| import {NOW} from './helpers';
+      4| import {EnvironmentPreparation} from '../src/environment/preparation';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[38/183]⎯
+
+ FAIL  tests/environment-context-view.test.ts [ tests/environment-context-view.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\37f9d504525b3badd4c10afd9364a7e8f04fd010'
+ ❯ tests/environment-context-view.test.ts:2:1
+      1| import {it,expect} from 'vitest';
+      2| import {buildEnvironmentView} from '../src/model/context-views';
+       | ^
+      3| const views={version:1 as const,status:'approved' as const,core:'私有背…
+      4| it('v0_school_context_flat_and_contract_unchanged',()=>{
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[39/183]⎯
+
+ FAIL  tests/environment-preparation-snapshot.test.ts [ tests/environment-preparation-snapshot.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\cdd5886cff97a54880f6b68a56ec59c9f0b0362f'
+ ❯ tests/environment-preparation-snapshot.test.ts:2:1
+      1| import {it,expect} from 'vitest';
+      2| import {setup} from './helpers';
+       | ^
+      3| import {schoolPlan,schoolItem} from './world-school-fixture';
+      4| import {freezeEnvironmentSnapshot,frozenSchoolView,lookupFrozenEnviron…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[40/183]⎯
+
+ FAIL  tests/environment-queries.test.ts [ tests/environment-queries.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\cdd5886cff97a54880f6b68a56ec59c9f0b0362f'
+ ❯ tests/environment-queries.test.ts:2:1
+      1| import {it,expect} from 'vitest';
+      2| import {setup,NOW} from './helpers';
+       | ^
+      3| import {ensureEnvironmentBatch,environmentDeadline,selectEnvironmentSt…
+      4| import {EnvironmentStore} from '../src/environment/store';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[41/183]⎯
+
+ FAIL  tests/environment.test.ts [ tests/environment.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\abd54361192a5842e211ec58c76f2ecc9dd5bc45'
+ ❯ tests/environment.test.ts:2:1
+      1| import {it,expect} from 'vitest';
+      2| import {HdsiApp} from '../src/app';
+       | ^
+      3| import {Scheduler} from '../src/host/scheduler';
+      4| import {setup,NOW} from './helpers';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[42/183]⎯
+
+ FAIL  tests/expression-context-view.test.ts [ tests/expression-context-view.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\37f9d504525b3badd4c10afd9364a7e8f04fd010'
+ ❯ tests/expression-context-view.test.ts:2:1
+      1| import {it,expect} from 'vitest';
+      2| import {buildExpressionView} from '../src/model/context-views';
+       | ^
+      3| import {initialCharacter} from '../src/config';
+      4| import {NOW} from './helpers';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[43/183]⎯
+
+ FAIL  tests/feature-check-fixture.test.ts [ tests/feature-check-fixture.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\3e0af2954b78f2750489a403db3fab7bb3f5eb37'
+ ❯ scripts/prepare-feature-check.ts:3:1
+
+ ❯ tests/feature-check-fixture.test.ts:1:152
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[44/183]⎯
+
+ FAIL  tests/graceful-stop-control.test.ts [ tests/graceful-stop-control.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\a15ec6b6923bee69e454d9e790b7c0eafda2fb94'
+ ❯ tests/graceful-stop-control.test.ts:4:1
+      2| import {request} from 'node:http';
+      3| import {mkdtemp,readFile,rm} from 'node:fs/promises';import {tmpdir} f…
+      4| import {startStopControl} from '../src/deployment/stop-control';
+       | ^
+      5| const tick=()=>new Promise<void>(r=>setImmediate(r));
+      6| it('local authenticated request waits for completed work; repeated req…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[45/183]⎯
+
+ FAIL  tests/graceful-stop-host.test.ts [ tests/graceful-stop-host.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\94faa09df13910014261e3ead1bb55247ac4c563'
+ ❯ tests/graceful-stop-host.test.ts:2:1
+      1| import {it,expect} from 'vitest';
+      2| import {EnvironmentPreparation} from '../src/environment/preparation';
+       | ^
+      3| import {SerialHost} from '../src/host/runtime';
+      4| import {HdsiApp} from '../src/app';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[46/183]⎯
+
+ FAIL  tests/graceful-stop-process.test.ts [ tests/graceful-stop-process.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\3e0af2954b78f2750489a403db3fab7bb3f5eb37'
+ ❯ tests/graceful-stop-process.test.ts:1:284
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[47/183]⎯
+
+ FAIL  tests/incoming-image-model.test.ts [ tests/incoming-image-model.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\47677c974a0cb1f3886d73e7f056c1587ead6c7a'
+ ❯ tests/incoming-image-model.test.ts:2:1
+      1| import {it,expect} from 'vitest';
+      2| import {ChatCompletionsTransport,ModelClient} from '../src/model/clien…
+       | ^
+      3| import {observeIncomingImage} from '../src/input-media/observe';
+      4| it('sends real image_url, strips transfer fields from text and keeps i…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[48/183]⎯
+
+ FAIL  tests/incoming-media-assets.test.ts [ tests/incoming-media-assets.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\3e0af2954b78f2750489a403db3fab7bb3f5eb37'
+ ❯ tests/incoming-media-assets.test.ts:3:1
+      1| import {it,expect} from 'vitest';
+      2| import {mkdtempSync,rmSync} from 'node:fs';import {tmpdir} from 'node:…
+      3| import {Storage} from '../src/storage';import {IncomingMediaStore} fro…
+       | ^
+      4| import {IncomingAssets,AttachmentResolver} from '../src/input-media/as…
+      5| const png=Buffer.from('89504e470d0a1a0a00000000','hex');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[49/183]⎯
+
+ FAIL  tests/incoming-media-cleanup.test.ts [ tests/incoming-media-cleanup.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\3e0af2954b78f2750489a403db3fab7bb3f5eb37'
+ ❯ tests/incoming-media-cleanup.test.ts:1:161
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[50/183]⎯
+
+ FAIL  tests/incoming-media-context.test.ts [ tests/incoming-media-context.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\37f9d504525b3badd4c10afd9364a7e8f04fd010'
+ ❯ tests/incoming-media-context.test.ts:1:34
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[51/183]⎯
+
+ FAIL  tests/incoming-media-entry.test.ts [ tests/incoming-media-entry.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\f9319dfa255b726834a5db02c1ba37180cbb7069'
+ ❯ tests/incoming-media-entry.test.ts:2:1
+      1| import {expect,it,vi} from 'vitest';
+      2| import {parseIncomingContent} from '../src/input-media/parse';
+       | ^
+      3| import {InputBuffer} from '../src/host/input';
+      4| import {IncomingMediaStore} from '../src/input-media/store';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[52/183]⎯
+
+ FAIL  tests/incoming-media-integration.test.ts [ tests/incoming-media-integration.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\cdd5886cff97a54880f6b68a56ec59c9f0b0362f'
+ ❯ tests/incoming-media-integration.test.ts:1:139
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[53/183]⎯
+
+ FAIL  tests/incoming-media-onebot-review.test.ts [ tests/incoming-media-onebot-review.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\f9319dfa255b726834a5db02c1ba37180cbb7069'
+ ❯ tests/incoming-media-onebot-review.test.ts:3:1
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[54/183]⎯
+
+ FAIL  tests/incoming-media-smoke.test.ts [ tests/incoming-media-smoke.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\4be3e4ba2fa141c8e165e1b61091b3a468166570'
+ ❯ tests/incoming-media-smoke.test.ts:1:169
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[55/183]⎯
+
+ FAIL  tests/incoming-media-store-cost.test.ts [ tests/incoming-media-store-cost.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\3e0af2954b78f2750489a403db3fab7bb3f5eb37'
+ ❯ tests/incoming-media-store-cost.test.ts:1:37
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[56/183]⎯
+
+ FAIL  tests/incoming-media-turn.test.ts [ tests/incoming-media-turn.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\3e0af2954b78f2750489a403db3fab7bb3f5eb37'
+ ❯ tests/incoming-media-turn.test.ts:2:1
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[57/183]⎯
+
+ FAIL  tests/input.test.ts [ tests/input.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\3e0af2954b78f2750489a403db3fab7bb3f5eb37'
+ ❯ tests/input.test.ts:2:1
+      1| import { describe, it, expect } from 'vitest';
+      2| import { Storage } from '../src/storage';
+       | ^
+      3| import { InputBuffer } from '../src/host/input';
+      4|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[58/183]⎯
+
+ FAIL  tests/integration.test.ts [ tests/integration.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\abd54361192a5842e211ec58c76f2ecc9dd5bc45'
+ ❯ tests/integration.test.ts:2:1
+      1| import { it, expect } from 'vitest';
+      2| import { HdsiApp } from '../src/app';
+       | ^
+      3| import { SerialHost } from '../src/host/runtime';
+      4| import { setup, NOW } from './helpers';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[59/183]⎯
+
+ FAIL  tests/local-web-acceptance.test.ts [ tests/local-web-acceptance.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\2a79dab608f8831b07f5a835587f02434815a589'
+ ❯ tests/local-web-acceptance.test.ts:1:34
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[60/183]⎯
+
+ FAIL  tests/local-web-validation-startup.test.ts [ tests/local-web-validation-startup.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\906742a02e3cb20f2fbaffa769bdf90053bcdcd5'
+ ❯ scripts/validate-local-web.ts:5:1
+      3| import {mkdirSync,writeFileSync} from 'node:fs';
+      4| import {createHash} from 'node:crypto';
+      5| import {createManagedBrowserProvider} from '../src/web/browser/provide…
+       | ^
+      6| import {createKoishiBrowserPort} from '../src/web/browser/koishi-port';
+      7| import {extractDomEvidence,extractReadablePage,BROWSER_EXTRACTOR_VERSI…
+ ❯ tests/local-web-validation-startup.test.ts:1:213
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[61/183]⎯
+
+ FAIL  tests/memory-batch-characters.test.ts [ tests/memory-batch-characters.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\de2ecbd112eea2c34dfd1176e339eebb8314887b'
+ ❯ tests/memory-batch-characters.test.ts:3:1
+      1| import {it,expect} from 'vitest';
+      2| import {fixture,long,at,days} from './memory-capacity-fixture';
+      3| import {MemoryLifecycle} from '../src/memory/lifecycle';
+       | ^
+      4| import {MemoryIndex} from '../src/memory/index';
+      5| import {MemoryMaintenance} from '../src/memory/maintenance';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[62/183]⎯
+
+ FAIL  tests/memory-capacity-cleanup.test.ts [ tests/memory-capacity-cleanup.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\de2ecbd112eea2c34dfd1176e339eebb8314887b'
+ ❯ tests/memory-capacity-cleanup.test.ts:2:1
+      1| import {expect,it} from 'vitest';
+      2| import {fixture,long,at,days} from './memory-capacity-fixture';
+       | ^
+      3| import {MemoryCapacity} from '../src/memory/capacity';
+      4| import {MemoryCleanup} from '../src/memory/cleanup';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[63/183]⎯
+
+ FAIL  tests/memory-capacity-deployment.test.ts [ tests/memory-capacity-deployment.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\de2ecbd112eea2c34dfd1176e339eebb8314887b'
+ ❯ tests/memory-capacity-deployment.test.ts:5:1
+      3| import {join} from 'node:path';
+      4| import {tmpdir} from 'node:os';
+      5| import {fixture,at} from './memory-capacity-fixture';
+       | ^
+      6| import {loadSettings} from '../src/settings';
+      7| import {assembleMemory} from '../src/deployment/memory-runtime';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[64/183]⎯
+
+ FAIL  tests/memory-capacity-idle-integration.test.ts [ tests/memory-capacity-idle-integration.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\c059c2447c7ae81ada404b4078cb1db29bc200e1'
+ ❯ scripts/memory-capacity-acceptance.ts:1:1
+      1| import { isStageModelInput } from '../src/model/context-types';
+       | ^
+      2| import { ChatEpisodes as DialogueEpisodes } from '../src/dialogue/chat…
+      3| import { DialogueStore } from '../src/dialogue/store';
+ ❯ tests/memory-capacity-idle-integration.test.ts:5:1
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[65/183]⎯
+
+ FAIL  tests/memory-capacity-lifecycle.test.ts [ tests/memory-capacity-lifecycle.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\de2ecbd112eea2c34dfd1176e339eebb8314887b'
+ ❯ tests/memory-capacity-lifecycle.test.ts:2:1
+      1| import {expect,it} from 'vitest';
+      2| import {fixture,long,at,days,request} from './memory-capacity-fixture';
+       | ^
+      3| import {MemoryCapacity} from '../src/memory/capacity';
+      4| import {defaultMemoryCapacity} from '../src/memory/types';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[66/183]⎯
+
+ FAIL  tests/memory-capacity-prune-race.test.ts [ tests/memory-capacity-prune-race.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\de2ecbd112eea2c34dfd1176e339eebb8314887b'
+ ❯ tests/memory-capacity-prune-race.test.ts:2:1
+      1| import {expect,it,vi} from 'vitest';
+      2| import {fixture,long,at,days} from './memory-capacity-fixture';
+       | ^
+      3| import {MemoryIndex} from '../src/memory/index';
+      4| import {MemoryMaintenance} from '../src/memory/maintenance';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[67/183]⎯
+
+ FAIL  tests/memory-capacity-retrieval.test.ts [ tests/memory-capacity-retrieval.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\de2ecbd112eea2c34dfd1176e339eebb8314887b'
+ ❯ tests/memory-capacity-retrieval.test.ts:2:1
+      1| import {expect,it} from 'vitest';
+      2| import {fixture,long,at,days,request} from './memory-capacity-fixture';
+       | ^
+      3| import {MemoryCapacity,archiveStart,isArchivedLong} from '../src/memor…
+      4| import {defaultMemoryCapacity} from '../src/memory/types';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[68/183]⎯
+
+ FAIL  tests/memory-capacity-state.test.ts [ tests/memory-capacity-state.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\de2ecbd112eea2c34dfd1176e339eebb8314887b'
+ ❯ tests/memory-capacity-state.test.ts:2:1
+      1| import { expect, it } from 'vitest';
+      2| import { fixture, long, at } from './memory-capacity-fixture';
+       | ^
+      3| it('legacy_owner_runtime_normalization', () => {
+      4|   const {store,storage}=fixture(); long(store,'old');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[69/183]⎯
+
+ FAIL  tests/memory-capacity-upgrade.test.ts [ tests/memory-capacity-upgrade.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\3e0af2954b78f2750489a403db3fab7bb3f5eb37'
+ ❯ tests/memory-capacity-upgrade.test.ts:7:1
+      5| import {tmpdir} from 'node:os';
+      6| import {DatabaseSync} from 'node:sqlite';
+      7| import {Storage} from '../src/storage';
+       | ^
+      8| import {MemoryStore} from '../src/memory/store';
+      9| import {MemoryCapacity} from '../src/memory/capacity';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[70/183]⎯
+
+ FAIL  tests/memory-cleanup-write-amplification.test.ts [ tests/memory-cleanup-write-amplification.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\2c56eea591aee036328b4004195db9a8ad6f2a88'
+ ❯ tests/memory-cleanup-write-amplification.test.ts:1:1
+      1| import {defaultMemoryCapacity} from '../src/memory/types';
+       | ^
+      2| import {it,expect} from 'vitest';
+      3| import {fixture,long,at} from './memory-capacity-fixture';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[71/183]⎯
+
+ FAIL  tests/memory-event-time.test.ts [ tests/memory-event-time.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\3e0af2954b78f2750489a403db3fab7bb3f5eb37'
+ ❯ tests/memory-event-time.test.ts:2:1
+      1| import {it,expect,afterEach} from 'vitest';
+      2| import {Storage} from '../src/storage';
+       | ^
+      3| import {MemoryStore} from '../src/memory/store';
+      4| import {MemoryLifecycle} from '../src/memory/lifecycle';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[72/183]⎯
+
+ FAIL  tests/memory-final-review.test.ts [ tests/memory-final-review.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\3e0af2954b78f2750489a403db3fab7bb3f5eb37'
+ ❯ tests/memory-final-review.test.ts:2:1
+      1| import {afterEach,expect,it} from 'vitest';
+      2| import {Storage} from '../src/storage';
+       | ^
+      3| import {MemoryStore} from '../src/memory/store';
+      4| import {MemoryLifecycle} from '../src/memory/lifecycle';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[73/183]⎯
+
+ FAIL  tests/memory-idle-consolidation.test.ts [ tests/memory-idle-consolidation.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\de2ecbd112eea2c34dfd1176e339eebb8314887b'
+ ❯ tests/memory-idle-consolidation.test.ts:2:1
+      1| import {expect,it} from 'vitest';
+      2| import {fixture,long,at,days} from './memory-capacity-fixture';
+       | ^
+      3| import {MemoryLifecycle} from '../src/memory/lifecycle';
+      4| import {MemoryIndex} from '../src/memory/index';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[74/183]⎯
+
+ FAIL  tests/memory-idle-contracts.test.ts [ tests/memory-idle-contracts.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\de2ecbd112eea2c34dfd1176e339eebb8314887b'
+ ❯ tests/memory-idle-contracts.test.ts:2:1
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[75/183]⎯
+
+ FAIL  tests/memory-idle-fairness.test.ts [ tests/memory-idle-fairness.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\de2ecbd112eea2c34dfd1176e339eebb8314887b'
+ ❯ tests/memory-idle-fairness.test.ts:2:1
+      1| import {expect,it} from 'vitest';
+      2| import {fixture,long,at,days} from './memory-capacity-fixture';
+       | ^
+      3| import {MemoryIdle} from '../src/memory/idle';
+      4| import {MemoryIndex} from '../src/memory/index';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[76/183]⎯
+
+ FAIL  tests/memory-idle-host.test.ts [ tests/memory-idle-host.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\de2ecbd112eea2c34dfd1176e339eebb8314887b'
+ ❯ tests/memory-idle-host.test.ts:2:1
+      1| import {afterEach,expect,it,vi} from 'vitest';
+      2| import {fixture,long,at,days} from './memory-capacity-fixture';
+       | ^
+      3| import {MemoryIdle} from '../src/memory/idle';
+      4| import {MemoryCapacity} from '../src/memory/capacity';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[77/183]⎯
+
+ FAIL  tests/memory-idle-policy.test.ts [ tests/memory-idle-policy.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\de2ecbd112eea2c34dfd1176e339eebb8314887b'
+ ❯ tests/memory-idle-policy.test.ts:2:1
+      1| import {expect,it} from 'vitest';
+      2| import {fixture,at,days} from './memory-capacity-fixture';
+       | ^
+      3| import {MemoryIdle,activityChanged} from '../src/memory/idle';
+      4| const minute=(n:number)=>new Date(Date.parse(at)+n*60000).toISOString(…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[78/183]⎯
+
+ FAIL  tests/memory-idle-recovery.test.ts [ tests/memory-idle-recovery.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\de2ecbd112eea2c34dfd1176e339eebb8314887b'
+ ❯ tests/memory-idle-recovery.test.ts:2:1
+      1| import {expect,it} from 'vitest';
+      2| import {fixture,at} from './memory-capacity-fixture';
+       | ^
+      3| import {MemoryIdle} from '../src/memory/idle';
+      4| import {InputBuffer} from '../src/host/input';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[79/183]⎯
+
+ FAIL  tests/memory-index-coalescing.test.ts [ tests/memory-index-coalescing.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\de2ecbd112eea2c34dfd1176e339eebb8314887b'
+ ❯ tests/memory-index-coalescing.test.ts:2:1
+      1| import {it,expect} from 'vitest';
+      2| import {fixture,long,at} from './memory-capacity-fixture';
+       | ^
+      3| import {MemoryLifecycle} from '../src/memory/lifecycle';
+      4| import {MemoryIndex} from '../src/memory/index';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[80/183]⎯
+
+ FAIL  tests/memory-maintenance-checkpoint.test.ts [ tests/memory-maintenance-checkpoint.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\3e0af2954b78f2750489a403db3fab7bb3f5eb37'
+ ❯ tests/memory-maintenance-checkpoint.test.ts:5:1
+      3| import {tmpdir} from 'node:os';
+      4| import {join,resolve,dirname,basename} from 'node:path';
+      5| import {Storage} from '../src/storage';
+       | ^
+      6| import {initialCharacter} from '../src/config';
+      7| import {TestClock,NOW} from './helpers';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[81/183]⎯
+
+ FAIL  tests/memory-payload-compaction-cli.test.ts [ tests/memory-payload-compaction-cli.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\3e0af2954b78f2750489a403db3fab7bb3f5eb37'
+ ❯ tests/memory-payload-compaction-cli.test.ts:5:1
+      3| import {tmpdir} from 'node:os';import {join} from 'node:path';
+      4| import {execFileSync} from 'node:child_process';
+      5| import {Storage} from '../src/storage';import {MemoryStore} from '../s…
+       | ^
+      6| import {inspectCompletedPayloads,compactMemoryPayloads} from '../src/d…
+      7| const dirs:string[]=[];afterEach(()=>{for(const d of dirs.splice(0))rm…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[82/183]⎯
+
+ FAIL  tests/memory-payload-compaction.test.ts [ tests/memory-payload-compaction.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\de2ecbd112eea2c34dfd1176e339eebb8314887b'
+ ❯ tests/memory-payload-compaction.test.ts:2:1
+      1| import {it,expect} from 'vitest';
+      2| import {fixture,long,at} from './memory-capacity-fixture';
+       | ^
+      3| import {WebSearchStore} from '../src/web/store';
+      4| it('bounded old compaction visits each residual once and keeps recover…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[83/183]⎯
+
+ FAIL  tests/memory-payload-recovery-matrix.test.ts [ tests/memory-payload-recovery-matrix.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\de2ecbd112eea2c34dfd1176e339eebb8314887b'
+ ❯ tests/memory-payload-recovery-matrix.test.ts:2:1
+      1| import {it,expect} from 'vitest';
+      2| import {fixture,at} from './memory-capacity-fixture';
+       | ^
+      3| import {WebSearchStore} from '../src/web/store';
+      4| const checkpoint={input:{body:'完整恢复正文'},repairCount:2,lookupUsed:true,…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[84/183]⎯
+
+ FAIL  tests/memory-pending-refresh.test.ts [ tests/memory-pending-refresh.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\de2ecbd112eea2c34dfd1176e339eebb8314887b'
+ ❯ tests/memory-pending-refresh.test.ts:2:1
+      1| import {it,expect} from 'vitest';
+      2| import {fixture,long,at,days} from './memory-capacity-fixture';
+       | ^
+      3| import {MemoryLifecycle} from '../src/memory/lifecycle';
+      4| import {MemoryIndex} from '../src/memory/index';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[85/183]⎯
+
+ FAIL  tests/memory-projection-retrieval.test.ts [ tests/memory-projection-retrieval.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\3e0af2954b78f2750489a403db3fab7bb3f5eb37'
+ ❯ tests/memory-projection-retrieval.test.ts:2:1
+      1| import {it,expect,afterEach} from 'vitest';
+      2| import {Storage} from '../src/storage';
+       | ^
+      3| import {MemoryStore} from '../src/memory/store';
+      4| import {MemoryLifecycle} from '../src/memory/lifecycle';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[86/183]⎯
+
+ FAIL  tests/memory-v3-deployment.test.ts [ tests/memory-v3-deployment.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\4f1a377f4285d190fe78d266ded3e05acd987243'
+ ❯ tests/memory-v3-deployment.test.ts:5:1
+      3| import { tmpdir } from 'node:os';
+      4| import { join } from 'node:path';
+      5| import { loadSettings,connectionFor,modelRoles,appConfig } from '../sr…
+       | ^
+      6| import { ChatCompletionsTransport,ModelClient } from '../src/model/cli…
+      7| import { prepareCharacterBackground } from '../src/deployment/characte…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[87/183]⎯
+
+ FAIL  tests/memory-v3-host.test.ts [ tests/memory-v3-host.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\94faa09df13910014261e3ead1bb55247ac4c563'
+ ❯ src/host/runtime.ts:1:1
+      1| import {EnvironmentPreparation} from '../environment/preparation';
+       | ^
+      2| import {assertFullWindow,assertRoutineWindow} from '../dialogue/active…
+      3| import {renderWebStatus} from '../web/status';
+ ❯ tests/memory-v3-host.test.ts:3:1
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[88/183]⎯
+
+ FAIL  tests/memory-v3-index.test.ts [ tests/memory-v3-index.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\3e0af2954b78f2750489a403db3fab7bb3f5eb37'
+ ❯ tests/memory-v3-index.test.ts:2:1
+      1| import { afterEach, expect, it, vi } from 'vitest';
+      2| import { Storage } from '../src/storage';
+       | ^
+      3| import { MemoryStore } from '../src/memory/store';
+      4| import { MemoryIndex, normalizeVector } from '../src/memory/index';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[89/183]⎯
+
+ FAIL  tests/memory-v3-lifecycle.test.ts [ tests/memory-v3-lifecycle.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\3e0af2954b78f2750489a403db3fab7bb3f5eb37'
+ ❯ tests/memory-v3-lifecycle.test.ts:2:1
+      1| import { afterEach, describe, expect, it } from 'vitest';
+      2| import { Storage } from '../src/storage';
+       | ^
+      3| import { MemoryStore } from '../src/memory/store';
+      4| import { MemoryLifecycle } from '../src/memory/lifecycle';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[90/183]⎯
+
+ FAIL  tests/memory-v3-maintenance.test.ts [ tests/memory-v3-maintenance.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\3e0af2954b78f2750489a403db3fab7bb3f5eb37'
+ ❯ tests/memory-v3-maintenance.test.ts:2:1
+      1| import { afterEach,expect,it,vi } from 'vitest';
+      2| import { Storage } from '../src/storage';
+       | ^
+      3| import { MemoryStore } from '../src/memory/store';
+      4| import { MemoryIndex } from '../src/memory/index';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[91/183]⎯
+
+ FAIL  tests/memory-v3-recovery.test.ts [ tests/memory-v3-recovery.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\3e0af2954b78f2750489a403db3fab7bb3f5eb37'
+ ❯ tests/memory-v3-recovery.test.ts:5:1
+      3| import { tmpdir } from 'node:os';
+      4| import { join } from 'node:path';
+      5| import { Storage } from '../src/storage';
+       | ^
+      6| import { MemoryStore } from '../src/memory/store';
+      7| import { MemoryLifecycle } from '../src/memory/lifecycle';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[92/183]⎯
+
+ FAIL  tests/memory-v3-retrieval.test.ts [ tests/memory-v3-retrieval.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\87da32fc980ea8d55ae4e828ae1c511a5808a37b'
+ ❯ tests/memory-v3-retrieval.test.ts:2:1
+      1| import { afterEach, expect, it } from 'vitest';
+      2| import { ChatEpisodes as DialogueEpisodes } from '../src/dialogue/chat…
+       | ^
+      3| import { DialogueStore } from '../src/dialogue/store';
+      4| import { Storage } from '../src/storage';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[93/183]⎯
+
+ FAIL  tests/memory-v3-store.test.ts [ tests/memory-v3-store.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\3e0af2954b78f2750489a403db3fab7bb3f5eb37'
+ ❯ tests/memory-v3-store.test.ts:5:1
+      3| import { join } from 'node:path';
+      4| import { tmpdir } from 'node:os';
+      5| import { Storage } from '../src/storage';
+       | ^
+      6| import { MemoryStore } from '../src/memory/store';
+      7|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[94/183]⎯
+
+ FAIL  tests/memory.test.ts [ tests/memory.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\10c7738707281df811c0ab9256ca38d4b2cec89b'
+ ❯ src/memory/context.ts:3:1
+      1| import { Storage } from '../storage';
+      2| import type { RetrievalRequest, LookupRequest, MemoryContext } from '.…
+      3| import { MemoryStore } from './store';
+       | ^
+      4| import { MemoryRetrieval, makeRetrievalRequest, resolveLookupRequest }…
+      5| export { queryTerms } from './lexical';
+ ❯ tests/memory.test.ts:2:1
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[95/183]⎯
+
+ FAIL  tests/model-call-context.test.ts [ tests/model-call-context.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\47677c974a0cb1f3886d73e7f056c1587ead6c7a'
+ ❯ tests/model-call-context.test.ts:2:1
+      1| import { expect, it } from 'vitest';
+      2| import { ModelClient, ChatCompletionsTransport } from '../src/model/cl…
+       | ^
+      3| import type { ModelTask } from '../src/types';
+      4| const task:ModelTask<{answer:string}>={name:'memory',schema:{},prompt:…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[96/183]⎯
+
+ FAIL  tests/model-settings.test.ts [ tests/model-settings.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\4f1a377f4285d190fe78d266ded3e05acd987243'
+ ❯ tests/model-settings.test.ts:5:1
+      3| import { tmpdir } from 'node:os';
+      4| import { join } from 'node:path';
+      5| import { loadSettings, connectionFor, type StorySettings } from '../sr…
+       | ^
+      6| import { ChatCompletionsTransport, ModelClient } from '../src/model/cl…
+      7| import type { ModelTask } from '../src/types';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[97/183]⎯
+
+ FAIL  tests/output.test.ts [ tests/output.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\758bdc41d827379f2e9209e4afe57092b176dfc6'
+ ❯ tests/output.test.ts:2:1
+      1| import { it, expect } from 'vitest';
+      2| import { countVisibleCharacters, delayMs, renderItem } from '../src/ou…
+       | ^
+      3| it('counts visible graphemes and times the next bare speech part', () …
+      4|   expect(countVisibleCharacters(' 👩‍👩‍👧‍👦 👍🏽\n 笑 ')).toBe(3);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[98/183]⎯
+
+ FAIL  tests/personal-stage-preparation.test.ts [ tests/personal-stage-preparation.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\cdd5886cff97a54880f6b68a56ec59c9f0b0362f'
+ ❯ tests/personal-stage-preparation.test.ts:2:1
+      1| import {it,expect,vi} from 'vitest';
+      2| import {setup,NOW,saveInput,narrative} from './helpers';
+       | ^
+      3| import {generateTurn,HdsiApp} from '../src/app';
+      4| import {ContextBuilder} from '../src/memory/context';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[99/183]⎯
+
+ FAIL  tests/phone-access-contracts.test.ts [ tests/phone-access-contracts.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\886c58b52a986e11a4b7a6824fd116084be3f90d'
+ ❯ tests/phone-access-contracts.test.ts:2:1
+      1| import {it,expect} from 'vitest';
+      2| import {narrativeTask} from '../src/model/contracts';
+       | ^
+      3| import {ModelClient,ModelFormatError} from '../src/model/client';
+      4| import {canRead} from '../src/host/state';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[100/183]⎯
+
+ FAIL  tests/phone-access-deployment.test.ts [ tests/phone-access-deployment.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\77fbf5b8fe3b8413205acf6e7f51e3a3214a82d9'
+ ❯ tests/phone-access-deployment.test.ts:6:1
+      4| import {resolve} from 'node:path';
+      5| import {createHash} from 'node:crypto';
+      6| import {modern} from './chat-fixture';
+       | ^
+      7| import {NOW,narrative} from './helpers';
+      8| import {InputBuffer} from '../src/host/input';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[101/183]⎯
+
+ FAIL  tests/phone-access-flow.test.ts [ tests/phone-access-flow.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\9466350e77db1f4a9d2bc73618fc944e1fdca040'
+ ❯ src/host/shared.ts:4:1
+      2| import { randomUUID } from 'node:crypto';
+      3| import { Storage } from '../storage';
+      4| import { addMs, milliseconds } from '../time';
+       | ^
+      5|
+      6| export function selectSharedMeta(storage: Storage, now: string, inputM…
+ ❯ src/host/reply-freshness.ts:4:1
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[102/183]⎯
+
+ FAIL  tests/plugin-smoke-contract.test.ts [ tests/plugin-smoke-contract.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\87a2980317bf10c0df20b30e71b20fcca0cc177f'
+ ❯ tests/plugin-smoke-contract.test.ts:6:1
+      4| import {createRequire} from 'node:module';
+      5| import {performance} from 'node:perf_hooks';
+      6| import {validateWeekText} from '../src/school/calendar';
+       | ^
+      7| import type {SchoolExpansionInput} from '../src/school/types';
+      8| const {parseEnvelopeRequest,mockEnvironmentResponse,waitForEnvironment…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[103/183]⎯
+
+ FAIL  tests/plugin.test.ts [ tests/plugin.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\686a67f27cd0adc121ebebd7a70f0c3b04b9ea23'
+ ❯ tests/plugin.test.ts:2:1
+      1| import { it, expect } from 'vitest';
+      2| import { isTargetSession } from '../src/host/input';
+       | ^
+      3| it('only accepts the bound bot and user in direct chat', () => {
+      4|   const config = { botId: '1000000000', userId: '1000000001' };
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[104/183]⎯
+
+ FAIL  tests/probability.test.ts [ tests/probability.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\abd54361192a5842e211ec58c76f2ecc9dd5bc45'
+ ❯ tests/probability.test.ts:3:1
+      1| import { it, expect } from 'vitest';
+      2| import { sampleOpportunity, probability, expectedRate } from '../src/h…
+      3| import { generateTurn } from '../src/app';
+       | ^
+      4| import { setup, SequenceRandom } from './helpers';
+      5| const STICKER = { p0: 0.025, step: 0.00177786838251657 };
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[105/183]⎯
+
+ FAIL  tests/prompt-context-call-skip.test.ts [ tests/prompt-context-call-skip.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\cdd5886cff97a54880f6b68a56ec59c9f0b0362f'
+ ❯ tests/prompt-context-call-skip.test.ts:2:1
+      1| import { it,expect } from 'vitest';
+      2| import { setup,NOW,saveInput,emptyMemory } from './helpers';
+       | ^
+      3| import { MemoryStore } from '../src/memory/store';
+      4| import { MemoryIndex } from '../src/memory/index';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[106/183]⎯
+
+ FAIL  tests/prompt-context-errors.test.ts [ tests/prompt-context-errors.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\47677c974a0cb1f3886d73e7f056c1587ead6c7a'
+ ❯ tests/prompt-context-errors.test.ts:2:1
+      1| import {it,expect} from 'vitest';
+      2| import {ChatCompletionsTransport,ModelRequestError} from '../src/model…
+       | ^
+      3| import {HdsiApp} from '../src/app';
+      4| import {SerialHost} from '../src/host/runtime';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[107/183]⎯
+
+ FAIL  tests/prompt-context-integration.test.ts [ tests/prompt-context-integration.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\3e0af2954b78f2750489a403db3fab7bb3f5eb37'
+ ❯ src/deployment/prompt-context-acceptance.ts:1:1
+      1| import {Storage} from '../storage';
+       | ^
+      2| import {HdsiApp} from '../app';
+      3| import {ChatEpisodes as DialogueEpisodes} from '../dialogue/chat-episo…
+ ❯ tests/prompt-context-integration.test.ts:2:1
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[108/183]⎯
+
+ FAIL  tests/prompt-context-transport.test.ts [ tests/prompt-context-transport.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\47677c974a0cb1f3886d73e7f056c1587ead6c7a'
+ ❯ tests/prompt-context-transport.test.ts:2:1
+      1| import { it,expect } from 'vitest';
+      2| import { ChatCompletionsTransport } from '../src/model/client';
+       | ^
+      3| import { stageInput } from '../src/model/context-views';
+      4| import { modelTask } from '../src/model/contracts';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[109/183]⎯
+
+ FAIL  tests/prompt-context-views.test.ts [ tests/prompt-context-views.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\37f9d504525b3badd4c10afd9364a7e8f04fd010'
+ ❯ tests/prompt-context-views.test.ts:2:1
+      1| import { it,expect } from 'vitest';
+      2| import { buildStageModelInput,projectOwner,stageInput } from '../src/m…
+       | ^
+      3| import { setup,saveInput,NOW } from './helpers';
+      4| import { MemoryStore } from '../src/memory/store';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[110/183]⎯
+
+ FAIL  tests/prompt-policy.test.ts [ tests/prompt-policy.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\47677c974a0cb1f3886d73e7f056c1587ead6c7a'
+ ❯ tests/prompt-policy.test.ts:2:1
+      1| import { it,expect } from 'vitest';
+      2| import { ModelClient,ChatCompletionsTransport } from '../src/model/cli…
+       | ^
+      3| import { personalTask,narrativeTask } from '../src/model/contracts';
+      4| import { stageInput } from '../src/model/context-views';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[111/183]⎯
+
+ FAIL  tests/query-index-compatibility.test.ts [ tests/query-index-compatibility.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\3e0af2954b78f2750489a403db3fab7bb3f5eb37'
+ ❯ tests/query-index-compatibility.test.ts:4:1
+      2| import {mkdtempSync,readFileSync,rmSync} from 'node:fs';
+      3| import {tmpdir} from 'node:os';import {join} from 'node:path';import {…
+      4| import {Storage} from '../src/storage';import {SchoolStore} from '../s…
+       | ^
+      5| import {schoolItem} from './world-school-fixture';import {NOW} from '.…
+      6| const dirs:string[]=[];afterEach(()=>dirs.splice(0).forEach(d=>rmSync(…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[112/183]⎯
+
+ FAIL  tests/recovery.test.ts [ tests/recovery.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\abd54361192a5842e211ec58c76f2ecc9dd5bc45'
+ ❯ tests/recovery.test.ts:2:1
+      1| import { it, expect } from 'vitest';
+      2| import { HdsiApp, generateTurn } from '../src/app';
+       | ^
+      3| import type { TurnRecord } from '../src/types';
+      4| import { setup, saveInput, NOW } from './helpers';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[113/183]⎯
+
+ FAIL  tests/reply-freshness-context.test.ts [ tests/reply-freshness-context.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\77fbf5b8fe3b8413205acf6e7f51e3a3214a82d9'
+ ❯ tests/reply-freshness-context.test.ts:2:1
+      1| import {it,expect,vi} from 'vitest';
+      2| import {modern} from './chat-fixture';
+       | ^
+      3| import {HdsiApp} from '../src/app';
+      4| import {InputBuffer} from '../src/host/input';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[114/183]⎯
+
+ FAIL  tests/reply-freshness-host.test.ts [ tests/reply-freshness-host.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\77fbf5b8fe3b8413205acf6e7f51e3a3214a82d9'
+ ❯ tests/reply-freshness-host.test.ts:2:1
+      1| import {it,expect,vi,afterEach} from 'vitest';
+      2| import {modern} from './chat-fixture';
+       | ^
+      3| import {HdsiApp} from '../src/app';
+      4| import {InputBuffer} from '../src/host/input';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[115/183]⎯
+
+ FAIL  tests/reply-freshness-recovery.test.ts [ tests/reply-freshness-recovery.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\83575848b1409ff3a4a8a8d012a562021d8dcb43'
+ ❯ tests/reply-freshness-recovery.test.ts:3:1
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[116/183]⎯
+
+ FAIL  tests/reply-freshness-scheduler.test.ts [ tests/reply-freshness-scheduler.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\77fbf5b8fe3b8413205acf6e7f51e3a3214a82d9'
+ ❯ tests/reply-freshness-scheduler.test.ts:2:1
+      1| import {it,expect} from 'vitest';
+      2| import {modern} from './chat-fixture';
+       | ^
+      3| import {Scheduler} from '../src/host/scheduler';
+      4| import {InputBuffer} from '../src/host/input';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[117/183]⎯
+
+ FAIL  tests/reply-freshness-turn.test.ts [ tests/reply-freshness-turn.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\77fbf5b8fe3b8413205acf6e7f51e3a3214a82d9'
+ ❯ tests/reply-freshness-turn.test.ts:2:1
+      1| import {it,expect} from 'vitest';
+      2| import {modern} from './chat-fixture';
+       | ^
+      3| import {HdsiApp,generateTurn} from '../src/app';
+      4| import {InputBuffer} from '../src/host/input';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[118/183]⎯
+
+ FAIL  tests/reply-guidance.test.ts [ tests/reply-guidance.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\47677c974a0cb1f3886d73e7f056c1587ead6c7a'
+ ❯ tests/reply-guidance.test.ts:2:1
+      1| import {expect,it} from 'vitest';
+      2| import {ChatCompletionsTransport,ModelClient} from '../src/model/clien…
+       | ^
+      3| import {runPersonal} from '../src/directors/personal';
+      4| import {runExpression} from '../src/output/expression';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[119/183]⎯
+
+ FAIL  tests/resource-pool-index.test.ts [ tests/resource-pool-index.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\e4a517af51d92e0e34db0e82daf46ea17450599d'
+ ❯ tests/resource-pool-index.test.ts:2:1
+      1| import {it,expect,vi} from 'vitest';
+      2| import {ResourcePool,buildCompletionEnvelope} from '../src/model/resou…
+       | ^
+      3| import {stageInput} from '../src/model/context-views';
+      4| import {setup,NOW} from './helpers';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[120/183]⎯
+
+ FAIL  tests/review-fixes.test.ts [ tests/review-fixes.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\abd54361192a5842e211ec58c76f2ecc9dd5bc45'
+ ❯ tests/review-fixes.test.ts:2:1
+      1| import { it, expect } from 'vitest';
+      2| import { HdsiApp } from '../src/app';
+       | ^
+      3| import { personalTask, memoryTask } from '../src/model/contracts';
+      4| import type { ScheduledTask } from '../src/types';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[121/183]⎯
+
+ FAIL  tests/review-recovery.test.ts [ tests/review-recovery.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\3e0af2954b78f2750489a403db3fab7bb3f5eb37'
+ ❯ tests/review-recovery.test.ts:6:1
+      4| import { tmpdir } from 'node:os';
+      5| import { DatabaseSync } from 'node:sqlite';
+      6| import { Storage } from '../src/storage';
+       | ^
+      7| import { HdsiApp, generateTurn } from '../src/app';
+      8| import { freezeTurn, finishPostprocessing } from '../src/recovery';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[122/183]⎯
+
+ FAIL  tests/review10-public.test.ts [ tests/review10-public.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\886c58b52a986e11a4b7a6824fd116084be3f90d'
+ ❯ tests/review10-public.test.ts:2:1
+      1| import { it, expect } from 'vitest';
+      2| import { narrativeTask, personalTask } from '../src/model/contracts';
+       | ^
+      3| import { ModelClient } from '../src/model/client';
+      4| import { HdsiApp } from '../src/app';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[123/183]⎯
+
+ FAIL  tests/review17-capacity-cost.test.ts [ tests/review17-capacity-cost.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\de2ecbd112eea2c34dfd1176e339eebb8314887b'
+ ❯ tests/review17-capacity-cost.test.ts:1:34
+      1| import {it,expect} from 'vitest';import {fixture,long,at} from './memo…
+       |                                  ^
+      2| import {MemoryCapacity} from '../src/memory/capacity';import {defaultM…
+      3| it('full but not overflowing pool avoids awakening-history sorting rea…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[124/183]⎯
+
+ FAIL  tests/review17-identities.test.ts [ tests/review17-identities.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\cdd5886cff97a54880f6b68a56ec59c9f0b0362f'
+ ❯ tests/memory-capacity-fixture.ts:2:1
+      1| import { afterEach } from 'vitest';
+      2| import { setup } from './helpers';
+       | ^
+      3| import { MemoryStore } from '../src/memory/store';
+      4| import type { MemoryCandidate, RetrievalRequest } from '../src/memory/…
+ ❯ tests/review17-identities.test.ts:4:1
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[125/183]⎯
+
+ FAIL  tests/review17-promotion-audit.test.ts [ tests/review17-promotion-audit.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\de2ecbd112eea2c34dfd1176e339eebb8314887b'
+ ❯ tests/review17-promotion-audit.test.ts:1:34
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[126/183]⎯
+
+ FAIL  tests/review17-summary-repair.test.ts [ tests/review17-summary-repair.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\de2ecbd112eea2c34dfd1176e339eebb8314887b'
+ ❯ tests/review17-summary-repair.test.ts:2:1
+      1| import {expect,it} from 'vitest';
+      2| import {fixture,long,at,days} from './memory-capacity-fixture';
+       | ^
+      3| import {memoryTask,consolidationTask} from '../src/model/contracts';
+      4| import {MemoryCapacity} from '../src/memory/capacity';import {MemoryCl…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[127/183]⎯
+
+ FAIL  tests/review24-dialogue.test.ts [ tests/review24-dialogue.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\3e0af2954b78f2750489a403db3fab7bb3f5eb37'
+ ❯ tests/review24-dialogue.test.ts:7:1
+      5| import {spawnSync} from 'node:child_process';
+      6| import {DatabaseSync} from 'node:sqlite';
+      7| import {Storage} from '../src/storage';
+       | ^
+      8| import {DialogueEpisodes} from '../src/dialogue/episodes';
+      9| import {ChatEpisodes} from '../src/dialogue/chat-episodes';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[128/183]⎯
+
+ FAIL  tests/review26-memory-create.test.ts [ tests/review26-memory-create.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\3e0af2954b78f2750489a403db3fab7bb3f5eb37'
+ ❯ tests/review26-memory-create.test.ts:2:1
+      1| import {afterEach,describe,expect,it} from 'vitest';
+      2| import {Storage} from '../src/storage';
+       | ^
+      3| import {MemoryStore} from '../src/memory/store';
+      4| import {MemoryLifecycle} from '../src/memory/lifecycle';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[129/183]⎯
+
+ FAIL  tests/review7-maintenance.test.ts [ tests/review7-maintenance.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\3e0af2954b78f2750489a403db3fab7bb3f5eb37'
+ ❯ tests/review7-maintenance.test.ts:2:1
+      1| import {afterEach,expect,it,vi} from 'vitest';
+      2| import {Storage} from '../src/storage';
+       | ^
+      3| import {MemoryStore} from '../src/memory/store';
+      4| import {MemoryLifecycle} from '../src/memory/lifecycle';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[130/183]⎯
+
+ FAIL  tests/review7-memory.test.ts [ tests/review7-memory.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\3e0af2954b78f2750489a403db3fab7bb3f5eb37'
+ ❯ tests/review7-memory.test.ts:2:1
+      1| import {afterEach,expect,it} from 'vitest';
+      2| import {Storage} from '../src/storage';
+       | ^
+      3| import {MemoryStore} from '../src/memory/store';
+      4| import {MemoryLifecycle} from '../src/memory/lifecycle';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[131/183]⎯
+
+ FAIL  tests/review7-web.test.ts [ tests/review7-web.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\3e0af2954b78f2750489a403db3fab7bb3f5eb37'
+ ❯ tests/review7-web.test.ts:5:1
+      3| import {tmpdir} from 'node:os';
+      4| import {join} from 'node:path';
+      5| import {Storage} from '../src/storage';
+       | ^
+      6| import {WebSearchStore} from '../src/web/store';
+      7| import {WebSearchService} from '../src/web/service';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[132/183]⎯
+
+ FAIL  tests/runtime-check-readonly.test.ts [ tests/runtime-check-readonly.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\3e0af2954b78f2750489a403db3fab7bb3f5eb37'
+ ❯ tests/runtime-check-readonly.test.ts:4:1
+      2| import {mkdtempSync,mkdirSync,copyFileSync,symlinkSync,writeFileSync,r…
+      3| import {tmpdir} from 'node:os';import {join,resolve,relative} from 'no…
+      4| import {Storage} from '../src/storage';import {MemoryStore} from '../s…
+       | ^
+      5|
+      6| // Regression: constructing MemoryStore in the readonly launcher check…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[133/183]⎯
+
+ FAIL  tests/scheduler.test.ts [ tests/scheduler.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\4443b1cdf991075df03c1886b49e41775199fe58'
+ ❯ src/host/scheduler.ts:1:1
+      1| import {ordinaryInputRevision,isOrdinaryReplyRequest,hasReplyAttempt,t…
+       | ^
+      2| import { defaultConfig,type AppConfig } from '../config';
+      3| import {releaseSchoolNotices,selectSchoolNotices,schoolNotificationEli…
+ ❯ tests/scheduler.test.ts:2:1
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[134/183]⎯
+
+ FAIL  tests/scheduling-query-workload.test.ts [ tests/scheduling-query-workload.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\3e0af2954b78f2750489a403db3fab7bb3f5eb37'
+ ❯ tests/scheduling-query-workload.test.ts:2:1
+      1| import {it,expect} from 'vitest';
+      2| import {Storage} from '../src/storage';
+       | ^
+      3| import {EnvironmentStore} from '../src/environment/store';
+      4| import {SchoolStore} from '../src/school/store';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[135/183]⎯
+
+ FAIL  tests/school-notice-evaluation.test.ts [ tests/school-notice-evaluation.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\cdd5886cff97a54880f6b68a56ec59c9f0b0362f'
+ ❯ tests/school-notice-evaluation.test.ts:2:1
+      1| import {it,expect} from 'vitest';
+      2| import {setup,NOW} from './helpers';
+       | ^
+      3| import {Scheduler} from '../src/host/scheduler';
+      4| import {schoolItem,expand} from './world-school-fixture';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[136/183]⎯
+
+ FAIL  tests/school-notice-queries.test.ts [ tests/school-notice-queries.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\cdd5886cff97a54880f6b68a56ec59c9f0b0362f'
+ ❯ tests/school-notice-queries.test.ts:2:1
+      1| import {it,expect} from 'vitest';
+      2| import {setup,NOW} from './helpers';
+       | ^
+      3| import {schoolItem,expand} from './world-school-fixture';
+      4| import {SchoolStore} from '../src/school/store';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[137/183]⎯
+
+ FAIL  tests/school-week-contract-recovery.test.ts [ tests/school-week-contract-recovery.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\cdd5886cff97a54880f6b68a56ec59c9f0b0362f'
+ ❯ tests/school-week-contract-recovery.test.ts:2:1
+      1| import {it,expect,vi} from 'vitest';
+      2| import {setup,NOW} from './helpers';
+       | ^
+      3| import {ensureEnvironmentBatch} from '../src/environment/scheduler';
+      4| import {runEnvironmentStep,environmentInput} from '../src/environment/…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[138/183]⎯
+
+ FAIL  tests/school-week-text-contract.test.ts [ tests/school-week-text-contract.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\cdd5886cff97a54880f6b68a56ec59c9f0b0362f'
+ ❯ tests/school-week-text-contract.test.ts:2:1
+      1| import {it,expect} from 'vitest';
+      2| import {setup,NOW} from './helpers';
+       | ^
+      3| import {schoolItem} from './world-school-fixture';
+      4| import {schoolExpansionInput,resolveSchoolWeek,resolveSchoolWeekText,s…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[139/183]⎯
+
+ FAIL  tests/shared-scene.test.ts [ tests/shared-scene.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\abd54361192a5842e211ec58c76f2ecc9dd5bc45'
+ ❯ tests/shared-scene.test.ts:2:1
+      1| import { it, expect } from 'vitest';
+      2| import { HdsiApp } from '../src/app';
+       | ^
+      3| import { setup, saveInput, NOW, narrative } from './helpers';
+      4| import { Scheduler } from '../src/host/scheduler';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[140/183]⎯
+
+ FAIL  tests/shared-story-seed.test.ts [ tests/shared-story-seed.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\0011d802701558e0e08f913ecb50560f59eb9e97'
+ ❯ tests/shared-story-seed.test.ts:2:1
+      1| import { it, expect } from 'vitest';
+      2| import { initialCharacter } from '../src/config';
+       | ^
+      3| import { sharedStorySeed } from '../scripts/shared-story-seed';
+      4| const now = '2026-10-08T19:00:00+08:00';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[141/183]⎯
+
+ FAIL  tests/shared-v3-contracts.test.ts [ tests/shared-v3-contracts.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\ae97055a5be9704cdb8c6c020556c779786c118c'
+ ❯ src/model/contracts.ts:1:1
+
+ ❯ tests/shared-v3-contracts.test.ts:2:1
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[142/183]⎯
+
+ FAIL  tests/shared-v3-cross-activity.test.ts [ tests/shared-v3-cross-activity.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\77fbf5b8fe3b8413205acf6e7f51e3a3214a82d9'
+ ❯ tests/shared-v3-cross-activity.test.ts:2:1
+      1| import {it,expect} from 'vitest';
+      2| import {modern} from './chat-fixture';
+       | ^
+      3| import {emptyMemory,silent} from './helpers';
+      4| import {makeSharedFixture,configureSharedModels} from './shared-v3-fix…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[143/183]⎯
+
+ FAIL  tests/shared-v3-flow.test.ts [ tests/shared-v3-flow.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\4bbeeb3e3fc3122162250a5749aec4b271c88501'
+ ❯ tests/shared-v3-flow.test.ts:1:1
+      1| import {ensureEnvironmentBatch,selectEnvironmentStep} from '../src/env…
+       | ^
+      2| import { it, expect, vi } from 'vitest';
+      3| import { HdsiApp } from '../src/app';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[144/183]⎯
+
+ FAIL  tests/shared-v3-input.test.ts [ tests/shared-v3-input.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\9156165529b2d329dd32eae89c041d05bf0db140'
+ ❯ src/host/input.ts:2:1
+      1| import type {IncomingMediaStore} from '../input-media/store';
+      2| import {assertRoutineWindow,windowOptions,assertActiveWindow} from '..…
+       | ^
+      3| import { DialogueEpisodes } from '../dialogue/episodes';
+      4| import {ChatEpisodes} from '../dialogue/chat-episodes';
+ ❯ tests/shared-v3-input.test.ts:2:1
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[145/183]⎯
+
+ FAIL  tests/shared-v3-recovery.test.ts [ tests/shared-v3-recovery.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\339ca59da197176ab36e16fe77db352935365572'
+ ❯ tests/shared-v3-recovery.test.ts:5:1
+      3| import { join } from 'node:path';
+      4| import { tmpdir } from 'node:os';
+      5| import { DialogueEpisodes } from '../src/dialogue/episodes';
+       | ^
+      6| import { DialogueStore } from '../src/dialogue/store';
+      7| import { HdsiApp, generateTurn } from '../src/app';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[146/183]⎯
+
+ FAIL  tests/shared-v3-scheduler.test.ts [ tests/shared-v3-scheduler.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\11f612bb76a167a2dabf1a58ff06da04c5ed3af4'
+ ❯ tests/shared-v3-scheduler.test.ts:2:1
+      1| import { it, expect } from 'vitest';
+      2| import { Scheduler } from '../src/host/scheduler';
+       | ^
+      3| import { InputBuffer } from '../src/host/input';
+      4| import { selectSharedMeta } from '../src/host/shared';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[147/183]⎯
+
+ FAIL  tests/shared-v3-state.test.ts [ tests/shared-v3-state.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\3e0af2954b78f2750489a403db3fab7bb3f5eb37'
+ ❯ tests/shared-v3-state.test.ts:5:1
+      3| import { tmpdir } from 'node:os';
+      4| import { join } from 'node:path';
+      5| import { Storage } from '../src/storage';
+       | ^
+      6| import { loadSettings } from '../src/settings';
+      7| import { HdsiApp } from '../src/app';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[148/183]⎯
+
+ FAIL  tests/shared-v3-upgrade.test.ts [ tests/shared-v3-upgrade.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\3e0af2954b78f2750489a403db3fab7bb3f5eb37'
+ ❯ tests/shared-v3-upgrade.test.ts:6:1
+      4| import { join } from 'node:path';
+      5| import { tmpdir } from 'node:os';
+      6| import { Storage } from '../src/storage';
+       | ^
+      7| import { MemoryStore } from '../src/memory/store';
+      8| import { initialCharacter } from '../src/config';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[149/183]⎯
+
+ FAIL  tests/stickers.test.ts [ tests/stickers.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\abd54361192a5842e211ec58c76f2ecc9dd5bc45'
+ ❯ tests/stickers.test.ts:2:1
+      1| import { it, expect } from 'vitest';
+      2| import { HdsiApp, generateTurn } from '../src/app';
+       | ^
+      3| import { StickerLibrary, HttpEmbeddingProvider } from '../src/output/s…
+      4| import { setup, saveInput, SequenceRandom, NOW } from './helpers';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[150/183]⎯
+
+ FAIL  tests/storage-queries.test.ts [ tests/storage-queries.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\3e0af2954b78f2750489a403db3fab7bb3f5eb37'
+ ❯ tests/storage-queries.test.ts:2:1
+      1| import {it,expect} from 'vitest';
+      2| import {Storage,isUnfinishedTurn} from '../src/storage';
+       | ^
+      3| import {NOW} from './helpers';
+      4| it('SQL queries preserve explicit null, missing fields, residual activ…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[151/183]⎯
+
+ FAIL  tests/storage.test.ts [ tests/storage.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\3e0af2954b78f2750489a403db3fab7bb3f5eb37'
+ ❯ tests/storage.test.ts:5:1
+      3| import { join } from 'node:path';
+      4| import { tmpdir } from 'node:os';
+      5| import { Storage } from '../src/storage';
+       | ^
+      6| import {DialogueStore} from '../src/dialogue/store';
+      7| it('chat_index_transaction_rolls_back_and_reopens_without_copying_mess…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[152/183]⎯
+
+ FAIL  tests/tasks.test.ts [ tests/tasks.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\abd54361192a5842e211ec58c76f2ecc9dd5bc45'
+ ❯ tests/tasks.test.ts:2:1
+      1| import { it, expect } from 'vitest';
+      2| import { HdsiApp, generateTurn } from '../src/app';
+       | ^
+      3| import { Scheduler } from '../src/host/scheduler';
+      4| import { setup, saveInput, NOW, narrative } from './helpers';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[153/183]⎯
+
+ FAIL  tests/turn.test.ts [ tests/turn.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\abd54361192a5842e211ec58c76f2ecc9dd5bc45'
+ ❯ tests/turn.test.ts:2:1
+      1| import { it, expect } from 'vitest';
+      2| import { generateTurn } from '../src/app';
+       | ^
+      3| import { ModelClient } from '../src/model/client';
+      4| import { setup, saveInput, narrative } from './helpers';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[154/183]⎯
+
+ FAIL  tests/visual-input-entry.test.ts [ tests/visual-input-entry.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\a15ec6b6923bee69e454d9e790b7c0eafda2fb94'
+ ❯ src/index.ts:2:1
+      1| import {Context,Schema} from 'koishi';
+      2| import {installStopControl} from './deployment/stop-control';
+       | ^
+      3| import {resolve} from 'node:path';
+      4| import {loadSettings,connectionFor,modelRoles} from './settings';
+ ❯ tests/visual-input-entry.test.ts:5:1
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[155/183]⎯
+
+ FAIL  tests/web-content.test.ts [ tests/web-content.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\be4946729c2d534632205b35a233fb84a2cb48e1'
+ ❯ tests/web-content.test.ts:2:1
+      1| import { expect,it } from 'vitest';
+      2| import { normalizeMaterial,normalizeWebUrl,parseWebTool } from '../src…
+       | ^
+      3| it('removes navigation and scripts while retaining long body tail and …
+      4|   const body=`<html><nav>菜单广告</nav><script>untrusted()</script><main><…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[156/183]⎯
+
+ FAIL  tests/web-deployment.test.ts [ tests/web-deployment.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\3e0af2954b78f2750489a403db3fab7bb3f5eb37'
+ ❯ tests/web-deployment.test.ts:3:1
+      1| import {expect,it} from 'vitest';
+      2| import {readFileSync} from 'node:fs';
+      3| import {Storage} from '../src/storage';
+       | ^
+      4| import {loadSettings} from '../src/settings';
+      5| import {WebSearchService} from '../src/web/service';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[157/183]⎯
+
+ FAIL  tests/web-host.test.ts [ tests/web-host.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\cdd5886cff97a54880f6b68a56ec59c9f0b0362f'
+ ❯ tests/web-host.test.ts:3:1
+      1| import {afterEach,expect,it,vi} from 'vitest';
+      2| import {setImmediate as yieldImmediate} from 'node:timers/promises';
+      3| import {setup,NOW} from './helpers';
+       | ^
+      4| import {HdsiApp} from '../src/app';
+      5| import {SerialHost} from '../src/host/runtime';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[158/183]⎯
+
+ FAIL  tests/web-integration.test.ts [ tests/web-integration.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\3e0af2954b78f2750489a403db3fab7bb3f5eb37'
+ ❯ tests/web-integration.test.ts:5:1
+      3| import {tmpdir} from 'node:os';
+      4| import {join} from 'node:path';
+      5| import {Storage} from '../src/storage';
+       | ^
+      6| import {WebSearchStore} from '../src/web/store';
+      7| import {WebSearchService} from '../src/web/service';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[159/183]⎯
+
+ FAIL  tests/web-memory-sources.test.ts [ tests/web-memory-sources.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\3e0af2954b78f2750489a403db3fab7bb3f5eb37'
+ ❯ tests/web-memory-sources.test.ts:2:1
+      1| import {afterEach,expect,it,vi} from 'vitest';
+      2| import {Storage} from '../src/storage';
+       | ^
+      3| import {MemoryStore} from '../src/memory/store';
+      4| import {MemoryLifecycle} from '../src/memory/lifecycle';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[160/183]⎯
+
+ FAIL  tests/web-model-tools.test.ts [ tests/web-model-tools.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\3e0af2954b78f2750489a403db3fab7bb3f5eb37'
+ ❯ tests/web-model-tools.test.ts:2:1
+      1| import {afterEach,expect,it,vi} from 'vitest';
+      2| import {Storage} from '../src/storage';
+       | ^
+      3| import {WebSearchStore} from '../src/web/store';
+      4| import {WebSearchService} from '../src/web/service';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[161/183]⎯
+
+ FAIL  tests/web-phases.test.ts [ tests/web-phases.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\886c58b52a986e11a4b7a6824fd116084be3f90d'
+ ❯ src/directors/world.ts:2:1
+      1| import type { Dependencies } from '../app';
+      2| import { environmentTask } from '../model/contracts';
+       | ^
+      3| import { ContextBuilder } from '../memory/context';
+      4| import { makeRetrievalRequest } from '../memory/retrieval';
+ ❯ tests/web-phases.test.ts:1:1
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[162/183]⎯
+
+ FAIL  tests/web-provider.test.ts [ tests/web-provider.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\6bfafc200fca12482878ee2db1ba84ac04a54075'
+ ❯ tests/web-provider.test.ts:3:1
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[163/183]⎯
+
+ FAIL  tests/web-recovery.test.ts [ tests/web-recovery.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\cdd5886cff97a54880f6b68a56ec59c9f0b0362f'
+ ❯ tests/web-recovery.test.ts:2:1
+      1| import {afterEach,expect,it,vi} from 'vitest';
+      2| import {setup,narrative,emptyMemory,saveInput,NOW} from './helpers';
+       | ^
+      3| import {HdsiApp} from '../src/app';
+      4| import {ModelClient} from '../src/model/client';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[164/183]⎯
+
+ FAIL  tests/web-session.test.ts [ tests/web-session.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\3e0af2954b78f2750489a403db3fab7bb3f5eb37'
+ ❯ tests/web-session.test.ts:2:1
+      1| import { afterEach,expect,it,vi } from 'vitest';
+      2| import { Storage } from '../src/storage';
+       | ^
+      3| import { WebSearchStore } from '../src/web/store';
+      4| import { WebSearchService } from '../src/web/service';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[165/183]⎯
+
+ FAIL  tests/web-status.test.ts [ tests/web-status.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\cdd5886cff97a54880f6b68a56ec59c9f0b0362f'
+ ❯ tests/web-status.test.ts:2:1
+      1| import {it,expect} from 'vitest';
+      2| import {setup} from './helpers';
+       | ^
+      3| import {HdsiApp} from '../src/app';
+      4| import {SerialHost} from '../src/host/runtime';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[166/183]⎯
+
+ FAIL  tests/web-store.test.ts [ tests/web-store.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\3e0af2954b78f2750489a403db3fab7bb3f5eb37'
+ ❯ tests/web-store.test.ts:3:1
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[167/183]⎯
+
+ FAIL  tests/world-school-batch.test.ts [ tests/world-school-batch.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\cdd5886cff97a54880f6b68a56ec59c9f0b0362f'
+ ❯ tests/world-school-batch.test.ts:2:1
+      1| import { it,expect,vi } from 'vitest';
+      2| import {setup as originalSetup,NOW} from './helpers';
+       | ^
+      3| function setup(){const d=originalSetup();d.storage.set('runtime',{...d…
+      4| import {ensureEnvironmentBatch,selectEnvironmentStep,environmentDeadli…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[168/183]⎯
+
+ FAIL  tests/world-school-calendar.test.ts [ tests/world-school-calendar.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\cdd5886cff97a54880f6b68a56ec59c9f0b0362f'
+ ❯ tests/world-school-calendar.test.ts:2:1
+      1| import {it,expect} from 'vitest';
+      2| import {setup,NOW} from './helpers';
+       | ^
+      3| import {schoolItem,schoolPlan,expand} from './world-school-fixture';
+      4| import {schoolExpansionInput,resolveSchoolWeek} from '../src/school/ca…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[169/183]⎯
+
+ FAIL  tests/world-school-integration.test.ts [ tests/world-school-integration.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\cdd5886cff97a54880f6b68a56ec59c9f0b0362f'
+ ❯ tests/world-school-integration.test.ts:2:1
+      1| import {it,expect} from 'vitest';
+      2| import {setup,NOW} from './helpers';
+       | ^
+      3| import {schoolPlan,schoolItem} from './world-school-fixture';
+      4| import {HdsiApp} from '../src/app';import {SerialHost} from '../src/ho…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[170/183]⎯
+
+ FAIL  tests/world-school-knowledge-version.test.ts [ tests/world-school-knowledge-version.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\cdd5886cff97a54880f6b68a56ec59c9f0b0362f'
+ ❯ tests/world-school-knowledge-version.test.ts:2:1
+      1| import {it,expect} from 'vitest';
+      2| import {setup,NOW} from './helpers';
+       | ^
+      3| import {schoolItem} from './world-school-fixture';
+      4| import {schoolExpansionInput,resolveSchoolWeekText} from '../src/schoo…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[171/183]⎯
+
+ FAIL  tests/world-school-models.test.ts [ tests/world-school-models.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\cdd5886cff97a54880f6b68a56ec59c9f0b0362f'
+ ❯ tests/world-school-models.test.ts:2:1
+      1| import {it,expect} from 'vitest';
+      2| import {setup,NOW} from './helpers';
+       | ^
+      3| import {schoolPlan,schoolItem} from './world-school-fixture';
+      4| import {generateEnvironmentStep} from '../src/directors/school';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[172/183]⎯
+
+ FAIL  tests/world-school-notices.test.ts [ tests/world-school-notices.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\cdd5886cff97a54880f6b68a56ec59c9f0b0362f'
+ ❯ tests/world-school-notices.test.ts:2:1
+      1| import {it,expect} from 'vitest';
+      2| import {setup,NOW} from './helpers';
+       | ^
+      3| import {schoolItem} from './world-school-fixture';
+      4| import {expand} from './world-school-fixture';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[173/183]⎯
+
+ FAIL  tests/world-school-personal-reminder.test.ts [ tests/world-school-personal-reminder.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\cdd5886cff97a54880f6b68a56ec59c9f0b0362f'
+ ❯ tests/world-school-personal-reminder.test.ts:2:1
+      1| import {it,expect} from 'vitest';
+      2| import {setup,NOW} from './helpers';
+       | ^
+      3| import {schoolItem} from './world-school-fixture';
+      4| import {schoolExpansionInput,resolveSchoolWeekText} from '../src/schoo…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[174/183]⎯
+
+ FAIL  tests/world-school-perspective.test.ts [ tests/world-school-perspective.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\cdd5886cff97a54880f6b68a56ec59c9f0b0362f'
+ ❯ tests/world-school-perspective.test.ts:2:1
+      1| import {it,expect} from 'vitest';
+      2| import {setup,NOW,narrative} from './helpers';
+       | ^
+      3| import {schoolItem,expand} from './world-school-fixture';
+      4| import {personalSchoolContext,narrativeSchoolContext} from '../src/sch…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[175/183]⎯
+
+ FAIL  tests/world-school-reminder-timing.test.ts [ tests/world-school-reminder-timing.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\ffd58e2948866d137ecd3c2dc144b072908e8897'
+ ❯ src/school/notices.ts:3:1
+      1| import type {Storage} from '../storage';
+      2| import type {SchoolNotice,SchoolNoticeRef,SchoolPlanItem,SchoolInstanc…
+      3| import {SchoolStore} from './store';
+       | ^
+      4| import {schoolItemOccurrences} from './timing';
+      5| import {canRead,isSleeping} from '../host/state';
+ ❯ tests/world-school-reminder-timing.test.ts:2:1
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[176/183]⎯
+
+ FAIL  tests/world-school-review14-calendar.test.ts [ tests/world-school-review14-calendar.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\cdd5886cff97a54880f6b68a56ec59c9f0b0362f'
+ ❯ tests/world-school-review14-calendar.test.ts:2:1
+      1| import {it,expect,vi} from 'vitest';
+      2| import {setup,NOW} from './helpers';
+       | ^
+      3| import {schoolItem,expand} from './world-school-fixture';
+      4| import {weekResult} from './world-school-review14-fixture';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[177/183]⎯
+
+ FAIL  tests/world-school-review14-contracts.test.ts [ tests/world-school-review14-contracts.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\cdd5886cff97a54880f6b68a56ec59c9f0b0362f'
+ ❯ tests/world-school-review14-contracts.test.ts:2:1
+      1| import {it,expect} from 'vitest';
+      2| import {setup,NOW} from './helpers';
+       | ^
+      3| import {schoolPlan,schoolItem,expand} from './world-school-fixture';
+      4| import {weekResult} from './world-school-review14-fixture';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[178/183]⎯
+
+ FAIL  tests/world-school-review14-environment.test.ts [ tests/world-school-review14-environment.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\cdd5886cff97a54880f6b68a56ec59c9f0b0362f'
+ ❯ tests/world-school-review14-environment.test.ts:2:1
+      1| import {it,expect} from 'vitest';
+      2| import {setup,NOW} from './helpers';
+       | ^
+      3| import {ensureEnvironmentBatch,selectEnvironmentStep,environmentDeadli…
+      4| import {runEnvironmentStep} from '../src/environment/runtime';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[179/183]⎯
+
+ FAIL  tests/world-school-review14-time.test.ts [ tests/world-school-review14-time.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\cdd5886cff97a54880f6b68a56ec59c9f0b0362f'
+ ❯ tests/world-school-review14-time.test.ts:2:1
+      1| import {it,expect} from 'vitest';
+      2| import {setup,NOW,narrative} from './helpers';
+       | ^
+      3| import {schoolItem,expand} from './world-school-fixture';
+      4| import {applySchoolChanges} from '../src/school/changes';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[180/183]⎯
+
+ FAIL  tests/world-school-state.test.ts [ tests/world-school-state.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\cdd5886cff97a54880f6b68a56ec59c9f0b0362f'
+ ❯ tests/world-school-state.test.ts:2:1
+      1| import { it, expect } from 'vitest';
+      2| import { setup } from './helpers';
+       | ^
+      3| import { schoolPlan,schoolItem } from './world-school-fixture';
+      4| import {normalizeSchoolModels} from '../src/settings';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[181/183]⎯
+
+ FAIL  tests/world-school-story.test.ts [ tests/world-school-story.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\cdd5886cff97a54880f6b68a56ec59c9f0b0362f'
+ ❯ tests/world-school-story.test.ts:2:1
+      1| import {it,expect,vi} from 'vitest';
+      2| import {setup,NOW,narrative,saveInput} from './helpers';
+       | ^
+      3| import {schoolItem,expand} from './world-school-fixture';
+      4| import {Scheduler} from '../src/host/scheduler';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[182/183]⎯
+
+ FAIL  tests/world-school-upgrade.test.ts [ tests/world-school-upgrade.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{1040448e-0a3d-415f-9c05-1a7d2341b03d}\AC\Temp\5s-vX6MIYG4CaNq-bjWhU\ssr\3e0af2954b78f2750489a403db3fab7bb3f5eb37'
+ ❯ src/deployment/environment-upgrade.ts:5:1
+      3| import {basename,join} from 'node:path';
+      4| import {randomUUID} from 'node:crypto';
+      5| import {environmentTables,type Storage} from '../storage';
+       | ^
+      6| import type {Runtime,TurnRecord,EnvironmentEvent} from '../types';
+      7| import type {SchoolPlan,SchoolPlanItem,SchoolInstance} from '../school…
+ ❯ tests/world-school-upgrade.test.ts:5:1
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[183/183]⎯
+
+
+ Test Files  183 failed | 5 passed (188)
+      Tests  27 passed (27)
+   Start at  18:42:43
+   Duration  38.61s (tests 87%, worker 8%, transform 3%, import 2%)
+
+    Isolate  188 workers spawned · ~120ms startup each (spawn + environment, per file)
+             at least ~22.50s faster with isolate: false — reuses workers across files instead of one per file
+
