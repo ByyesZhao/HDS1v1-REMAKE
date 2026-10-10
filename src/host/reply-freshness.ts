@@ -1,3 +1,4 @@
+import {createHash} from 'node:crypto';
 import type {Storage} from '../storage';
 import type {TurnRequest,ISOTime} from '../types';
 import {hasValidSharedScene} from './shared';
@@ -14,4 +15,12 @@ export function assertReplyCurrent(storage:Storage,id:string,now:ISOTime):void{
  if(!f||f.scope!=='ordinary'||f.state==='sealed'||hasReplyAttempt(storage,id))return;
  const open=storage.runtime().openBatch;
  if(f.inputRevision!==ordinaryInputRevision(storage)||(open&&!due(open.readyAt,now)))throw new ReplySuperseded();
+}
+
+// Metadata only: no message, page, background or prompt bodies are copied here.
+export function recordReplyTrace(storage:Storage,id:string,at:ISOTime,entry:Pick<import('../types').ReplyTrace,'event'|'stage'|'elapsedMs'>):void {
+ const turn=storage.read('turns',id),f=turn?.replyFreshness;if(!turn||!f)return;
+ const selection=entry.event==='selected'||entry.event==='waiting'||entry.event==='rebound';
+ const trace:import('../types').ReplyTrace={...entry,at,generation:f.generation,scope:f.scope,inputRevision:f.inputRevision,...(selection?{inputMessageIds:turn.inputMessageIds,selectionFingerprint:createHash('sha256').update(JSON.stringify(turn.inputMessageIds)).digest('hex'),quietUntil:f.quietUntil}:{})};
+ storage.save('turns',id,{...turn,replyTrace:[...turn.replyTrace??[],trace]});
 }

@@ -1,4 +1,4 @@
-import {assertReplyCurrent,hasReplyAttempt} from './host/reply-freshness';
+import {assertReplyCurrent,hasReplyAttempt,recordReplyTrace} from './host/reply-freshness';
 import {assertActiveWindow,assertMessageSources} from './dialogue/active-consistency';
 import type { Dependencies } from './app';
 import type { TurnRecord, TurnCandidate, OutboxItem, MemoryResult } from './types';
@@ -35,7 +35,7 @@ export async function sendFrozen(d: Dependencies, turn: TurnRecord): Promise<voi
     d.storage.transaction(()=>{
       const current=d.storage.read('turns',turn.id)!;
       if(!hasReplyAttempt(d.storage,turn.id))assertReplyCurrent(d.storage,turn.id,d.clock.now());
-      if(current.replyFreshness)d.storage.save('turns',turn.id,{...current,replyFreshness:{...current.replyFreshness,state:'sealed',firstAttemptAt:current.replyFreshness.firstAttemptAt??d.clock.now()}});
+      if(current.replyFreshness){d.storage.save('turns',turn.id,{...current,replyFreshness:{...current.replyFreshness,state:'sealed',firstAttemptAt:current.replyFreshness.firstAttemptAt??d.clock.now()}});if(!current.replyFreshness.firstAttemptAt)recordReplyTrace(d.storage,turn.id,d.clock.now(),{event:'first_attempt'});}
       item = { ...d.storage.outbox(turn.id)[index], status: 'sending' };
       d.storage.saveOutbox(item);
     });
@@ -148,6 +148,7 @@ export function waitForReply(d:Dependencies,turnId:string):void {
   if(!turn.replyFreshness||turn.replyFreshness.scope!=='ordinary'||turn.replyFreshness.state==='sealed'||hasReplyAttempt(d.storage,turnId))return;
   d.storage.outbox(turnId).forEach(i=>d.storage.remove('outbox',`${turnId}:${i.seq}`));d.storage.remove('post_jobs',turnId);
   d.storage.save('turns',turnId,{...turn,frozenResult:null,outputComplete:false,autonomousIntervalMinutes:undefined,replyFreshness:{...turn.replyFreshness,state:'waiting',quietUntil:d.storage.runtime().openBatch?.readyAt??d.clock.now(),personalRunId:null}});
+  recordReplyTrace(d.storage,turnId,d.clock.now(),{event:'waiting'});
   if((turn.dialogueWindowVersion??1)===1)d.dialogue?.releaseReply(turnId,d.clock.now());else d.chat?.releaseReply(turnId,d.clock.now());
  });
 }

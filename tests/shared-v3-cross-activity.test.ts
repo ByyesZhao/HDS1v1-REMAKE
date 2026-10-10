@@ -33,8 +33,10 @@ it('retains prior activity identity when next activity starts before its unread 
   expect(d.storage.read('messages','old-activity-late')).toMatchObject({sharedActivityId:'activity-a',seenTurnId:null});
   expect(d.storage.read('messages','old-activity-late')?.batchId).toBe(d.storage.read('messages','new-extra')?.batchId);
   expect(d.storage.read('messages','new-invitation')?.batchId).not.toBe(d.storage.read('messages','old-activity-late')?.batchId);
+  expect(await scheduler.collectReady(d.clock.now())).toBeNull();
+  d.storage.save('tasks','new-appointment',{id:'new-appointment',kind:'appointment',at:d.clock.now(),description:'已预约开始拼图',status:'pending'});
   const next=(await scheduler.collectReady(d.clock.now()))!;
-  expect(next.inputMessageIds).toEqual(['new-invitation']);
+  expect(next.inputMessageIds).toEqual([]);expect(next.triggerKinds).toEqual(['appointment']);
   d.models.outputs.personal_chat={...silent,sharedChange:{action:'start',mode:'shared_offline',title:'拼图'}};
   await app.runTurn(next);
   expect(d.storage.character().scene.shared?.activityId).not.toBe('activity-a');
@@ -86,7 +88,7 @@ it('SerialHost keeps A outside B and reads A once after B ends',async()=>{
   const send=d.sender.sendItem.bind(d.sender),run=d.models.runModel.bind(d.models);let late=false,post=true;
   d.sender.sendItem=async item=>{if(!late){late=true;await host.acceptInput({id:'old-host',content:'【动作：放下旧手柄】',receivedAt:d.clock.now()});}return send(item);};
   d.models.runModel=async(task,data,options)=>{
-   if(task.name==='memory'&&post){post=false;await host.acceptInput({id:'invite-host',content:'开始拼图',receivedAt:d.clock.now()});d.clock.advance(16000);await host.acceptInput({id:'extra-host',content:'拼图在桌上',receivedAt:d.clock.now()});d.models.outputs.personal_chat={...silent,sharedChange:{action:'start',mode:'shared_offline',title:'拼图'}};}
+   if(task.name==='memory'&&post){post=false;await host.acceptInput({id:'invite-host',content:'开始拼图',receivedAt:d.clock.now()});d.clock.advance(16000);await host.acceptInput({id:'extra-host',content:'拼图在桌上',receivedAt:d.clock.now()});d.models.outputs.personal_chat={...silent,sharedChange:{action:'start',mode:'shared_offline',title:'拼图'}};d.storage.save('tasks','new-appointment',{id:'new-appointment',kind:'appointment',at:d.clock.now(),description:'已预约开始拼图',status:'pending'});}
    return run(task,data,options);
   };
   await host.start();expect(errors).toEqual([]);

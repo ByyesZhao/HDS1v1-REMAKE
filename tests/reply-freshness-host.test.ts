@@ -4,6 +4,7 @@ import {HdsiApp} from '../src/app';
 import {InputBuffer} from '../src/host/input';
 import {Scheduler} from '../src/host/scheduler';
 import {SerialHost} from '../src/host/runtime';
+import {schoolItem,expand} from './world-school-fixture';
 import {narrative} from './helpers';
 afterEach(()=>vi.useRealTimers());
 async function waiting(){const d=modern(),input=new InputBuffer(d.storage),s=new Scheduler(d.storage);await input.acceptInput({id:'a',content:'old',receivedAt:d.clock.now()});d.clock.advance(15000);const request=(await s.collectReady(d.clock.now()))!;await input.acceptInput({id:'b',content:'new',receivedAt:d.clock.now()});const app=new HdsiApp(d);await app.runTurn(request);return {d,app,input,s,id:d.storage.unfinishedTurn()!.id};}
@@ -18,4 +19,12 @@ it('waiting_crosses_sleep_and_wake_preserves_stashed_inputs',async()=>{
 });
 it('event_makes_phone_unreadable_then_end_restores_inputs',async()=>{
  const {d,app,id}=await waiting();const end=new Date(Date.parse(d.clock.now())+60000).toISOString();d.storage.save('tasks','event',{id:'event',kind:'appointment',at:d.clock.now(),description:'swim',status:'pending'});d.models.outputs.narrative={...narrative,currentScene:{description:'swim',activity:{description:'swim',startsAt:d.clock.now(),expectedEndAt:end,phoneAccess:false}}};const h=new SerialHost(app,{timers:false});await h.start();expect(d.storage.read('turns',id)!.done).toBe(true);expect(d.storage.read('messages','a')!.seenTurnId).toBeNull();d.clock.advance(15000);await h.wake();expect(d.models.calls.filter(c=>c.name==='personal_chat')).toHaveLength(1);expect(Date.parse((await new Scheduler(d.storage).nextDeadline(d.clock.now()))!)).toBe(Date.parse(end));d.clock.time=end;d.models.outputs.narrative=narrative;await h.wake();expect(d.storage.read('messages','a')!.seenTurnId).not.toBeNull();await h.stop();d.storage.close();
+});
+
+it('waiting_yields_to_school_notice_and_does_not_consume_check',async()=>{
+ const {d,app,id}=await waiting();d.storage.save('school_plan_items','meeting',schoolItem());expand(d);d.storage.save('tasks','check',{id:'check',kind:'check_messages',checkReason:'unread',at:d.clock.now(),description:'check',status:'pending'});
+ const h=new SerialHost(app,{timers:false});await h.start();expect(d.storage.read('turns',id)!).toMatchObject({done:true,inputMessageIds:[],batchIds:[],triggerTaskIds:[],triggerKinds:['school_notification'],replyFreshness:{scope:'event',generation:2}});expect(d.storage.read('turns',id)!.schoolNoticeRefs).toHaveLength(1);expect(d.storage.read('tasks','check')!.status).toBe('pending');expect(d.storage.read('messages','a')!.seenTurnId).toBeNull();await h.stop();d.storage.close();
+});
+it('waiting_trace_records_selection_rebind_and_stages_without_bodies',async()=>{
+ const {d,app,id}=await waiting();d.clock.advance(15000);const h=new SerialHost(app,{timers:false});await h.start();const t=d.storage.read('turns',id)!;expect(t.replyTrace?.map(e=>e.event)).toEqual(expect.arrayContaining(['selected','waiting','rebound','stage_completed']));expect(t.replyTrace?.find(e=>e.stage==='personal_chat')?.elapsedMs).toBeTypeOf('number');expect(JSON.stringify(t.replyTrace)).not.toContain('latest');await h.stop();d.storage.close();
 });

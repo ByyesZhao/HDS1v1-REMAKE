@@ -97,7 +97,13 @@ export interface ReplyFreshness {
   version:1; generation:number; scope:'ordinary'|'event'; inputRevision:number;
   state:'generating'|'waiting'|'frozen'|'sealed'; quietUntil:ISOTime|null; firstAttemptAt:ISOTime|null; personalRunId:string|null;
 }
+export interface ReplyTrace {
+  at:ISOTime; generation:number; scope:'ordinary'|'event'; inputRevision:number;
+  event:'selected'|'waiting'|'rebound'|'stage_completed'|'stage_failed'|'first_attempt';
+  stage?:string; elapsedMs?:number; inputMessageIds?:string[]; selectionFingerprint?:string; quietUntil?:ISOTime|null;
+}
 export interface TurnRecord {
+  replyTrace?:ReplyTrace[];
   replyFreshness?:ReplyFreshness;
   visualContext?:import('./input-media/types').TurnVisualContext;
   dialogueBinding?:import('./dialogue/types').DialogueTurnBinding;

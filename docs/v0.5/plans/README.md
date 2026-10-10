@@ -2,7 +2,7 @@
 
 返回[版本索引](../README.md)。
 
-当前待审核方案：[普通聊天回复跟进新消息](chat-reply-freshness-20261010/README.md)。依据真实排队时序与离线复现，拟增加尚未发送的普通回复重合并门禁；未实施，15秒和4段参数不改。调查见[记录](../records/chat-reply-order-20261010/README.md)。
+最新实施合同：[普通聊天回复跟进新消息](chat-reply-freshness-20261010/README.md)。[审核](../reviews/chat-reply-freshness-20261010/REVIEW.md)保留方案 B，补齐等待与事件接管、业务代际、图片冻结和资格重选 4 项合同；交给 SOL 的[细化执行方案 T1～T5](../reviews/chat-reply-freshness-20261010/EXECUTION_PLAN.md)已就绪。T1～T5已实施，见[交付](../records/chat-reply-freshness-20261010/DELIVERY.md)；15秒和4段参数不改；原调查见[记录](../records/chat-reply-order-20261010/README.md)。
 
 此前实施合同：[查看消息资格与专注场景](phone-access-20261010/README.md)。普通专注活动默认可读但允许沉默，明确不可读活动强制结束时间；含旧状态部署处理。代码与工具已实施，交付及现场部署状态见[记录](../records/phone-access-20261010/DELIVERY.md)。
 

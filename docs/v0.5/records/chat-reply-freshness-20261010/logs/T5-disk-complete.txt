@@ -1,0 +1,41 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/reply-freshness-recovery.test.ts
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/chat-reply-freshness/HDSI-remake
+
+ ❯ tests/reply-freshness-recovery.test.ts (11 tests | 1 failed) 3677ms
+   × saved_post_result_reopens_and_commits_memory_emotion_task_experience_once 281ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/reply-freshness-recovery.test.ts > saved_post_result_reopens_and_commits_memory_emotion_task_experience_once
+AssertionError: expected [Function] to throw error including 'commit interrupted' but got '[\n  {\n    "expected": "string",\n  …'
+
+- Expected
++ Received
+
+- commit interrupted
++ [
++   {
++     "expected": "string",
++     "code": "invalid_type",
++     "path": [
++       "emotions",
++       0,
++       "degree"
++     ],
++     "message": "Invalid input: expected string, received undefined"
++   }
++ ]
+
+ ❯ tests/reply-freshness-recovery.test.ts:26:195
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 10 passed (11)
+   Start at  17:05:43
+   Duration  4.35s (tests 87%, transform 9%, import 4%)
+

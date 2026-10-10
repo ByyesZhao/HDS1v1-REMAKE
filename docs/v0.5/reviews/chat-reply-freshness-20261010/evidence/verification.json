@@ -1,0 +1,23 @@
+{
+  "sourceRevision": "3fb4e1c71c5b82ba4408f75e581a0cdc4021ca35",
+  "checkedFiles": [
+    "docs/v0.5/README.md",
+    "docs/v0.5/plans/README.md",
+    "docs/v0.5/reviews/README.md",
+    "docs/v0.5/plans/chat-reply-freshness-20261010/README.md",
+    "docs/v0.5/reviews/chat-reply-freshness-20261010/REVIEW.md",
+    "docs/v0.5/reviews/chat-reply-freshness-20261010/EXECUTION_PLAN.md"
+  ],
+  "checkedLinks": 135,
+  "missingLinks": [],
+  "baselineTests": {
+    "files": 8,
+    "total": 35,
+    "passed": 35,
+    "failed": 0,
+    "success": true
+  },
+  "productDiff": "",
+  "originalInvestigationDiff": "",
+  "baselineProductDifference": ""
+}
