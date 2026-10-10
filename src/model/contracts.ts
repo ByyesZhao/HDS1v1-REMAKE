@@ -61,6 +61,10 @@ export function narrativeTask(shared: boolean, from: string, at: string, eventId
     if (a) {
       requireControl(milliseconds(a.startsAt) <= milliseconds(at), 'currentScene.activity.startsAt', 'current activity cannot start in the future');
       requireControl(a.expectedEndAt === null || milliseconds(a.expectedEndAt) >= milliseconds(a.startsAt), 'currentScene.activity.expectedEndAt', 'must follow startsAt');
+      if (!a.phoneAccess) {
+        requireControl(a.expectedEndAt !== null, 'currentScene.activity.expectedEndAt', 'required when phoneAccess=false');
+        requireControl(milliseconds(a.expectedEndAt!) > milliseconds(a.startsAt), 'currentScene.activity.expectedEndAt', 'must be later than startsAt when phoneAccess=false');
+      }
     }
     validateSchool?.(r);
     if (shared) {
