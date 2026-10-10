@@ -1,0 +1,27 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 test
+npm notice run vitest run tests/phone-access-deployment.test.ts
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/phone-access/HDSI-remake
+
+ ❯ tests/phone-access-deployment.test.ts (6 tests | 1 failed) 53ms
+   × repair reuses existing pending unread check and excludes open batches and activity-only input 6ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/phone-access-deployment.test.ts > repair reuses existing pending unread check and excludes open batches and activity-only input
+ActivityContextError: activity context: activity message shared: chat association must be null
+ ❯ assertReport src/dialogue/active-consistency.ts:34:131
+
+ ❯ assertActiveWindow src/dialogue/active-consistency.ts:36:57
+ ❯ assertRoutineWindow src/dialogue/active-consistency.ts:42:164
+ ❯ InputBuffer.acceptInput src/host/input.ts:25:58
+ ❯ tests/phone-access-deployment.test.ts:28:159
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 5 passed (6)
+   Start at  15:18:39
+   Duration  675ms (transform 63%, import 26%, tests 9%, worker 1%)
+

@@ -1,0 +1,11 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/phone-access-cli.test.ts tests/phone-access-deployment.test.ts
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/phone-access/HDSI-remake
+
+
+ Test Files  2 passed (2)
+      Tests  13 passed (13)
+   Start at  15:33:22
+   Duration  790ms (transform 61%, import 27%, tests 11%, worker 1%)
+

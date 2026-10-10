@@ -1,0 +1,93 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 test
+npm notice run vitest run tests/phone-access-deployment.test.ts
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/phone-access/HDSI-remake
+
+ ❯ tests/phone-access-deployment.test.ts (6 tests | 6 failed) 35ms
+   × stopped known-state repair only changes access and schedules ordinary unread in the same transaction 17ms
+   × repair reuses existing pending unread check and excludes open batches and activity-only input 4ms
+   × read-only inspection and already-readable states do not write 3ms
+   × does not apply to a changed scene or a finite restriction 3ms
+   × cannot repair without declared stop or while a turn is unfinished 4ms
+   × rolls back access change if scheduling the unread check fails 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/phone-access-deployment.test.ts > stopped known-state repair only changes access and schedules ordinary unread in the same transaction
+AssertionError: expected 'not_implemented' to be 'applied' // Object.is equality
+
+Expected: "applied"
+Received: "not_implemented"
+
+ ❯ tests/phone-access-deployment.test.ts:20:24
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  tests/phone-access-deployment.test.ts > repair reuses existing pending unread check and excludes open batches and activity-only input
+ActivityContextError: activity context: activity message shared: chat association must be null
+ ❯ assertReport src/dialogue/active-consistency.ts:34:131
+
+ ❯ assertActiveWindow src/dialogue/active-consistency.ts:36:57
+ ❯ assertRoutineWindow src/dialogue/active-consistency.ts:42:164
+ ❯ InputBuffer.acceptInput src/host/input.ts:25:58
+ ❯ tests/phone-access-deployment.test.ts:28:159
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  tests/phone-access-deployment.test.ts > read-only inspection and already-readable states do not write
+AssertionError: expected 'not_implemented' to be 'eligible' // Object.is equality
+
+Expected: "eligible"
+Received: "not_implemented"
+
+ ❯ tests/phone-access-deployment.test.ts:35:139
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  tests/phone-access-deployment.test.ts > does not apply to a changed scene or a finite restriction
+AssertionError: expected 'not_implemented' to be 'scene_changed' // Object.is equality
+
+Expected: "scene_changed"
+Received: "not_implemented"
+
+ ❯ tests/phone-access-deployment.test.ts:40:146
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  tests/phone-access-deployment.test.ts > cannot repair without declared stop or while a turn is unfinished
+AssertionError: expected [Function] to throw an error
+
+- Expected:
+null
+
++ Received:
+undefined
+
+ ❯ tests/phone-access-deployment.test.ts:45:89
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+ FAIL  tests/phone-access-deployment.test.ts > rolls back access change if scheduling the unread check fails
+AssertionError: expected [Function] to throw an error
+
+- Expected:
+null
+
++ Received:
+undefined
+
+ ❯ tests/phone-access-deployment.test.ts:53:62
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  6 failed (6)
+   Start at  15:17:34
+   Duration  676ms (transform 65%, import 28%, tests 6%, worker 1%)
+

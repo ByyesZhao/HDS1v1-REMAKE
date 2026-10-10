@@ -1,0 +1,54 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 test
+npm notice run vitest run tests/phone-access-contracts.test.ts tests/phone-access-flow.test.ts tests/turn.test.ts tests/scheduler.test.ts tests/tasks.test.ts tests/shared-scene.test.ts tests/recovery.test.ts tests/chat-recovery.test.ts
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/phone-access/HDSI-remake
+
+ ❯ tests/phone-access-flow.test.ts (10 tests | 3 failed) 470ms
+   × inaccessible 洗澡 keeps input private and reuses one finite check in protocol 2 13ms
+   × inaccessible 游泳 keeps input private and reuses one finite check in protocol 2 8ms
+   × disk restart keeps a finite unread check, skips confirmed bubbles and retries unknown sending in protocol 2 336ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/phone-access-flow.test.ts > inaccessible 洗澡 keeps input private and reuses one finite check in protocol 2
+ FAIL  tests/phone-access-flow.test.ts > inaccessible 游泳 keeps input private and reuses one finite check in protocol 2
+AssertionError: expected [ 'narrative' ] to deeply equal [ 'narrative', 'memory' ]
+
+- Expected
++ Received
+
+  [
+    "narrative",
+-   "memory",
+  ]
+
+ ❯ tests/phone-access-flow.test.ts:42:102
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/phone-access-flow.test.ts > disk restart keeps a finite unread check, skips confirmed bubbles and retries unknown sending in protocol 2
+AssertionError: expected 'cancelled' to be 'completed' // Object.is equality
+
+Expected: "completed"
+Received: "cancelled"
+
+ ❯ tests/phone-access-flow.test.ts:76:155
+     74|  expect(storage.outbox(turn.id).map(i=>i.status)).toEqual(['confirmed'…
+     75|  reopen();await new HdsiApp(d).resumeUnfinishedTurn();expect(d.sender.…
+     76|  expect(storage.unfinishedTurn()).toBeNull();expect(storage.read('mess…
+       |                                                                                                                                                           ^
+     77|  }finally{storage.close();expect(dirname(root)).toBe(tmpdir());rmSync(…
+     78| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+
+ Test Files  1 failed | 7 passed (8)
+      Tests  3 failed | 48 passed (51)
+   Start at  15:12:54
+   Duration  4.17s (tests 55%, import 32%, transform 13%, worker 1%)
+
+    Isolate  8 workers spawned · ~95ms startup each (spawn + environment, per file)
+             at least ~664ms faster with isolate: false — reuses workers across files instead of one per file
+

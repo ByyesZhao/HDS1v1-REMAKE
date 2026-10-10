@@ -57,7 +57,7 @@ demo是内存库和固定模型的合成故事；smoke使用真实Koishi Context
 
 Koishi控制台为http://127.0.0.1:5141。机器人1000000000、目标用户1000000001；匹配此目标私聊的文本及图片／表情类型标记进入故事，纯图片／表情同样接受。visualInput开启后，在角色可读时向独立incoming_image发送原图，其他阶段只读固定观察；语音等其他非文本附件仍不作为模型聊天输入。
 
-SnowLuma登录该机器人，OneBot反向WebSocket对应`ws://127.0.0.1:5141/onebot-remake`。现有运行入口由`runtime/koishi.yml`配置，插件以本地项目引用；不启动旧项目或注册后台任务。
+SnowLuma登录该机器人，当前使用其本地正向OneBot WebSocket服务`ws://127.0.0.1:3001/`，由HDSI主动连接。Koishi控制台仍是5141端口。修改接入配置后正常退出并重启HDSI；SnowLuma无需因此重启。可向机器人发送`hdsi.status`确认接入，管理命令不经过15秒聊天合批或模型生成。现有运行入口由`runtime/koishi.yml`配置，插件以本地项目引用；不启动旧项目或注册后台任务。首次连接排查见[记录](docs/v0.5/records/onebot-connection-20261010/README.md)。
 
 ## 4. 本地配置与模型
 
@@ -158,7 +158,7 @@ npm run stickers -- rebuild - config.local.json runtime/data/hdsi-remake.sqlite
 
 ## 8. 当前文档与复盘
 
-[V0.5总架构](docs/v0.5/architecture/REMAKE_V0.5.md)＋其8份子系统＋[实现对应](docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md)是当前说明。最新证据见[回复规则交付](docs/v0.5/records/reply-guidance-20261009/DELIVERY.md)；正式升级证据见[交付后修复与正式升级](docs/v0.5/records/environment-post-delivery-fixes-20261009/DELIVERY.md)；原E阶段证据在[环境异步交付](docs/v0.5/records/environment-async-20261009/DELIVERY.md)和[复核关闭](docs/v0.5/records/environment-async-20261009/REVIEW_CLOSURE.md)；版本重写过程在[文档修订日志](docs/archive/records/V0.5_DOCUMENT_REWRITE_LOG_20261009.md)。
+[V0.5总架构](docs/v0.5/architecture/REMAKE_V0.5.md)＋其8份子系统＋[实现对应](docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md)是当前说明。本批代码与部署进度见[查看资格交付](docs/v0.5/records/phone-access-20261010/DELIVERY.md)；既有回复规则证据见[回复规则交付](docs/v0.5/records/reply-guidance-20261009/DELIVERY.md)；正式升级证据见[交付后修复与正式升级](docs/v0.5/records/environment-post-delivery-fixes-20261009/DELIVERY.md)；原E阶段证据在[环境异步交付](docs/v0.5/records/environment-async-20261009/DELIVERY.md)和[复核关闭](docs/v0.5/records/environment-async-20261009/REVIEW_CLOSURE.md)；版本重写过程在[文档修订日志](docs/archive/records/V0.5_DOCUMENT_REWRITE_LOG_20261009.md)。
 
 文档分类与新建原则见[文档总入口](docs/README.md)和[目录原则](docs/DIRECTORY_POLICY.md)。当前说明、最新交付和最终复核在docs/v0.5；过期说明、已完成合同、旧审核和过程日志在docs/archive。进行中的计划单独保留在当前plans，完成后按目录原则移入历史合同；最新交付见V0.5索引。
 

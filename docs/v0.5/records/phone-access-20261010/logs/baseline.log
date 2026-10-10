@@ -1,0 +1,14 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 test
+npm notice run vitest run tests/turn.test.ts tests/scheduler.test.ts tests/tasks.test.ts tests/shared-scene.test.ts tests/recovery.test.ts
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/phone-access/HDSI-remake
+
+
+ Test Files  5 passed (5)
+      Tests  23 passed (23)
+   Start at  15:08:25
+   Duration  1.89s (import 49%, transform 28%, tests 22%, worker 1%)
+
+    Isolate  5 workers spawned · ~94ms startup each (spawn + environment, per file)
+             at least ~378ms faster with isolate: false — reuses workers across files instead of one per file
+

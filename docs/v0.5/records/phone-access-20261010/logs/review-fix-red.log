@@ -1,0 +1,63 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/phone-access-cli.test.ts
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/phone-access/HDSI-remake
+
+ ❯ tests/phone-access-cli.test.ts (7 tests | 6 failed) 17ms
+   × check rejects report collision with database before opening or writing 10ms
+   × apply rejects report collision with backup before any database or file operation 1ms
+   × check rejects report collision with database-wal before opening or writing 1ms
+   × apply rejects report collision with backup-wal before any database or file operation 1ms
+   × check rejects report collision with database-shm before opening or writing 1ms
+   × apply rejects report collision with backup-shm before any database or file operation 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/phone-access-cli.test.ts > check rejects report collision with database before opening or writing
+ FAIL  tests/phone-access-cli.test.ts > check rejects report collision with database-wal before opening or writing
+ FAIL  tests/phone-access-cli.test.ts > check rejects report collision with database-shm before opening or writing
+AssertionError: expected +0 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/phone-access-cli.test.ts:19:22
+     17|  it(`check rejects report collision with database${suffix} before open…
+     18|   const r=invoke(['--database','D:\\data\\hdsi.sqlite','--check','--re…
+     19|   expect(r.exitCode).toBe(1);expect(r.errors.join(' ')).toMatch(/repor…
+       |                      ^
+     20|  });
+     21|  it(`apply rejects report collision with backup${suffix} before any da…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  tests/phone-access-cli.test.ts > apply rejects report collision with backup before any database or file operation
+ FAIL  tests/phone-access-cli.test.ts > apply rejects report collision with backup-wal before any database or file operation
+ FAIL  tests/phone-access-cli.test.ts > apply rejects report collision with backup-shm before any database or file operation
+AssertionError: expected +0 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/phone-access-cli.test.ts:23:22
+     21|  it(`apply rejects report collision with backup${suffix} before any da…
+     22|   const r=invoke(['--database','D:\\data\\hdsi.sqlite','--apply','--st…
+     23|   expect(r.exitCode).toBe(1);expect(r.errors.join(' ')).toMatch(/repor…
+       |                      ^
+     24|  });
+     25| }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  6 failed | 1 passed (7)
+   Start at  15:33:06
+   Duration  177ms (transform 37%, tests 35%, import 21%, worker 7%)
+

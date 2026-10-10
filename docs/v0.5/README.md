@@ -1,8 +1,8 @@
 # HDSI V0.5：当前文档与审核入口
 
-核对日期：2026-10-10。当前说明已与代码基线`c4477da`核对（最新产品修复`47eb14d`），见[本次文档核对记录](records/document-final-audit-20261010/README.md)。本次只修订文档与导航，没有修改产品、正式配置或数据库，也没有重跑产品验收。
+核对日期：2026-10-10。当前功能说明已同步本批代码`5566507`，新增普通专注可查看及不可查看必须指定结束时间的规则。最新[交付与部署](records/phone-access-20261010/DELIVERY.md)保存合同、协议2流程、磁盘恢复、旧状态修正和最终复核；隔离及主项目全量均179文件954项通过，类型、构建、演示、双场景插件及启动检查通过；正式库已停服备份修正，等待用户手动启动和真实QQ复核。
 
-最新代码交付为[图片／搜索复核修复](records/image-search-post-review-fixes-20261010/DELIVERY.md)：4项P2、1项P3及一次独立审查补修已关闭，主目录175文件920项、类型检查、构建、demo和双场景smoke通过，见[主目录整合记录](records/image-search-post-review-fixes-20261010/INTEGRATION_20261010.md)。这些是该代码交付的已有证据；原报告和失败日志继续保留原基线含义。
+前次[文档核对](records/document-final-audit-20261010/README.md)和[图片／搜索修复交付](records/image-search-post-review-fixes-20261010/DELIVERY.md)保留原基线、原证据及未执行范围，不以本批覆盖历史结论。
 
 默认提供整个 `docs/v0.5/`，从本文件阅读，并附[目录原则](../DIRECTORY_POLICY.md)。当前功能说明为以下10份；归档仅按疑点查阅。
 
@@ -29,6 +29,9 @@
 
 | 材料 | 状态 |
 | --- | --- |
+| [查看消息资格交付](records/phone-access-20261010/DELIVERY.md)及[独立复核关闭](records/phone-access-20261010/REVIEW_CLOSURE.md) | 新规则已实施，合同／协议2／磁盘恢复及停服修复工具有回归；最终测试与正式部署状态见交付页 |
+| [查看消息资格计划审核](reviews/phone-access-20261010/PLAN_REVIEW.md) | 设计可继续，无阻断问题；1处非阻断验收措辞澄清，审核时既有定向回归5文件／23项通过；新规则现已实施，见交付记录 |
+| [首次QQ连接排查](records/onebot-connection-20261010/README.md) | 连接方向已修正；用户重启后确认管理命令回复，四阶段环境任务已提交；普通聊天、图片与实际搜索仍待真实触发 |
 | [图片／搜索正式配置启用](records/feature-enablement-20261010/README.md) | 两项开关打开、browser／Bing与Puppeteer就绪配置；只读启动检查通过，仍由用户手动启动／重启 |
 | [最新文档核对](records/document-final-audit-20261010/README.md) | 总架构、8份子系统、实现对应、模型参考与导航按当前代码同步；本地链接／章节检查，配置白名单重新核对 |
 | [图片／搜索修复交付](records/image-search-post-review-fixes-20261010/DELIVERY.md) | R1～R5与失败回归；dom-v2；175文件920项、类型/构建/demo/双场景smoke通过；一次独立审查补修完成（原报告与TDD关闭分别保留） |
@@ -50,6 +53,10 @@
 环境新库版本2；旧库必须显式停服备份升级，旧冻结任务保留串行兼容。**正式库已显式停服备份升级1→2**；[部署及只读复核摘要](records/environment-post-delivery-fixes-20261009/evidence/formal-upgrade-summary.json)与[检查后指纹](records/environment-post-delivery-fixes-20261009/evidence/formal-postcheck.json)确认图库及非协议数据保持。T1～T9的137／776与其ASTRA复核已收进[历史记录](../archive/records/)和[历史审核](../archive/reviews/)，各自只证明原基线。
 
 ## 目录与后续工作
+
+最新实施合同：[查看消息资格与专注场景](plans/phone-access-20261010/README.md)。针对首次聊天中普通文献整理被设为无结束时间不可读状态的问题，已区分查看资格与回应意愿，并强制不可读活动指定结束时间；代码及正式停服修正已完成，实际状态和未验证范围见[交付](records/phone-access-20261010/DELIVERY.md)。
+
+现已完成[计划审核](reviews/phone-access-20261010/PLAN_REVIEW.md)：保留设计，调整恢复验收措辞后按原任务执行。
 
 | 目录 | 用途 |
 | --- | --- |

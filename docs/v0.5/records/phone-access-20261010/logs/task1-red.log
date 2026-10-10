@@ -1,0 +1,165 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 test
+npm notice run vitest run tests/phone-access-contracts.test.ts
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/phone-access/HDSI-remake
+
+ ❯ tests/phone-access-contracts.test.ts (11 tests | 8 failed) 57ms
+   × rejects inaccessible activity with no end, shared=false 10ms
+   × rejects inaccessible activity with no end, shared=true 21ms
+   × rejects zero length inaccessible interval, shared=false 1ms
+   × rejects zero length inaccessible interval, shared=true 4ms
+   × repairs missing end within the same task instead of guessing, shared=false 2ms
+   × repairs missing end within the same task instead of guessing, shared=true 3ms
+   × fails after two repairs without changing phone access or inventing an end, shared=false 3ms
+   × fails after two repairs without changing phone access or inventing an end, shared=true 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 8 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/phone-access-contracts.test.ts > rejects inaccessible activity with no end, shared=false
+ FAIL  tests/phone-access-contracts.test.ts > rejects inaccessible activity with no end, shared=true
+AssertionError: expected [Function] to throw an error
+
+- Expected:
+null
+
++ Received:
+undefined
+
+ ❯ tests/phone-access-contracts.test.ts:19:64
+     17| }
+     18| it.each([false,true])('rejects inaccessible activity with no end, shar…
+     19|  expect(()=>selected(shared).parse(output(shared,false,null))).toThrow…
+       |                                                                ^
+     20| });
+     21| it.each([false,true])('rejects zero length inaccessible interval, shar…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/8]⎯
+
+ FAIL  tests/phone-access-contracts.test.ts > rejects zero length inaccessible interval, shared=false
+ FAIL  tests/phone-access-contracts.test.ts > rejects zero length inaccessible interval, shared=true
+AssertionError: expected [Function] to throw an error
+
+- Expected:
+null
+
++ Received:
+undefined
+
+ ❯ tests/phone-access-contracts.test.ts:22:63
+     20| });
+     21| it.each([false,true])('rejects zero length inaccessible interval, shar…
+     22|  expect(()=>selected(shared).parse(output(shared,false,NOW))).toThrow(…
+       |                                                               ^
+     23| });
+     24| it.each([false,true])('accepts finite inaccessible interval and readab…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/8]⎯
+
+ FAIL  tests/phone-access-contracts.test.ts > repairs missing end within the same task instead of guessing, shared=false
+ FAIL  tests/phone-access-contracts.test.ts > repairs missing end within the same task instead of guessing, shared=true
+AssertionError: expected null to be '2026-10-07T10:10:00+08:00' // Object.is equality
+
+- Expected:
+"2026-10-07T10:10:00+08:00"
+
++ Received:
+null
+
+ ❯ tests/phone-access-contracts.test.ts:38:54
+     36|  const client=new ModelClient({complete:async request=>{calls.push(req…
+     37|  const result=await client.runModel(task,{at:AT});
+     38|  expect(result.currentScene.activity?.expectedEndAt).toBe(END);expect(…
+       |                                                      ^
+     39|  expect(calls[1].repair.errors).toContain('currentScene.activity.expec…
+     40|  expect(calls[1].repair.original.currentScene.activity.expectedEndAt).…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/8]⎯
+
+ FAIL  tests/phone-access-contracts.test.ts > fails after two repairs without changing phone access or inventing an end, shared=false
+AssertionError: promise resolved "{ experiences: [], …(4) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "currentScene": {
++     "activity": {
++       "description": "游泳",
++       "expectedEndAt": null,
++       "phoneAccess": false,
++       "startsAt": "2026-10-07T10:00:00+08:00",
++     },
++     "description": "当前活动",
++   },
++   "energy": {
++     "level": "正常",
++     "reason": "休息后",
++   },
++   "experiences": [],
++   "researchProgress": [],
++   "schoolObservations": [],
+  }
+
+ ❯ tests/phone-access-contracts.test.ts:45:57
+     43| it.each([false,true])('fails after two repairs without changing phone …
+     44|  const calls:any[]=[];const client=new ModelClient({complete:async req…
+     45|  await expect(client.runModel(selected(shared),{at:AT})).rejects.toThr…
+       |                                                         ^
+     46|  expect(calls).toHaveLength(3);expect(calls.slice(1).every(c=>c.repair…
+     47| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/8]⎯
+
+ FAIL  tests/phone-access-contracts.test.ts > fails after two repairs without changing phone access or inventing an end, shared=true
+AssertionError: promise resolved "{ experiences: [], …(8) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "currentScene": {
++     "activity": {
++       "description": "游泳",
++       "expectedEndAt": null,
++       "phoneAccess": false,
++       "startsAt": "2026-10-07T10:00:00+08:00",
++     },
++     "description": "当前活动",
++   },
++   "energy": {
++     "level": "正常",
++     "reason": "休息后",
++   },
++   "experiences": [],
++   "outline": {
++     "endingCondition": "本次活动结束",
++     "goal": "共同游泳",
++     "openThreads": [],
++   },
++   "progress": "继续",
++   "publicNarration": "继续当前活动",
++   "researchProgress": [],
++   "schoolObservations": [],
++   "simulatedUserActions": [],
+  }
+
+ ❯ tests/phone-access-contracts.test.ts:45:57
+     43| it.each([false,true])('fails after two repairs without changing phone …
+     44|  const calls:any[]=[];const client=new ModelClient({complete:async req…
+     45|  await expect(client.runModel(selected(shared),{at:AT})).rejects.toThr…
+       |                                                         ^
+     46|  expect(calls).toHaveLength(3);expect(calls.slice(1).every(c=>c.repair…
+     47| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/8]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  8 failed | 3 passed (11)
+   Start at  15:09:59
+   Duration  509ms (transform 55%, import 29%, tests 15%, worker 1%)
+

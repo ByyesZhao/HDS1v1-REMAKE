@@ -32,3 +32,6 @@ runtime/memory-capacity-backups/
 # Local historical datasets, restore snapshots and transient housekeeping
 runtime/archive/
 .tmp/
+
+# Reviewed phone-access regression evidence
+!docs/v0.5/records/phone-access-20261010/logs/*.log

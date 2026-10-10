@@ -1,0 +1,2 @@
+# Preserve the review's actual regression log.
+!logs/*.log

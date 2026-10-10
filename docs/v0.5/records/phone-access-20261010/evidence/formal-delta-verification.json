@@ -1,0 +1,170 @@
+{
+  "at": "2026-10-10T07:44:22.872Z",
+  "characterOnlyPhoneAccessChanged": true,
+  "otherStateUnchanged": true,
+  "tableListUnchanged": true,
+  "unchangedTables": {
+    "chat_episodes": {
+      "count": 1,
+      "sha256": "5ec2d806bb9b0e7ccc75780154ca804425b7e963cd7e4bcd8f2727a13057ef6f"
+    },
+    "chat_index_metadata": {
+      "count": 1,
+      "sha256": "38a76f445cf133c2711e69e20e0bae118cc458cd2804633b825d9da0ea0a199c"
+    },
+    "control_requests": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "detail_history": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "details": {
+      "count": 16,
+      "sha256": "1578b92cdbf195ca0e9634885583eeccef8030d704fbc05af8ebde3ac00d8f02"
+    },
+    "dialogue_activity_links": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "dialogue_episodes": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "environment_batches": {
+      "count": 2,
+      "sha256": "9f9e2bdbebde05a347f7ee59da367471b0db85a3dff0c326bb3ef7541a45c1f8"
+    },
+    "environment_steps": {
+      "count": 8,
+      "sha256": "51ec198739b3aa81bee44efcce77da45eae62407dfc30114c56cf3972b9ff8e7"
+    },
+    "events": {
+      "count": 1,
+      "sha256": "1cda58d0d5c9705b0f38ec7ba2be546af2fe9cef18b60b56793a57e36e29dd8f"
+    },
+    "experiences": {
+      "count": 2,
+      "sha256": "b4215087e3d1046eaeaa0d9ced5e5e361795e23c6350b930f3cc979c4d0b9f88"
+    },
+    "image_assets": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "image_observations": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "learned_background": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "memories": {
+      "count": 4,
+      "sha256": "e99b26d32f7875bff595f20a95234ab39b5982194f9f26dfa28546cdcc39d128"
+    },
+    "memory_audit_reports": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "memory_awakenings": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "memory_dirty_owners": {
+      "count": 20,
+      "sha256": "a2e0c97ba634a5f96e96383e33e10da8bbee8be0c5e2791eefe272742c363fe9"
+    },
+    "memory_index": {
+      "count": 20,
+      "sha256": "2fa3c2fda0150951bedd8be9cc7212e073f148a2d62b9704b027f613c99e1a26"
+    },
+    "memory_index_jobs": {
+      "count": 20,
+      "sha256": "1d56f1ba97632ea924512649ee902d0510078519a40410df8bcd61824d6bbe83"
+    },
+    "memory_maintenance_jobs": {
+      "count": 1,
+      "sha256": "078c66020423e4d60f54cd9adb789efa1b6f2bc5d89c943f35e662928a9723a8"
+    },
+    "memory_retention_grants": {
+      "count": 2,
+      "sha256": "35936531ddfb4f720bce071714ed2b80cf6d7ab41a887c8b33ea810ce38e36b8"
+    },
+    "message_attachments": {
+      "count": 1,
+      "sha256": "49f09e4d3d004759cd40b0973d475f41ec2538fa782c58de7c5b4d91e85a486c"
+    },
+    "messages": {
+      "count": 3,
+      "sha256": "aa39376d7b3515bbef942d953ea7ae7c36826b3ba569cc20b7a2a91f044de8e5"
+    },
+    "outbox": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "post_jobs": {
+      "count": 2,
+      "sha256": "98803a643f8102c8f69ed02093e3fc144066525e123eb883c7226b7f45d75464"
+    },
+    "school_instances": {
+      "count": 9,
+      "sha256": "97c0c9fad67888969a0655b4bf290a22aef76900e7285034879d6d5797c3d547"
+    },
+    "school_knowledge": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "school_notices": {
+      "count": 25,
+      "sha256": "fed4c490f0dccbcf0a9ca98be43430f3f8000998101fa4d460ec9bc7486d1cae"
+    },
+    "school_plan_items": {
+      "count": 11,
+      "sha256": "866478fb2f89ab527760cba8556a508bbefe64ea608c4b93019eb7962e611a0a"
+    },
+    "school_plans": {
+      "count": 2,
+      "sha256": "5367198ca89f7e92dd3cabac4b1b22eff15c61bd64a93f1914eff4036609370e"
+    },
+    "school_progress": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "school_weeks": {
+      "count": 2,
+      "sha256": "0b51ef2365ba495944e066867432a1643ff0837ab05928771cea012c6d3e547b"
+    },
+    "self_web_read_sources": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "stickers": {
+      "count": 67,
+      "sha256": "18ca1ae96db0d39cd680adb4dfcbc3f40da4485a99e9f75909dc8690ba65cb3e"
+    },
+    "turns": {
+      "count": 2,
+      "sha256": "181abca6faa67cd574d52b25c658e8fb247c14c1fad1401af99204d342d892b6"
+    },
+    "web_materials": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "web_operations": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "web_sessions": {
+      "count": 8,
+      "sha256": "b4a9ac699ce46fbcc01c6d20322ba3bd387cdf184ad24c545ff806a7ec747790"
+    }
+  },
+  "changedTaskCount": 1,
+  "unreadCount": 3,
+  "checkScheduled": true,
+  "stickerCount": 67,
+  "serviceRestarted": false,
+  "qqAcceptance": "pending_user_restart"
+}
