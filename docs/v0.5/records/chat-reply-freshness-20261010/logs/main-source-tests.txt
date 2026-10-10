@@ -1,0 +1,60 @@
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+···········
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/reply-freshness-context.test.ts [ tests/reply-freshness-context.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{05543ddf-b3cc-466b-8995-afc453687731}\AC\Temp\nt6KUgrBdmMZkn4Kj-HtY\ssr\77fbf5b8fe3b8413205acf6e7f51e3a3214a82d9'
+ ❯ tests/reply-freshness-context.test.ts:2:1
+      1| import {it,expect,vi} from 'vitest';
+      2| import {modern} from './chat-fixture';
+       | ^
+      3| import {HdsiApp} from '../src/app';
+      4| import {InputBuffer} from '../src/host/input';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/reply-freshness-host.test.ts [ tests/reply-freshness-host.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{05543ddf-b3cc-466b-8995-afc453687731}\AC\Temp\nt6KUgrBdmMZkn4Kj-HtY\ssr\77fbf5b8fe3b8413205acf6e7f51e3a3214a82d9'
+ ❯ tests/reply-freshness-host.test.ts:2:1
+      1| import {it,expect,vi,afterEach} from 'vitest';
+      2| import {modern} from './chat-fixture';
+       | ^
+      3| import {HdsiApp} from '../src/app';
+      4| import {InputBuffer} from '../src/host/input';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  tests/reply-freshness-scheduler.test.ts [ tests/reply-freshness-scheduler.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{05543ddf-b3cc-466b-8995-afc453687731}\AC\Temp\nt6KUgrBdmMZkn4Kj-HtY\ssr\77fbf5b8fe3b8413205acf6e7f51e3a3214a82d9'
+ ❯ tests/reply-freshness-scheduler.test.ts:2:1
+      1| import {it,expect} from 'vitest';
+      2| import {modern} from './chat-fixture';
+       | ^
+      3| import {Scheduler} from '../src/host/scheduler';
+      4| import {InputBuffer} from '../src/host/input';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  tests/reply-freshness-turn.test.ts [ tests/reply-freshness-turn.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{05543ddf-b3cc-466b-8995-afc453687731}\AC\Temp\nt6KUgrBdmMZkn4Kj-HtY\ssr\77fbf5b8fe3b8413205acf6e7f51e3a3214a82d9'
+ ❯ tests/reply-freshness-turn.test.ts:2:1
+      1| import {it,expect} from 'vitest';
+      2| import {modern} from './chat-fixture';
+       | ^
+      3| import {HdsiApp,generateTurn} from '../src/app';
+      4| import {InputBuffer} from '../src/host/input';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  4 failed | 1 passed (5)
+      Tests  11 passed (11)
+   Start at  17:21:02
+   Duration  5.02s (tests 84%, transform 11%, import 4%, worker 1%)
+
+    Isolate  5 workers spawned · ~123ms startup each (spawn + environment, per file)
+             at least ~490ms faster with isolate: false — reuses workers across files instead of one per file
+

@@ -1,0 +1,13 @@
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+····································
+
+ Test Files  5 passed (5)
+      Tests  36 passed (36)
+   Start at  17:21:27
+   Duration  5.48s (tests 80%, import 12%, transform 8%)
+
+    Isolate  5 workers spawned · ~94ms startup each (spawn + environment, per file)
+             at least ~376ms faster with isolate: false — reuses workers across files instead of one per file
+
