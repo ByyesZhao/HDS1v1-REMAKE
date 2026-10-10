@@ -2,6 +2,7 @@
 
 基线 ca74fa2（原产品 2a2e77e）；范围 R1～R5，已完成执行者关闭，175文件920项及类型/构建/demo/双场景smoke通过。
 
+- [主目录最终验收](INTEGRATION_20261010.md)：main已快进，175文件920项等门禁重跑通过。
 - [交付](DELIVERY.md)：最终结果及验证边界。
 - [实施过程](IMPLEMENTATION_LOG.md)：逐项红／绿、提交、诊断。
 - [一次独立审查原报告](INDEPENDENT_REVIEW.md)：两项Important随后一次TDD修复，无Minor，不冒充复审。

@@ -33,9 +33,25 @@
     "fullTestLog": "../logs/full-test-reviewed.log",
     "typecheck": "passed",
     "build": "passed",
-    "demo": "passed before supplemental fix; main integration rerun pending",
-    "smoke": "passed before supplemental fix; main integration rerun pending",
+    "demo": "passed in main",
+    "smoke": "both scenarios passed in main",
     "pageNetworkRequests": 0,
     "realModelCalls": 0
+  },
+  "mainIntegration": {
+    "from": "ca74fa2",
+    "to": "d939056",
+    "productFix": "47eb14d",
+    "files": 175,
+    "tests": 920,
+    "fullTestLog": "../logs/main-full-test.log",
+    "typecheck": "passed",
+    "build": "passed",
+    "demo": "passed",
+    "smoke": "both passed",
+    "formalServicesStarted": false,
+    "formalConfigurationModified": false,
+    "formalDatabaseModified": false,
+    "onlineModelCalls": 0
   }
 }

@@ -29,3 +29,5 @@ Final: Ruling: 真实图片模型和线上工具续调用质量不纳入本批 �
 Final: fixed 预下载共享取消仍冻结 — prefetched platform reject/resolve preserves later prepare cancellation without freezing RED→GREEN，suite 920/920。
 Final: fixed 空语义容器解除登录墙 — empty semantic sibling / actual CSS 三类 RED→GREEN，suite 920/920。
 Final：47eb14d后完整175文件920项、类型/构建通过；一次审查补修完成，Critical/Minor无，未进行二次独立重审。
+
+主目录：ca74fa2快进d939056；typecheck/build/demo/双场景smoke重跑通过，175文件920项完整通过（119.59s）。正式配置/数据库未修改，无正式服务或在线模型。过程与原始失败证据均提交，工作树按宿主归档。
