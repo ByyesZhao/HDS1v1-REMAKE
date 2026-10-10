@@ -1,0 +1,231 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 test
+npm notice run vitest run
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/chat-reply-freshness/HDSI-remake
+
+ ❯ tests/runtime-check-readonly.test.ts (2 tests | 2 failed) 1178ms
+   × launcher readonly check reads schema 3 without installing missing auxiliary indexes 615ms
+   × launcher readonly check reads schema 2 without installing missing auxiliary indexes 562ms
+ ❯ tests/plugin-smoke-contract.test.ts (7 tests | 2 failed) 166ms
+   × real Koishi smoke completes empty and required-notice V1 batches without repairs 148ms
+   × benchmark default output is independent of node executable argv 13ms
+ ❯ tests/review-recovery.test.ts (8 tests | 1 failed) 620ms
+   × delivers a real closed sleeping batch at wake and excludes a newly open batch 11ms
+ ❯ tests/feature-check-fixture.test.ts (1 test | 1 failed) 490ms
+   × creates a self-contained image check fixture, real readonly check does not change it 489ms
+ ❯ tests/shared-v3-cross-activity.test.ts (6 tests | 2 failed) 87ms
+   × retains prior activity identity when next activity starts before its unread transfer batch is selected 45ms
+   × SerialHost keeps A outside B and reads A once after B ends 18ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 8 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/feature-check-fixture.test.ts > creates a self-contained image check fixture, real readonly check does not change it
+Error: Cannot find module './lib/settings'
+Require stack:
+- C:\Users\<user>\.codex\worktrees\chat-reply-freshness\HDSI-remake\package.json
+ ❯ Object.checkRuntime runtime/check.cjs:19:48
+ ❯ tests/feature-check-fixture.test.ts:7:33
+      5|  expect(sample.backgroundFile).toBeUndefined();expect(sample.visualInp…
+      6|  const require=createRequire(resolve('package.json'));process.env.HDSI…
+      7|  require('./runtime/check.cjs').checkRuntime(paths,{log:()=>{}});
+       |                                 ^
+      8|  expect(verifyFeatureCheck(root)).toBe(true);expect(()=>prepareFeature…
+      9|  }finally{delete process.env.HDSI_FEATURE_DEEPSEEK;delete process.env.…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/8]⎯
+
+ FAIL  tests/plugin-smoke-contract.test.ts > real Koishi smoke completes empty and required-notice V1 batches without repairs
+AssertionError: 
+node:internal/modules/cjs/loader:1568
+  throw err;
+  ^
+
+Error: Cannot find module '../lib/index.js'
+Require stack:
+- C:\Users\<user>\.codex\worktrees\chat-reply-freshness\HDSI-remake\runtime\plugin-smoke.cjs
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1564:15)
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1118:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1142:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1169:12)
+    at Module._load (node:internal/modules/cjs/loader:1341:5)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+    at Module.require (node:internal/modules/cjs/loader:1674:12)
+    at require (node:internal/modules/helpers:157:16)
+    at Object.<anonymous> (C:\Users\<user>\.codex\worktrees\chat-reply-freshness\HDSI-remake\runtime\plugin-smoke.cjs:7:14)
+    at Module._compile (node:internal/modules/cjs/loader:1929:14) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'C:\\Users\\<user>\\.codex\\worktrees\\chat-reply-freshness\\HDSI-remake\\runtime\\plugin-smoke.cjs'
+  ]
+}
+
+Node.js v24.21.0
+: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ Object.<anonymous> runtime/plugin-smoke.cjs:7:14
+ ❯ tests/plugin-smoke-contract.test.ts:11:94
+      9| test('real Koishi smoke completes empty and required-notice V1 batches…
+     10|  const result=spawnSync(process.execPath,[resolve('runtime/plugin-smok…
+     11|  expect(result.error).toBeUndefined();expect(result.status,result.stdo…
+       |                                                                                              ^
+     12|  expect(result.stdout).toContain('empty_week');expect(result.stdout).t…
+     13| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/8]⎯
+
+ FAIL  tests/plugin-smoke-contract.test.ts > benchmark default output is independent of node executable argv
+Error: Cannot find module '../lib/storage'
+Require stack:
+- C:\Users\<user>\.codex\worktrees\chat-reply-freshness\HDSI-remake\scripts\bench-chat-status.cjs
+- C:\Users\<user>\.codex\worktrees\chat-reply-freshness\HDSI-remake\package.json
+ ❯ Object.<anonymous> scripts/bench-chat-status.cjs:5:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/8]⎯
+
+ FAIL  tests/review-recovery.test.ts > delivers a real closed sleeping batch at wake and excludes a newly open batch
+AssertionError: expected [] to deeply equal [ 'a' ]
+
+- Expected
++ Received
+
+- [
+-   "a",
+- ]
++ []
+
+ ❯ tests/review-recovery.test.ts:109:35
+    107|     await input.acceptInput({ id: 'b', receivedAt: d.clock.now(), cont…
+    108|     const ready = (await scheduler.collectReady(d.clock.now()))!;
+    109|     expect(ready.inputMessageIds).toEqual(['a']); expect(ready.trigger…
+       |                                   ^
+    110|     await new HdsiApp(d).runTurn(ready);
+    111|     expect(d.storage.read('messages', 'a')!.seenTurnId).toBeTruthy();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/8]⎯
+
+ FAIL  tests/runtime-check-readonly.test.ts > launcher readonly check reads schema 3 without installing missing auxiliary indexes
+AssertionError: koishi: D:\HDSI-remake\runtime\node_modules\koishi\lib\index.cjs
+koishi-plugin-adapter-onebot: D:\HDSI-remake\runtime\node_modules\koishi-plugin-adapter-onebot\lib\index.js
+koishi-plugin-hdsi-remake: D:\HDSI-remake\lib\index.js
+@koishijs/plugin-console: D:\HDSI-remake\runtime\node_modules\@koishijs\plugin-console\lib\node\index.js
+
+node:internal/modules/cjs/loader:1568
+  throw err;
+  ^
+
+Error: Cannot find module './lib/settings'
+Require stack:
+- C:\Users\<user>\AppData\Local\Temp\hdsi-launcher-readonly-OUDl0F\package.json
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1564:15)
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1118:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1142:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1169:12)
+    at Module._load (node:internal/modules/cjs/loader:1341:5)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+    at Module.require (node:internal/modules/cjs/loader:1674:12)
+    at require (node:internal/modules/helpers:157:16)
+    at checkRuntime (C:\Users\<user>\AppData\Local\Temp\hdsi-launcher-readonly-OUDl0F\runtime\check.cjs:19:48)
+    at Object.<anonymous> (C:\Users\<user>\AppData\Local\Temp\hdsi-launcher-readonly-OUDl0F\runtime\check.cjs:47:2) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'C:\\Users\\<user>\\AppData\\Local\\Temp\\hdsi-launcher-readonly-OUDl0F\\package.json'
+  ]
+}
+
+Node.js v24.21.0
+: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ checkRuntime ../../../../AppData/Local/Temp/hdsi-launcher-readonly-OUDl0F/runtime/check.cjs:19:48
+ ❯ tests/runtime-check-readonly.test.ts:23:73
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/8]⎯
+
+ FAIL  tests/runtime-check-readonly.test.ts > launcher readonly check reads schema 2 without installing missing auxiliary indexes
+AssertionError: expected 'node:internal/modules/cjs/loader:1568…' to contain 'memory:migrate'
+
+- Expected
++ Received
+
+- memory:migrate
++ node:internal/modules/cjs/loader:1568
++   throw err;
++   ^
++ 
++ Error: Cannot find module './lib/settings'
++ Require stack:
++ - C:\Users\<user>\AppData\Local\Temp\hdsi-launcher-readonly-VzRB6R\package.json
++     at Module._resolveFilename (node:internal/modules/cjs/loader:1564:15)
++     at wrapResolveFilename (node:internal/modules/cjs/loader:1118:27)
++     at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1142:10)
++     at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1169:12)
++     at Module._load (node:internal/modules/cjs/loader:1341:5)
++     at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
++     at Module.require (node:internal/modules/cjs/loader:1674:12)
++     at require (node:internal/modules/helpers:157:16)
++     at checkRuntime (C:\Users\<user>\AppData\Local\Temp\hdsi-launcher-readonly-VzRB6R\runtime\check.cjs:19:48)
++     at Object.<anonymous> (C:\Users\<user>\AppData\Local\Temp\hdsi-launcher-readonly-VzRB6R\runtime\check.cjs:47:2) {
++   code: 'MODULE_NOT_FOUND',
++   requireStack: [
++     'C:\\Users\\<user>\\AppData\\Local\\Temp\\hdsi-launcher-readonly-VzRB6R\\package.json'
++   ]
++ }
++ 
++ Node.js v24.21.0
++
+
+ ❯ tests/runtime-check-readonly.test.ts:24:64
+     22|   expect(result.error).toBeUndefined();
+     23|   if(version===3)expect(result.status,result.stdout+'\n'+result.stderr…
+     24|   else{expect(result.status).not.toBe(0);expect(result.stderr).toConta…
+       |                                                                ^
+     25|   expect(readFileSync(database)).toEqual(before);
+     26|   const readonly=new Storage(database,{readOnly:true});
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/8]⎯
+
+ FAIL  tests/shared-v3-cross-activity.test.ts > retains prior activity identity when next activity starts before its unread transfer batch is selected
+TypeError: Cannot read properties of null (reading 'inputMessageIds')
+ ❯ tests/shared-v3-cross-activity.test.ts:37:15
+     35|   expect(d.storage.read('messages','new-invitation')?.batchId).not.toB…
+     36|   const next=(await scheduler.collectReady(d.clock.now()))!;
+     37|   expect(next.inputMessageIds).toEqual(['new-invitation']);
+       |               ^
+     38|   d.models.outputs.personal_chat={...silent,sharedChange:{action:'star…
+     39|   await app.runTurn(next);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/8]⎯
+
+ FAIL  tests/shared-v3-cross-activity.test.ts > SerialHost keeps A outside B and reads A once after B ends
+TypeError: Cannot read properties of null (reading 'activityId')
+ ❯ tests/shared-v3-cross-activity.test.ts:93:39
+     91|   };
+     92|   await host.start();expect(errors).toEqual([]);
+     93|   const b=d.storage.character().scene.shared!.activityId,open=d.storag…
+       |                                       ^
+     94|   expect(b).not.toBe('activity-a');expect(d.storage.read('messages','o…
+     95|   d.models.outputs.personal_chat=silent;
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/8]⎯
+
+
+ Test Files  5 failed | 179 passed (184)
+      Tests  8 failed | 978 passed (986)
+   Start at  17:00:04
+   Duration  121.93s (tests 80%, import 18%, transform 2%, worker 1%)
+
+    Isolate  184 workers spawned · ~94ms startup each (spawn + environment, per file)
+             at least ~17.16s faster with isolate: false — reuses workers across files instead of one per file
+

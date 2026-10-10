@@ -1,0 +1,236 @@
+{
+  "scope": "synthetic scripted models and sender; not real model quality",
+  "selectedRequest": {
+    "inputMessageIds": [
+      "synthetic-old"
+    ],
+    "taskIds": [],
+    "triggerKinds": [
+      "input"
+    ],
+    "batchIds": [
+      "fbefac4d-5f41-4049-a116-5bf3a069b9a4"
+    ],
+    "sharedMeta": null,
+    "schoolNoticeRefs": [],
+    "replyInputRevision": 1
+  },
+  "at14999": {
+    "kind": "wait",
+    "deadline": "2026-10-07T02:00:30.000Z"
+  },
+  "callsBeforeQuietEnd": 1,
+  "final": {
+    "id": "dec56dfe-4135-4731-8960-8d2b278de243",
+    "done": true,
+    "inputMessageIds": [
+      "synthetic-old",
+      "synthetic-latest"
+    ],
+    "batchIds": [
+      "fbefac4d-5f41-4049-a116-5bf3a069b9a4",
+      "bacb120b-08e1-4570-883e-89957cd19cd6"
+    ],
+    "freshness": {
+      "version": 1,
+      "generation": 2,
+      "scope": "ordinary",
+      "inputRevision": 2,
+      "state": "sealed",
+      "quietUntil": null,
+      "firstAttemptAt": "2026-10-07T02:00:30.000Z",
+      "personalRunId": null
+    },
+    "trace": [
+      {
+        "event": "selected",
+        "at": "2026-10-07T02:00:15.000Z",
+        "generation": 1,
+        "scope": "ordinary",
+        "inputRevision": 1,
+        "inputMessageIds": [
+          "synthetic-old"
+        ],
+        "selectionFingerprint": "cac7510382acc839dd9e0c0e9335515f40b151ede4f3b7d61fcac007352f2008",
+        "quietUntil": null
+      },
+      {
+        "event": "stage_completed",
+        "stage": "narrative_context",
+        "elapsedMs": 2,
+        "at": "2026-10-07T02:00:15.000Z",
+        "generation": 1,
+        "scope": "ordinary",
+        "inputRevision": 1
+      },
+      {
+        "event": "stage_completed",
+        "stage": "narrative",
+        "elapsedMs": 7,
+        "at": "2026-10-07T02:00:15.000Z",
+        "generation": 1,
+        "scope": "ordinary",
+        "inputRevision": 1
+      },
+      {
+        "event": "waiting",
+        "at": "2026-10-07T02:00:15.000Z",
+        "generation": 1,
+        "scope": "ordinary",
+        "inputRevision": 1,
+        "inputMessageIds": [
+          "synthetic-old"
+        ],
+        "selectionFingerprint": "cac7510382acc839dd9e0c0e9335515f40b151ede4f3b7d61fcac007352f2008",
+        "quietUntil": "2026-10-07T02:00:30.000Z"
+      },
+      {
+        "event": "rebound",
+        "at": "2026-10-07T02:00:30.000Z",
+        "generation": 2,
+        "scope": "ordinary",
+        "inputRevision": 2,
+        "inputMessageIds": [
+          "synthetic-old",
+          "synthetic-latest"
+        ],
+        "selectionFingerprint": "2935b50b5b1c104cc689ecb2473e5a6287ebc1a19249018024c37e52a8e1267d",
+        "quietUntil": null
+      },
+      {
+        "event": "stage_completed",
+        "stage": "narrative_context",
+        "elapsedMs": 1,
+        "at": "2026-10-07T02:00:30.000Z",
+        "generation": 2,
+        "scope": "ordinary",
+        "inputRevision": 2
+      },
+      {
+        "event": "stage_completed",
+        "stage": "narrative",
+        "elapsedMs": 1,
+        "at": "2026-10-07T02:00:30.000Z",
+        "generation": 2,
+        "scope": "ordinary",
+        "inputRevision": 2
+      },
+      {
+        "event": "stage_completed",
+        "stage": "incoming_image",
+        "elapsedMs": 0,
+        "at": "2026-10-07T02:00:30.000Z",
+        "generation": 2,
+        "scope": "ordinary",
+        "inputRevision": 2
+      },
+      {
+        "event": "stage_completed",
+        "stage": "personal_context",
+        "elapsedMs": 1,
+        "at": "2026-10-07T02:00:30.000Z",
+        "generation": 2,
+        "scope": "ordinary",
+        "inputRevision": 2
+      },
+      {
+        "event": "stage_completed",
+        "stage": "personal_chat",
+        "elapsedMs": 2,
+        "at": "2026-10-07T02:00:30.000Z",
+        "generation": 2,
+        "scope": "ordinary",
+        "inputRevision": 2
+      },
+      {
+        "event": "stage_completed",
+        "stage": "expression",
+        "elapsedMs": 0,
+        "at": "2026-10-07T02:00:30.000Z",
+        "generation": 2,
+        "scope": "ordinary",
+        "inputRevision": 2
+      },
+      {
+        "event": "first_attempt",
+        "at": "2026-10-07T02:00:30.000Z",
+        "generation": 2,
+        "scope": "ordinary",
+        "inputRevision": 2
+      }
+    ]
+  },
+  "messages": [
+    {
+      "id": "synthetic-old",
+      "receivedAt": "2026-10-07T10:00:00+08:00",
+      "batchId": "fbefac4d-5f41-4049-a116-5bf3a069b9a4",
+      "seenTurnId": "dec56dfe-4135-4731-8960-8d2b278de243",
+      "direction": "incoming"
+    },
+    {
+      "id": "synthetic-latest",
+      "receivedAt": "2026-10-07T02:00:15.000Z",
+      "batchId": "bacb120b-08e1-4570-883e-89957cd19cd6",
+      "seenTurnId": "dec56dfe-4135-4731-8960-8d2b278de243",
+      "direction": "incoming"
+    },
+    {
+      "id": "dec56dfe-4135-4731-8960-8d2b278de243:out:0",
+      "receivedAt": "2026-10-07T02:00:30.000Z",
+      "batchId": null,
+      "seenTurnId": null,
+      "direction": "outgoing"
+    }
+  ],
+  "modelCalls": [
+    {
+      "stage": "narrative",
+      "visibleIds": [],
+      "messageIds": []
+    },
+    {
+      "stage": "narrative",
+      "visibleIds": [],
+      "messageIds": []
+    },
+    {
+      "stage": "personal_chat",
+      "visibleIds": [
+        "synthetic-old",
+        "synthetic-latest"
+      ],
+      "messageIds": [
+        "synthetic-old",
+        "synthetic-latest"
+      ]
+    },
+    {
+      "stage": "expression",
+      "visibleIds": [
+        "synthetic-old",
+        "synthetic-latest"
+      ],
+      "messageIds": [
+        "synthetic-old",
+        "synthetic-latest"
+      ]
+    },
+    {
+      "stage": "memory",
+      "visibleIds": [
+        "synthetic-old",
+        "synthetic-latest"
+      ],
+      "messageIds": [
+        "synthetic-old",
+        "synthetic-latest",
+        "dec56dfe-4135-4731-8960-8d2b278de243:out:0"
+      ]
+    }
+  ],
+  "syntheticSent": [
+    "测试新状态已确定"
+  ],
+  "errors": []
+}

@@ -1,0 +1,11 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/reply-freshness-recovery.test.ts
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/chat-reply-freshness/HDSI-remake
+
+
+ Test Files  1 passed (1)
+      Tests  8 passed (8)
+   Start at  16:57:05
+   Duration  3.11s (tests 83%, transform 12%, import 5%)
+

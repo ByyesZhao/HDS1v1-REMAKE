@@ -1,6 +1,6 @@
 # HDSI V0.5：当前文档与审核入口
 
-核对日期：2026-10-10。当前功能说明已同步本批代码`5566507`，新增普通专注可查看及不可查看必须指定结束时间的规则。最新[交付与部署](records/phone-access-20261010/DELIVERY.md)保存合同、协议2流程、磁盘恢复、旧状态修正和最终复核；隔离及主项目全量均179文件954项通过，类型、构建、演示、双场景插件及启动检查通过；正式库已停服备份修正，等待用户手动启动和真实QQ复核。
+核对日期：2026-10-10。最新普通回复跟进新消息 T1～T5已实现；184文件990项、类型、构建、演示、双场景插件和隔离只读启动检查通过，见[交付](records/chat-reply-freshness-20261010/DELIVERY.md)。独立复核与部署状态以交付页为准，正式服务尚未更新；此前查看资格正式修正保留原证据。
 
 前次[文档核对](records/document-final-audit-20261010/README.md)和[图片／搜索修复交付](records/image-search-post-review-fixes-20261010/DELIVERY.md)保留原基线、原证据及未执行范围，不以本批覆盖历史结论。
 
@@ -29,7 +29,7 @@
 
 | 材料 | 状态 |
 | --- | --- |
-| [普通回复新鲜度方案审核](reviews/chat-reply-freshness-20261010/REVIEW.md)与[细化执行方案](reviews/chat-reply-freshness-20261010/EXECUTION_PLAN.md) | 保留方案 B，补齐等待／事件接管、业务代际、图片冻结、资格重选 4 项合同；当前基线8文件35项通过；新规则未实施，交 SOL 按 T1～T5执行 |
+| [普通回复新鲜度方案审核](reviews/chat-reply-freshness-20261010/REVIEW.md)与[细化执行方案](reviews/chat-reply-freshness-20261010/EXECUTION_PLAN.md) | 保留方案 B，补齐等待／事件接管、业务代际、图片冻结、资格重选 4 项合同；原基线8文件35项为方案审核证据；T1～T5现已实现，最新990项及部署边界见[交付](records/chat-reply-freshness-20261010/DELIVERY.md) |
 | [回复错位诊断](records/chat-reply-order-20261010/README.md)与[改动方案](plans/chat-reply-freshness-20261010/README.md) | 15秒合批符合本次记录；新消息在生成期间另轮排队，旧候选仍发送；正式只读时间线及4组合成探针，未改产品／服务 |
 | [查看消息资格交付](records/phone-access-20261010/DELIVERY.md)及[独立复核关闭](records/phone-access-20261010/REVIEW_CLOSURE.md) | 新规则已实施，合同／协议2／磁盘恢复及停服修复工具有回归；最终测试与正式部署状态见交付页 |
 | [查看消息资格计划审核](reviews/phone-access-20261010/PLAN_REVIEW.md) | 设计可继续，无阻断问题；1处非阻断验收措辞澄清，审核时既有定向回归5文件／23项通过；新规则现已实施，见交付记录 |
@@ -56,7 +56,7 @@
 
 ## 目录与后续工作
 
-待实施：[普通聊天回复跟进新消息方案](plans/chat-reply-freshness-20261010/README.md)已经[审核](reviews/chat-reply-freshness-20261010/REVIEW.md)，保留方向并补齐合同；按[细化执行方案 T1～T5](reviews/chat-reply-freshness-20261010/EXECUTION_PLAN.md)交接。当前实现仍按旧轮串行完成，方案不冒充已生效。
+最新实施合同：[普通聊天回复跟进新消息](plans/chat-reply-freshness-20261010/README.md)及[细化方案 T1～T5](reviews/chat-reply-freshness-20261010/EXECUTION_PLAN.md)。新规则已实现；原诊断和审核探针保留旧基线，工程交付、独立复核及部署状态见[记录](records/chat-reply-freshness-20261010/README.md)。
 
 最新实施合同：[查看消息资格与专注场景](plans/phone-access-20261010/README.md)。针对首次聊天中普通文献整理被设为无结束时间不可读状态的问题，已区分查看资格与回应意愿，并强制不可读活动指定结束时间；代码及正式停服修正已完成，实际状态和未验证范围见[交付](records/phone-access-20261010/DELIVERY.md)。
 

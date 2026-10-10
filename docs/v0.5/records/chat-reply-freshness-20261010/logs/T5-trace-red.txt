@@ -1,0 +1,35 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/reply-freshness-host.test.ts tests/reply-freshness-turn.test.ts
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/chat-reply-freshness/HDSI-remake
+
+ ❯ tests/reply-freshness-host.test.ts (6 tests | 1 failed) 148ms
+   × waiting_trace_records_selection_rebind_and_stages_without_bodies 17ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/reply-freshness-host.test.ts > waiting_trace_records_selection_rebind_and_stages_without_bodies
+AssertionError: expected undefined to deeply equal ArrayContaining{…}
+
+- Expected:
+ArrayContaining [
+  "selected",
+  "waiting",
+  "rebound",
+  "stage_completed",
+]
+
++ Received:
+undefined
+
+ ❯ tests/reply-freshness-host.test.ts:29:191
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 15 passed (16)
+   Start at  16:58:21
+   Duration  1.17s (transform 40%, import 30%, tests 30%, worker 1%)
+

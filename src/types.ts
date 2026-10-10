@@ -48,6 +48,7 @@ export interface Message {
   hasVisualAttachment?: boolean;
 }
 export interface Runtime {
+  ordinaryInputRevision?:number;
   dialogueContextVersion?:1|2|null;activeDialogueEpisodeId?:string|null;activeChatEpisodeId?:string|null;
   openBatch: { id: string; readyAt: ISOTime } | null; pendingBatchIds: string[]; paused: boolean;
   contactMisses: number; stickerMisses: number; nextWorldAt: ISOTime | null; nextSchoolAt: ISOTime | null;
@@ -91,8 +92,19 @@ export type EnvironmentChange = { action: 'create'; event: Omit<EnvironmentEvent
 export interface EnvironmentResult { changes: EnvironmentChange[] }
 export interface Sticker { id: string; path: string; description: string; aliases?: string[]; embeddingInput?: string; embedding: number[]; embeddingModel: string; embeddingBaseUrl?: string; legacyFingerprint?: string }
 export type TriggerKind = 'input' | 'autonomous' | 'sleep' | 'activity' | 'appointment' | 'check_messages' | 'scene_step' | 'environment'|'school_notification';
-export interface TurnRequest { schoolNoticeRefs?:import('./school/types').SchoolNoticeRef[];environmentStepId?:string; inputMessageIds: string[]; taskIds: string[]; triggerKinds: TriggerKind[]; batchIds?: string[]; environmentKind?: 'world' | 'school'; sharedMeta?: SharedTurnMeta | null }
+export interface TurnRequest { replyInputRevision?:number; schoolNoticeRefs?:import('./school/types').SchoolNoticeRef[];environmentStepId?:string; inputMessageIds: string[]; taskIds: string[]; triggerKinds: TriggerKind[]; batchIds?: string[]; environmentKind?: 'world' | 'school'; sharedMeta?: SharedTurnMeta | null }
+export interface ReplyFreshness {
+  version:1; generation:number; scope:'ordinary'|'event'; inputRevision:number;
+  state:'generating'|'waiting'|'frozen'|'sealed'; quietUntil:ISOTime|null; firstAttemptAt:ISOTime|null; personalRunId:string|null;
+}
+export interface ReplyTrace {
+  at:ISOTime; generation:number; scope:'ordinary'|'event'; inputRevision:number;
+  event:'selected'|'waiting'|'rebound'|'stage_completed'|'stage_failed'|'first_attempt';
+  stage?:string; elapsedMs?:number; inputMessageIds?:string[]; selectionFingerprint?:string; quietUntil?:ISOTime|null;
+}
 export interface TurnRecord {
+  replyTrace?:ReplyTrace[];
+  replyFreshness?:ReplyFreshness;
   visualContext?:import('./input-media/types').TurnVisualContext;
   dialogueBinding?:import('./dialogue/types').DialogueTurnBinding;
   dialogueWindowVersion?:1|2;

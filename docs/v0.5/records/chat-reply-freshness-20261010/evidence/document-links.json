@@ -1,0 +1,9 @@
+{
+  "checkedLinks": 643,
+  "missingLinks": [],
+  "deploymentOnlyTargets": [
+    "runtime\\archive\\README.md",
+    "runtime\\archive\\README.md"
+  ],
+  "scope": "strip line anchors; ignored runtime/archive checked at original deployment directory; no credentials or original evidence rewriting"
+}

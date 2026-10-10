@@ -44,6 +44,10 @@ export class WebSearchStore {
   }
   finishOperation(runId:string,id:string,response:WebSearchResponse):void {this.storage.transaction(()=>{const op=this.operation(runId,id);this.saveOperation({...op,status:'done',response});});}
   saveCheckpoint(runId:string,checkpoint:WebModelCheckpoint):void {const session=this.session(runId);this.put('web_sessions',runId,{...session,checkpoint});}
+  compactStages(ownerType:ModelRunRef['ownerType'],ownerId:string,stageKeys:readonly string[]):void {
+    const update=this.storage.prepare("UPDATE web_sessions SET data=json_set(data,'$.checkpoint',NULL) WHERE json_extract(data,'$.ref.ownerType')=? AND json_extract(data,'$.ref.ownerId')=? AND json_extract(data,'$.ref.stageKey')=? AND json_extract(data,'$.checkpoint') IS NOT NULL");
+    for(const key of stageKeys)update.run(ownerType,ownerId,key);
+  }
   compactOwnerCheckpoint(ownerType:ModelRunRef['ownerType'],ownerId:string):void {
     this.storage.prepare("UPDATE web_sessions SET data=json_set(data,'$.checkpoint',NULL) WHERE json_extract(data,'$.ref.ownerType')=? AND json_extract(data,'$.ref.ownerId')=? AND json_extract(data,'$.checkpoint') IS NOT NULL").run(ownerType,ownerId);
   }

@@ -1,0 +1,95 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/reply-freshness-host.test.ts
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/chat-reply-freshness/HDSI-remake
+
+ ❯ tests/reply-freshness-host.test.ts (4 tests | 4 failed) 47ms
+   × waiting_timer_rearms_on_new_input_without_models 24ms
+   × waiting_yields_to_appointment_without_consuming_chat 9ms
+   × waiting_crosses_sleep_and_wake_preserves_stashed_inputs 5ms
+   × event_makes_phone_unreadable_then_end_restores_inputs 7ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/reply-freshness-host.test.ts > waiting_timer_rearms_on_new_input_without_models
+AssertionError: expected '状态：运行；阶段：生成；下次调度：2026/10/7 10:15:15' to contain '等待新消息合批'
+
+Expected: "等待新消息合批"
+Received: "状态：运行；阶段：生成；下次调度：2026/10/7 10:15:15"
+
+ ❯ tests/reply-freshness-host.test.ts:11:117
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/reply-freshness-host.test.ts > waiting_yields_to_appointment_without_consuming_chat
+AssertionError: expected { …(17) } to match object { inputMessageIds: [], …(4) }
+(20 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "batchIds": [],
+-   "done": true,
+-   "inputMessageIds": [],
++   "batchIds": [
++     "1484df30-e87b-4c98-8bd8-327c96d708a4",
++   ],
++   "done": false,
++   "inputMessageIds": [
++     "a",
++   ],
+    "replyFreshness": {
+-     "generation": 2,
+-     "scope": "event",
++     "generation": 1,
++     "scope": "ordinary",
+    },
+-   "triggerTaskIds": [
+-     "event",
+-   ],
++   "triggerTaskIds": [],
+  }
+
+ ❯ tests/reply-freshness-host.test.ts:14:400
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  tests/reply-freshness-host.test.ts > waiting_crosses_sleep_and_wake_preserves_stashed_inputs
+AssertionError: expected [ Array(1) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "eff5033a-afdd-4e5e-a2ce-ca8bf5606a40",
++ ]
+
+ ❯ tests/reply-freshness-host.test.ts:17:340
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  tests/reply-freshness-host.test.ts > event_makes_phone_unreadable_then_end_restores_inputs
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/reply-freshness-host.test.ts:20:483
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed (4)
+   Start at  16:50:12
+   Duration  692ms (transform 65%, import 26%, tests 8%, worker 1%)
+

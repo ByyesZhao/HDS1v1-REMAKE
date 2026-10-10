@@ -2,7 +2,7 @@
 
 返回[版本索引](../README.md)。
 
-最新为[普通回复跟进新消息方案审核](chat-reply-freshness-20261010/REVIEW.md)，源码基线3fb4e1c；保留原方案 B，补齐 4 项重要合同，附[细化执行方案 T1～T5](chat-reply-freshness-20261010/EXECUTION_PLAN.md)。当前基线定向回归8文件35项通过，合成探针复核旧行为与重算接点；新功能尚未实施。
+最新为[普通回复跟进新消息方案审核](chat-reply-freshness-20261010/REVIEW.md)，源码基线3fb4e1c；保留原方案 B，补齐 4 项重要合同，附[细化执行方案 T1～T5](chat-reply-freshness-20261010/EXECUTION_PLAN.md)。当前基线定向回归8文件35项通过，合成探针复核旧行为与重算接点；新功能现已实施，最新工程验证与独立复核见[交付](../records/chat-reply-freshness-20261010/DELIVERY.md)。原报告不改写为实施验收。
 
 前次[查看消息资格计划审核](phone-access-20261010/PLAN_REVIEW.md)，源码基线a66a89c。审核当时未实施，结论为设计可继续，无阻断问题；1处恢复验收措辞需收窄，附协议2回归及现场查询接点建议。审核当时既有定向回归5文件／23项通过；现已实施，实际交付与部署状态见[记录](../records/phone-access-20261010/DELIVERY.md)。
 

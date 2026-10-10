@@ -92,7 +92,7 @@ it('reopens a file database and retries sending while retaining confirmed output
   } finally { d.storage.close(); cleanTemp(dir); }
 });
 
-it('delivers a real closed sleeping batch at wake and excludes a newly open batch', async () => {
+it('wakes without piggybacking ordinary inputs while a new batch is open', async () => {
   const d = setup();
   try {
     d.storage.set('character', { ...d.storage.character(), sleep: { sleepAt: NOW, wakeAt: '2026-10-07T11:00:00+08:00' } });
@@ -106,10 +106,14 @@ it('delivers a real closed sleeping batch at wake and excludes a newly open batc
     d.clock.time = '2026-10-07T11:00:00+08:00';
     await input.acceptInput({ id: 'b', receivedAt: d.clock.now(), content: '仍在合批' });
     const ready = (await scheduler.collectReady(d.clock.now()))!;
-    expect(ready.inputMessageIds).toEqual(['a']); expect(ready.triggerKinds).toContain('sleep');
+    expect(ready.inputMessageIds).toEqual([]); expect(ready.triggerKinds).toContain('sleep');
     await new HdsiApp(d).runTurn(ready);
-    expect(d.storage.read('messages', 'a')!.seenTurnId).toBeTruthy();
+    expect(d.storage.read('messages', 'a')!.seenTurnId).toBeNull();
     expect(d.storage.read('messages', 'b')!.seenTurnId).toBeNull();
+    d.clock.advance(15000);const ordinary=(await scheduler.collectReady(d.clock.now()))!;
+    expect(ordinary.inputMessageIds).toEqual(['a','b']);await new HdsiApp(d).runTurn(ordinary);
+    expect(d.storage.read('messages','a')!.seenTurnId).toBeTruthy();
+    expect(d.storage.read('messages','b')!.seenTurnId).toBeTruthy();
   } finally { d.storage.close(); }
 });
 it.each([

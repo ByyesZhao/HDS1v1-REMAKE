@@ -26,7 +26,7 @@ it('ends the cycle at sleep and wakes once with pending appointments and only cl
   d.clock.time = '2026-10-07T11:00:00+08:00';
   const input = new InputBuffer(d.storage); await input.acceptInput({ id: 'b', receivedAt: d.clock.now(), content: '仍在合批' });
   const request = await s.collectReady(d.clock.now());
-  expect(request!.inputMessageIds).toEqual(['a']); expect(request!.triggerKinds).toContain('sleep');
+  expect(request!.inputMessageIds).toEqual([]); expect(request!.triggerKinds).toContain('sleep');
   await new HdsiApp(d).runTurn(request!);
   expect(d.storage.character().nextAutonomousAt).toBe('2026-10-07T06:00:00.000Z');
   expect(Date.parse(d.storage.character().sleep!.sleepAt)).toBeGreaterThan(Date.parse(d.clock.now()));
