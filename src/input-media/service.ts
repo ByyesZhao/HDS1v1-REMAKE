@@ -97,5 +97,5 @@ export class IncomingMediaService {
   const ref=this.cleanupCandidate();if(!ref)return 'none';
   return await this.assets.retire(ref,()=>!this.protectedAsset(ref))?'applied':'none';
  }
- async stop(){this.stopped=true;await this.assets.stop();await Promise.allSettled([...this.prefetched,...this.observations.values()]);}
+ async stop(options:{graceful?:boolean}={}){this.stopped=true;await this.assets.stop(options);await Promise.allSettled([...this.prefetched,...this.observations.values()]);}
 }

@@ -1,0 +1,10 @@
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/graceful-stop/HDSI-remake
+
+····
+
+ Test Files  2 passed (2)
+      Tests  4 passed (4)
+   Start at  17:48:46
+   Duration  1.46s (tests 93%, transform 4%, import 3%, worker 1%)
+

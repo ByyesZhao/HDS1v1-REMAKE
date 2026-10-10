@@ -1,0 +1,56 @@
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/graceful-stop/HDSI-remake
+
+xx··x····················
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/graceful-stop-host.test.ts > graceful environment stop completes current preparation without starting next stage
+AssertionError: expected 'running' to be 'ready' // Object.is equality
+
+Expected: "ready"
+Received: "running"
+
+ ❯ tests/graceful-stop-host.test.ts:20:107
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/graceful-stop-host.test.ts > host graceful stop waits for running world director and leaves next director pending
+AssertionError: expected 'running' to be 'ready' // Object.is equality
+
+Expected: "ready"
+Received: "running"
+
+ ❯ tests/graceful-stop-host.test.ts:27:107
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  tests/graceful-stop-host.test.ts > memory index preparation completes and persists ready result during graceful stop
+AssertionError: expected [ 0.6000000238418579, …(1) ] to deeply equal [ 0.6, 0.8 ]
+
+- Expected
++ Received
+
+  [
+-   0.6,
+-   0.8,
++   0.6000000238418579,
++   0.800000011920929,
+  ]
+
+ ❯ tests/graceful-stop-host.test.ts:46:161
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed | 3 passed (4)
+      Tests  3 failed | 22 passed (25)
+   Start at  17:42:25
+   Duration  2.00s (tests 37%, import 34%, transform 28%, worker 1%)
+
+    Isolate  4 workers spawned · ~95ms startup each (spawn + environment, per file)
+             at least ~285ms faster with isolate: false — reuses workers across files instead of one per file
+

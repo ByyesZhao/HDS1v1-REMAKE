@@ -1,3 +1,4 @@
+import {installStopControl} from './stop-control';
 import type {Context} from 'koishi';import type {Config} from '../index';import type {StorySettings} from '../settings';import {createPluginRuntime} from './plugin-runtime';import type {PluginRuntime} from './plugin-runtime';
 import {createManagedBrowserProvider} from '../web/browser/provider';import {createKoishiBrowserPort} from '../web/browser/koishi-port';import {isTargetSession} from '../host/input';import type {ManagedBrowserProvider} from '../web/browser/types';
 export interface BrowserRuntimeStatus {state:'waiting'|'starting'|'running'|'stopping'|'failed';error:string|null}
@@ -28,6 +29,7 @@ export function installBrowserRuntime(ctx:Context,config:Config,settings:StorySe
   });
  });
  ctx.command('hdsi.status','故事状态',{authority:0}).action(async({session})=>{if(!session||!isTargetSession(session,config))return;return (current?await current.runtime.host.status():'故事实例尚未启动')+'；浏览器：'+status.state+(status.error?'／'+status.error:'');});
+ installStopControl(ctx,async()=>{disposed=true;generation++;current?.runtime.stopAcceptingInput();const draining=current?.runtime.close({graceful:true});await enqueue(async()=>{await draining;await closeCurrent();});if(fatal)throw fatal;});
  ctx.on('ready',()=>chain);
  // Registered after injection: normal parent shutdown closes foreground before provider disposal.
  ctx.on('dispose',async()=>{disposed=true;generation++;current?.runtime.stopAcceptingInput();await enqueue(closeCurrent);if(fatal)throw fatal;});

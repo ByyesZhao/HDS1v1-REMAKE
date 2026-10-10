@@ -1,0 +1,33 @@
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/graceful-stop/HDSI-remake
+
+·········stdout | tests/browser-web-plugin-extra.test.ts > failed HDSI startup is reported and acquired instance closes exactly once
+[E] hdsi-browser Error: synthetic host startup failure
+        at Object.start (C:/Users/<user>/.codex/worktrees/graceful-stop/HDSI-remake/tests/browser-web-plugin-extra.test.ts:9:110)
+        at C:/Users/<user>/.codex/worktrees/graceful-stop/HDSI-remake/src/deployment/browser-runtime.ts:22:24
+        at processTicksAndRejections (node:internal/process/task_queues:104:5)
+        at C:/Users/<user>/.codex/worktrees/graceful-stop/HDSI-remake/src/deployment/browser-runtime.ts:12:91
+
+stdout | tests/browser-web-plugin-extra.test.ts > rejecting browser service preserves original Koishi error and never opens a story runtime
+[E] app Error: synthetic browser startup failure
+        at C:/Users/<user>/.codex/worktrees/graceful-stop/HDSI-remake/tests/browser-web-plugin-extra.test.ts:13:55
+        at file:///D:/HDSI-remake/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:1628:35
+        at file:///D:/HDSI-remake/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:2783:26
+        at file:///D:/HDSI-remake/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:3321:20
+        at new Promise (<anonymous>)
+        at runWithCancel (file:///D:/HDSI-remake/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:3316:10)
+        at file:///D:/HDSI-remake/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:3301:20
+        at new Promise (<anonymous>)
+        at runWithTimeout (file:///D:/HDSI-remake/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:3259:10)
+        at file:///D:/HDSI-remake/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:3882:64
+
+···········
+
+ Test Files  6 passed (6)
+      Tests  20 passed (20)
+   Start at  17:58:05
+   Duration  4.49s (tests 65%, import 19%, transform 15%, worker 1%)
+
+    Isolate  6 workers spawned · ~93ms startup each (spawn + environment, per file)
+             at least ~466ms faster with isolate: false — reuses workers across files instead of one per file
+

@@ -65,5 +65,5 @@ export class IncomingAssets {
    this.store.storage.save('image_assets',ref,{...asset,state:'deleted'});removed=true;
   })();this.deleting.set(ref,work);try{await work;return removed;}finally{this.deleting.delete(ref);}
  }
- async stop(){this.stopped=true;for(const c of this.controllers)c.abort();await Promise.allSettled([...this.jobs.values(),...this.saves.values(),...this.deleting.values()]);}
+ async stop(options:{graceful?:boolean}={}){this.stopped=true;if(!options.graceful)for(const c of this.controllers)c.abort();await Promise.allSettled([...this.jobs.values(),...this.saves.values(),...this.deleting.values()]);}
 }

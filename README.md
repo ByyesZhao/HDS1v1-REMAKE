@@ -14,6 +14,8 @@ V0.5整理当前实现：普通最近4个完整对话段、活动完整授权原
 
 最新普通回复跟进新消息T1～T5已完成，184文件990项及离线检查通过，独立复核7文件44项和三组边界探针通过，见[交付](docs/v0.5/records/chat-reply-freshness-20261010/DELIVERY.md)。发送尝试前收到追加输入会等待并重新生成；首次尝试后保留冻结尾段，未知结果沿用重试。源码合并不等同正在运行的服务已更新；正式部署状态见交付记录。
 
+新增[安全停止交付](docs/v0.5/records/graceful-stop-20261010/DELIVERY.md)：stop-hdsi.cmd等待当前故事整轮和世界／学校、记忆、取图在途阶段保存；187文件1004项与类型／构建／演示／插件验收通过，独立审查补修已关闭。正式部署状态见交付，服务由用户启动。
+
 67项旧图库的图片、说明、标签和1024维向量已在新项目复用；运行不依赖旧HDSI目录。角色背景和用途映射已批准启用，故事阶段完整背景保留，未迁移作者事实或覆盖已有细节。
 
 网页核心与本地浏览器provider已实现，正式配置已启用Bing搜索和新图识别；记忆向量索引已实现，真实语义阈值未标定，当前先用已标定词法和直接键。真实QQ持续收发、新图在线描述、现实新闻搜索及数月稳定运行尚未验收。服务继续由用户手动启动／重启。
@@ -41,16 +43,17 @@ npm run check --prefix runtime
 npm run smoke --prefix runtime
 ```
 
-demo是内存库和固定模型的合成故事；smoke使用真实Koishi Context及临时库，模型HTTP以离线返回替代，不连接QQ。更新代码后先build再重启Koishi。
+demo是内存库和固定模型的合成故事；smoke使用真实Koishi Context及临时库，模型HTTP以离线返回替代，不连接QQ。更新代码前先用stop-hdsi.cmd停HDSI，再build，最后由用户重新启动Koishi。
 
 ## 3. 手动启动
 
 根目录双击：
 
 - `start-hdsi.cmd`：启动`D:\HDSI-remake\runtime`中的Koishi与故事插件。
+- `stop-hdsi.cmd`：请求安全停止HDSI，等待当前工作保存。
 - `start-snowluma.cmd`：启动独立`D:\SNOWLUMA`的SnowLuma。
 
-各自有控制台，Ctrl+C停止。传入`--check`只核对本地依赖／配置／图库，不启动服务、登录账号或调用模型。
+各自有控制台。HDSI建议双击`stop-hdsi.cmd`安全停止：先禁止新输入与新任务，等待当前故事整轮、世界／学校及记忆后台当前阶段和取图工作完成保存，再退出；未来预约、静默等待和未开始的后续链留待重启。Ctrl+C有退出等待钩子，但Windows控制台直接关闭不保证等待。SnowLuma仍按其控制台方式停止。传入`--check`只核对本地依赖／配置／图库，不启动服务、登录账号或调用模型。
 
 ```powershell
 .\start-hdsi.cmd --check

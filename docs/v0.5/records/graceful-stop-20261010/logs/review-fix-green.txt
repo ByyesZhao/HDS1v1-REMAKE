@@ -1,0 +1,124 @@
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/graceful-stop/HDSI-remake
+
+······stdout | tests/browser-web-plugin.test.ts > required service gates and serially replaces real Context runtime; browserFirst=false
+[E] app Error: EPERM: operation not permitted, rename 'C:\Users\<user>\.codex\worktrees\graceful-stop\HDSI-remake\hdsi-control\stop.json.e5e90a51-ac8a-4084-9952-20d3a25583e1.tmp' -> 'C:\Users\<user>\.codex\worktrees\graceful-stop\HDSI-remake\hdsi-control\stop.json'
+        at rename (node:internal/fs/promises:1490:10)
+        at startStopControl (C:/Users/<user>/.codex/worktrees/graceful-stop/HDSI-remake/src/deployment/stop-control.ts:32:137)
+        at C:/Users/<user>/.codex/worktrees/graceful-stop/HDSI-remake/src/deployment/stop-control.ts:38:159
+        at async Promise.all (index 12)
+        at Proxy.flush (D:\HDSI-remake\node_modules\@cordisjs\core\lib\index.cjs:497:7)
+        at Proxy.start (D:\HDSI-remake\node_modules\@cordisjs\core\lib\index.cjs:571:5)
+        at C:/Users/<user>/.codex/worktrees/graceful-stop/HDSI-remake/tests/browser-web-plugin.test.ts:10:85
+        at file:///D:/HDSI-remake/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:2783:20
+
+stdout | tests/browser-web-plugin.test.ts > required service gates and serially replaces real Context runtime; browserFirst=false
+Error: EPERM: operation not permitted, rename 'C:\Users\<user>\.codex\worktrees\graceful-stop\HDSI-remake\hdsi-control\stop.json.e5e90a51-ac8a-4084-9952-20d3a25583e1.tmp' -> 'C:\Users\<user>\.codex\worktrees\graceful-stop\HDSI-remake\hdsi-control\stop.json'
+    at rename (node:internal/fs/promises:1490:10)
+    at startStopControl (C:/Users/<user>/.codex/worktrees/graceful-stop/HDSI-remake/src/deployment/stop-control.ts:32:137)
+    at C:/Users/<user>/.codex/worktrees/graceful-stop/HDSI-remake/src/deployment/stop-control.ts:38:159
+    at async Promise.all (index 12)
+    at Proxy.flush (D:\HDSI-remake\node_modules\@cordisjs\core\lib\index.cjs:497:7)
+    at Proxy.start (D:\HDSI-remake\node_modules\@cordisjs\core\lib\index.cjs:571:5)
+    at C:/Users/<user>/.codex/worktrees/graceful-stop/HDSI-remake/tests/browser-web-plugin.test.ts:10:85
+    at file:///D:/HDSI-remake/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:2783:20 {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'rename',
+  path: 'C:\\Users\\<user>\\.codex\\worktrees\\graceful-stop\\HDSI-remake\\hdsi-control\\stop.json.e5e90a51-ac8a-4084-9952-20d3a25583e1.tmp',
+  dest: 'C:\\Users\\<user>\\.codex\\worktrees\\graceful-stop\\HDSI-remake\\hdsi-control\\stop.json'
+}
+
+stdout | tests/browser-web-plugin.test.ts > required service gates and serially replaces real Context runtime; browserFirst=false
+TypeError: this.ctx.logger is not a function
+    at new Service (D:\HDSI-remake\node_modules\cordis\lib\index.cjs:75:28)
+    at new Browser (C:/Users/<user>/.codex/worktrees/graceful-stop/HDSI-remake/tests/browser-web-plugin.test.ts:7:88)
+    at MainScope.apply (D:\HDSI-remake\node_modules\@cordisjs\core\lib\index.cjs:878:24)
+    at D:\HDSI-remake\node_modules\@cordisjs\core\lib\index.cjs:900:49
+    at MainScope.ensure (D:\HDSI-remake\node_modules\@cordisjs\core\lib\index.cjs:686:18)
+    at MainScope.start (D:\HDSI-remake\node_modules\@cordisjs\core\lib\index.cjs:900:12)
+    at MainScope.init (D:\HDSI-remake\node_modules\@cordisjs\core\lib\index.cjs:719:12)
+    at new MainScope (D:\HDSI-remake\node_modules\@cordisjs\core\lib\index.cjs:835:12)
+    at Proxy.plugin (D:\HDSI-remake\node_modules\@cordisjs\core\lib\index.cjs:1062:15)
+    at C:/Users/<user>/.codex/worktrees/graceful-stop/HDSI-remake/tests/browser-web-plugin.test.ts:11:99
+
+·x·······stdout | tests/browser-web-plugin-extra.test.ts > failed HDSI startup is reported and acquired instance closes exactly once
+[E] hdsi-browser Error: synthetic host startup failure
+        at Object.start (C:/Users/<user>/.codex/worktrees/graceful-stop/HDSI-remake/tests/browser-web-plugin-extra.test.ts:6:110)
+        at C:/Users/<user>/.codex/worktrees/graceful-stop/HDSI-remake/src/deployment/browser-runtime.ts:22:24
+        at processTicksAndRejections (node:internal/process/task_queues:104:5)
+        at C:/Users/<user>/.codex/worktrees/graceful-stop/HDSI-remake/src/deployment/browser-runtime.ts:12:91
+
+stdout | tests/browser-web-plugin-extra.test.ts > rejecting browser service preserves original Koishi error and never opens a story runtime
+[E] app Error: synthetic browser startup failure
+        at C:/Users/<user>/.codex/worktrees/graceful-stop/HDSI-remake/tests/browser-web-plugin-extra.test.ts:10:55
+        at file:///D:/HDSI-remake/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:1628:35
+        at file:///D:/HDSI-remake/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:2783:26
+        at file:///D:/HDSI-remake/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:3321:20
+        at new Promise (<anonymous>)
+        at runWithCancel (file:///D:/HDSI-remake/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:3316:10)
+        at file:///D:/HDSI-remake/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:3301:20
+        at new Promise (<anonymous>)
+        at runWithTimeout (file:///D:/HDSI-remake/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:3259:10)
+        at file:///D:/HDSI-remake/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:3882:64
+
+stdout | tests/browser-web-plugin-extra.test.ts > rejecting browser service preserves original Koishi error and never opens a story runtime
+[E] app Error: EPERM: operation not permitted, rename 'C:\Users\<user>\.codex\worktrees\graceful-stop\HDSI-remake\hdsi-control\stop.json.dca0cb65-0914-4968-bd45-1769cb6006f2.tmp' -> 'C:\Users\<user>\.codex\worktrees\graceful-stop\HDSI-remake\hdsi-control\stop.json'
+        at rename (node:internal/fs/promises:1490:10)
+        at startStopControl (C:/Users/<user>/.codex/worktrees/graceful-stop/HDSI-remake/src/deployment/stop-control.ts:32:137)
+        at C:/Users/<user>/.codex/worktrees/graceful-stop/HDSI-remake/src/deployment/stop-control.ts:38:159
+        at async Promise.all (index 13)
+        at Proxy.flush (D:\HDSI-remake\node_modules\@cordisjs\core\lib\index.cjs:497:7)
+        at Proxy.start (D:\HDSI-remake\node_modules\@cordisjs\core\lib\index.cjs:571:5)
+        at C:/Users/<user>/.codex/worktrees/graceful-stop/HDSI-remake/tests/browser-web-plugin-extra.test.ts:13:131
+        at file:///D:/HDSI-remake/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:2783:20
+
+stdout | tests/browser-web-plugin-extra.test.ts > rejecting browser service preserves original Koishi error and never opens a story runtime
+Error: EPERM: operation not permitted, rename 'C:\Users\<user>\.codex\worktrees\graceful-stop\HDSI-remake\hdsi-control\stop.json.dca0cb65-0914-4968-bd45-1769cb6006f2.tmp' -> 'C:\Users\<user>\.codex\worktrees\graceful-stop\HDSI-remake\hdsi-control\stop.json'
+    at rename (node:internal/fs/promises:1490:10)
+    at startStopControl (C:/Users/<user>/.codex/worktrees/graceful-stop/HDSI-remake/src/deployment/stop-control.ts:32:137)
+    at C:/Users/<user>/.codex/worktrees/graceful-stop/HDSI-remake/src/deployment/stop-control.ts:38:159
+    at async Promise.all (index 13)
+    at Proxy.flush (D:\HDSI-remake\node_modules\@cordisjs\core\lib\index.cjs:497:7)
+    at Proxy.start (D:\HDSI-remake\node_modules\@cordisjs\core\lib\index.cjs:571:5)
+    at C:/Users/<user>/.codex/worktrees/graceful-stop/HDSI-remake/tests/browser-web-plugin-extra.test.ts:13:131
+    at file:///D:/HDSI-remake/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:2783:20 {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'rename',
+  path: 'C:\\Users\\<user>\\.codex\\worktrees\\graceful-stop\\HDSI-remake\\hdsi-control\\stop.json.dca0cb65-0914-4968-bd45-1769cb6006f2.tmp',
+  dest: 'C:\\Users\\<user>\\.codex\\worktrees\\graceful-stop\\HDSI-remake\\hdsi-control\\stop.json'
+}
+
+·····
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/browser-web-plugin.test.ts > required service gates and serially replaces real Context runtime; browserFirst=false
+AssertionError: expected +0 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/browser-web-plugin.test.ts:12:17
+     10|  if(first)ctx.plugin(Browser);installBrowserRuntime(ctx,{} as any,sett…
+     11|  if(!first){expect(starts).toBe(0);expect(getBrowserRuntimeStatus(ctx)…
+     12|  expect(starts).toBe(1);expect(getBrowserRuntimeStatus(ctx).state).toB…
+       |                 ^
+     13|  closing=true;const old=ctx.registry.get(Browser);old.dispose();for(le…
+     14|  closing=false;release();for(let i=0;i<10;i++)await tick();expect(star…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 5 passed (6)
+      Tests  1 failed | 19 passed (20)
+   Start at  17:56:09
+   Duration  4.25s (tests 62%, import 21%, transform 16%, worker 1%)
+
+    Isolate  6 workers spawned · ~94ms startup each (spawn + environment, per file)
+             at least ~471ms faster with isolate: false — reuses workers across files instead of one per file
+
