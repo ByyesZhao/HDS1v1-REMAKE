@@ -1,4 +1,5 @@
 import {it,expect,vi} from 'vitest';
+import {request} from 'node:http';
 import {mkdtemp,readFile,rm} from 'node:fs/promises';import {tmpdir} from 'node:os';import {join,resolve} from 'node:path';import {createRequire} from 'node:module';
 import {startStopControl} from '../src/deployment/stop-control';
 const tick=()=>new Promise<void>(r=>setImmediate(r));
@@ -20,4 +21,9 @@ it('failed drain reports failure without terminating process',async()=>{
 it('stop script uses local current descriptor and reports absent service without force kill',async()=>{
  const {requestStop}=createRequire(resolve('package.json'))('./runtime/stop.cjs');const dir=await mkdtemp(join(tmpdir(),'hdsi-stop-')),file=join(dir,'control.json'),control=await startStopControl(file,async()=>{}, {exit:()=>{}});
  try{expect(await requestStop(file,()=>{})).toMatchObject({stopped:true});await control.close();await expect(requestStop(file,()=>{})).rejects.toThrow('HDSI');}finally{await control.close();await rm(dir,{recursive:true,force:true});}
+});
+
+it('successful drain exits even when the requesting client disconnects',async()=>{
+ const dir=await mkdtemp(join(tmpdir(),'hdsi-stop-')),file=join(dir,'control.json');let release!:()=>void;const gate=new Promise<void>(r=>release=r),stop=vi.fn(async()=>gate),exit=vi.fn(),control=await startStopControl(file,stop,{exit});
+ try{const d=JSON.parse(await readFile(file,'utf8'));const req=request({hostname:'127.0.0.1',port:d.port,path:'/stop',method:'POST',headers:{authorization:`Bearer ${d.token}`}});req.on('error',()=>{});req.end();await vi.waitFor(()=>expect(stop).toHaveBeenCalledTimes(1));req.destroy();await new Promise(r=>setTimeout(r,30));release();await vi.waitFor(()=>expect(exit).toHaveBeenCalledTimes(1));await expect(readFile(file,'utf8')).rejects.toMatchObject({code:'ENOENT'});}finally{release();await control.close();await rm(dir,{recursive:true,force:true});}
 });

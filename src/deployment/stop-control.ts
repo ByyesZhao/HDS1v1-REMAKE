@@ -14,9 +14,11 @@ export async function startStopControl(file:string,onStop:()=>Promise<void>,opti
   res.setHeader('content-type','application/json');res.setHeader('connection','close');
   try{
    if(stopping)options.log?.('停止流程已在进行，继续等待当前工作。');
-   stopping??=Promise.resolve().then(()=>{options.log?.('收到停止请求：停止新输入和新任务，等待当前故事轮、导演及后台工作保存。');return onStop();});
+   stopping??=Promise.resolve().then(()=>{options.log?.('收到停止请求：停止新输入和新任务，等待当前故事轮、导演及后台工作保存。');return onStop();}).then(()=>{
+    // Exit belongs to completed work, even if the requesting window disconnects.
+    if(!exiting){exiting=true;setImmediate(()=>{void close().finally(()=>{options.log?.('当前工作已保存，HDSI停止完成。');(options.exit??(()=>process.exit(0)))();});});}
+   });
    await stopping;
-   res.once('finish',()=>{if(exiting)return;exiting=true;void close().finally(()=>{options.log?.('当前工作已保存，HDSI停止完成。');(options.exit??(()=>process.exit(0)))();});});
    res.end(JSON.stringify({stopped:true}));
   }catch{res.writeHead(500);res.end(JSON.stringify({stopped:false,error:'HDSI停止失败，请查看控制台；没有强制终止进程。'}));}
  });
