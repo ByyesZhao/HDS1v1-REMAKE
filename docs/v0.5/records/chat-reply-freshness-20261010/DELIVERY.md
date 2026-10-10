@@ -29,3 +29,9 @@
 [独立审查](INDEPENDENT_REVIEW.md)未发现Critical／Important／需修复Minor；独立重跑7文件44项及三组状态边界探针通过。它未重复全量验收，990项为执行者证据。新增[合成时间线](evidence/synthetic-timeline.json)以真实DTO验证14999ms仍等待、15000ms同轮换代并回复最新消息；脚本[verify-timeline.ts](verify-timeline.ts)可重跑。
 
 源码合并与正式部署状态以本文件的后续部署记录为准。
+
+## 主目录交付状态
+
+2026-10-10：源码已在main合并（0658cbb），主目录复验typecheck及新增36项退出0；与隔离审查版本的src/tests/runtime/package无差异。本批完整990项、build/demo/smoke证据来自隔离工作树，未声称主目录旧lib通过新功能全量验收。655条当前文档链接有效。
+
+**正式部署待停服确认。** 原Koishi仍运行，主目录lib、正式配置和数据库均未更新；无数据库升级要求。已请求用户Ctrl+C停止HDSI，确认后才能备份旧lib并构建，然后由用户手动启动；SnowLuma可继续运行。已向native工具提交临时工作树归档请求，全部必要源代码、脚本和日志已并入main。
