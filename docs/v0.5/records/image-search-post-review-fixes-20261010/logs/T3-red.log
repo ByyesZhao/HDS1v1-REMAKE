@@ -1,0 +1,121 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/browser-visible-dom.test.ts tests/browser-page-extraction.test.ts
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/image-search-review-fixes/HDSI-remake
+
+ ❯ tests/browser-visible-dom.test.ts (9 tests | 7 failed) 5496ms
+   × actual CSS excludes invisible body: sheet article 130ms
+   × actual CSS excludes invisible body: sheet ancestor 101ms
+   × actual CSS excludes invisible body: inherited visibility override 1521ms
+   × hidden captcha does not spend failure quota 87ms
+   × visible captcha after hidden first wall still blocks 73ms
+   × hidden bing links and empty state wait for visible results 55ms
+   × hidden duckduckgo links and empty state wait for visible results 68ms
+ ❯ tests/browser-page-extraction.test.ts (5 tests | 1 failed) 24ms
+   × ancestor hidden content and first hidden wall are not evidence 5ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 8 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/browser-page-extraction.test.ts > ancestor hidden content and first hidden wall are not evidence
+AssertionError: expected 'ok' to be 'captcha' // Object.is equality
+
+Expected: "captcha"
+Received: "ok"
+
+ ❯ tests/browser-page-extraction.test.ts:29:113
+     27| it('ancestor hidden content and first hidden wall are not evidence',()…
+     28|  expect(extract('<div style="display:none"><article>HIDDEN</article></…
+     29|  expect(extract('<form id="challenge-form" hidden>hidden</form><form i…
+       |                                                                                                                 ^
+     30|  const p=extract('<ol id="b_results"><li class="b_no" hidden>hidden</l…
+     31| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/8]⎯
+
+ FAIL  tests/browser-visible-dom.test.ts > actual CSS excludes invisible body: sheet article
+ FAIL  tests/browser-visible-dom.test.ts > actual CSS excludes invisible body: sheet ancestor
+AssertionError: expected 'HIDDEN_STALE_TEMPLATE' to be 'VISIBLE_REAL_BODY' // Object.is equality
+
+Expected: "VISIBLE_REAL_BODY"
+Received: "HIDDEN_STALE_TEMPLATE"
+
+ ❯ tests/browser-visible-dom.test.ts:13:267
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/8]⎯
+
+ FAIL  tests/browser-visible-dom.test.ts > actual CSS excludes invisible body: inherited visibility override
+Error: browser page operation timed out
+ ❯ Timeout.<anonymous> src/web/browser/slots.ts:16:42
+     14|    const abort=()=>{if(!work.settled){work.settled=true;reject(control…
+     15|    controller.signal.addEventListener('abort',abort,{once:true});signa…
+     16|    timer=setTimeout(()=>controller.abort(Error('browser page operation…
+       |                                          ^
+     17|    this.queue.push(work);this.pump();
+     18|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/8]⎯
+
+ FAIL  tests/browser-visible-dom.test.ts > hidden captcha does not spend failure quota
+AssertionError: expected { successReads: +0, failures: 1 } to deeply equal { successReads: 1, failures: +0 }
+
+- Expected
++ Received
+
+  {
+-   "failures": 0,
+-   "successReads": 1,
++   "failures": 1,
++   "successReads": 0,
+  }
+
+ ❯ tests/browser-visible-dom.test.ts:14:680
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/8]⎯
+
+ FAIL  tests/browser-visible-dom.test.ts > visible captcha after hidden first wall still blocks
+AssertionError: promise resolved "{ title: '', body: 'BODY' }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "body": "BODY",
++   "title": "",
+  }
+
+ ❯ tests/browser-visible-dom.test.ts:15:367
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/8]⎯
+
+ FAIL  tests/browser-visible-dom.test.ts > hidden bing links and empty state wait for visible results
+ FAIL  tests/browser-visible-dom.test.ts > hidden duckduckgo links and empty state wait for visible results
+AssertionError: expected [ { …(2) } ] to deeply equal [ { …(2) } ]
+
+- Expected
++ Received
+
+  [
+    {
+-     "title": "visible",
+-     "url": "https://example.org/visible",
++     "title": "hidden",
++     "url": "https://example.org/hidden",
+    },
+  ]
+
+ ❯ tests/browser-visible-dom.test.ts:16:955
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/8]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  8 failed | 6 passed (14)
+   Start at  10:19:48
+   Duration  8.47s (tests 67%, import 31%, transform 2%)
+

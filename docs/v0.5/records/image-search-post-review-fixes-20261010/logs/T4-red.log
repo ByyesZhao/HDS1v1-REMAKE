@@ -1,0 +1,74 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/browser-final-review.test.ts tests/browser-web-integration.test.ts tests/browser-page-extraction.test.ts tests/browser-visible-dom.test.ts
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/image-search-review-fixes/HDSI-remake
+
+ ❯ tests/browser-visible-dom.test.ts (14 tests | 2 failed) 2264ms
+   × credential shell counting and independent body: main login 76ms
+   × credential shell counting and independent body: role login 102ms
+ ❯ tests/browser-final-review.test.ts (10 tests | 3 failed) 137ms
+   × main_wrapped_login_is_not_full_body: main 6ms
+   × main_wrapped_login_is_not_full_body: div role="main" 1ms
+   × independent body survives adjacent login regions: <main><p>Independent body.</p><div role="dialog"><p>Login prompt.</p><form><input type="password"></form></div></main> 2ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/browser-final-review.test.ts > main_wrapped_login_is_not_full_body: main
+ FAIL  tests/browser-final-review.test.ts > main_wrapped_login_is_not_full_body: div role="main"
+AssertionError: expected 'ok' to be 'login_wall' // Object.is equality
+
+Expected: "login_wall"
+Received: "ok"
+
+ ❯ tests/browser-final-review.test.ts:32:215
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  tests/browser-final-review.test.ts > independent body survives adjacent login regions: <main><p>Independent body.</p><div role="dialog"><p>Login prompt.</p><form><input type="password"></form></div></main>
+AssertionError: expected 'Independent body.\n\nLogin prompt.' to be 'Independent body.' // Object.is equality
+
+- Expected
++ Received
+
+  Independent body.
++
++ Login prompt.
+
+ ❯ tests/browser-final-review.test.ts:39:114
+     37|  '<main><p>Independent body.</p><div role="dialog"><p>Login prompt.</p…
+     38|  '<article><p>Independent body.</p></article><form hidden><input type=…
+     39| ])('independent body survives adjacent login regions: %s',html=>{expec…
+       |                                                                                                                  ^
+     40|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  tests/browser-visible-dom.test.ts > credential shell counting and independent body: main login
+ FAIL  tests/browser-visible-dom.test.ts > credential shell counting and independent body: role login
+AssertionError: expected { successReads: 1, failures: +0 } to deeply equal { successReads: +0, failures: 1 }
+
+- Expected
++ Received
+
+  {
+-   "failures": 1,
+-   "successReads": 0,
++   "failures": 0,
++   "successReads": 1,
+  }
+
+ ❯ tests/browser-visible-dom.test.ts:24:582
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+
+ Test Files  2 failed | 2 passed (4)
+      Tests  5 failed | 26 passed (31)
+   Start at  10:22:16
+   Duration  3.51s (tests 82%, import 13%, transform 5%)
+
+    Isolate  4 workers spawned · ~100ms startup each (spawn + environment, per file)
+             at least ~300ms faster with isolate: false — reuses workers across files instead of one per file
+

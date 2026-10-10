@@ -1,0 +1,16 @@
+[E] app Error: SYNTHETIC_BROWSER_START_FAILURE
+        at FailingBrowser.start (C:\Users\<user>\.codex\worktrees\image-search-review-fixes\HDSI-remake\docs\v0.5\reviews\image-search-post-implementation-20261010\evidence\reproduce-startup.cjs:26:35)
+        at <anonymous> (C:\Users\<user>\.codex\worktrees\image-search-review-fixes\HDSI-remake\node_modules\@cordisjs\core\src\service.ts:69:18)
+        at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+{
+  "baseline": "2a2e77e",
+  "observedForMs": 1000,
+  "serviceStarts": 1,
+  "startupErrors": [
+    "Error: SYNTHETIC_BROWSER_START_FAILURE"
+  ],
+  "validationSettled": true,
+  "reportExists": true,
+  "rootDisposalsByValidation": 1,
+  "cleanup": "review probe calls Context.stop after observation"
+}

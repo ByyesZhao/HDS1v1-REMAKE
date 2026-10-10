@@ -1,0 +1,28 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/browser-final-review.test.ts tests/browser-web-integration.test.ts tests/browser-page-extraction.test.ts tests/browser-visible-dom.test.ts
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/image-search-review-fixes/HDSI-remake
+
+ ❯ tests/browser-visible-dom.test.ts (14 tests | 2 failed) 2239ms
+   × credential shell counting and independent body: main login 72ms
+   × credential shell counting and independent body: role login 105ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/browser-visible-dom.test.ts > credential shell counting and independent body: main login
+ FAIL  tests/browser-visible-dom.test.ts > credential shell counting and independent body: role login
+AssertionError: the given combination of arguments (undefined and string) is invalid for this assertion. You can use an array, a map, an object, a set, a string, or a weakset instead of a string
+ ❯ tests/browser-visible-dom.test.ts:24:787
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed | 3 passed (4)
+      Tests  2 failed | 29 passed (31)
+   Start at  10:23:04
+   Duration  3.48s (tests 81%, import 13%, transform 5%)
+
+    Isolate  4 workers spawned · ~101ms startup each (spawn + environment, per file)
+             at least ~302ms faster with isolate: false — reuses workers across files instead of one per file
+

@@ -1,0 +1,17 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 typecheck
+npm notice run tsc --noEmit
+tests/incoming-media-integration.test.ts(25,30): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './chat-fixture.js'?
+tests/incoming-media-integration.test.ts(25,77): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean '../src/storage.js'?
+tests/incoming-media-integration.test.ts(25,133): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean '../src/config.js'?
+tests/incoming-media-integration.test.ts(25,188): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean '../src/environment/store.js'?
+tests/incoming-media-integration.test.ts(25,249): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean '../src/school/store.js'?
+tests/incoming-media-integration.test.ts(32,211): error TS7006: Parameter 'c' implicitly has an 'any' type.
+tests/incoming-media-integration.test.ts(33,22): error TS7006: Parameter 'c' implicitly has an 'any' type.
+tests/incoming-media-integration.test.ts(33,130): error TS7006: Parameter 't' implicitly has an 'any' type.
+tests/incoming-media-onebot-review.test.ts(31,30): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './chat-fixture.js'?
+tests/incoming-media-onebot-review.test.ts(31,79): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './helpers.js'?
+tests/incoming-media-onebot-review.test.ts(31,121): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean '../src/app.js'?
+tests/incoming-media-onebot-review.test.ts(31,175): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean '../src/input-media/store.js'?
+tests/incoming-media-onebot-review.test.ts(31,239): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean '../src/input-media/assets.js'?
+tests/incoming-media-onebot-review.test.ts(31,310): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean '../src/input-media/service.js'?
+tests/incoming-media-onebot-review.test.ts(36,289): error TS7006: Parameter 'c' implicitly has an 'any' type.

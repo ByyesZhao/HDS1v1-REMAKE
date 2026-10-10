@@ -1,5 +1,7 @@
 # 图片输入与本地搜索交付后复核
 
+后续修复状态（2026-10-10）：执行者按本报告完成R1～R5修复；见[关闭映射](../../records/image-search-post-review-fixes-20261010/REVIEW_CLOSURE.md)与[新交付](../../records/image-search-post-review-fixes-20261010/DELIVERY.md)。以下原审核结论和证据保留2a2e77e基线含义。
+
 日期：2026-10-10。**状态：审核完成，4 项 P2、1 项 P3 待修复。** 本次没有修改产品代码。
 
 源码基线：`2a2e77e200fede80ffc6597e60e1d43295e15ea8`；与 SOL 提供的 `9641167` 相比，仅新增 DuckDuckGo 诊断资料，产品代码相同。审核范围为 `889805d..2a2e77e` 的 I1～I6、S1～S5 实现、相关测试和交付材料；开始时工作区干净。

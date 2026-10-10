@@ -1,0 +1,40 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/incoming-media-turn.test.ts tests/incoming-media-integration.test.ts tests/incoming-media-context.test.ts
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/image-search-review-fixes/HDSI-remake
+
+ ❯ tests/incoming-media-integration.test.ts (3 tests | 1 failed) 377ms
+   × disabled_visual_input_preserves_confirmed_deferred_image_after_disk_reopen 338ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/incoming-media-integration.test.ts > disabled_visual_input_preserves_confirmed_deferred_image_after_disk_reopen
+AssertionError: expected [] to deeply equal [ { …(5) } ]
+
+- Expected
++ Received
+
+- [
+-   {
+-     "description": "合成猫图",
+-     "id": "1b56b50ac4e976f488f128cabdcdffb2fc9331d6974bb9968131a415d14ade24:incoming-image:v1",
+-     "possibleTone": null,
+-     "uncertain": false,
+-     "visibleText": [
+-       "hello",
+-     ],
+-   },
+- ]
++ []
+
+ ❯ tests/incoming-media-integration.test.ts:32:282
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 2 passed (3)
+      Tests  1 failed | 5 passed (6)
+   Start at  10:17:58
+   Duration  1.66s (tests 48%, transform 28%, import 23%, worker 1%)
+

@@ -1,0 +1,48 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/incoming-media-onebot-review.test.ts tests/incoming-media-assets.test.ts
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/image-search-review-fixes/HDSI-remake
+
+ ❯ tests/incoming-media-onebot-review.test.ts (5 tests | 2 failed) 355ms
+   × onebot_get_image_failure_freezes_unknown_and_turn_finishes 31ms
+   × platform cancellation preserves original abort on reject 4ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/incoming-media-onebot-review.test.ts > onebot_get_image_failure_freezes_unknown_and_turn_finishes
+Error: Error with request get_image, args: {"file":"opaque.image"}, retcode: 100
+ ❯ _Internal._get runtime/node_modules/koishi-plugin-adapter-onebot/lib/index.js:119:11
+ ❯ _Internal.<computed> [as getImage] runtime/node_modules/koishi-plugin-adapter-onebot/lib/index.js:152:20
+ ❯ AttachmentResolver.resolve src/input-media/assets.ts:18:125
+
+ ❯ src/input-media/assets.ts:39:47
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/incoming-media-onebot-review.test.ts > platform cancellation preserves original abort on reject
+AssertionError: expected Error: platform late failure to be Error: synthetic cancel // Object.is equality
+
+- Expected
++ Received
+
+  Error {
+-   "message": "synthetic cancel",
++   "message": "platform late failure",
+  }
+
+ ❯ tests/incoming-media-onebot-review.test.ts:44:23
+     42|  const running=resolver.resolve({id:'a',messageId:'m',order:0,kind:'im…
+     43|  if(outcome==='reject')reject(Error('platform late failure'));else res…
+     44|  await expect(running).rejects.toBe(reason);
+       |                       ^
+     45| });
+     46|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  2 failed | 5 passed (7)
+   Start at  10:16:45
+   Duration  4.17s (import 73%, transform 15%, tests 11%, worker 1%)
+

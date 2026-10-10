@@ -4,6 +4,7 @@
 
 | 记录 | 状态 |
 | --- | --- |
+| [图片／搜索交付后修复](image-search-post-review-fixes-20261010/README.md) | R1～R5逐项回归完成；实际Chrome和Context证据；175文件912项通过，独立审查收尾 |
 | [图片输入](image-input-20261009/DELIVERY.md) | I1～I6独立交付；观察／历史权限／原资产恢复；真实图片模型质量未执行 |
 | [本地浏览器搜索](local-browser-search-20261009/DELIVERY.md) | S1～S5交付；完整离线门禁及Bing公开工程验收；附真实失败尝试与独立复核 |
 | [文档与模型连接静态核对](document-model-audit-20261009/README.md) | 文档澄清、13个连接白名单核对与搜索候选；没有产品实现或在线验收 |

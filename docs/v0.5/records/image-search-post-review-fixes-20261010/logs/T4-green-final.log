@@ -1,0 +1,32 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/browser-final-review.test.ts tests/browser-web-integration.test.ts tests/browser-page-extraction.test.ts tests/browser-visible-dom.test.ts
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/image-search-review-fixes/HDSI-remake
+
+ ❯ tests/browser-visible-dom.test.ts (14 tests | 2 failed) 2242ms
+   × credential shell counting and independent body: main login 76ms
+   × credential shell counting and independent body: role login 105ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/browser-visible-dom.test.ts > credential shell counting and independent body: main login
+ FAIL  tests/browser-visible-dom.test.ts > credential shell counting and independent body: role login
+AssertionError: expected '{"reason":"read_error","url":"https:/…' to contain 'login_wall'
+
+Expected: "login_wall"
+Received: "{"reason":"read_error","url":"https://synthetic.test/article"}"
+
+ ❯ tests/browser-visible-dom.test.ts:24:795
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed | 3 passed (4)
+      Tests  2 failed | 29 passed (31)
+   Start at  10:23:32
+   Duration  3.48s (tests 81%, import 13%, transform 5%)
+
+    Isolate  4 workers spawned · ~102ms startup each (spawn + environment, per file)
+             at least ~307ms faster with isolate: false — reuses workers across files instead of one per file
+

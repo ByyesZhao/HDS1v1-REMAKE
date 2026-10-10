@@ -1,0 +1,33 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/browser-visible-dom.test.ts tests/browser-page-extraction.test.ts tests/browser-koishi-port.test.ts tests/browser-final-review.test.ts tests/browser-search-provider.test.ts
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/image-search-review-fixes/HDSI-remake
+
+ ❯ tests/browser-visible-dom.test.ts (9 tests | 2 failed) 4787ms
+   × actual CSS excludes invisible body: fixed short 1527ms
+   × actual CSS excludes invisible body: inherited visibility override 1515ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/browser-visible-dom.test.ts > actual CSS excludes invisible body: fixed short
+ FAIL  tests/browser-visible-dom.test.ts > actual CSS excludes invisible body: inherited visibility override
+Error: browser page operation timed out
+ ❯ Timeout.<anonymous> src/web/browser/slots.ts:16:42
+     14|    const abort=()=>{if(!work.settled){work.settled=true;reject(control…
+     15|    controller.signal.addEventListener('abort',abort,{once:true});signa…
+     16|    timer=setTimeout(()=>controller.abort(Error('browser page operation…
+       |                                          ^
+     17|    this.queue.push(work);this.pump();
+     18|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed | 4 passed (5)
+      Tests  2 failed | 18 passed (20)
+   Start at  10:20:41
+   Duration  6.37s (tests 88%, import 9%, transform 3%)
+
+    Isolate  5 workers spawned · ~99ms startup each (spawn + environment, per file)
+             at least ~395ms faster with isolate: false — reuses workers across files instead of one per file
+

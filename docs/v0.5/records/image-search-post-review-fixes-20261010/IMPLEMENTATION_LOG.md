@@ -17,3 +17,7 @@ T4：c124bdd 起；main/role-main 登录壳 RED 5失败。删除凭据区域及�
 T5：5a53d27 起；真实 Context 的服务拒绝/一直不就绪 RED 2失败（有限外层截止+finally停止）。独立脚本注册前建立启动截止与internal/error出口，共同await启动和ready；所有结算清理监听/计时器，finally落盘。GREEN 3文件/7测试；旧审核探针有限返回并产失败报告。默认60000ms启动预算，未更改正式Host。
 
 补充边界：取消经 prepare 不冻结未知，CLI 启动失败退出1并保存原错误；2文件/10测试通过。类型首次门禁发现新测试 NodeNext 动态导入缺扩展名，校正 .js 后类型/构建通过；原失败日志保留。
+
+整批首跑：175文件/912测试，唯一失败为旧验收固定dom-v1。按T3版本升级同步为dom-v2；其余911通过，原日志保留。demo及双场景smoke通过。
+
+整批最终：175文件/912项全绿（logs/full-test-final.log）；typecheck-additional/build/demo/plugin-smoke通过；比原882增加30。正式配置/数据库无变更，进入一次新上下文全分支审查。

@@ -1,6 +1,6 @@
 # 图片输入理解与本地网页搜索：SOL 执行包
 
-更新：2026-10-10。状态：**合同已执行，交付后复核有4项P2／1项P3待修**。当前先读[交付后review](../../reviews/image-search-post-implementation-20261010/REVIEW.md)及[修复执行方案](../../reviews/image-search-post-implementation-20261010/FIX_PLAN.md)，不重复执行原I／S任务。实施基线889805d；[图片交付](../../records/image-input-20261009/DELIVERY.md)、[搜索交付](../../records/local-browser-search-20261009/DELIVERY.md)为原交付结果。原计划编写状态如下，仅用于追溯：源码基线 `4fe090c`，产品代码沿用 `b9d5514`。原修订批只改文档，没有改产品代码、安装依赖、修改正式配置／数据库、启停服务或调用真实模型。
+更新：2026-10-10。状态：**合同已执行，交付后复核4项P2／1项P3已按方案修复**。先读[修复交付](../../records/image-search-post-review-fixes-20261010/DELIVERY.md)；原[交付后review](../../reviews/image-search-post-implementation-20261010/REVIEW.md)及[修复执行方案](../../reviews/image-search-post-implementation-20261010/FIX_PLAN.md)，不重复执行原I／S任务。实施基线889805d；[图片交付](../../records/image-input-20261009/DELIVERY.md)、[搜索交付](../../records/local-browser-search-20261009/DELIVERY.md)为原交付结果。原计划编写状态如下，仅用于追溯：源码基线 `4fe090c`，产品代码沿用 `b9d5514`。原修订批只改文档，没有改产品代码、安装依赖、修改正式配置／数据库、启停服务或调用真实模型。
 
 **把整个本目录及对应 [review 目录](../../reviews/image-input-local-search-20261009/PLAN_REVIEW.md)交给 SOL，从[执行与验收指南](EXECUTION_GUIDE.md)开始。** 不再执行 `4fe090c` 中的旧待审正文；它由 Git 和 review 的原始基线留存追溯。
 

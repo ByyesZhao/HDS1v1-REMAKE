@@ -6,7 +6,7 @@
 **Architecture：**沿现有模块修正分支与证据判断；取图异常在来源边界分类，历史确认优先于新识别开关，DOM 在原页面判断可见性后清洗。验收脚本单独补启动失败出口，不重写正式 Host 生命周期。  
 **Tech Stack：**TypeScript、Node.js >=22.13.0、Vitest 5、Koishi 4.18.11、Puppeteer、Readability 0.6.0。  
 **Spec：**[原设计](../../plans/image-input-local-search-20261009/DESIGN.md) §3～6；[原执行指南](../../plans/image-input-local-search-20261009/EXECUTION_GUIDE.md)；[本次原始复现](evidence/README.md)。  
-**日期／基线／状态：**2026-10-10；`2a2e77e`；待实施。
+**日期／基线／状态：**2026-10-10；`2a2e77e`；原计划状态为待实施；后续已执行，见[修复交付](../../records/image-search-post-review-fixes-20261010/DELIVERY.md)，原清单保留交接时含义。
 
 ## 全局约束与实施顺序
 

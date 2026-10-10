@@ -1,0 +1,21 @@
+{
+  "reviewBaseline": "2a2e77e",
+  "worktreeBase": "ca74fa2353ad6add71aa7fb4ccbaa96d206fd915",
+  "runs": [
+    {
+      "file": "T3-browser.json",
+      "sourceCommit": "348b207 + T3 changes (committed as c124bdd)",
+      "kind": "actual Chrome, synthetic offline"
+    },
+    {
+      "file": "T4-browser.json",
+      "sourceCommit": "c124bdd + T4 changes (committed as 5a53d27)",
+      "kind": "actual Chrome, synthetic offline"
+    },
+    {
+      "file": "T5-startup.json",
+      "sourceCommit": "5a53d27 + T5 changes (committed as 32efb3c)",
+      "kind": "actual Context, synthetic rejecting service"
+    }
+  ]
+}

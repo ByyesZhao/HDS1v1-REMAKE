@@ -1,6 +1,6 @@
 # HDSI V0.5：当前文档与审核入口
 
-更新：2026-10-10。图片输入理解I1～I6与本地浏览器搜索S1～S5已交付；最新[交付后复核](reviews/image-search-post-implementation-20261010/REVIEW.md)确认 **4项P2、1项P3待修复**，已附[可执行修复方案](reviews/image-search-post-implementation-20261010/FIX_PLAN.md)。原173文件／882项均有独立通过记录，其中2项因沙箱限制单独复跑，详见报告。前轮整批复核3个Important已修，见[前轮关闭](records/local-browser-search-20261009/FINAL_REVIEW_CLOSURE.md)；它不覆盖本轮新发现。见[图片交付](records/image-input-20261009/DELIVERY.md)与[搜索交付](records/local-browser-search-20261009/DELIVERY.md)。正式两项开关保持关闭。此前实现包含 ASTRA T1～T13、R1、T1～T9、环境异步 E1～E5及回复规则／图片表情分支。该回复规则批离线验收为150文件／840项，见[本批交付](records/reply-guidance-20261009/DELIVERY.md)。环境独立复核提出的两处来源快照问题已修复，详见[关闭说明](records/environment-async-20261009/REVIEW_CLOSURE.md)。
+更新：2026-10-10。图片输入理解I1～I6与本地浏览器搜索S1～S5已交付；最新[交付后复核](reviews/image-search-post-implementation-20261010/REVIEW.md)确认的 **4项P2、1项P3已按方案修复**，见[本批交付](records/image-search-post-review-fixes-20261010/DELIVERY.md)（175文件912项通过，独立审查收尾），原报告附[可执行修复方案](reviews/image-search-post-implementation-20261010/FIX_PLAN.md)。原173文件／882项均有独立通过记录，其中2项因沙箱限制单独复跑，详见报告。前轮整批复核3个Important已修，见[前轮关闭](records/local-browser-search-20261009/FINAL_REVIEW_CLOSURE.md)；它不覆盖本轮新发现。见[图片交付](records/image-input-20261009/DELIVERY.md)与[搜索交付](records/local-browser-search-20261009/DELIVERY.md)。正式两项开关保持关闭。此前实现包含 ASTRA T1～T13、R1、T1～T9、环境异步 E1～E5及回复规则／图片表情分支。该回复规则批离线验收为150文件／840项，见[本批交付](records/reply-guidance-20261009/DELIVERY.md)。环境独立复核提出的两处来源快照问题已修复，详见[关闭说明](records/environment-async-20261009/REVIEW_CLOSURE.md)。
 
 交付后对 `cc963f8` 的[独立复核与修复实施方案](reviews/environment-async-20261009/post-delivery/REVIEW.md)已完成：全量146／804及公开离线验收重跑通过，其确认的P2 Host门禁竞态和P3报告计数错误已修复；独立差异复核无新发现。正式升级后的只读启动检查问题也已修复，详见[修复与正式升级关闭](records/environment-post-delivery-fixes-20261009/DELIVERY.md)。原报告的待修清单属于原基线。
 
@@ -31,7 +31,8 @@
 
 | 材料 | 状态 |
 | --- | --- |
-| [图片／搜索交付后复核](reviews/image-search-post-implementation-20261010/REVIEW.md)及[修复执行方案](reviews/image-search-post-implementation-20261010/FIX_PLAN.md) | 基线2a2e77e；4 P2／1 P3待修，含真实App／Chrome／Koishi离线复现；主体架构保留 |
+| [图片／搜索修复交付](records/image-search-post-review-fixes-20261010/DELIVERY.md) | R1～R5与失败回归；dom-v2；175文件912项、类型/构建/demo/双场景smoke通过；独立审查收尾 |
+| [图片／搜索交付后复核](reviews/image-search-post-implementation-20261010/REVIEW.md)及[修复执行方案](reviews/image-search-post-implementation-20261010/FIX_PLAN.md) | 基线2a2e77e；4 P2／1 P3已修，关闭与新证据见[交付](records/image-search-post-review-fixes-20261010/DELIVERY.md)；含真实App／Chrome／Koishi离线复现；主体架构保留 |
 | [图片输入交付](records/image-input-20261009/DELIVERY.md) | I1～I6、权限历史观察、冻结恢复、原图清理与显式只读检查；真实图片模型质量未执行 |
 | [本地浏览器搜索交付](records/local-browser-search-20261009/DELIVERY.md) | S1～S5、页槽排空、DOM提取、原工具计数与服务生命周期；Bing公开完整验收通过，DuckDuckGo验证码失败保留 |
 | [文档与模型连接核对](records/document-model-audit-20261009/README.md) | 文档静态核对与正式配置白名单解析；全部Flash，10个low／3个high；历史静态核对，不代表后续provider状态 |

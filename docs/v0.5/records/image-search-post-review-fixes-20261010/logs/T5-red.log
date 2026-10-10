@@ -1,0 +1,31 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/local-web-validation-startup.test.ts tests/browser-web-plugin.test.ts tests/browser-web-plugin-extra.test.ts
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/image-search-review-fixes/HDSI-remake
+
+stdout | tests/local-web-validation-startup.test.ts > standalone validation settles and writes report on browser reject
+[E] app Error: SYNTHETIC_BROWSER_START_FAILURE
+        at Browser.start (C:/Users/<user>/.codex/worktrees/image-search-review-fixes/HDSI-remake/tests/local-web-validation-startup.test.ts:6:149)
+        at C:\Users\<user>\.codex\worktrees\image-search-review-fixes\HDSI-remake\node_modules\@cordisjs\core\lib\index.cjs:1213:18
+        at processTicksAndRejections (node:internal/process/task_queues:104:5)
+
+ ❯ tests/local-web-validation-startup.test.ts (3 tests | 2 failed) 3159ms
+   × standalone validation settles and writes report on browser reject 1596ms
+   × standalone validation settles and writes report on browser never 1531ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/local-web-validation-startup.test.ts > standalone validation settles and writes report on browser reject
+ FAIL  tests/local-web-validation-startup.test.ts > standalone validation settles and writes report on browser never
+AssertionError: expected null not to be null
+ ❯ tests/local-web-validation-startup.test.ts:10:21
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed | 2 passed (3)
+      Tests  2 failed | 5 passed (7)
+   Start at  10:25:14
+   Duration  5.10s (tests 68%, import 20%, transform 12%)
+

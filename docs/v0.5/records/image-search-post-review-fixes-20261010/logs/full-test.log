@@ -1,0 +1,30 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 test
+npm notice run vitest run
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/image-search-review-fixes/HDSI-remake
+
+ ❯ tests/local-web-acceptance.test.ts (1 test | 1 failed) 101ms
+   × default offline validation executes shared extraction/provider and never starts browser/network 100ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/local-web-acceptance.test.ts > default offline validation executes shared extraction/provider and never starts browser/network
+AssertionError: expected 'dom-v2/readability-0.6.0' to be 'dom-v1/readability-0.6.0' // Object.is equality
+
+Expected: "dom-v1/readability-0.6.0"
+Received: "dom-v2/readability-0.6.0"
+
+ ❯ tests/local-web-acceptance.test.ts:3:320
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 174 passed (175)
+      Tests  1 failed | 911 passed (912)
+   Start at  10:28:07
+   Duration  123.26s (tests 80%, import 18%, transform 2%, worker 1%)
+
+    Isolate  175 workers spawned · ~99ms startup each (spawn + environment, per file)
+             at least ~17.22s faster with isolate: false — reuses workers across files instead of one per file
+

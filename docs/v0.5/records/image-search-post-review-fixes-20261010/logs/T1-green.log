@@ -1,0 +1,11 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/incoming-media-onebot-review.test.ts tests/incoming-media-assets.test.ts
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/image-search-review-fixes/HDSI-remake
+
+
+ Test Files  2 passed (2)
+      Tests  7 passed (7)
+   Start at  10:17:09
+   Duration  1.52s (transform 41%, tests 31%, import 28%, worker 1%)
+
