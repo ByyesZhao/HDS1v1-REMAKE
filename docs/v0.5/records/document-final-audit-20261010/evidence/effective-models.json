@@ -1,0 +1,137 @@
+{
+  "date": "2026-10-10",
+  "codeBaseline": "c4477da",
+  "configuration": "config.local.json",
+  "models": [
+    {
+      "role": "narrative",
+      "model": "deepseek-flash",
+      "reasoningEffort": "low",
+      "outputMode": "json_object",
+      "providerHost": "api.deepseek.com"
+    },
+    {
+      "role": "narrative_shared",
+      "model": "deepseek-flash",
+      "reasoningEffort": "low",
+      "outputMode": "json_object",
+      "providerHost": "api.deepseek.com"
+    },
+    {
+      "role": "personal_chat",
+      "model": "deepseek-flash",
+      "reasoningEffort": "low",
+      "outputMode": "json_object",
+      "providerHost": "api.deepseek.com"
+    },
+    {
+      "role": "personal_life",
+      "model": "deepseek-flash",
+      "reasoningEffort": "low",
+      "outputMode": "json_object",
+      "providerHost": "api.deepseek.com"
+    },
+    {
+      "role": "personal_shared",
+      "model": "deepseek-flash",
+      "reasoningEffort": "low",
+      "outputMode": "json_object",
+      "providerHost": "api.deepseek.com"
+    },
+    {
+      "role": "expression",
+      "model": "deepseek-flash",
+      "reasoningEffort": "low",
+      "outputMode": "json_object",
+      "providerHost": "api.deepseek.com"
+    },
+    {
+      "role": "memory",
+      "model": "deepseek-flash",
+      "reasoningEffort": "high",
+      "outputMode": "json_object",
+      "providerHost": "api.deepseek.com"
+    },
+    {
+      "role": "memory_consolidation",
+      "model": "deepseek-flash",
+      "reasoningEffort": "high",
+      "outputMode": "json_object",
+      "providerHost": "api.deepseek.com"
+    },
+    {
+      "role": "world",
+      "model": "deepseek-flash",
+      "reasoningEffort": "low",
+      "outputMode": "json_object",
+      "providerHost": "api.deepseek.com"
+    },
+    {
+      "role": "school_campus",
+      "model": "deepseek-flash",
+      "reasoningEffort": "low",
+      "outputMode": "json_object",
+      "providerHost": "api.deepseek.com"
+    },
+    {
+      "role": "school_group",
+      "model": "deepseek-flash",
+      "reasoningEffort": "low",
+      "outputMode": "json_object",
+      "providerHost": "api.deepseek.com"
+    },
+    {
+      "role": "school_week",
+      "model": "deepseek-flash",
+      "reasoningEffort": "low",
+      "outputMode": "json_object",
+      "providerHost": "api.deepseek.com"
+    },
+    {
+      "role": "sticker_description",
+      "model": "deepseek-flash",
+      "reasoningEffort": "high",
+      "outputMode": "json_object",
+      "providerHost": "api.deepseek.com"
+    },
+    {
+      "role": "incoming_image",
+      "model": "deepseek-flash",
+      "reasoningEffort": "high",
+      "outputMode": "json_object",
+      "providerHost": "api.deepseek.com",
+      "inheritedFrom": "sticker_description"
+    }
+  ],
+  "modelTaskNames": 14,
+  "logicalPurposes": 15,
+  "configuredConnections": 13,
+  "auditConnection": "memory_consolidation",
+  "visualInput": {
+    "enabled": false,
+    "incomingImageOverrideConfigured": false
+  },
+  "web": {
+    "enabled": false,
+    "provider": "unconfigured",
+    "browser": {
+      "engine": "bing",
+      "navigationTimeoutMs": 60000,
+      "maxConcurrentPages": 1
+    },
+    "maxSuccessReads": 20,
+    "maxFailures": 40
+  },
+  "embeddings": {
+    "memory": {
+      "model": "qwen3.7-text-embedding",
+      "dimensions": 1024
+    },
+    "sticker": {
+      "model": "qwen3.7-text-embedding",
+      "dimensions": 1024
+    }
+  },
+  "semanticCalibrationEnabled": false,
+  "scope": "Raw local configuration whitelist with defaults checked against src/settings.ts; no settings loader, credentials, background, database or online calls."
+}

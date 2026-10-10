@@ -1,8 +1,8 @@
 # HDSI V0.5：当前文档与审核入口
 
-更新：2026-10-10。图片输入理解I1～I6与本地浏览器搜索S1～S5已交付；最新[交付后复核](reviews/image-search-post-implementation-20261010/REVIEW.md)确认的 **4项P2、1项P3已按方案修复**，见[本批交付](records/image-search-post-review-fixes-20261010/DELIVERY.md)（175文件920项通过，一次独立审查补修完成（原报告与TDD关闭分别保留）），原报告附[可执行修复方案](reviews/image-search-post-implementation-20261010/FIX_PLAN.md)。原173文件／882项均有独立通过记录，其中2项因沙箱限制单独复跑，详见报告。前轮整批复核3个Important已修，见[前轮关闭](records/local-browser-search-20261009/FINAL_REVIEW_CLOSURE.md)；它不覆盖本轮新发现。见[图片交付](records/image-input-20261009/DELIVERY.md)与[搜索交付](records/local-browser-search-20261009/DELIVERY.md)。正式两项开关保持关闭。此前实现包含 ASTRA T1～T13、R1、T1～T9、环境异步 E1～E5及回复规则／图片表情分支。该回复规则批离线验收为150文件／840项，见[本批交付](records/reply-guidance-20261009/DELIVERY.md)。环境独立复核提出的两处来源快照问题已修复，详见[关闭说明](records/environment-async-20261009/REVIEW_CLOSURE.md)。
+核对日期：2026-10-10。当前说明已与代码基线`c4477da`核对（最新产品修复`47eb14d`），见[本次文档核对记录](records/document-final-audit-20261010/README.md)。本次只修订文档与导航，没有修改产品、正式配置或数据库，也没有重跑产品验收。
 
-交付后对 `cc963f8` 的[独立复核与修复实施方案](reviews/environment-async-20261009/post-delivery/REVIEW.md)已完成：全量146／804及公开离线验收重跑通过，其确认的P2 Host门禁竞态和P3报告计数错误已修复；独立差异复核无新发现。正式升级后的只读启动检查问题也已修复，详见[修复与正式升级关闭](records/environment-post-delivery-fixes-20261009/DELIVERY.md)。原报告的待修清单属于原基线。
+最新代码交付为[图片／搜索复核修复](records/image-search-post-review-fixes-20261010/DELIVERY.md)：4项P2、1项P3及一次独立审查补修已关闭，主目录175文件920项、类型检查、构建、demo和双场景smoke通过，见[主目录整合记录](records/image-search-post-review-fixes-20261010/INTEGRATION_20261010.md)。这些是该代码交付的已有证据；原报告和失败日志继续保留原基线含义。
 
 默认提供整个 `docs/v0.5/`，从本文件阅读，并附[目录原则](../DIRECTORY_POLICY.md)。当前功能说明为以下10份；归档仅按疑点查阅。
 
@@ -23,19 +23,18 @@
 
 背景用途参考为[已批准映射](reference/BACKGROUND_VIEW_MAPPING_20261008.md)，不是新审批。运行和显式升级命令见[项目README](../../README.md)。
 
-当日[文档与模型连接静态核对](records/document-model-audit-20261009/README.md)已补清调度／预约分工、前后台并发及搜索接入状态；模型列表和待选服务见[模型调用与网页搜索参考](reference/MODEL_CALLS_AND_WEB_OPTIONS_20261009.md)。该记录没有新增产品实现或在线验收，不替代上述代码交付证据。
-
-本批[主目录整合与最终验收](records/local-browser-search-20261009/INTEGRATION_20261010.md)已完成，173文件882项重跑通过；正式两项开关仍关闭。
+各模型用途及当前搜索配置见[模型调用与网页搜索参考](reference/MODEL_CALLS_AND_WEB_OPTIONS_20261009.md)。本次重新读取[配置白名单](records/document-final-audit-20261010/evidence/effective-models.json)：13个已配置连接均Flash，10个low／3个high；用户图观察未单独覆盖，复用Flash/high。搜索和新图识别正式开关均关闭，搜索provider仍为unconfigured；适配器已实现不等于正式服务已启用。
 
 ## 最新交付与审核
 
 | 材料 | 状态 |
 | --- | --- |
+| [最新文档核对](records/document-final-audit-20261010/README.md) | 总架构、8份子系统、实现对应、模型参考与导航按当前代码同步；本地链接／章节检查，配置白名单重新核对 |
 | [图片／搜索修复交付](records/image-search-post-review-fixes-20261010/DELIVERY.md) | R1～R5与失败回归；dom-v2；175文件920项、类型/构建/demo/双场景smoke通过；一次独立审查补修完成（原报告与TDD关闭分别保留） |
 | [图片／搜索交付后复核](reviews/image-search-post-implementation-20261010/REVIEW.md)及[修复执行方案](reviews/image-search-post-implementation-20261010/FIX_PLAN.md) | 基线2a2e77e；4 P2／1 P3已修，关闭与新证据见[交付](records/image-search-post-review-fixes-20261010/DELIVERY.md)；含真实App／Chrome／Koishi离线复现；主体架构保留 |
 | [图片输入交付](records/image-input-20261009/DELIVERY.md) | I1～I6、权限历史观察、冻结恢复、原图清理与显式只读检查；真实图片模型质量未执行 |
 | [本地浏览器搜索交付](records/local-browser-search-20261009/DELIVERY.md) | S1～S5、页槽排空、DOM提取、原工具计数与服务生命周期；Bing公开完整验收通过，DuckDuckGo验证码失败保留 |
-| [文档与模型连接核对](records/document-model-audit-20261009/README.md) | 文档静态核对与正式配置白名单解析；全部Flash，10个low／3个high；历史静态核对，不代表后续provider状态 |
+| [此前文档与模型连接核对](records/document-model-audit-20261009/README.md) | 2026-10-09基线的静态记录；当前配置及文档以本次核对为准 |
 | [回复规则历史交付](records/reply-guidance-20261009/DELIVERY.md) | 三条固定口语规则、第四条程序附件分支、纯图输入与沉默控制；150文件840项；无正式迁移或在线调用 |
 | [前批修复／正式升级交付](records/environment-post-delivery-fixes-20261009/DELIVERY.md) | R1／R2及只读启动检查关闭；原批148文件826项；正式库环境2、67图库完整保留 |
 | [R1／R2独立差异复核](reviews/environment-async-20261009/post-delivery/FIX_DIFF_REVIEW.md) | 7文件40项、无新发现；未覆盖后续启动检查附加修复和正式部署 |
@@ -61,7 +60,7 @@
 | [../archive/](../archive/README.md) | 已完成计划、被替代交付、旧审核和早期红绿日志 |
 | [runtime/archive/](../../runtime/archive/README.md) | 本地完整回退资料与历史测试产物，默认不送审／入Git |
 
-按[目录原则](../DIRECTORY_POLICY.md)维护功能规则，按任务收纳过程，关闭后归档合同并更新导航。此次移动见[E阶段迁移清单](records/environment-async-20261009/evidence/document-moves.json)。历史日志和JSON保持产生时内容。
+按[目录原则](../DIRECTORY_POLICY.md)维护功能规则，按任务收纳过程，关闭后归档合同并更新导航。此前移动见[E阶段迁移清单](records/environment-async-20261009/evidence/document-moves.json)；本次没有移动目录或改写原始证据。历史日志和JSON保持产生时内容。
 
 ## 验证与送审范围
 

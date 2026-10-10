@@ -1,10 +1,10 @@
-# 当前模型调用与网页搜索服务参考
+# 当前模型调用与网页搜索配置参考
 
-更新：2026-10-10。新增图片输入和本地搜索已实现，正式配置及13个既有连接保持原值；下述正式配置白名单核对发生于2026-10-09。返回[版本索引](../README.md)。本表以代码基线`7eef283`及当日本地正式配置解析结果为准；[白名单配置证据](../records/document-model-audit-20261009/evidence/effective-models.json)不包含密钥、背景或配置全文。本次没有发起模型或搜索供应商认证调用。
+核对日期：2026-10-10。代码基线`c4477da`（产品修复`47eb14d`）。返回[版本索引](../README.md)。本次重新核对本地配置白名单及`src/settings.ts`缺省值，见[配置证据](../records/document-final-audit-20261010/evidence/effective-models.json)；不包含密钥、背景或配置全文，也未启动服务或发起模型／搜索请求。
 
-## 1. 正式运行中的DeepSeek用途
+## 1. 本地部署配置的DeepSeek用途
 
-13个既有独立连接保持使用`deepseek-flash`，主机为`api.deepseek.com`，输出模式均为`json_object`。下表列出14个逻辑用途；固定信息审核没有独立连接。
+13个已配置连接均使用`deepseek-flash`，主机为`api.deepseek.com`，输出模式均为`json_object`。下表列出15个逻辑用途：固定信息审核复用整理连接，用户图观察当前复用素材描述连接。14个模型任务名不等于14套已配置连接，也不意味着插件当前正在运行。
 
 | 逻辑用途 | 配置连接 | 思考强度 | 主要调用位置／条件 |
 | --- | --- | --- | --- |
@@ -22,16 +22,17 @@
 | 空闲深度整理、合并与常驻评估 | `models.memory_consolidation` | high | `src/memory/maintenance.ts`；空闲资格成立且有任务 |
 | 固定信息审核 | `models.memory_consolidation` | high | 同上；独立`memory_audit`提示／资料视图，复用整理连接 |
 | 新表情素材看图描述 | `stickerDescriptionModel` | high | `src/output/sticker-description.ts`；显式导入新素材时 |
+| 用户图片／表情观察 | `incomingImageModel`；未配复用`stickerDescriptionModel` | high（当前复用值） | `src/input-media/observe.ts`；角色有权读取且需新观察，或接续已冻结pending |
 
-新增incoming_image逻辑用途：src/input-media/observe.ts，仅在visualInput启用且角色有权读取新图时调用；可选incomingImageModel，未配复用stickerDescriptionModel（当前Flash/high）。已知face／成功观察缓存免视觉请求。13个既有连接保持原值，独立覆盖可后续改Pro。
+`incoming_image`使用四字段观察合同，与发送图库描述合同分开。当前`visualInput.enabled=false`且没有`incomingImageModel`覆盖；关闭时不新开图片视觉观察，但已冻结pending仍接续原模型任务。已确认历史观察不因开关关闭丢失；已知原生face与成功观察缓存免视觉请求。
 
-这不是每轮必须执行的14次调用。环境和维护准备使用原连接，不额外增加另一套模型。固定信息审核若要单独设置模型／强度，需要后续增加连接配置；当前改变`memory_consolidation`会同时影响整理和审核。
+这不是每轮必须执行的15次调用。环境和维护准备使用原连接，不额外增加另一套模型。固定信息审核若要单独设置模型／强度，需要后续增加连接配置；当前改变`memory_consolidation`会同时影响整理和审核。未设置独立`incomingImageModel`时，改变`stickerDescriptionModel`也同时影响用户图观察。
 
 源码中`src/directors/world.ts`的旧环境辅助入口与`runSchool`兼容入口仍存在，当前正式每日链使用`generateEnvironmentStep`；旧辅助入口不构成第14个独立配置连接。
 
 ## 2. 如何修改与续调用
 
-当前12个`models.<连接键>`及单独`stickerDescriptionModel`都可分别修改`model`、`reasoningEffort`。本地配置Schema接受`deepseek-flash`、`deepseek-v4-flash`、`deepseek-v4-pro`；可将选定连接改成`deepseek-v4-pro`。强度接受`none`、`low`、`high`、`max`。上述是项目当前支持的标识，不是新增供应商可用性承诺。
+当前12个`models.<连接键>`、`stickerDescriptionModel`及可选`incomingImageModel`都可分别修改`model`、`reasoningEffort`。本地配置Schema接受`deepseek-flash`、`deepseek-v4-flash`、`deepseek-v4-pro`；可将选定连接改成`deepseek-v4-pro`。强度接受`none`、`low`、`high`、`max`。上述是项目当前支持的标识，不是新增供应商可用性承诺。
 
 `src/settings.ts`选择连接，`src/model/client.ts`将其`model`和`reasoning_effort`发到`/chat/completions`。当前10个连接显式low、3个high。未配置强度时，学校连接默认low，其余连接默认high，不能把当前表格当成所有连接的Schema默认值。
 
@@ -52,29 +53,21 @@
 | `scripts/memory-capacity-online-acceptance.ts` | 整理／审核使用memory_consolidation，即Flash／high |
 | `scripts/stickers.ts`导入 | 新图描述使用sticker_description，即Flash／high；重建向量仅用Qwen |
 
-收到用户图片／表情不调用图库描述合同；visualInput启用且角色可读时调用独立incoming_image四字段观察。默认正式开关仍关闭；本轮未执行真实图片／模型上传。新增scripts/validate-incoming-media.ts默认离线，显式online需公开／合成fixture；scripts/validate-local-web.ts不调用模型，仅验证浏览器。离线启动检查、demo及插件smoke不作为真实DeepSeek调用；迁移时核验连接配置也不等于已请求模型。
+收到用户图片／表情不调用图库描述合同；角色可读且开启新识别，或恢复既有pending时使用独立`incoming_image`。`scripts/validate-incoming-media.ts`默认离线，显式online使用公开／合成fixture，单请求等待300秒；`scripts/validate-local-web.ts`不调用模型，仅验证浏览器。离线启动检查、demo及插件smoke不作为真实DeepSeek调用；迁移时核验连接配置也不等于已请求模型。
 
-## 4. 网页搜索接入建议
+## 4. 已实现的网页搜索配置
 
-当前`webSearch.enabled=false`，各阶段20次成功取得正文／40次失败规则已实现。DeepSeek原生搜索不可用不影响本项目的可替换方案：模型生成`webSearch`／`webRead` JSON请求，HDSI执行供应商操作，再把结果交给原模型继续生成。现有接口要求`search(query)`返回候选URL／标题，`read(url)`返回正文；已实现browser provider；若仅打开enabled而provider仍为unconfigured，正式入口会提前报错。
+模型生成`webSearch`／`webRead` JSON请求，由HDSI执行本地浏览器查询和正文读取，再交给原模型继续生成。不依赖DeepSeek原生搜索，不需要搜索API密钥；付费搜索API尚未接入，不列为现有配置选项。
 
-本地browser适配器已接入，webSearch支持provider及engine／navigationTimeoutMs／maxConcurrentPages。默认关闭；打开browser需本项目Puppeteer服务和可用Chrome／Edge；不要求搜索API密钥。Bing真实候选／正文及资源排空已通过独立公开验收，DuckDuckGo返回验证码，不自动回退。所有现有模型／强度未修改。
-
-配置与证据见[搜索交付](../records/local-browser-search-20261009/DELIVERY.md)。下表中的付费服务仅保留作为未接入的后备对比，后续采用时需重新核对服务规则。
-
-| 方案 | 适配现有结构的理由 | 需要注意的差异 |
+| 配置 | 当前正式有效值 | 已实现含义 |
 | --- | --- | --- |
-| **当前优先：本地Puppeteer浏览器** | 可迁移旧页面端口，搜索与正文都在本机执行，无搜索API计次费 | 仍依赖外部搜索网站与本机网络，需处理改版／不可读结果；已接入；正式开关仍关闭 |
-| 付费候选：Tavily Search＋Extract | 同一家服务覆盖候选搜索和URL正文读取，适配较直接 | 搜索摘要不当已读正文；Extract使用无query的正文模式 |
-| 博查Web Search＋正文读取器 | 可作为中文资料检索的对比候选；官方接口提供标题、URL、摘要和日期 | 仍需独立读取正文，例如接Jina Reader；需要比较实际资料质量和可达性 |
-| Brave Web Search＋Jina Reader | 独立搜索索引与网页读取分开，便于分别更换 | 两个服务需要分别接入；不用有token预算的LLM Context替代完整读取 |
+| `webSearch.enabled` | false | 是否向模型开放网页工具 |
+| `webSearch.provider` | unconfigured | 可选unconfigured／browser；启用但未配置provider会提前报错 |
+| `webSearch.browser.engine` | bing（缺省） | 可选bing／duckduckgo，不自动换引擎 |
+| `webSearch.browser.navigationTimeoutMs` | 60000（缺省） | 页面操作期限，包含排队、建页、导航和正文就绪等待 |
+| `webSearch.browser.maxConcurrentPages` | 1（缺省） | 本实例共享页槽上限，真实关闭／迟到建页排空后才释放 |
+| `webSearch.maxSuccessReads`／`maxFailures` | 20／40 | 同一逻辑阶段累计，含修补／续调用／恢复；不是收费或HTTP次数 |
 
-Tavily当前每月提供1000免费credits，无需信用卡；Basic搜索一次为1 credit，Basic提取每5个成功URL为1 credit，失败提取不计费。供应商计费与HDSI“20／40”是两套口径，额度按阶段读取行为累计，包括该阶段首次缓存取正文。[官方额度与计费](https://docs.tavily.com/documentation/api-credits)
+启用browser还需要当前Koishi的Puppeteer服务和可用浏览器；服务就绪后才创建故事实例。当前提取器为`dom-v2/readability-0.6.0`，按原DOM可见性和清理后独立正文判断，不把隐藏内容或登录引导当已读正文。页面正文没有人为字符／token截断。独立浏览器验收脚本的启动等待默认60000ms，与页面操作期限分别计算。
 
-若选择Tavily，建议候选搜索使用basic，关闭自动参数、答案生成与搜索正文附带；独立Extract读取使用markdown，省略`query`及其分块参数，避免把按查询挑选的有限片段误当完整正文。正文沿HDSI现有清理、缓存、引用和失败规则处理，不另设字符或token截断。不是每次查询都必须读取20页，20是阶段上限。[Search接口](https://docs.tavily.com/documentation/api-reference/endpoint/search)、[Extract接口](https://docs.tavily.com/documentation/api-reference/endpoint/extract)
-
-博查官方Web Search示例返回URL、snippet与summary，仍须另取正文；本次没有核实其完整价格表，不给出费用估算。[博查官方接口](https://open.bochaai.com/)
-
-Brave当前Search为每1000请求5美元，并提供每月5美元免费额度；Jina Reader可提取网页正文，其服务计费／速率规则需另看。此方案适合更重视独立索引和组件可替换性的情况。[Brave官方产品与价格](https://brave.com/search/api/)、[Brave接口类型](https://api-dashboard.search.brave.com/documentation)、[Jina Reader](https://jina.ai/reader/)
-
-推荐依据是现有接口适配成本；尚未对中文实时新闻、学校网站、目标网络连通性或实际费用做本项目对比验收。具体接入时再用公开查询检查正文完整性、失败／不足返回、每阶段计数、缓存复用和checkpoint恢复。
+已有公开工程验收中Bing成功返回候选并读取中文／英文目标正文，DuckDuckGo当时遇到验证码；这不证明当前任意网站可读，也不代表正式服务已启用或真实模型工具续调用质量已验证。详见[搜索原交付](../records/local-browser-search-20261009/DELIVERY.md)、[最新修复交付](../records/image-search-post-review-fixes-20261010/DELIVERY.md)与[搜索规则](../subsystems/REMAKE_V0.5_WEB_SEARCH.md)。
