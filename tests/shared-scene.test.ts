@@ -14,9 +14,9 @@ function seedConfirmedClock(d: ReturnType<typeof setup>) {
 
 function makeShared(d: ReturnType<typeof setup>, mode: 'shared_online' | 'shared_offline') {
   makeSharedFixture(d, { completedSteps: 0 });
-  const state = d.storage.character(); state.scene.mode = mode; state.scene.activity = { description: '游戏', startsAt: NOW, expectedEndAt: null, phoneAccess: false }; d.storage.set('character', state);
+  const state = d.storage.character(); state.scene.mode = mode; state.scene.activity = { description: '游戏', startsAt: NOW, expectedEndAt: '2026-10-07T10:30:00+08:00', phoneAccess: false }; d.storage.set('character', state);
   seedConfirmedClock(d);
-  d.models.outputs.narrative_shared = { ...narrative, currentScene: { description: '继续活动', activity: { description: '游戏', startsAt: NOW, expectedEndAt: null, phoneAccess: false } }, publicNarration: '门口亮起灯', progress: '走到门口', outline: { goal: '一起游戏', openThreads: [], endingCondition: '结束本次游戏' }, simulatedUserActions: [] };
+  d.models.outputs.narrative_shared = { ...narrative, currentScene: { description: '继续活动', activity: { description: '游戏', startsAt: NOW, expectedEndAt: '2026-10-07T10:30:00+08:00', phoneAccess: false } }, publicNarration: '门口亮起灯', progress: '走到门口', outline: { goal: '一起游戏', openThreads: [], endingCondition: '结束本次游戏' }, simulatedUserActions: [] };
   d.models.outputs.personal_shared = { emotions: [], reply: { decision: 'now', intention: '反应', draft: '一起进去吧' }, taskChanges: [] };
   d.models.outputs.expression = { parts: [{ kind: 'action', content: '点头' }, { kind: 'text', content: '一起进去吧' }] };
 }

@@ -49,9 +49,10 @@ it('stashes inaccessible input without models and rechecks the actual end', asyn
   expect(Date.parse((await s.nextDeadline(d.clock.now()))!)).toBe(Date.parse('2026-10-07T10:30:00+08:00'));
   expect(JSON.stringify(d.models.calls)).not.toContain('未看秘密');
   d.clock.time = '2026-10-07T10:30:00+08:00';
-  d.models.outputs.narrative = { ...narrative, currentScene: { description: '还没结束', activity: { ...activity, expectedEndAt: null } } };
+  d.models.outputs.narrative = { ...narrative, currentScene: { description: '还没结束', activity: { ...activity, expectedEndAt: '2026-10-07T10:45:00+08:00' } } };
   await new HdsiApp(d).runTurn((await s.collectReady(d.clock.now()))!);
-  expect(Date.parse((await s.nextDeadline(d.clock.now()))!)).toBe(Date.parse(d.clock.now()) + 180 * 60_000);
+  expect(Date.parse((await s.nextDeadline(d.clock.now()))!)).toBe(Date.parse('2026-10-07T10:45:00+08:00'));
+  expect(d.storage.read('messages', 'a')!.seenTurnId).toBeNull();
   d.storage.close();
 });
 
