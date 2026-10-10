@@ -2,9 +2,9 @@
 
 核对日期：2026-10-10。最新[安全停止R1](records/graceful-stop-r1-20261010/README.md)修复浏览器关闭失败仍报告成功的问题，原新鲜度T1～T5不改。最终188文件1009项、类型／构建／演示／双场景插件检查通过；复核时序缺口已补实，正式停服部署完成，见[交付](records/graceful-stop-r1-20261010/DELIVERY.md)。此前[安全停止交付](records/graceful-stop-20261010/DELIVERY.md)与[新鲜度交付](records/chat-reply-freshness-20261010/DELIVERY.md)保留各自基线和证据。
 
-最新[交付后复核](reviews/freshness-graceful-stop-20261010/REVIEW.md)以086cd07为基线：普通回复新鲜度可接受；安全停止新增1项P2已修（闭环见[记录](records/graceful-stop-r1-20261010/README.md)）（浏览器关闭失败被吞掉，仍报告成功并退出），附[修复执行方案](reviews/freshness-graceful-stop-20261010/FIX_PLAN.md)。既有1004项均有通过记录，新增组合探针复现该覆盖缺口；原审核未修改产品或操作正式服务；后续修复与部署状态以R1记录为准。
+最新[交付后复核](reviews/freshness-graceful-stop-20261010/REVIEW.md)以086cd07为基线：普通回复新鲜度可接受；安全停止原有1项P2（浏览器关闭失败被吞掉，仍报告成功并退出），现已修复，附[修复执行方案](reviews/freshness-graceful-stop-20261010/FIX_PLAN.md)。原组合探针在086cd07复现缺陷，在R1后转绿；原审核及失败日志保留历史含义，修复、独立复核补修与部署状态以[关闭记录](records/graceful-stop-r1-20261010/README.md)为准。
 
-前次[文档核对](records/document-final-audit-20261010/README.md)和[图片／搜索修复交付](records/image-search-post-review-fixes-20261010/DELIVERY.md)保留原基线、原证据及未执行范围，不以本批覆盖历史结论。
+本次[文档同步](records/document-current-sync-20261010/README.md)以源码726eb00为基线，核查当前规则、配置及导航，不修改产品、部署或服务。前次[文档核对](records/document-final-audit-20261010/README.md)和[图片／搜索修复交付](records/image-search-post-review-fixes-20261010/DELIVERY.md)保留原基线、原证据及未执行范围，不以本批覆盖历史结论。
 
 默认提供整个 `docs/v0.5/`，从本文件阅读，并附[目录原则](../DIRECTORY_POLICY.md)。当前功能说明为以下10份；归档仅按疑点查阅。
 
@@ -25,20 +25,22 @@
 
 背景用途参考为[已批准映射](reference/BACKGROUND_VIEW_MAPPING_20261008.md)，不是新审批。运行和显式升级命令见[项目README](../../README.md)。
 
-各模型用途及当前搜索配置见[模型调用与网页搜索参考](reference/MODEL_CALLS_AND_WEB_OPTIONS_20261009.md)。[前次配置白名单](records/document-final-audit-20261010/evidence/effective-models.json)确认13个已配置连接均Flash，10个low／3个high；用户图观察未单独覆盖，复用Flash/high。随后按用户要求[打开新图识别和Bing搜索](records/feature-enablement-20261010/README.md)，搜索provider为browser，Koishi已配置Puppeteer。模型参数保持不变；已配置启用不等于服务已经启动或真实在线质量已验收。
+各模型用途及当前搜索配置见[模型调用与网页搜索参考](reference/MODEL_CALLS_AND_WEB_OPTIONS_20261009.md)。[本次配置白名单](records/document-current-sync-20261010/evidence/effective-models.json)确认13个已配置连接均Flash，10个low／3个high；用户图观察未单独覆盖，复用Flash/high。此前按用户要求[打开新图识别和Bing搜索](records/feature-enablement-20261010/README.md)，搜索provider为browser，Koishi已配置Puppeteer。模型参数保持不变；已配置启用不等于服务已经启动或真实在线质量已验收。
 
 ## 最新交付与审核
 
 | 材料 | 状态 |
 | --- | --- |
-| [新鲜度／安全停止交付后复核](reviews/freshness-graceful-stop-20261010/REVIEW.md)及[修复执行方案](reviews/freshness-graceful-stop-20261010/FIX_PLAN.md) | 新鲜度未发现需修复问题；安全停止R1原为P2，后续修复见[记录](records/graceful-stop-r1-20261010/README.md)，真实HTTP与离线页面槽组合探针确认错误成功退出；既有187文件1004项经分次复验通过 |
-| [普通回复新鲜度方案审核](reviews/chat-reply-freshness-20261010/REVIEW.md)与[细化执行方案](reviews/chat-reply-freshness-20261010/EXECUTION_PLAN.md) | 保留方案 B，补齐等待／事件接管、业务代际、图片冻结、资格重选 4 项合同；原基线8文件35项为方案审核证据；T1～T5现已实现，最新990项及部署边界见[交付](records/chat-reply-freshness-20261010/DELIVERY.md) |
-| [回复错位诊断](records/chat-reply-order-20261010/README.md)与[改动方案](plans/chat-reply-freshness-20261010/README.md) | 15秒合批符合本次记录；新消息在生成期间另轮排队，旧候选仍发送；正式只读时间线及4组合成探针，未改产品／服务 |
+| [安全停止R1最新交付](records/graceful-stop-r1-20261010/DELIVERY.md) | 浏览器关闭失败传播；188文件1009项及工程检查、定向回归／原审核探针通过；已完成停服编译部署，由用户手动启动 |
+| [本次文档同步](records/document-current-sync-20261010/README.md) | 726eb00基线；源码规则对照、配置白名单及全目录链接检查；未重跑产品测试或操作服务 |
+| [新鲜度／安全停止交付后复核](reviews/freshness-graceful-stop-20261010/REVIEW.md)及[修复执行方案](reviews/freshness-graceful-stop-20261010/FIX_PLAN.md) | 新鲜度未发现需修复问题；安全停止R1原为P2，后续修复见[记录](records/graceful-stop-r1-20261010/README.md)，原基线的真实HTTP与离线页面槽组合探针确认错误成功退出，R1后转绿；既有187文件1004项经分次复验通过 |
+| [普通回复新鲜度方案审核](reviews/chat-reply-freshness-20261010/REVIEW.md)与[细化执行方案](reviews/chat-reply-freshness-20261010/EXECUTION_PLAN.md) | 保留方案 B，补齐等待／事件接管、业务代际、图片冻结、资格重选 4 项合同；原基线8文件35项为方案审核证据；T1～T5现已实现，该批990项及部署边界见[交付](records/chat-reply-freshness-20261010/DELIVERY.md) |
+| [回复错位诊断](records/chat-reply-order-20261010/README.md)与[改动方案](plans/chat-reply-freshness-20261010/README.md) | 修复前诊断：15秒正确，但生成输入固定，旧候选仍发送；原调查未改产品／服务。T1～T5已改为首次发送尝试前遇新输入等待并重算，见新鲜度交付 |
 | [查看消息资格交付](records/phone-access-20261010/DELIVERY.md)及[独立复核关闭](records/phone-access-20261010/REVIEW_CLOSURE.md) | 新规则已实施，合同／协议2／磁盘恢复及停服修复工具有回归；最终测试与正式部署状态见交付页 |
 | [查看消息资格计划审核](reviews/phone-access-20261010/PLAN_REVIEW.md) | 设计可继续，无阻断问题；1处非阻断验收措辞澄清，审核时既有定向回归5文件／23项通过；新规则现已实施，见交付记录 |
-| [首次QQ连接排查](records/onebot-connection-20261010/README.md) | 连接方向已修正；用户重启后确认管理命令回复，四阶段环境任务已提交；普通聊天、图片与实际搜索仍待真实触发 |
+| [首次QQ连接排查](records/onebot-connection-20261010/README.md) | 连接方向已修正；用户重启后确认管理命令回复，四阶段环境任务已提交；用户随后已确认普通聊天正常回复；图片与实际搜索的在线质量未由本次核对验证 |
 | [图片／搜索正式配置启用](records/feature-enablement-20261010/README.md) | 两项开关打开、browser／Bing与Puppeteer就绪配置；只读启动检查通过，仍由用户手动启动／重启 |
-| [最新文档核对](records/document-final-audit-20261010/README.md) | 总架构、8份子系统、实现对应、模型参考与导航按当前代码同步；本地链接／章节检查，配置白名单重新核对 |
+| [前次文档核对](records/document-final-audit-20261010/README.md) | c4477da原基线的规则与配置核对；保留当时结果，当前内容以本次文档同步为准 |
 | [图片／搜索修复交付](records/image-search-post-review-fixes-20261010/DELIVERY.md) | R1～R5与失败回归；dom-v2；175文件920项、类型/构建/demo/双场景smoke通过；一次独立审查补修完成（原报告与TDD关闭分别保留） |
 | [图片／搜索交付后复核](reviews/image-search-post-implementation-20261010/REVIEW.md)及[修复执行方案](reviews/image-search-post-implementation-20261010/FIX_PLAN.md) | 基线2a2e77e；4 P2／1 P3已修，关闭与新证据见[交付](records/image-search-post-review-fixes-20261010/DELIVERY.md)；含真实App／Chrome／Koishi离线复现；主体架构保留 |
 | [图片输入交付](records/image-input-20261009/DELIVERY.md) | I1～I6、权限历史观察、冻结恢复、原图清理与显式只读检查；真实图片模型质量未执行 |
@@ -59,17 +61,17 @@
 
 ## 目录与后续工作
 
-最新实施合同：[普通聊天回复跟进新消息](plans/chat-reply-freshness-20261010/README.md)及[细化方案 T1～T5](reviews/chat-reply-freshness-20261010/EXECUTION_PLAN.md)。新规则已实现；原诊断和审核探针保留旧基线，工程交付、独立复核及部署状态见[记录](records/chat-reply-freshness-20261010/README.md)。
+最近已执行合同：[普通聊天回复跟进新消息](plans/chat-reply-freshness-20261010/README.md)及[细化方案 T1～T5](reviews/chat-reply-freshness-20261010/EXECUTION_PLAN.md)。新规则已实现；原诊断和审核探针保留旧基线，工程交付、独立复核及部署状态见[记录](records/chat-reply-freshness-20261010/README.md)。
 
-最新实施合同：[查看消息资格与专注场景](plans/phone-access-20261010/README.md)。针对首次聊天中普通文献整理被设为无结束时间不可读状态的问题，已区分查看资格与回应意愿，并强制不可读活动指定结束时间；代码及正式停服修正已完成，实际状态和未验证范围见[交付](records/phone-access-20261010/DELIVERY.md)。
+此前已执行合同：[查看消息资格与专注场景](plans/phone-access-20261010/README.md)。针对首次聊天中普通文献整理被设为无结束时间不可读状态的问题，已区分查看资格与回应意愿，并强制不可读活动指定结束时间；代码及正式停服修正已完成，实际状态和未验证范围见[交付](records/phone-access-20261010/DELIVERY.md)。
 
-现已完成[计划审核](reviews/phone-access-20261010/PLAN_REVIEW.md)：保留设计，调整恢复验收措辞后按原任务执行。
+上述计划与审核保留编写时状态；相关实施和部署已经完成。安全停止R1依据[修复执行方案](reviews/freshness-graceful-stop-20261010/FIX_PLAN.md)也已关闭；此处不表示仍有待执行计划。
 
 | 目录 | 用途 |
 | --- | --- |
 | `architecture/`、`subsystems/` | 当前架构及8份功能规则 |
 | `reference/` | 实现对应、配置和必要参考 |
-| [plans/](plans/README.md) | 图片／搜索合同已执行，保留固定路径供本批交付复核；E1～E5及交付后修复已关闭 |
+| [plans/](plans/README.md) | 最近已执行的功能合同；图片／搜索、查看资格、回复新鲜度及相关修复均已交付，原路径供追溯 |
 | [records/](records/README.md) | 最近交付、过程、最终日志及目录整理 |
 | [reviews/](reviews/README.md) | 本批独立报告、探针和原始证据 |
 | [../archive/](../archive/README.md) | 已完成计划、被替代交付、旧审核和早期红绿日志 |
@@ -79,6 +81,6 @@
 
 ## 验证与送审范围
 
-本地browser provider已接入，正式配置已启用Bing搜索和新图识别，等待用户启动／重启后使用；Bing公开候选和正文读取已通过此前工程验收，实际模型续调用质量未验证；记忆 `semantic=null`，纯语义标定未启用。真实QQ持续收发、供应商模型质量、新图在线描述及数月运行未由本批验证。环境准备有同步冻结／提交成本，合成样本不证明所有查询恒定时间。
+本地browser provider已接入，正式配置已启用Bing搜索和新图识别，已完成编译部署。实际使用需HDSI运行且Puppeteer服务就绪，文档不判断当前进程状态。Bing公开候选和正文读取已通过此前工程验收，实际模型续调用质量未验证；记忆 `semantic=null`，纯语义标定未启用。真实QQ持续收发、供应商模型质量、新图在线描述及数月运行未由本批验证。环境准备有同步冻结／提交成本，合成样本不证明所有查询恒定时间。
 
-审代码时另提供 `src/`、`tests/`、`scripts/`、包和锁文件、公开样例、`runtime/check.cjs`、`runtime/plugin-smoke*.cjs`和两个启动cmd。密钥、私有配置、正式库、人物背景及 `runtime/archive/`不属默认送审材料。旧复现按报告指定基线运行，不要求修复后的代码仍重现旧错误。
+审代码时另提供 `src/`、`tests/`、`scripts/`、包和锁文件、公开样例、`runtime/check.cjs`、`runtime/plugin-smoke*.cjs`和启动／停止cmd。密钥、私有配置、正式库、人物背景及 `runtime/archive/`不属默认送审材料。旧复现按报告指定基线运行，不要求修复后的代码仍重现旧错误。

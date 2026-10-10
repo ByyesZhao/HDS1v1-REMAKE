@@ -76,7 +76,7 @@
 
 模型／格式失败默认5分钟后本步骤重试，不暂停聊天；已准备结果只提交，不重新调用模型。跨日或时区导致旧批失效，未提交响应不进入新日，不把过去日环境集中补跑。
 
-环境程序级异常交回Host串行边界，使用最新runtime暂停并报告；晚到旧lease／旧generation回调不能覆盖状态。停止先abort环境与记忆槽，再等前台及准备Promise收尾后关闭Storage；不响应abort的自定义transport也须返回后才关闭。普通网络重试沿同一generation，停止重开不额外增加attempt；同日业务依据失效才递增generation。旧合同在途preparationVersion0按原合同串行接续，旧ready直接复用，不强行重新解析。
+环境程序级异常交回Host串行边界，使用最新runtime暂停并报告；晚到旧lease／旧generation回调不能覆盖状态。默认卸载／取消停止先abort环境与记忆槽，再等前台及准备Promise收尾后关闭Storage；不响应abort的自定义transport也须返回后才关闭。显式安全停止不abort正常在途请求，允许当前阶段保存ready，具体见§12。普通网络重试沿同一generation，停止重开不额外增加attempt；同日业务依据失效才递增generation。旧合同在途preparationVersion0按原合同串行接续，旧ready直接复用，不强行重新解析。
 
 网页身份始终为step.id＋generation阶段键，业务generation数字不进入网页身份，20／40累计额度不重置。唯一模型checkpoint保存lookupRequest和lookupPending；中断查询先用原请求接续，成功结果与实际usedBasis同事务保存。重新冻结时保留已用查询权限与请求，清旧结果后在新快照重新投影，不追加第二个查询；已确认网页材料／操作保持。仅终态后释放owner并允许压缩checkpoint。
 
@@ -94,7 +94,7 @@
 
 维护业务快照与模型阶段 checkpoint 分别保存。准备失败 pending 或停止 computing 时保留完整输入、修补结果／累计次数、本地补查状态、未确认工具操作及既有工具结果。压缩前读回最新持久任务：仅 ready／done 清除阶段 checkpoint，pending／computing／任务已不存在均不清除；索引路径不做此维护清理。
 
-准备结果先落盘再清进度；应用失败沿用 ready 结果，不重新请求模型。停止后的晚到响应不推进任务；重启把中断 computing 恢复为 pending 后接续。清理已终结的任务不会被晚到响应复活。旧版本已清空的阶段进度不能由此补回。对应修复与真实恢复验收见[R1补验](../../archive/records/ASTRA_R1_CHECKPOINT_FIX_DELIVERY_20261009.md)。
+准备结果先落盘再清进度；应用失败沿用 ready 结果，不重新请求模型。默认取消停止后的晚到响应不推进任务；显式安全停止允许当前准备阶段保存ready，不自动执行后续阶段。重启把中断 computing 恢复为 pending 后接续。清理已终结的任务不会被晚到响应复活。旧版本已清空的阶段进度不能由此补回。对应修复与真实恢复验收见[R1补验](../../archive/records/ASTRA_R1_CHECKPOINT_FIX_DELIVERY_20261009.md)。
 
 新增终态维护任务即刻清除其网页checkpoint；失败pending／computing保留，ready结构化结果继续用于应用重试。逐条删除只读取引用该owner的活动任务，晚到结果仍受墓碑与持久状态门禁约束。旧终态恢复正文可用独立载荷回收工具在停服后分批压缩：索引text/result、维护snapshot/readSet/result、已完成轮post.result及终态owner网页checkpoint。每批四表合计默认最多50行，一次默认20批；不足以完成时返回hasMore，可续跑，不删消息、身份、来源、统计或未完成恢复正文。命令与备份见[README](../../../README.md)。
 

@@ -4,11 +4,12 @@
 
 | 记录 | 状态 |
 | --- | --- |
+| [当前文档同步](document-current-sync-20261010/README.md) | 726eb00基线；当前规则、配置白名单、导航及全目录链接核对；仅文档变更 |
 | [安全停止失败传播R1](graceful-stop-r1-20261010/DELIVERY.md) | 修复浏览器关闭失败被队列吞掉的错误成功；红绿、整批复核和正式部署以记录为准 |
 | [安全停止](graceful-stop-20261010/DELIVERY.md) | 当前工作等待、停止文件与本机入口；最终检查及部署见交付 |
 | [普通回复跟进新消息](chat-reply-freshness-20261010/DELIVERY.md) | T1～T5实现、184文件990项及工程检查；原调查／审核证据保留，正式进程状态见交付 |
-| [普通聊天回复错位调查](chat-reply-order-20261010/README.md) | 最新调查：15秒正确，生成输入固定造成旧答复滞后；正式库只读时间线及合成探针，原调查未改产品；后续实现见普通回复交付 |
-| [查看消息资格与专注场景](phone-access-20261010/README.md) | 最新：强制有限不可查看区间；普通专注允许沉默，含一次独立审查、协议2／恢复及正式停服修正证据 |
+| [普通聊天回复错位调查](chat-reply-order-20261010/README.md) | 修复前调查：15秒正确，生成输入固定造成旧答复滞后；正式库只读时间线及合成探针，原调查未改产品；后续实现见普通回复交付 |
+| [查看消息资格与专注场景](phone-access-20261010/README.md) | 该批交付：强制有限不可查看区间；普通专注允许沉默，含一次独立审查、协议2／恢复及正式停服修正证据 |
 | [首次QQ连接排查](onebot-connection-20261010/README.md) | 接入已修正，用户确认管理命令回复；四阶段环境任务已提交，附只读运行核对与未触发范围 |
 | [图片／搜索配置启用](feature-enablement-20261010/README.md) | 用户授权打开新图识别、Bing搜索和Puppeteer；模型未改，只读启动检查通过；服务由用户启动／重启 |
 | [最终文档核对](document-final-audit-20261010/README.md) | c4477da基线；同步当前功能说明、模型／搜索配置、恢复例外及导航；没有产品改动或在线调用 |
@@ -21,4 +22,4 @@
 | [环境异步E1～E5](environment-async-20261009/README.md) | 已交付，146文件／804项；附过程、离线工作量、升级CLI与复核关闭 |
 | [目录整理](document-organization-20261009/README.md) | 前批文档和本地历史资料整理，只表示当时整理范围 |
 
-[最新修复的一次独立审查](image-search-post-review-fixes-20261010/INDEPENDENT_REVIEW.md)与[实施者关闭](image-search-post-review-fixes-20261010/REVIEW_CLOSURE.md)分别保留。前批[环境独立复核](../reviews/environment-async-20261009/INDEPENDENT_REVIEW.md)及其关闭只覆盖原范围。T1～T9及更早交付在[历史记录](../../archive/records/)；环境初批早期红绿日志在[历史日志](../../archive/logs/environment-async-20261009/)。日志表示记录时执行，不是实时运行监控。
+[图片／搜索批次的一次独立审查](image-search-post-review-fixes-20261010/INDEPENDENT_REVIEW.md)与[实施者关闭](image-search-post-review-fixes-20261010/REVIEW_CLOSURE.md)分别保留。前批[环境独立复核](../reviews/environment-async-20261009/INDEPENDENT_REVIEW.md)及其关闭只覆盖原范围。T1～T9及更早交付在[历史记录](../../archive/records/)；环境初批早期红绿日志在[历史日志](../../archive/logs/environment-async-20261009/)。日志表示记录时执行，不是实时运行监控。

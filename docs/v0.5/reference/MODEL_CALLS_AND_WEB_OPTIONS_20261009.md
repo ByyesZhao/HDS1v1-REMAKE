@@ -1,6 +1,6 @@
 # 当前模型调用与网页搜索配置参考
 
-核对日期：2026-10-10。产品修复基线`47eb14d`，随后文档提交`31f331c`。返回[版本索引](../README.md)。模型以[此前白名单](../records/document-final-audit-20261010/evidence/effective-models.json)为准；之后按用户授权[启用图片／搜索](../records/feature-enablement-20261010/README.md)，只改变开关和浏览器装配，不改模型。本次只读启动检查加载本地认证但不输出凭据／背景，不启动服务或发起模型／搜索请求。
+核对日期：2026-10-10。当前源码基线`726eb00`。返回[版本索引](../README.md)。模型、搜索／图片开关与业务参数以[本次白名单](../records/document-current-sync-20261010/evidence/effective-models.json)为准；[配置启用记录](../records/feature-enablement-20261010/README.md)说明启用经过。此次仅解析配置白名单和批准用途映射元数据，不加载认证或原背景文件，不启动服务或发起模型／搜索请求，模型参数保持不变。
 
 ## 1. 本地部署配置的DeepSeek用途
 
@@ -68,6 +68,6 @@
 | `webSearch.browser.maxConcurrentPages` | 1（显式配置） | 本实例共享页槽上限，真实关闭／迟到建页排空后才释放 |
 | `webSearch.maxSuccessReads`／`maxFailures` | 20／40 | 同一逻辑阶段累计，含修补／续调用／恢复；不是收费或HTTP次数 |
 
-当前Koishi已配置Puppeteer，静态查找确认本机Chrome存在；服务就绪后才创建故事实例，仍需用户启动／重启使配置生效。当前提取器为`dom-v2/readability-0.6.0`，按原DOM可见性和清理后独立正文判断，不把隐藏内容或登录引导当已读正文。页面正文没有人为字符／token截断。独立浏览器验收脚本的启动等待默认60000ms，与页面操作期限分别计算。
+当前Koishi已配置Puppeteer，启用时静态查找确认本机Chrome存在；部署已经完成，实际调用需HDSI运行且浏览器服务就绪，服务就绪后才创建故事实例。当前提取器为`dom-v2/readability-0.6.0`，按原DOM可见性和清理后独立正文判断，不把隐藏内容或登录引导当已读正文。页面正文没有人为字符／token截断。独立浏览器验收脚本的启动等待默认60000ms，与页面操作期限分别计算。
 
-已有公开工程验收中Bing成功返回候选并读取中文／英文目标正文，DuckDuckGo当时遇到验证码；这不证明当前任意网站可读，也不代表正式服务已启用或真实模型工具续调用质量已验证。详见[搜索原交付](../records/local-browser-search-20261009/DELIVERY.md)、[最新修复交付](../records/image-search-post-review-fixes-20261010/DELIVERY.md)与[搜索规则](../subsystems/REMAKE_V0.5_WEB_SEARCH.md)。
+已有公开工程验收中Bing成功返回候选并读取中文／英文目标正文，DuckDuckGo当时遇到验证码；这不证明当前任意网站可读，当前正式配置已经启用，但工程验收不代表服务此刻运行或真实模型工具续调用质量已验证。详见[搜索原交付](../records/local-browser-search-20261009/DELIVERY.md)、[图片／搜索修复交付](../records/image-search-post-review-fixes-20261010/DELIVERY.md)与[搜索规则](../subsystems/REMAKE_V0.5_WEB_SEARCH.md)。

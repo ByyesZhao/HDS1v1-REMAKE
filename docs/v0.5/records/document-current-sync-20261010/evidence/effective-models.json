@@ -1,0 +1,256 @@
+{
+  "date": "2026-10-10",
+  "codeBaseline": "726eb00",
+  "configuration": "config.local.json",
+  "models": [
+    {
+      "role": "narrative",
+      "model": "deepseek-flash",
+      "reasoningEffort": "low",
+      "outputMode": "json_object",
+      "providerHost": "api.deepseek.com"
+    },
+    {
+      "role": "narrative_shared",
+      "model": "deepseek-flash",
+      "reasoningEffort": "low",
+      "outputMode": "json_object",
+      "providerHost": "api.deepseek.com"
+    },
+    {
+      "role": "personal_chat",
+      "model": "deepseek-flash",
+      "reasoningEffort": "low",
+      "outputMode": "json_object",
+      "providerHost": "api.deepseek.com"
+    },
+    {
+      "role": "personal_life",
+      "model": "deepseek-flash",
+      "reasoningEffort": "low",
+      "outputMode": "json_object",
+      "providerHost": "api.deepseek.com"
+    },
+    {
+      "role": "personal_shared",
+      "model": "deepseek-flash",
+      "reasoningEffort": "low",
+      "outputMode": "json_object",
+      "providerHost": "api.deepseek.com"
+    },
+    {
+      "role": "expression",
+      "model": "deepseek-flash",
+      "reasoningEffort": "low",
+      "outputMode": "json_object",
+      "providerHost": "api.deepseek.com"
+    },
+    {
+      "role": "memory",
+      "model": "deepseek-flash",
+      "reasoningEffort": "high",
+      "outputMode": "json_object",
+      "providerHost": "api.deepseek.com"
+    },
+    {
+      "role": "memory_consolidation",
+      "model": "deepseek-flash",
+      "reasoningEffort": "high",
+      "outputMode": "json_object",
+      "providerHost": "api.deepseek.com"
+    },
+    {
+      "role": "world",
+      "model": "deepseek-flash",
+      "reasoningEffort": "low",
+      "outputMode": "json_object",
+      "providerHost": "api.deepseek.com"
+    },
+    {
+      "role": "school_campus",
+      "model": "deepseek-flash",
+      "reasoningEffort": "low",
+      "outputMode": "json_object",
+      "providerHost": "api.deepseek.com"
+    },
+    {
+      "role": "school_group",
+      "model": "deepseek-flash",
+      "reasoningEffort": "low",
+      "outputMode": "json_object",
+      "providerHost": "api.deepseek.com"
+    },
+    {
+      "role": "school_week",
+      "model": "deepseek-flash",
+      "reasoningEffort": "low",
+      "outputMode": "json_object",
+      "providerHost": "api.deepseek.com"
+    },
+    {
+      "role": "sticker_description",
+      "model": "deepseek-flash",
+      "reasoningEffort": "high",
+      "outputMode": "json_object",
+      "providerHost": "api.deepseek.com"
+    },
+    {
+      "role": "incoming_image",
+      "model": "deepseek-flash",
+      "reasoningEffort": "high",
+      "outputMode": "json_object",
+      "providerHost": "api.deepseek.com",
+      "inheritedFrom": "sticker_description"
+    }
+  ],
+  "modelTaskNames": 14,
+  "logicalPurposes": 15,
+  "configuredConnections": 13,
+  "auditConnection": "memory_consolidation",
+  "visualInput": {
+    "enabled": true,
+    "incomingImageOverrideConfigured": false
+  },
+  "web": {
+    "enabled": true,
+    "provider": "browser",
+    "browser": {
+      "engine": "bing",
+      "navigationTimeoutMs": 60000,
+      "maxConcurrentPages": 1
+    },
+    "maxSuccessReads": 20,
+    "maxFailures": 40
+  },
+  "embeddings": {
+    "memory": {
+      "model": "qwen3.7-text-embedding",
+      "dimensions": 1024
+    },
+    "sticker": {
+      "model": "qwen3.7-text-embedding",
+      "dimensions": 1024
+    }
+  },
+  "runtime": {
+    "puppeteerConfigured": true
+  },
+  "backgroundMapping": {
+    "status": "approved",
+    "version": 1,
+    "sourceParagraphs": 36,
+    "migratedFacts": 0,
+    "uses": {
+      "core": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35
+      ],
+      "style": [
+        8,
+        9,
+        32
+      ],
+      "world": [
+        25,
+        26,
+        28,
+        31
+      ],
+      "campus": [
+        2,
+        5,
+        25,
+        26,
+        27,
+        30,
+        34
+      ],
+      "group": [
+        2,
+        5,
+        27,
+        30,
+        33,
+        34
+      ]
+    }
+  },
+  "parameters": {
+    "timezone": "Asia/Shanghai",
+    "historyBudget": null,
+    "sharedIdleSeconds": 60,
+    "sharedMaxSteps": 20,
+    "environmentDailyAt": "06:00",
+    "environmentRetryMs": 300000,
+    "sleepHabits": {
+      "sleepStart": "23:30",
+      "sleepEnd": "00:30",
+      "wakeStart": "08:00",
+      "wakeEnd": "09:00",
+      "preparationMinutes": 60
+    },
+    "stickersEnabled": true,
+    "memory": {
+      "idleMaintenanceMinutes": 15,
+      "maintenanceDuringSleep": true,
+      "batchItems": 20,
+      "batchCharacters": null,
+      "queryTimeoutMs": 1500,
+      "backgroundTimeoutMs": 120000,
+      "retryDelayMs": 300000,
+      "cacheSize": 256,
+      "cacheTtlMs": 600000,
+      "capacity": {
+        "shortActiveLimit": 100,
+        "longActiveLimit": 1000,
+        "longArchiveLimit": 500,
+        "archiveRetentionDays": 90
+      },
+      "contextLimits": {
+        "alwaysIncludeCharactersLimit": null,
+        "candidateItemsPerRoute": null,
+        "detailItemsLimit": null,
+        "shortItemsLimit": null,
+        "longItemsLimit": null,
+        "recentDialogueSegments": 4,
+        "dialogueIdleMinutes": 15
+      }
+    }
+  },
+  "semanticCalibrationEnabled": false,
+  "scope": "Local configuration whitelist, enabled plugin names and approved background mapping metadata only; defaults checked against src/settings.ts. No settings loader, key.txt, original character background file, database or online calls. No private prose or authentication values are serialized."
+}

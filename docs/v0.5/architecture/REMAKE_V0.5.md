@@ -128,7 +128,7 @@ flowchart TD
 | [网页搜索](../subsystems/REMAKE_V0.5_WEB_SEARCH.md) | 20／40独立计数、缓存、恢复与本人查阅 |
 | [报错与恢复](../subsystems/REMAKE_V0.5_RECOVERY.md) | 修补、暂停、生成／发送／提交及环境／后台恢复 |
 
-实现和验收限制见[对应清单](../reference/V0.5_IMPLEMENTATION_MAP_20261009.md)，完整阅读顺序见[当前索引](../README.md)。最新代码交付为[图片／搜索复核修复](../records/image-search-post-review-fixes-20261010/DELIVERY.md)；本次[文档核对](../records/document-final-audit-20261010/README.md)只同步说明，不新增运行规则或产品验收。旧修订／检查记录在[历史归档](../../archive/README.md)，目录原则见[文档规范](../../DIRECTORY_POLICY.md)。
+实现和验收限制见[对应清单](../reference/V0.5_IMPLEMENTATION_MAP_20261009.md)，完整阅读顺序见[当前索引](../README.md)。最新代码交付为[安全停止R1](../records/graceful-stop-r1-20261010/DELIVERY.md)，此前[回复新鲜度](../records/chat-reply-freshness-20261010/DELIVERY.md)已实现。本次[文档核对](../records/document-current-sync-20261010/README.md)以726eb00为基线，只同步说明，不新增运行规则或产品验收。旧修订／检查记录在[历史归档](../../archive/README.md)，目录原则见[文档规范](../../DIRECTORY_POLICY.md)。
 
 ## 安全停止规则
 
