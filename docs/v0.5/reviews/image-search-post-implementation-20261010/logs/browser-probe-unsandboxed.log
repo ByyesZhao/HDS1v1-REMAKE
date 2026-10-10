@@ -1,0 +1,73 @@
+{
+  "baseline": "2a2e77e",
+  "fixture": "synthetic setContent, actual Chrome/Koishi port/provider/WebSearchService",
+  "cases": {
+    "visibleArticle": {
+      "access": "ok",
+      "main": {
+        "text": "VISIBLE_REAL_BODY",
+        "source": "article"
+      },
+      "counters": {
+        "successReads": 1,
+        "failures": 0
+      },
+      "bodies": [
+        "VISIBLE_REAL_BODY"
+      ],
+      "failures": []
+    },
+    "loginMain": {
+      "access": "ok",
+      "main": {
+        "text": "Sign inSign in to continue reading.",
+        "source": "main"
+      },
+      "counters": {
+        "successReads": 1,
+        "failures": 0
+      },
+      "bodies": [
+        "Sign inSign in to continue reading."
+      ],
+      "failures": []
+    },
+    "hiddenArticle": {
+      "access": "ok",
+      "main": {
+        "text": "HIDDEN_STALE_TEMPLATE",
+        "source": "article"
+      },
+      "counters": {
+        "successReads": 1,
+        "failures": 0
+      },
+      "bodies": [
+        "HIDDEN_STALE_TEMPLATE"
+      ],
+      "failures": []
+    },
+    "hiddenCaptcha": {
+      "access": "captcha",
+      "main": null,
+      "counters": {
+        "successReads": 0,
+        "failures": 1
+      },
+      "bodies": [],
+      "failures": [
+        {
+          "reason": "read_error",
+          "url": "https://synthetic.test/hiddenCaptcha"
+        }
+      ]
+    }
+  },
+  "browserVersion": "Chrome/154.0.8037.98",
+  "pageNetworkAttempts": 0,
+  "ownedPages": {
+    "opened": 4,
+    "closed": 4,
+    "remaining": 0
+  }
+}

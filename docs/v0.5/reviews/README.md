@@ -2,7 +2,9 @@
 
 返回[版本索引](../README.md)。
 
-最新为[图片输入理解与本地搜索计划审核](image-input-local-search-20261009/PLAN_REVIEW.md)，基线4fe090c。总体方向和实施顺序可保留，需局部补齐历史观察、图库适配、浏览器生命周期与正文提取等合同；现已纳入[修订执行包](../plans/image-input-local-search-20261009/README.md)，功能尚未实施。该报告包含源码核对、离线探针与具体修订／测试要求，不冒充新功能验收。
+最新为[图片输入与本地搜索交付后复核](image-search-post-implementation-20261010/REVIEW.md)，基线2a2e77e；确认4项P2、1项P3待修，附[修复执行方案](image-search-post-implementation-20261010/FIX_PLAN.md)。真实协议2 App、Chrome页面提取与Koishi启动失败均有离线复现。原173文件／882项均有独立通过记录，其中2项因沙箱限制单独复跑；构建、类型、演示及双场景插件验收通过。主体架构可保留，先修复再关闭本批审核。
+
+前次[图片输入理解与本地搜索计划审核](image-input-local-search-20261009/PLAN_REVIEW.md)，基线4fe090c，包含源码核对、离线探针与具体修订／测试要求；意见已纳入[修订执行包](../plans/image-input-local-search-20261009/README.md)，随后I1～I6、S1～S5已交付。原计划审核不是新功能验收，当前待办以本次交付后复核为准。
 
 前次[环境异步交付后复核与修复实施方案](environment-async-20261009/post-delivery/REVIEW.md)基线为cc963f8。独立重跑146文件804项、类型、构建、演示和双场景插件验收通过；其确认的1 P2和1 P3已按方案修复。后续[独立差异复核](environment-async-20261009/post-delivery/FIX_DIFF_REVIEW.md)7文件40项通过，无新发现；[修复／正式升级关闭](../records/environment-post-delivery-fixes-20261009/DELIVERY.md)包含最终主目录148文件826项、部署后只读启动检查补丁与数据保留验证。原报告未勾选清单与原失败日志只表示原基线。独立差异复核未覆盖此后发现的启动检查补丁及正式部署。
 

@@ -1,0 +1,11 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/runtime-check-readonly.test.ts
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  10:02:33
+   Duration  2.89s (tests 94%, transform 4%, import 1%)
+

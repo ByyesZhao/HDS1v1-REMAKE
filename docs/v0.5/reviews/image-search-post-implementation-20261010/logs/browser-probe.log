@@ -1,0 +1,14 @@
+Error: Failed to launch the browser process!
+[1010/100108.016:ERROR:third_party\crashpad\crashpad\util\win\registration_protocol_win.cc:136] TransactNamedPipe: 管道已结束。 (0x6D)
+[1010/100108.055:ERROR:third_party\crashpad\crashpad\client\crashpad_client_win.cc:142] crash server failed to launch, self-terminating
+
+
+TROUBLESHOOTING: https://pptr.dev/troubleshooting
+
+    at Interface.onClose (D:\HDSI-remake\node_modules\@puppeteer\browsers\src\launch.ts:436:11)
+    at Interface.emit (node:events:526:24)
+    at Interface.close (node:internal/readline/interface:564:10)
+    at Socket.onend (node:internal/readline/interface:278:10)
+    at Socket.emit (node:events:526:24)
+    at endReadableNT (node:internal/streams/readable:1764:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)

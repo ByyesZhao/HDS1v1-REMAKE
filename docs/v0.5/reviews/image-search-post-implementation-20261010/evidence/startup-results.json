@@ -1,0 +1,10 @@
+{
+  "baseline": "2a2e77e",
+  "observedForMs": 1000,
+  "serviceStarts": 0,
+  "startupErrors": [],
+  "validationSettled": true,
+  "reportExists": true,
+  "contextStopsByValidation": 1,
+  "cleanup": "review probe calls original Context.stop after observation"
+}

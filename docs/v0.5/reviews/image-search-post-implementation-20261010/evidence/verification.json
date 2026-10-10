@@ -1,0 +1,27 @@
+{
+  "date": "2026-10-10",
+  "reviewedHead": "2a2e77e200fede80ffc6597e60e1d43295e15ea8",
+  "reportedDeliveryHead": "9641167",
+  "productDifferencesAfterReportedDelivery": false,
+  "findings": {"P2": ["R1", "R2", "R3", "R4"], "P3": ["R5"]},
+  "checks": [
+    {"command": "npm run build", "exitCode": 0, "log": "../logs/build.log"},
+    {"command": "npm run typecheck", "exitCode": 0, "log": "../logs/typecheck.log"},
+    {"command": "npm test", "exitCode": 1, "log": "../logs/full-test.log", "classification": "sandbox temporary SSR cache ENOENT before most imports"},
+    {"command": "npx vitest run tests/incoming-media-context.test.ts tests/browser-web-plugin.test.ts", "environment": "TEMP/TMP set to workspace .tmp", "exitCode": 0, "filesPassed": 2, "testsPassed": 4, "log": "../logs/temp-diagnostic.log"},
+    {"command": "npm test", "environment": "TEMP/TMP set to workspace .tmp", "exitCode": 1, "filesPassed": 172, "filesFailed": 1, "testsPassed": 880, "testsFailed": 2, "classification": "remaining failures are sandbox EPERM creating temporary junctions", "log": "../logs/full-test-workspace-temp.log"},
+    {"command": "npx vitest run tests/runtime-check-readonly.test.ts", "environment": "tool-approved outside sandbox, same workspace TEMP/TMP", "exitCode": 0, "filesPassed": 1, "testsPassed": 2, "log": "../logs/readonly-check-unsandboxed.log"},
+    {"command": "npm run demo", "exitCode": 0, "log": "../logs/demo.log"},
+    {"command": "node runtime/plugin-smoke.cjs", "exitCode": 0, "scenarios": ["empty_week", "required_notice"], "log": "../logs/plugin-smoke.log"}
+  ],
+  "coverageSummary": "All original 173 files / 882 tests have passing executions across the full run and the isolated two-test rerun; no single zero-failure full-run claim.",
+  "probeResults": ["image-results.json", "browser-results.json", "startup-ready-results.json"],
+  "changesMade": ["review documentation", "synthetic evidence scripts and results", "documentation navigation", "regenerated ignored lib build"],
+  "productSourceChanged": false,
+  "existingTestsChanged": false,
+  "formalConfigChanged": false,
+  "formalDatabaseChanged": false,
+  "formalServicesStarted": false,
+  "realModelsCalled": false,
+  "publicWebValidationRepeated": false
+}

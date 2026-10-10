@@ -1,0 +1,44 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 test
+npm notice run vitest run
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ❯ tests/runtime-check-readonly.test.ts (2 tests | 2 failed) 10ms
+   × launcher readonly check reads schema 3 without installing missing auxiliary indexes 6ms
+   × launcher readonly check reads schema 2 without installing missing auxiliary indexes 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/runtime-check-readonly.test.ts > launcher readonly check reads schema 3 without installing missing auxiliary indexes
+Error: EPERM: operation not permitted, symlink 'D:\HDSI-remake\runtime\node_modules' -> 'D:\HDSI-remake\.tmp\post-implementation-review\hdsi-launcher-readonly-yypDsY\runtime\node_modules'
+ ❯ tests/runtime-check-readonly.test.ts:12:3
+     10|   mkdirSync(runtime,{recursive:true});writeFileSync(join(runtime,'pack…
+     11|   copyFileSync(resolve('runtime/check.cjs'),join(runtime,'check.cjs'));
+     12|   symlinkSync(resolve('runtime/node_modules'),join(runtime,'node_modul…
+       |   ^
+     13|   symlinkSync(resolve('lib'),join(root,'lib'),'junction');
+     14|   const settings=JSON.parse(readFileSync('examples/story.sample.json',…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/runtime-check-readonly.test.ts > launcher readonly check reads schema 2 without installing missing auxiliary indexes
+Error: EPERM: operation not permitted, symlink 'D:\HDSI-remake\runtime\node_modules' -> 'D:\HDSI-remake\.tmp\post-implementation-review\hdsi-launcher-readonly-5NRXrG\runtime\node_modules'
+ ❯ tests/runtime-check-readonly.test.ts:12:3
+     10|   mkdirSync(runtime,{recursive:true});writeFileSync(join(runtime,'pack…
+     11|   copyFileSync(resolve('runtime/check.cjs'),join(runtime,'check.cjs'));
+     12|   symlinkSync(resolve('runtime/node_modules'),join(runtime,'node_modul…
+       |   ^
+     13|   symlinkSync(resolve('lib'),join(root,'lib'),'junction');
+     14|   const settings=JSON.parse(readFileSync('examples/story.sample.json',…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed | 172 passed (173)
+      Tests  2 failed | 880 passed (882)
+   Start at  09:57:09
+   Duration  127.50s (tests 74%, import 23%, transform 2%, worker 1%)
+
+    Isolate  173 workers spawned · ~124ms startup each (spawn + environment, per file)
+             at least ~21.40s faster with isolate: false — reuses workers across files instead of one per file
+

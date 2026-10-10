@@ -1,0 +1,2 @@
+# Keep this review's original diagnostic and verification logs with its evidence.
+!logs/*.log

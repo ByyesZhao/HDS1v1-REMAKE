@@ -1,0 +1,11 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/incoming-media-context.test.ts tests/browser-web-plugin.test.ts
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+
+ Test Files  2 passed (2)
+      Tests  4 passed (4)
+   Start at  09:56:30
+   Duration  1.40s (transform 52%, import 42%, tests 5%, worker 1%)
+

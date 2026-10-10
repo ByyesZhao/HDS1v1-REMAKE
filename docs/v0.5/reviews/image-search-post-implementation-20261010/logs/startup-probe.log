@@ -1,0 +1,13 @@
+{
+  "baseline": "2a2e77e",
+  "observedForMs": 1000,
+  "serviceStarts": 0,
+  "startupErrors": [],
+  "validationSettled": true,
+  "reportExists": true,
+  "contextStopsByValidation": 1,
+  "cleanup": "review probe calls original Context.stop after observation"
+}
+TypeError: Cannot read properties of undefined (reading 'call')
+    at D:\HDSI-remake\docs\v0.5\reviews\image-search-post-implementation-20261010\evidence\reproduce-startup.cjs:46:36
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)

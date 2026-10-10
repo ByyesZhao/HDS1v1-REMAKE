@@ -1,0 +1,58 @@
+{
+  "baseline": "2a2e77e",
+  "fixture": "synthetic, dialogue protocol 2",
+  "confirmedAfterDisable": {
+    "firstConfirmed": [
+      {
+        "status": "ready",
+        "observationRef": "1b56b50ac4e976f488f128cabdcdffb2fc9331d6974bb9968131a415d14ade24:incoming-image:v1",
+        "observation": {
+          "description": "cat",
+          "visibleText": [
+            "hello"
+          ],
+          "possibleTone": null,
+          "uncertain": false
+        }
+      }
+    ],
+    "confirmedStillPresent": 1,
+    "deferredTurnDone": true,
+    "frozenStatus": "unrecognized",
+    "personalMessage": {
+      "id": "seen-image",
+      "direction": "incoming",
+      "content": "（图片）",
+      "receivedAt": "2026-10-07T10:00:00+08:00",
+      "visualAttachments": [
+        {
+          "attachmentId": "seen-image:0",
+          "order": 0,
+          "status": "unrecognized",
+          "observationRef": null
+        }
+      ]
+    },
+    "personalVisualObservations": [],
+    "extraVisionCalls": 0
+  },
+  "unavailableOneBotFile": {
+    "adapterContent": "<img src=\"expired.image\" file=\"expired.image\"/>",
+    "error": {
+      "name": "SenderError",
+      "message": "Error with request get_image, args: {\"file\":\"expired.image\"}, retcode: 100"
+    },
+    "getImageCalls": 1,
+    "paused": true,
+    "turnDone": false,
+    "terminalEntries": [],
+    "attachmentStatus": "pending",
+    "modelTasks": [
+      "narrative"
+    ],
+    "errorNotices": [
+      "error：生成失败，程序已暂停"
+    ]
+  },
+  "fetchCalls": 0
+}
