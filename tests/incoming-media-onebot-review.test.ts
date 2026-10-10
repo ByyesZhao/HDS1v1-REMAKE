@@ -26,3 +26,20 @@ it('runtime assembly uses bound OneBot internal.getImage and persists downloaded
  expect(internal.getImage).toHaveBeenCalledTimes(1);
  }finally{await runtime?.close();db?.close();vi.unstubAllEnvs();rmSync(root,{recursive:true,force:true});}
 });
+
+it('onebot_get_image_failure_freezes_unknown_and_turn_finishes',async()=>{
+ const {modern}=await import('./chat-fixture');const {saveInput}=await import('./helpers');const {HdsiApp}=await import('../src/app');const {IncomingMediaStore}=await import('../src/input-media/store');const {IncomingAssets}=await import('../src/input-media/assets');const {IncomingMediaService}=await import('../src/input-media/service');
+ const d=modern(),root=mkdtempSync(join(tmpdir(),'hdsi-onebot-failure-'));const internal=new OneBot.Internal({logger:{debug(){}}});internal._request=async()=>({retcode:100,data:null});
+ const store=new IncomingMediaStore(d.storage),service=new IncomingMediaService(store,new IncomingAssets(store,root,new AttachmentResolver(async()=>{throw Error('forbidden network');},file=>internal.getImage(file))),d.models,{enabled:true});
+ try{const parsed=parseIncomingContent('m',(await adapted()).content);saveInput(d.storage,'m',parsed.content);store.register(parsed.attachments);
+ await new HdsiApp({...d,incomingMedia:service}).runTurn({inputMessageIds:['m'],taskIds:[],triggerKinds:['input']});
+ const turn=d.storage.all('turns')[0];expect(turn.done).toBe(true);expect(d.storage.runtime().paused).toBe(false);expect(service.readFrozenForTurn(turn.id)[0].status).toBe('unrecognized');expect(store.forMessages(['m'])[0].downloadStatus).toBe('unavailable');expect(d.models.calls.filter(c=>c.name==='incoming_image')).toHaveLength(0);expect(d.sender.errors).toHaveLength(0);
+ }finally{await service.stop();d.storage.close();rmSync(root,{recursive:true,force:true});}
+});
+it.each(['reject','resolve'])('platform cancellation preserves original abort on %s',async(outcome)=>{
+ const controller=new AbortController(),reason=new Error('synthetic cancel');let reject!:(e:Error)=>void,resolve!:(v:any)=>void;
+ const api=new Promise<any>((yes,no)=>{resolve=yes;reject=no;});const resolver=new AttachmentResolver(fetch,()=>api);
+ const running=resolver.resolve({id:'a',messageId:'m',order:0,kind:'image',platformFile:'token'},controller.signal);controller.abort(reason);
+ if(outcome==='reject')reject(Error('platform late failure'));else resolve({base64:png.toString('base64')});
+ await expect(running).rejects.toBe(reason);
+});
