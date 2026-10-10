@@ -1,0 +1,242 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/reply-freshness-turn.test.ts
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/chat-reply-freshness/HDSI-remake
+
+ ❯ tests/reply-freshness-turn.test.ts (6 tests | 6 failed) 104ms
+   × supersedes after narrative 37ms
+   × supersedes after personal_chat 13ms
+   × supersedes after expression 14ms
+   × input_between_selection_and_run_is_not_stamped_current 13ms
+   × new_input_after_sending_does_not_replace_tail 14ms
+   × silent_freeze_rechecks_but_postprocessing_is_sealed 11ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/reply-freshness-turn.test.ts > supersedes after narrative
+ FAIL  tests/reply-freshness-turn.test.ts > supersedes after personal_chat
+ FAIL  tests/reply-freshness-turn.test.ts > supersedes after expression
+AssertionError: expected undefined to be 'waiting' // Object.is equality
+
+- Expected:
+"waiting"
+
++ Received:
+undefined
+
+ ❯ tests/reply-freshness-turn.test.ts:14:98
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  tests/reply-freshness-turn.test.ts > input_between_selection_and_run_is_not_stamped_current
+AssertionError: expected [ { name: 'narrative', …(2) }, …(2) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   {
++     "input": {
++       "context": {
++         "at": "2026-10-07T02:00:15.000Z",
++         "background": "开发样例",
++         "events": [],
++         "from": "2026-10-07T10:00:00+08:00",
++         "school": {
++           "eventIds": [],
++           "knownSnapshots": [],
++           "noticeSnapshots": [],
++           "objectiveInstances": [],
++         },
++         "state": {
++           "emotions": [],
++           "energy": {
++             "level": "正常",
++             "reason": "开发初始状态",
++           },
++           "narratedUntil": "2026-10-07T10:00:00+08:00",
++           "nextAutonomousAt": null,
++           "plan": "按照学校安排生活",
++           "scene": {
++             "activity": null,
++             "description": "开发样例：正在宿舍休息",
++             "mode": "chat",
++             "shared": null,
++           },
++           "sleep": null,
++         },
++         "waking": false,
++       },
++       "contextVersion": 1,
++       "resources": {
++         "materials": [],
++         "messages": [],
++         "owners": [],
++         "tasks": [],
++         "visualObservations": [],
++       },
++       "roles": {
++         "dueTaskIds": [],
++         "recentIds": [],
++       },
++     },
++     "name": "narrative",
++     "options": {
++       "lookup": [Function lookup],
++       "web": null,
++     },
++   },
++   {
++     "input": {
++       "context": {
++         "at": "2026-10-07T02:00:15.000Z",
++         "background": "开发样例",
++         "contactEligible": false,
++         "events": [],
++         "experiences": [],
++         "school": {
++           "knownSnapshots": [],
++         },
++         "state": {
++           "emotions": [],
++           "energy": {
++             "level": "正常",
++             "reason": "休息后",
++           },
++           "narratedUntil": "2026-10-07T02:00:15.000Z",
++           "nextAutonomousAt": null,
++           "plan": "按照学校安排生活",
++           "scene": {
++             "activity": null,
++             "description": "在宿舍",
++             "mode": "chat",
++             "shared": null,
++           },
++           "sleep": null,
++         },
++       },
++       "contextVersion": 1,
++       "resources": {
++         "materials": [],
++         "messages": [
++           {
++             "content": "old",
++             "contentParts": undefined,
++             "direction": "incoming",
++             "id": "a",
++             "receivedAt": "2026-10-07T10:00:00+08:00",
++           },
++         ],
++         "owners": [],
++         "tasks": [],
++         "visualObservations": [],
++       },
++       "roles": {
++         "dueTaskIds": [],
++         "pendingTaskIds": [],
++         "recentIds": [
++           "a",
++         ],
++         "reconsiderIds": [],
++         "visibleIds": [
++           "a",
++         ],
++       },
++     },
++     "name": "personal_chat",
++     "options": {
++       "lookup": [Function lookup],
++       "web": null,
++     },
++   },
++   {
++     "input": {
++       "context": {
++         "arrangementsAndIntent": {
++           "outline": null,
++           "plan": "按照学校安排生活",
++           "tasks": [],
++         },
++         "at": "2026-10-07T02:00:15.000Z",
++         "background": "开发样例",
++         "experiences": [],
++         "school": {
++           "knownSnapshots": [],
++         },
++       },
++       "contextVersion": 1,
++       "resources": {
++         "materials": [],
++         "messages": [
++           {
++             "content": "old",
++             "direction": "incoming",
++             "id": "a",
++             "receivedAt": "2026-10-07T10:00:00+08:00",
++           },
++         ],
++         "owners": [],
++         "tasks": [],
++         "visualObservations": [],
++       },
++       "roles": {
++         "currentActivityMessageIds": [],
++         "currentSourceIds": [
++           "a",
++         ],
++         "reconsiderIds": [],
++         "selfReadSources": [],
++         "visibleIds": [
++           "a",
++         ],
++       },
++     },
++     "name": "memory",
++     "options": {
++       "lookup": [Function lookup],
++       "web": null,
++     },
++   },
++ ]
+
+ ❯ tests/reply-freshness-turn.test.ts:17:180
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  tests/reply-freshness-turn.test.ts > new_input_after_sending_does_not_replace_tail
+AssertionError: expected undefined to be 'sealed' // Object.is equality
+
+- Expected:
+"sealed"
+
++ Received:
+undefined
+
+ ❯ tests/reply-freshness-turn.test.ts:18:583
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  tests/reply-freshness-turn.test.ts > silent_freeze_rechecks_but_postprocessing_is_sealed
+AssertionError: expected undefined to be 'sealed' // Object.is equality
+
+- Expected:
+"sealed"
+
++ Received:
+undefined
+
+ ❯ tests/reply-freshness-turn.test.ts:19:341
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  6 failed (6)
+   Start at  16:48:03
+   Duration  737ms (transform 58%, import 24%, tests 17%, worker 1%)
+

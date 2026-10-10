@@ -1,0 +1,14 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/reply-freshness-turn.test.ts tests/recovery.test.ts tests/chat-recovery.test.ts tests/shared-v3-recovery.test.ts tests/turn.test.ts
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/chat-reply-freshness/HDSI-remake
+
+
+ Test Files  5 passed (5)
+      Tests  30 passed (30)
+   Start at  16:48:55
+   Duration  3.95s (tests 68%, import 20%, transform 12%)
+
+    Isolate  5 workers spawned · ~95ms startup each (spawn + environment, per file)
+             at least ~380ms faster with isolate: false — reuses workers across files instead of one per file
+

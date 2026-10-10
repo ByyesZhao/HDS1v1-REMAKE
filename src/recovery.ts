@@ -1,3 +1,4 @@
+import {assertReplyCurrent,hasReplyAttempt} from './host/reply-freshness';
 import {assertActiveWindow,assertMessageSources} from './dialogue/active-consistency';
 import type { Dependencies } from './app';
 import type { TurnRecord, TurnCandidate, OutboxItem, MemoryResult } from './types';
@@ -13,6 +14,8 @@ export function freezeTurn(d: Dependencies, turn: TurnRecord, candidate: TurnCan
   const updated = { ...turn, ...d.storage.read('turns',turn.id), frozenResult: candidate, outputComplete: items.length === 0,
     autonomousIntervalMinutes: turn.autonomousIntervalMinutes === undefined ? candidate.autonomousIntervalMinutes : turn.autonomousIntervalMinutes };
   d.storage.transaction(() => {
+    assertReplyCurrent(d.storage,turn.id,d.clock.now());
+    if(updated.replyFreshness)updated.replyFreshness={...updated.replyFreshness,state:items.length?'frozen':'sealed'};
     d.storage.save('turns', turn.id, updated);
     if(items.length===0){if((turn.dialogueWindowVersion??1)===1)d.dialogue?.releaseReply(turn.id,d.clock.now());if(d.storage.runtime().dialogueContextVersion===2)d.chat?.releaseReply(turn.id,d.clock.now());const saved=d.storage.read('turns',turn.id)!;updated.dialogueBinding=saved.dialogueBinding;updated.chatBinding=saved.chatBinding;}
     items.forEach((item, index) => d.storage.saveOutbox({ ...item, notBefore: index === 0 ? d.clock.now() : null }));
@@ -29,8 +32,13 @@ export async function sendFrozen(d: Dependencies, turn: TurnRecord): Promise<voi
     if (item.status === 'confirmed') continue;
     const remaining = item.notBefore ? milliseconds(item.notBefore) - milliseconds(d.clock.now()) : 0;
     if (remaining > 0) await d.wait(remaining);
-    item = { ...item, status: 'sending' };
-    d.storage.saveOutbox(item);
+    d.storage.transaction(()=>{
+      const current=d.storage.read('turns',turn.id)!;
+      if(!hasReplyAttempt(d.storage,turn.id))assertReplyCurrent(d.storage,turn.id,d.clock.now());
+      if(current.replyFreshness)d.storage.save('turns',turn.id,{...current,replyFreshness:{...current.replyFreshness,state:'sealed',firstAttemptAt:current.replyFreshness.firstAttemptAt??d.clock.now()}});
+      item = { ...d.storage.outbox(turn.id)[index], status: 'sending' };
+      d.storage.saveOutbox(item);
+    });
     let ids: string[];
     try {
       const result = await d.sender.sendItem(item); ids = result.platformMessageIds;
@@ -125,11 +133,21 @@ export async function finishPostprocessing(d: Dependencies, turn: TurnRecord): P
 }
 
 export function discardUnattempted(d: Dependencies, turn: TurnRecord): TurnRecord {
-  const updated = { ...turn, at: d.clock.now(), frozenResult: null, outputComplete: false, entryMode: d.storage.character().scene.mode };
+  const updated = { ...turn, at: d.clock.now(), frozenResult: null, outputComplete: false, entryMode: d.storage.character().scene.mode, ...(turn.replyFreshness?{replyFreshness:{...turn.replyFreshness,state:'generating' as const}}:{}) };
   d.storage.transaction(() => {
     d.storage.outbox(turn.id).forEach(item => d.storage.remove('outbox', `${turn.id}:${item.seq}`));
     d.storage.remove('post_jobs', turn.id);
     d.storage.save('turns', turn.id, updated);
   });
   return updated;
+}
+
+export function waitForReply(d:Dependencies,turnId:string):void {
+ d.storage.transaction(()=>{
+  const turn=d.storage.read('turns',turnId)!;
+  if(!turn.replyFreshness||turn.replyFreshness.scope!=='ordinary'||turn.replyFreshness.state==='sealed'||hasReplyAttempt(d.storage,turnId))return;
+  d.storage.outbox(turnId).forEach(i=>d.storage.remove('outbox',`${turnId}:${i.seq}`));d.storage.remove('post_jobs',turnId);
+  d.storage.save('turns',turnId,{...turn,frozenResult:null,outputComplete:false,autonomousIntervalMinutes:undefined,replyFreshness:{...turn.replyFreshness,state:'waiting',quietUntil:d.storage.runtime().openBatch?.readyAt??d.clock.now(),personalRunId:null}});
+  if((turn.dialogueWindowVersion??1)===1)d.dialogue?.releaseReply(turnId,d.clock.now());else d.chat?.releaseReply(turnId,d.clock.now());
+ });
 }
