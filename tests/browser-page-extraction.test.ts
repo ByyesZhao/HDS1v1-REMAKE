@@ -23,3 +23,9 @@ it('decodes Bing public redirect candidates; malformed and non-public links are 
  const p=extract('<ol id="b_results"><li class="b_algo"><h2><a href="https://www.bing.com/ck/a?u='+encoded+'">Redirect</a></h2></li></ol>','https://www.bing.com/search?q=x','bing');
  expect(extractSearchCandidates(p,'bing')[0].url).toBe('https://example.org/article');
 });
+
+it('ancestor hidden content and first hidden wall are not evidence',()=>{
+ expect(extract('<div style="display:none"><article>HIDDEN</article></div><main>VISIBLE</main>').main?.text).toBe('VISIBLE');
+ expect(extract('<form id="challenge-form" hidden>hidden</form><form id="captcha-form">visible</form>').access).toBe('captcha');
+ const p=extract('<ol id="b_results"><li class="b_no" hidden>hidden</li><li class="b_no">empty</li></ol>','https://www.bing.com/search?q=x','bing');expect(p.search?.state).toBe('empty');
+});

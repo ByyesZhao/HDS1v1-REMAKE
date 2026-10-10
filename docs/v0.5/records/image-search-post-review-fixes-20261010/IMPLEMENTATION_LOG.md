@@ -9,3 +9,5 @@
 T1：ca74fa2 起；真实 Internal retcode=100 导致整轮失败，取消时晚到的 API 错误覆盖取消原因，RED 2 失败。仅 getImage 来源 catch 分类，GREEN 2文件/7测试。
 
 T2：32bffb9 起；磁盘重开后关闭识别，延期 personal 观察丢失，RED 1失败。历史确认先于新准备门禁；pending 保持冻结恢复。初次 GREEN 揭示新测试 DTO 写错层级，校正为 ref/version/observation 后 GREEN 3文件/6测试；不改变实际内容期望。
+
+T3：348b207 起；真实 Chrome + port/provider 红回归 8失败。连接原 DOM 一次预序计算样式与继承状态，对应克隆删除不可见内容；访问墙/空态遍历所有匹配。dom-v2；GREEN 5文件/20测试（真实 Chrome 9），额外探针 hiddenArticle 正文正确、hiddenCaptcha=1/0、4页面排空。中间绿跑发现遗留克隆 style 循环因 CRLF 未移除，已定位移除，保留日志。
