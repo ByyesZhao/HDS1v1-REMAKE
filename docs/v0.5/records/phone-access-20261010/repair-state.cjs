@@ -31,6 +31,10 @@ function main(args){
  const database=resolve(options['--database']),report=resolve(options['--report']),apply=!!options['--apply'];
  if(apply&&(!options['--stopped']||!options['--backup']))throw Error('--apply requires --stopped and --backup');
  if(apply&&options['--check'])throw Error('choose --check or --apply');
+ const pathKey=value=>process.platform==='win32'?resolve(value).toLowerCase():resolve(value);
+ const protectedPaths=['','-wal','-shm'].map(suffix=>database+suffix);
+ if(options['--backup'])for(const suffix of ['','-wal','-shm'])protectedPaths.push(join(resolve(options['--backup']),'hdsi-remake.sqlite'+suffix));
+ if(protectedPaths.some(value=>pathKey(value)===pathKey(report)))throw Error('report must not overwrite database or backup files');
  const {Storage}=require(resolve(__dirname,'../../../../lib/storage'));
  let db=new Storage(database,{readOnly:true}),snapshot;
  try{snapshot=repairKnownPhoneAccess(db,{at:new Date().toISOString()});}finally{db.close();}
