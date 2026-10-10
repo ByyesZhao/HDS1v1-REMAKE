@@ -1,0 +1,13 @@
+{
+  "backupPath": "D:\\HDSI-remake\\runtime\\archive\\batches\\chat-reply-freshness-20261010-173309",
+  "createdAt": "2026-10-10T17:33:09.411193",
+  "sourceCommit": "4eec934",
+  "backupContents": "old lib only; no database/configuration migration",
+  "formalFingerprintsBefore": {
+    "config.local.json": "358b1d9a4cf7d1341550f25e29532edc96df1c7b989f2441eb38747e221c22f7",
+    "runtime/koishi.yml": "9c9d932103879723b8bf44e78f34174394413379fd80c92aaefa3d48f141f019",
+    "runtime/data/hdsi-remake.sqlite": "e5f4815e6e33e92af19bd7f220dd52003945ccc4c7aed47b8264833b899c9661",
+    "runtime/data/hdsi-remake.sqlite-wal": "c438dd0b915167543da1aa5e2cc839aff338a243ef80b72c1754c53936e4b4ff",
+    "runtime/data/hdsi-remake.sqlite-shm": "bcec23d93705f8c3cbb672017db16e6cd6f92d8164ecdd79dd37fe747f5f3a24"
+  }
+}
