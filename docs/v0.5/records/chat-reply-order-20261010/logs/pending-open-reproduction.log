@@ -1,0 +1,10 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run tsx docs/v0.5/records/chat-reply-order-20261010/reproduce-pending-open.ts
+{
+  "sourceRevision": "6a88b9d",
+  "protocol": 2,
+  "synthetic": true,
+  "olderReadyBatchSelectedDespiteNewOpenBatch": true,
+  "lastNewInputAgeMilliseconds": 0,
+  "newerInputRemainsUnread": true
+}

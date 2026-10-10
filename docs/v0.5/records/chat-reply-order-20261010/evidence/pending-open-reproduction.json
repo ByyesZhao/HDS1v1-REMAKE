@@ -1,0 +1,8 @@
+{
+  "sourceRevision": "6a88b9d",
+  "protocol": 2,
+  "synthetic": true,
+  "olderReadyBatchSelectedDespiteNewOpenBatch": true,
+  "lastNewInputAgeMilliseconds": 0,
+  "newerInputRemainsUnread": true
+}

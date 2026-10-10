@@ -29,6 +29,7 @@
 
 | 材料 | 状态 |
 | --- | --- |
+| [回复错位诊断](records/chat-reply-order-20261010/README.md)与[改动方案](plans/chat-reply-freshness-20261010/README.md) | 15秒合批符合本次记录；新消息在生成期间另轮排队，旧候选仍发送；正式只读时间线及4组合成探针，未改产品／服务 |
 | [查看消息资格交付](records/phone-access-20261010/DELIVERY.md)及[独立复核关闭](records/phone-access-20261010/REVIEW_CLOSURE.md) | 新规则已实施，合同／协议2／磁盘恢复及停服修复工具有回归；最终测试与正式部署状态见交付页 |
 | [查看消息资格计划审核](reviews/phone-access-20261010/PLAN_REVIEW.md) | 设计可继续，无阻断问题；1处非阻断验收措辞澄清，审核时既有定向回归5文件／23项通过；新规则现已实施，见交付记录 |
 | [首次QQ连接排查](records/onebot-connection-20261010/README.md) | 连接方向已修正；用户重启后确认管理命令回复，四阶段环境任务已提交；普通聊天、图片与实际搜索仍待真实触发 |
@@ -53,6 +54,8 @@
 环境新库版本2；旧库必须显式停服备份升级，旧冻结任务保留串行兼容。**正式库已显式停服备份升级1→2**；[部署及只读复核摘要](records/environment-post-delivery-fixes-20261009/evidence/formal-upgrade-summary.json)与[检查后指纹](records/environment-post-delivery-fixes-20261009/evidence/formal-postcheck.json)确认图库及非协议数据保持。T1～T9的137／776与其ASTRA复核已收进[历史记录](../archive/records/)和[历史审核](../archive/reviews/)，各自只证明原基线。
 
 ## 目录与后续工作
+
+待审核：[普通聊天回复跟进新消息方案](plans/chat-reply-freshness-20261010/README.md)。当前实现仍按旧轮串行完成；方案不冒充已生效。
 
 最新实施合同：[查看消息资格与专注场景](plans/phone-access-20261010/README.md)。针对首次聊天中普通文献整理被设为无结束时间不可读状态的问题，已区分查看资格与回应意愿，并强制不可读活动指定结束时间；代码及正式停服修正已完成，实际状态和未验证范围见[交付](records/phone-access-20261010/DELIVERY.md)。
 

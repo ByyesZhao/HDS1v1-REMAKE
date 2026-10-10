@@ -1,0 +1,34 @@
+{
+  "sourceRevision": "6a88b9d",
+  "protocol": 2,
+  "synthetic": true,
+  "quietWindow": {
+    "milliseconds": 15000,
+    "refreshesOnNewInput": true,
+    "beforeDeadlineSelected": false,
+    "atDeadlineIds": [
+      "a",
+      "b"
+    ]
+  },
+  "pendingSelection": {
+    "twoReadyBatches": true,
+    "selectedIds": [
+      "older"
+    ],
+    "coalescesAllReady": false
+  },
+  "inFlight": {
+    "latestArrivesBeforeFirstSend": true,
+    "oldTurnVisibleIds": [
+      "old"
+    ],
+    "latestExcludedFromOldPayload": true,
+    "oldReplyStillSent": true,
+    "nextTurnVisibleIds": [
+      "latest"
+    ],
+    "nextPayloadIncludesPreviousOutgoing": true,
+    "nextTurnCanReadAndStaySilent": true
+  }
+}

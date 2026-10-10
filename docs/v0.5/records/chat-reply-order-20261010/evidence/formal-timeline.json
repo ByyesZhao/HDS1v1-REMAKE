@@ -1,0 +1,100 @@
+{
+  "observedAt": "2026-10-10T08:06:07.940Z",
+  "sourceRevision": "6a88b9d",
+  "databaseAccess": "read-only",
+  "timeBasis": "server receivedAt/turn.at in Asia/Shanghai; original QQ send timestamp not retained",
+  "timeline": [
+    {
+      "label": "A",
+      "turnId": "197b3524-b8ca-4a54-a587-66d53684bee0",
+      "startedAt": "2026-10-10T15:51:11.368+08:00",
+      "completedAt": "2026-10-10T15:52:12.302+08:00",
+      "inputCount": 4,
+      "incomingTimes": [
+        "2026-10-10T15:50:42.305+08:00",
+        "2026-10-10T15:50:48.365+08:00",
+        "2026-10-10T15:50:53.120+08:00",
+        "2026-10-10T15:50:56.355+08:00"
+      ],
+      "batchIds": [
+        "6f3e9e8a-6ad2-40dd-950b-f7cd7e36f7eb"
+      ],
+      "lastIncomingAt": "2026-10-10T15:50:56.355+08:00",
+      "quietDeadline": "2026-10-10T15:51:11.355+08:00",
+      "lastInputToStartMilliseconds": 15013,
+      "outputCount": 5,
+      "outputTimes": [
+        "2026-10-10T15:51:28.878+08:00",
+        "2026-10-10T15:51:38.018+08:00",
+        "2026-10-10T15:51:42.762+08:00",
+        "2026-10-10T15:51:50.154+08:00",
+        "2026-10-10T15:51:56.651+08:00"
+      ],
+      "done": true,
+      "allInputsMarkedSeenByThisTurn": true,
+      "frozenCandidateRetained": false
+    },
+    {
+      "label": "B",
+      "turnId": "ba7fabbb-f705-41da-9cef-76d697eae8f1",
+      "startedAt": "2026-10-10T15:52:12.322+08:00",
+      "completedAt": "2026-10-10T15:52:43.182+08:00",
+      "inputCount": 2,
+      "incomingTimes": [
+        "2026-10-10T15:51:11.542+08:00",
+        "2026-10-10T15:51:16.853+08:00"
+      ],
+      "batchIds": [
+        "0b6396ce-f76b-4633-9265-bd352b869bdb"
+      ],
+      "lastIncomingAt": "2026-10-10T15:51:16.853+08:00",
+      "quietDeadline": "2026-10-10T15:51:31.853+08:00",
+      "lastInputToStartMilliseconds": 55469,
+      "outputCount": 2,
+      "outputTimes": [
+        "2026-10-10T15:52:31.881+08:00",
+        "2026-10-10T15:52:37.805+08:00"
+      ],
+      "done": true,
+      "allInputsMarkedSeenByThisTurn": true,
+      "frozenCandidateRetained": false
+    },
+    {
+      "label": "C",
+      "turnId": "b345d72f-2b9d-4eef-8285-e207613e8f76",
+      "startedAt": "2026-10-10T15:52:44.525+08:00",
+      "completedAt": "2026-10-10T15:53:15.364+08:00",
+      "inputCount": 3,
+      "incomingTimes": [
+        "2026-10-10T15:52:15.901+08:00",
+        "2026-10-10T15:52:21.287+08:00",
+        "2026-10-10T15:52:29.515+08:00"
+      ],
+      "batchIds": [
+        "c977db9a-a785-47fb-9770-23e13495a9cc"
+      ],
+      "lastIncomingAt": "2026-10-10T15:52:29.515+08:00",
+      "quietDeadline": "2026-10-10T15:52:44.515+08:00",
+      "lastInputToStartMilliseconds": 15010,
+      "outputCount": 0,
+      "outputTimes": [],
+      "done": true,
+      "allInputsMarkedSeenByThisTurn": true,
+      "frozenCandidateRetained": false
+    }
+  ],
+  "selectedMessages": [
+    {
+      "label": "继续工作",
+      "receivedAt": "2026-10-10T15:51:11.542+08:00",
+      "belongsToTurnLabel": "B"
+    },
+    {
+      "label": "计算挺好",
+      "receivedAt": "2026-10-10T15:52:15.901+08:00",
+      "belongsToTurnLabel": "C"
+    }
+  ],
+  "frozenOriginalModelPayloadUnavailable": true,
+  "newestHandledWithoutConfirmedOutgoing": true
+}
