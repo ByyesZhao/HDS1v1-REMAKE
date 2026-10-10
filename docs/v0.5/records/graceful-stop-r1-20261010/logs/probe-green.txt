@@ -1,0 +1,40 @@
+{
+  "healthy": {
+    "httpStatus": 200,
+    "body": {
+      "stopped": true
+    },
+    "exitCalls": 1,
+    "storageCloseReached": true,
+    "searchFailure": "search page blocked: http_error",
+    "browserStatus": {
+      "state": "stopping",
+      "error": null
+    },
+    "errors": [],
+    "logs": [
+      "收到停止请求：停止新输入和新任务，等待当前故事轮、导演及后台工作保存。",
+      "当前工作已保存，HDSI停止完成。"
+    ]
+  },
+  "failed": {
+    "httpStatus": 500,
+    "body": {
+      "stopped": false,
+      "error": "HDSI停止失败，请查看控制台；没有强制终止进程。"
+    },
+    "exitCalls": 0,
+    "storageCloseReached": false,
+    "searchFailure": "synthetic page close failure",
+    "browserStatus": {
+      "state": "failed",
+      "error": "synthetic page close failure"
+    },
+    "errors": [
+      "Error: synthetic page close failure"
+    ],
+    "logs": [
+      "收到停止请求：停止新输入和新任务，等待当前故事轮、导演及后台工作保存。"
+    ]
+  }
+}

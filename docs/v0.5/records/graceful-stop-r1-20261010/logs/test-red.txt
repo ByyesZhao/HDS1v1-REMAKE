@@ -1,0 +1,33 @@
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/graceful-stop-r1/HDSI-remake
+
+ ❯ tests/browser-graceful-stop-failure.test.ts (5 tests | 1 failed | 4 skipped) 89ms
+   × live page close failure reaches HTTP caller without success exit 88ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/browser-graceful-stop-failure.test.ts > live page close failure reaches HTTP caller without success exit
+AssertionError: expected 200 to be 500 // Object.is equality
+
+- Expected
++ Received
+
+- 500
++ 200
+
+ ❯ tests/browser-graceful-stop-failure.test.ts:53:20
+     51|  const f=await fixture({fail:true});try{const r=await f.stop();await t…
+     52|   expect(getBrowserRuntimeStatus(f.ctx).error).toBe('synthetic page cl…
+     53|   expect(r.status).toBe(500);expect(await r.json()).toMatchObject({sto…
+       |                    ^
+     54|  }finally{await f.cleanup();}
+     55| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 skipped (5)
+   Start at  18:32:14
+   Duration  1.02s (transform 60%, import 30%, tests 10%)
+

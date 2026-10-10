@@ -2,7 +2,7 @@
 
 核对日期：2026-10-10。新增[安全停止](records/graceful-stop-20261010/DELIVERY.md)：stop-hdsi.cmd等待当前整轮及后台阶段保存，187文件1004项及独立审查补修通过，正式部署状态见交付。最新普通回复跟进新消息 T1～T5已实现；184文件990项、类型、构建、演示、双场景插件和隔离只读启动检查通过，见[交付](records/chat-reply-freshness-20261010/DELIVERY.md)。独立复核与部署状态以交付页为准，此前普通回复批已停服部署，服务未由程序启动；此前查看资格正式修正保留原证据。
 
-最新[交付后复核](reviews/freshness-graceful-stop-20261010/REVIEW.md)以086cd07为基线：普通回复新鲜度可接受；安全停止另有1项P2待修（浏览器关闭失败被吞掉，仍报告成功并退出），附[修复执行方案](reviews/freshness-graceful-stop-20261010/FIX_PLAN.md)。既有1004项均有通过记录，新增组合探针复现该覆盖缺口；本次没有修改产品或操作正式服务。
+最新[交付后复核](reviews/freshness-graceful-stop-20261010/REVIEW.md)以086cd07为基线：普通回复新鲜度可接受；安全停止新增1项P2已修（闭环见[记录](records/graceful-stop-r1-20261010/README.md)）（浏览器关闭失败被吞掉，仍报告成功并退出），附[修复执行方案](reviews/freshness-graceful-stop-20261010/FIX_PLAN.md)。既有1004项均有通过记录，新增组合探针复现该覆盖缺口；原审核未修改产品或操作正式服务；后续修复与部署状态以R1记录为准。
 
 前次[文档核对](records/document-final-audit-20261010/README.md)和[图片／搜索修复交付](records/image-search-post-review-fixes-20261010/DELIVERY.md)保留原基线、原证据及未执行范围，不以本批覆盖历史结论。
 
@@ -31,7 +31,7 @@
 
 | 材料 | 状态 |
 | --- | --- |
-| [新鲜度／安全停止交付后复核](reviews/freshness-graceful-stop-20261010/REVIEW.md)及[修复执行方案](reviews/freshness-graceful-stop-20261010/FIX_PLAN.md) | 新鲜度未发现需修复问题；安全停止R1为P2待修，真实HTTP与离线页面槽组合探针确认错误成功退出；既有187文件1004项经分次复验通过 |
+| [新鲜度／安全停止交付后复核](reviews/freshness-graceful-stop-20261010/REVIEW.md)及[修复执行方案](reviews/freshness-graceful-stop-20261010/FIX_PLAN.md) | 新鲜度未发现需修复问题；安全停止R1原为P2，后续修复见[记录](records/graceful-stop-r1-20261010/README.md)，真实HTTP与离线页面槽组合探针确认错误成功退出；既有187文件1004项经分次复验通过 |
 | [普通回复新鲜度方案审核](reviews/chat-reply-freshness-20261010/REVIEW.md)与[细化执行方案](reviews/chat-reply-freshness-20261010/EXECUTION_PLAN.md) | 保留方案 B，补齐等待／事件接管、业务代际、图片冻结、资格重选 4 项合同；原基线8文件35项为方案审核证据；T1～T5现已实现，最新990项及部署边界见[交付](records/chat-reply-freshness-20261010/DELIVERY.md) |
 | [回复错位诊断](records/chat-reply-order-20261010/README.md)与[改动方案](plans/chat-reply-freshness-20261010/README.md) | 15秒合批符合本次记录；新消息在生成期间另轮排队，旧候选仍发送；正式只读时间线及4组合成探针，未改产品／服务 |
 | [查看消息资格交付](records/phone-access-20261010/DELIVERY.md)及[独立复核关闭](records/phone-access-20261010/REVIEW_CLOSURE.md) | 新规则已实施，合同／协议2／磁盘恢复及停服修复工具有回归；最终测试与正式部署状态见交付页 |

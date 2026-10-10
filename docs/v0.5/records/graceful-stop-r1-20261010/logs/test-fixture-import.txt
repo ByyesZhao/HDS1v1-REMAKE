@@ -1,0 +1,24 @@
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/graceful-stop-r1/HDSI-remake
+
+ ❯ tests/browser-graceful-stop-failure.test.ts (0 test)
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/browser-graceful-stop-failure.test.ts [ tests/browser-graceful-stop-failure.test.ts ]
+TypeError: Class extends value #<Object> is not a constructor or null
+ ❯ D:/HDSI-remake/node_modules/@koishijs/loader/src/index.ts:19:1
+ ❯ src/input-media/parse.ts:1:1
+      1| import {h} from 'koishi';
+       | ^
+      2| import type {IncomingAttachment,MessageContentPart} from './types';
+      3| export function parseIncomingContent(messageId:string,rawContent:strin…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  18:31:59
+   Duration  363ms (worker 92%, environment 8%)
+

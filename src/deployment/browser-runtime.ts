@@ -29,7 +29,14 @@ export function installBrowserRuntime(ctx:Context,config:Config,settings:StorySe
   });
  });
  ctx.command('hdsi.status','故事状态',{authority:0}).action(async({session})=>{if(!session||!isTargetSession(session,config))return;return (current?await current.runtime.host.status():'故事实例尚未启动')+'；浏览器：'+status.state+(status.error?'／'+status.error:'');});
- installStopControl(ctx,async()=>{disposed=true;generation++;current?.runtime.stopAcceptingInput();const draining=current?.runtime.close({graceful:true});await enqueue(async()=>{await draining;await closeCurrent();});if(fatal)throw fatal;});
+ installStopControl(ctx,async()=>{
+  disposed=true;generation++;current?.runtime.stopAcceptingInput();
+  // Observe rejection immediately: lifecycle startup may still occupy the queue.
+  // enqueue logs errors but resolves, so preserve the failure for the stop caller.
+  const draining=current?.runtime.close({graceful:true}).catch(error=>{fatal=error;});
+  await enqueue(async()=>{await draining;if(fatal)throw fatal;await closeCurrent();});
+  if(fatal)throw fatal;
+ });
  ctx.on('ready',()=>chain);
  // Registered after injection: normal parent shutdown closes foreground before provider disposal.
  ctx.on('dispose',async()=>{disposed=true;generation++;current?.runtime.stopAcceptingInput();await enqueue(closeCurrent);if(fatal)throw fatal;});
