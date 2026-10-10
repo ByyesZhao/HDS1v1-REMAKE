@@ -1,6 +1,6 @@
 import {it,expect,vi,afterEach} from 'vitest';import {mkdtempSync,rmSync} from 'node:fs';import {tmpdir} from 'node:os';import {join,sep} from 'node:path';import {createRequire} from 'node:module';import {resolve} from 'node:path';import {installBrowserRuntime,getBrowserRuntimeStatus} from '../src/deployment/browser-runtime';
 const {Context:CoreContext,Service}=createRequire(resolve('package.json'))('koishi');
-const fixtureDirs:string[]=[];class Context extends CoreContext{constructor(){super();this.baseDir=mkdtempSync(join(tmpdir(),'hdsi-browser-stop-'));fixtureDirs.push(this.baseDir);}}
+const fixtureDirs:string[]=[];const Context:any=class extends CoreContext{constructor(){super();this.baseDir=mkdtempSync(join(tmpdir(),'hdsi-browser-stop-'));fixtureDirs.push(this.baseDir);}};
 afterEach(()=>{for(const dir of fixtureDirs.splice(0)){if(!resolve(dir).startsWith(resolve(tmpdir())+sep))throw Error('fixture outside temp root');rmSync(dir,{recursive:true,force:true});}});
 
 vi.mock('koishi',async()=>(await import('node:module')).createRequire(`${process.cwd()}/package.json`)('koishi'));

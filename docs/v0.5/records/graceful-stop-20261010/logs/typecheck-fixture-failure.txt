@@ -1,0 +1,10 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 typecheck
+npm notice run tsc --noEmit
+tests/browser-web-plugin-extra.test.ts(9,48): error TS2345: Argument of type 'Context' is not assignable to parameter of type 'import("D:/HDSI-remake/node_modules/@koishijs/core/lib/index").Context'.
+  Type 'Context' is missing the following properties from type 'Context': broadcast, $processor, middleware, match, and 84 more.
+tests/browser-web-plugin-extra.test.ts(16,28): error TS2345: Argument of type 'Context' is not assignable to parameter of type 'import("D:/HDSI-remake/node_modules/@koishijs/core/lib/index").Context'.
+  Type 'Context' is missing the following properties from type 'Context': broadcast, $processor, middleware, match, and 84 more.
+tests/browser-web-plugin.test.ts(13,53): error TS2345: Argument of type 'Context' is not assignable to parameter of type 'import("D:/HDSI-remake/node_modules/@koishijs/core/lib/index").Context'.
+  Type 'Context' is missing the following properties from type 'Context': broadcast, $processor, middleware, match, and 84 more.
+tests/browser-web-plugin.test.ts(26,48): error TS2345: Argument of type 'Context' is not assignable to parameter of type 'import("D:/HDSI-remake/node_modules/@koishijs/core/lib/index").Context'.
+  Type 'Context' is missing the following properties from type 'Context': broadcast, $processor, middleware, match, and 84 more.

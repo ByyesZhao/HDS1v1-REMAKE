@@ -22,3 +22,5 @@ Ctrl+C已加Koishi exit钩子等待，但Windows控制台父进程及直接关�
 [交付](DELIVERY.md)记录最终全量／复核和正式部署状态。
 
 独立复核5703630范围发现I1客户端断开后进程不退出；已补两项RED并修复，六文件20项GREEN，见[闭环](REVIEW_CLOSURE.md)。首轮187文件1002项通过为修复前证据，另存full-before-review-fix.txt；修复后重新全量检查。
+
+隔离Context继承动态require的any类后，TypeScript不再视作完整Koishi类型；恢复原fixture的any构造类型（运行仍实际继承CoreContext），未削弱产品类型。原类型检查失败另存typecheck-fixture-failure.txt。
