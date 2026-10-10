@@ -21,3 +21,7 @@ T5：5a53d27 起；真实 Context 的服务拒绝/一直不就绪 RED 2失败（
 整批首跑：175文件/912测试，唯一失败为旧验收固定dom-v1。按T3版本升级同步为dom-v2；其余911通过，原日志保留。demo及双场景smoke通过。
 
 整批最终：175文件/912项全绿（logs/full-test-final.log）；typecheck-additional/build/demo/plugin-smoke通过；比原882增加30。正式配置/数据库无变更，进入一次新上下文全分支审查。
+
+Final review e4c4c83：两项Important（prefetch取消、空article登录豁免）；Critical/Minor无。两项接受进入一次修复pass。
+Final: Ruling: 当前公开Bing/DuckDuckGo可达性保留历史证据，不重测 — 本批限定离线修复且正式搜索关闭 — 若环境已变化，启用时仍可能验证码/不可达。
+Final: Ruling: 真实图片模型和线上工具续调用质量不纳入本批 — 合成模型是本次授权与计划范围 — 未覆盖误识别及供应商工具续调用质量，启用前另行验证。

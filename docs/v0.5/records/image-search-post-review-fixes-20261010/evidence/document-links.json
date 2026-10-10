@@ -1,0 +1,19 @@
+{
+  "files": 57,
+  "localLinks": 473,
+  "missing": [],
+  "hostOnly": [
+    {
+      "file": "docs\\v0.5\\README.md",
+      "dest": "../../runtime/archive/README.md",
+      "verifiedAt": "D:\\HDSI-remake\\runtime\\archive\\README.md",
+      "reason": "ignored local archive absent in clean worktree"
+    },
+    {
+      "file": "docs\\v0.5\\records\\document-organization-20261009\\README.md",
+      "dest": "../../../../runtime/archive/README.md",
+      "verifiedAt": "D:\\HDSI-remake\\runtime\\archive\\README.md",
+      "reason": "ignored local archive absent in clean worktree"
+    }
+  ]
+}

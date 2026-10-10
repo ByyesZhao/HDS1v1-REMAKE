@@ -1,0 +1,78 @@
+{
+  "baseline": "2a2e77e",
+  "fixture": "synthetic, dialogue protocol 2",
+  "confirmedAfterDisable": {
+    "firstConfirmed": [
+      {
+        "status": "ready",
+        "observationRef": "1b56b50ac4e976f488f128cabdcdffb2fc9331d6974bb9968131a415d14ade24:incoming-image:v1",
+        "observation": {
+          "description": "cat",
+          "visibleText": [
+            "hello"
+          ],
+          "possibleTone": null,
+          "uncertain": false
+        }
+      }
+    ],
+    "confirmedStillPresent": 1,
+    "deferredTurnDone": true,
+    "frozenStatus": "ready",
+    "personalMessage": {
+      "id": "seen-image",
+      "direction": "incoming",
+      "content": "（图片）",
+      "receivedAt": "2026-10-07T10:00:00+08:00",
+      "visualAttachments": [
+        {
+          "attachmentId": "seen-image:0",
+          "order": 0,
+          "status": "ready",
+          "observationRef": "1b56b50ac4e976f488f128cabdcdffb2fc9331d6974bb9968131a415d14ade24:incoming-image:v1"
+        }
+      ]
+    },
+    "personalVisualObservations": [
+      {
+        "ref": "1b56b50ac4e976f488f128cabdcdffb2fc9331d6974bb9968131a415d14ade24:incoming-image:v1",
+        "recognizerVersion": "incoming-image:v1",
+        "observation": {
+          "description": "cat",
+          "visibleText": [
+            "hello"
+          ],
+          "possibleTone": null,
+          "uncertain": false
+        }
+      }
+    ],
+    "extraVisionCalls": 0
+  },
+  "unavailableOneBotFile": {
+    "adapterContent": "<img src=\"expired.image\" file=\"expired.image\"/>",
+    "getImageCalls": 1,
+    "paused": false,
+    "turnDone": true,
+    "terminalEntries": [
+      {
+        "messageId": "unavailable",
+        "attachmentId": "[\"unavailable\",0]",
+        "order": 0,
+        "status": "unrecognized",
+        "origin": "unavailable",
+        "observationRef": null,
+        "recognizerVersion": null,
+        "observation": null
+      }
+    ],
+    "attachmentStatus": "unavailable",
+    "modelTasks": [
+      "narrative",
+      "personal_chat",
+      "memory"
+    ],
+    "errorNotices": []
+  },
+  "fetchCalls": 0
+}

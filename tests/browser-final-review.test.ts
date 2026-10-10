@@ -37,3 +37,7 @@ it.each([
  '<main><p>Independent body.</p><div role="dialog"><p>Login prompt.</p><form><input type="password"></form></div></main>',
  '<article><p>Independent body.</p></article><form hidden><input type="password"></form><main><p>Sign in to continue.</p><form><input type="password"></form></main>',
 ])('independent body survives adjacent login regions: %s',html=>{expect(extractReadablePage(extract(html)).body).toBe('Independent body.');});
+
+it.each(['<article></article>','<article><h1>Heading only</h1></article>','<article><p hidden>HIDDEN_BODY</p></article>'])('empty semantic sibling cannot exempt a login shell: %s',sibling=>{
+ const p=extract('<main><h1>Sign in</h1><p>Sign in to continue reading.</p><form><input type="password"></form>'+sibling+'</main>');expect(p.access).toBe('login_wall');expect(p.main).toBeNull();expect(()=>extractReadablePage(p)).toThrow('login_wall');
+});

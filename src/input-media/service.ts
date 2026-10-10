@@ -46,7 +46,8 @@ export class IncomingMediaService {
    else {
     let ref:string;
     try{ref=frozen?.status==='pending'&&frozen.imageAssetRef?frozen.imageAssetRef:await this.assets.ensureAsset(a.id,signal);}
-    catch(e){if(!(e instanceof ImageUnavailableError))throw e;this.store.storage.save('message_attachments',a.id,{...this.store.storage.read('message_attachments',a.id)!,downloadStatus:'unavailable'});const entry:PreparedAttachment={...base,status:'unrecognized',origin:'unavailable',observationRef:null,recognizerVersion:null,observation:null};this.freeze(turnId,entry);result.push(entry);continue;}
+    catch(e){signal?.throwIfAborted();if(!(e instanceof ImageUnavailableError))throw e;this.store.storage.save('message_attachments',a.id,{...this.store.storage.read('message_attachments',a.id)!,downloadStatus:'unavailable'});const entry:PreparedAttachment={...base,status:'unrecognized',origin:'unavailable',observationRef:null,recognizerVersion:null,observation:null};this.freeze(turnId,entry);result.push(entry);continue;}
+    signal?.throwIfAborted();
     const phaseKey=frozen?.status==='pending'?frozen.phaseKey:'incoming_image:'+a.id;
     this.freeze(turnId,{...base,status:'pending',imageAssetRef:ref,phaseKey,recognizerVersion:V});
     // Disk ref is validated even when a previous model/tool checkpoint exists.

@@ -1,0 +1,112 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/incoming-media-onebot-review.test.ts tests/browser-final-review.test.ts tests/browser-visible-dom.test.ts
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/image-search-review-fixes/HDSI-remake
+
+ ❯ tests/browser-visible-dom.test.ts (17 tests | 3 failed) 2506ms
+   × empty or hidden article does not make login successful in actual CSS: <article></article> 86ms
+   × empty or hidden article does not make login successful in actual CSS: <article><h1>Heading only</h1></article> 68ms
+   × empty or hidden article does not make login successful in actual CSS: <style>.hidden{display:none}</style><article><p class="hidden">HIDDEN_BODY</p></article> 76ms
+ ❯ tests/incoming-media-onebot-review.test.ts (8 tests | 2 failed) 386ms
+   × prefetched platform reject preserves later prepare cancellation without freezing 8ms
+   × prefetched platform resolve preserves later prepare cancellation without freezing 8ms
+ ❯ tests/browser-final-review.test.ts (13 tests | 3 failed) 130ms
+   × empty semantic sibling cannot exempt a login shell: <article></article> 6ms
+   × empty semantic sibling cannot exempt a login shell: <article><h1>Heading only</h1></article> 1ms
+   × empty semantic sibling cannot exempt a login shell: <article><p hidden>HIDDEN_BODY</p></article> 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 8 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/browser-final-review.test.ts > empty semantic sibling cannot exempt a login shell: <article></article>
+ FAIL  tests/browser-final-review.test.ts > empty semantic sibling cannot exempt a login shell: <article><h1>Heading only</h1></article>
+ FAIL  tests/browser-final-review.test.ts > empty semantic sibling cannot exempt a login shell: <article><p hidden>HIDDEN_BODY</p></article>
+AssertionError: expected 'ok' to be 'login_wall' // Object.is equality
+
+Expected: "login_wall"
+Received: "ok"
+
+ ❯ tests/browser-final-review.test.ts:42:150
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/8]⎯
+
+ FAIL  tests/browser-visible-dom.test.ts > empty or hidden article does not make login successful in actual CSS: <article></article>
+ FAIL  tests/browser-visible-dom.test.ts > empty or hidden article does not make login successful in actual CSS: <article><h1>Heading only</h1></article>
+ FAIL  tests/browser-visible-dom.test.ts > empty or hidden article does not make login successful in actual CSS: <style>.hidden{display:none}</style><article><p class="hidden">HIDDEN_BODY</p></article>
+AssertionError: expected { successReads: 1, failures: +0 } to deeply equal { successReads: +0, failures: 1 }
+
+- Expected
++ Received
+
+  {
+-   "failures": 1,
+-   "successReads": 0,
++   "failures": 0,
++   "successReads": 1,
+  }
+
+ ❯ tests/browser-visible-dom.test.ts:26:871
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/8]⎯
+
+ FAIL  tests/incoming-media-onebot-review.test.ts > prefetched platform reject preserves later prepare cancellation without freezing
+AssertionError: promise resolved "[ { messageId: 'm', …(7) } ]" instead of rejecting
+
+- Expected:
+Error {
+  "message": "rejected promise",
+}
+
++ Received:
+[
+  {
+    "attachmentId": "a",
+    "messageId": "m",
+    "observation": null,
+    "observationRef": null,
+    "order": 0,
+    "origin": "unavailable",
+    "recognizerVersion": null,
+    "status": "unrecognized",
+  },
+]
+
+ ❯ tests/incoming-media-onebot-review.test.ts:58:347
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/8]⎯
+
+ FAIL  tests/incoming-media-onebot-review.test.ts > prefetched platform resolve preserves later prepare cancellation without freezing
+AssertionError: expected ZodError: [
+  {
+    "expected": "object",… { …(2) } to be Error: cancel prefetched prepare // Object.is equality
+
+- Expected
++ Received
+
+- Error {
+-   "message": "cancel prefetched prepare",
++ ZodError {
++   "message": "[
++   {
++     \"expected\": \"object\",
++     \"code\": \"invalid_type\",
++     \"path\": [],
++     \"message\": \"Invalid input: expected object, received undefined\"
++   }
++ ]",
++   "name": "ZodError",
+  }
+
+ ❯ tests/incoming-media-onebot-review.test.ts:58:347
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/8]⎯
+
+
+ Test Files  3 failed (3)
+      Tests  8 failed | 30 passed (38)
+   Start at  10:39:13
+   Duration  4.51s (tests 73%, transform 14%, import 13%)
+

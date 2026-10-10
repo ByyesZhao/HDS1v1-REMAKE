@@ -18,14 +18,31 @@ export function extractDomEvidence(document:Document,finalUrl:string,engine:Brow
  const visible=(node:Element)=>states.get(node)?.visible??false;
  const wall=Array.from(document.querySelectorAll('form#challenge-form,form#captcha-form,#b_captcha,iframe[src*="recaptcha"],iframe[src*="hcaptcha"],form[action*="captcha"]')).find(visible);
  if(wall&&visible(wall)){result.access='captcha';return result;}
+ const text=(e:Element)=>((e as HTMLElement).innerText??e.textContent??'').trim();
+ // Evidence excludes links/headings/status shells; it does not shorten accepted body text.
+ const hasBodyEvidence=(e:Element)=>{const body=e.cloneNode(true) as Element;for(const node of Array.from(body.querySelectorAll('a,[role="link"],h1,h2,h3,h4,h5,h6')))node.remove();return !!text(body);};
+ const copiesByNode=new Map<Element,Element>();let cleanedDocument:Document|undefined;
+ const cleanPage=()=>{
+  if(cleanedDocument)return cleanedDocument;
+  const clone=document.cloneNode(true) as Document;
+ const copies=Array.from(clone.querySelectorAll('*'));
+ for(let i=0;i<nodes.length;i++)copiesByNode.set(nodes[i],copies[i]);
+ for(let i=0;i<nodes.length;i++){const state=states.get(nodes[i])!,copy=copies[i];
+  if(state.blocked)copy.remove();
+  else if(!state.visible){for(const child of Array.from(copy.childNodes))if(child.nodeType===3)child.remove();copy.replaceWith(...Array.from(copy.childNodes));}
+ }
+ for(const e of Array.from(clone.querySelectorAll('script,style,noscript,template,nav,header,footer,aside,form,button,[aria-busy="true"],[role="navigation"],[role="status"],[role="progressbar"],[role="contentinfo"],[class*="footer"],[id*="footer"],[class*="copyright"],[id*="copyright"],[hidden],[aria-hidden="true"]')))e.remove();
+  cleanedDocument=clone;return clone;
+ };
  const passwords=Array.from(document.querySelectorAll('form input[type="password"]')).filter(visible);
  const loginRegions=new Set<Element>();
+ if(passwords.length)cleanPage();
  for(const password of passwords){const form=password.closest('form')!;
   const component=form.closest('dialog,[role="dialog"],aside,[role="complementary"]');
   let region:Element=component??form;
   if(!component)for(let parent=form.parentElement;parent;parent=parent.parentElement){
    // An independent semantic body beside the credential branch bounds the login region.
-   const independent=Array.from(parent.querySelectorAll('article,main,[role="main"]')).some(n=>visible(n)&&!passwords.some(p=>n.contains(p)));
+   const independent=Array.from(parent.querySelectorAll('article,main,[role="main"]')).some(n=>{const copy=copiesByNode.get(n);return visible(n)&&!passwords.some(p=>n.contains(p))&&!!copy&&cleanPage().contains(copy)&&hasBodyEvidence(copy);});
    if(independent)break;region=parent;
    if(parent.matches('article,main,[role="main"],body'))break;
   }
@@ -41,16 +58,7 @@ export function extractDomEvidence(document:Document,finalUrl:string,engine:Brow
   if(passwords.length&&!links.length&&!empty){result.access='login_wall';return result;}
   result.search={state:links.length?'results':empty&&visible(empty)?'empty':'unready',links,evidence:links.length?selectors:empty&&visible(empty)?'engine empty-result element':null};return result;
  }
- const clone=document.cloneNode(true) as Document;
- const copies=Array.from(clone.querySelectorAll('*'));
- for(let i=0;i<nodes.length;i++){const state=states.get(nodes[i])!,copy=copies[i];
-  if(state.blocked||loginRegions.has(nodes[i]))copy.remove();
-  else if(!state.visible){for(const child of Array.from(copy.childNodes))if(child.nodeType===3)child.remove();copy.replaceWith(...Array.from(copy.childNodes));}
- }
- for(const e of Array.from(clone.querySelectorAll('script,style,noscript,template,nav,header,footer,aside,form,button,[aria-busy="true"],[role="navigation"],[role="status"],[role="progressbar"],[role="contentinfo"],[class*="footer"],[id*="footer"],[class*="copyright"],[id*="copyright"],[hidden],[aria-hidden="true"]')))e.remove();
- const text=(e:Element)=>((e as HTMLElement).innerText??e.textContent??'').trim();
- // Evidence excludes links/headings/status shells; it does not shorten accepted body text.
- const hasBodyEvidence=(e:Element)=>{const body=e.cloneNode(true) as Element;for(const node of Array.from(body.querySelectorAll('a,[role="link"],h1,h2,h3,h4,h5,h6')))node.remove();return !!text(body);};
+ const clone=cleanPage();for(const region of loginRegions)copiesByNode.get(region)?.remove();
  for(const [selector,source] of [['article','article'],['main,[role="main"]','main']] as const){const nodes=Array.from(clone.querySelectorAll(selector));const contents=nodes.filter(hasBodyEvidence).map(text).filter(Boolean);if(contents.length){result.main={text:contents.join('\n\n'),source};return result;}}
  const Ctor=ReadabilityCtor??(globalThis as unknown as {Readability?:typeof ReadabilityCtor}).Readability;
  if(Ctor&&clone.documentElement&&hasBodyEvidence(clone.documentElement)){try{const readable=new Ctor(clone).parse();if(readable?.textContent?.trim())result.main={text:readable.textContent.trim(),source:'readability'};}catch{}}
