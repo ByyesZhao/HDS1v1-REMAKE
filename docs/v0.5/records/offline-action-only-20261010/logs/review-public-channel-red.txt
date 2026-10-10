@@ -1,0 +1,66 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/offline-action-only.test.ts
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/offline-action-only/HDSI-remake
+
+ ❯ tests/offline-action-only.test.ts (23 tests | 3 failed) 89ms
+   × repairs online public narration that would render an action marker: 动作：推门 7ms
+   × repairs online public narration that would render an action marker: 【动作：推门】 3ms
+   × repairs online public narration that would render an action marker: 动作:推门 2ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/offline-action-only.test.ts > repairs online public narration that would render an action marker: 动作：推门
+AssertionError: expected '动作：推门' to be '游戏角色推开门，进入下一关。' // Object.is equality
+
+Expected: "游戏角色推开门，进入下一关。"
+Received: "动作：推门"
+
+ ❯ tests/offline-action-only.test.ts:163:45
+    161|     } });
+    162|     const output = await runNarrative(models, true, NOW, NOW, [], { st…
+    163|     expect((output as any).publicNarration).toBe('游戏角色推开门，进入下一关。');
+       |                                             ^
+    164|     expect(requests).toHaveLength(2);
+    165|     expect(requests[1].repair?.errors).toMatch(/publicNarration/);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/offline-action-only.test.ts > repairs online public narration that would render an action marker: 【动作：推门】
+AssertionError: expected '【动作：推门】' to be '游戏角色推开门，进入下一关。' // Object.is equality
+
+Expected: "游戏角色推开门，进入下一关。"
+Received: "【动作：推门】"
+
+ ❯ tests/offline-action-only.test.ts:163:45
+    161|     } });
+    162|     const output = await runNarrative(models, true, NOW, NOW, [], { st…
+    163|     expect((output as any).publicNarration).toBe('游戏角色推开门，进入下一关。');
+       |                                             ^
+    164|     expect(requests).toHaveLength(2);
+    165|     expect(requests[1].repair?.errors).toMatch(/publicNarration/);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  tests/offline-action-only.test.ts > repairs online public narration that would render an action marker: 动作:推门
+AssertionError: expected '动作:推门' to be '游戏角色推开门，进入下一关。' // Object.is equality
+
+Expected: "游戏角色推开门，进入下一关。"
+Received: "动作:推门"
+
+ ❯ tests/offline-action-only.test.ts:163:45
+    161|     } });
+    162|     const output = await runNarrative(models, true, NOW, NOW, [], { st…
+    163|     expect((output as any).publicNarration).toBe('游戏角色推开门，进入下一关。');
+       |                                             ^
+    164|     expect(requests).toHaveLength(2);
+    165|     expect(requests[1].repair?.errors).toMatch(/publicNarration/);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 20 passed (23)
+   Start at  23:46:20
+   Duration  728ms (transform 60%, import 25%, tests 14%, worker 1%)
+

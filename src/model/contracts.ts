@@ -33,7 +33,7 @@ const options = {
 };
 const chat = z.object({ emotions: z.array(emotion), reply, taskChanges: z.array(taskChange), ...options });
 const life = z.object({ innerThought: text, emotions: z.array(emotion), contact, taskChanges: z.array(taskChange).optional(), ...options });
-const expression = z.object({ parts: z.array(z.object({ kind: z.enum(['text', 'action']), content: text })) });
+const hasActionMarker = (value: string) => /【动作[：:][^】]*】/u.test(value);
 const summary = {content:text,eventSummary:text,feelingSummary:text,topics:z.array(text),sourceIds:z.array(text).min(1)};
 const eventTimes={happenedAt:time.optional(),happenedUntil:time.optional()};
 const memory = z.object({
@@ -50,7 +50,7 @@ export function modelTask<T>(name: keyof typeof prompts, schema: z.ZodType, vali
 }
 const requireControl = (condition: boolean, path: string, message: string) => { if (!condition) throw new Error(`${path}: ${message}`); };
 
-export function narrativeTask(shared: boolean, from: string, at: string, eventIds: string[] = [], sharedMeta?: SharedTurnMeta | null, previousOutline?: SharedOutline | null,validateSchool?:(r:NarrativeResult)=>void): ModelTask<NarrativeResult | SharedNarrativeResult> {
+export function narrativeTask(shared: boolean, from: string, at: string, eventIds: string[] = [], sharedMeta?: SharedTurnMeta | null, previousOutline?: SharedOutline | null,validateSchool?:(r:NarrativeResult)=>void, mode = shared ? 'shared_online' : 'chat'): ModelTask<NarrativeResult | SharedNarrativeResult> {
   sharedMeta=sharedMeta?structuredClone(sharedMeta):sharedMeta;
   const task = modelTask(shared ? 'narrative_shared' : 'narrative', shared ? sharedNarrative : narrative, (r: NarrativeResult | SharedNarrativeResult) => {
     r.experiences.forEach((e, i) => {
@@ -70,6 +70,7 @@ export function narrativeTask(shared: boolean, from: string, at: string, eventId
     if (shared) {
       requireControl(!!sharedMeta, 'sharedMeta', 'shared calls require fixed selection metadata');
       const result = r as SharedNarrativeResult;
+      if (mode !== 'shared_offline' && result.publicNarration) requireControl(!hasActionMarker(`【${result.publicNarration}】`), 'publicNarration', 'public action markers require shared_offline output');
       if (sharedMeta!.stepNumber === 1) requireControl(!!result.publicNarration?.trim(), 'publicNarration', 'first shared node requires a public opening');
       requireControl(sharedMeta!.allowSimulatedUserActions || result.simulatedUserActions.length === 0, 'simulatedUserActions', 'not allowed with new user input');
       requireControl(result.simulatedUserActions.every(action => !!result.publicNarration?.includes(action)), 'publicNarration', 'every simulatedUserActions entry must appear verbatim');
@@ -88,7 +89,7 @@ export function narrativeTask(shared: boolean, from: string, at: string, eventId
     }
   });
   // Use the selected turn's frozen permission, including repair and regeneration.
-  task.promptPolicy=buildPromptPolicy(shared?'narrative_shared':'narrative',{sharedMeta});
+  task.promptPolicy=buildPromptPolicy(shared?'narrative_shared':'narrative',{sharedMeta,mode});
   if(shared)task.prompt=sharedNarrativePrompt(sharedMeta?.allowSimulatedUserActions===true)+'\n'+policyRules(task.promptPolicy);
   return task;
 }
@@ -125,10 +126,24 @@ export function personalTask(kind: 'chat' | 'life' | 'shared', at: string, tasks
     if (s?.sleepAt && s.wakeAt) requireControl(milliseconds(s.wakeAt) > Math.max(milliseconds(s.sleepAt), milliseconds(at)), 'sleepPreference.wakeAt', 'must follow sleepAt');
     if (r.sharedChange?.action === 'start') requireControl(mode === 'chat', 'sharedChange', 'end the current shared activity before starting another');
     if (r.sharedChange?.action === 'end') requireControl(mode !== 'chat', 'sharedChange', 'there is no shared activity to end');
+    // Entry into an offline activity grants its opening reply the same contract
+    // as the activity; its closing reply is still offline before the end marker.
+    const outputMode = r.sharedChange?.action === 'start' ? r.sharedChange.mode : mode;
+    const outputIntent = 'reply' in r ? r.reply.decision === 'now' ? r.reply : null : r.contact.willing ? r.contact : null;
+    if (outputMode !== 'shared_offline' && outputIntent) {
+      requireControl(!outputIntent.actions?.length, 'actions', 'action intentions require shared_offline output');
+      requireControl(!hasActionMarker(outputIntent.draft), 'draft', 'action markers require shared_offline output');
+    }
   });
   task.promptPolicy=buildPromptPolicy(`personal_${kind}`,{mode,sharedMeta,hasCurrentPublicNarration:!!publicNarration?.trim(),...eligibility});task.prompt+='\n'+policyRules(task.promptPolicy);return task;
 }
-export const expressionTask = () => modelTask<ExpressionResult>('expression', expression);
+export function expressionTask(mode = 'chat'): ModelTask<ExpressionResult> {
+  const offline = mode === 'shared_offline';
+  const schema = z.object({ parts: z.array(z.object({ kind: offline ? z.enum(['text', 'action']) : z.literal('text'), content: text })) });
+  return modelTask<ExpressionResult>('expression', schema, result => {
+    if (!offline) result.parts.forEach((part, i) => requireControl(!hasActionMarker(part.content), `parts.${i}.content`, 'action markers require shared_offline output'));
+  });
+}
 export function memoryTask(sourceIds: string[], memoryIds: string[], shortIds:string[]=[],selfReadIds:string[]=[]): ModelTask<MemoryResult> {
   return modelTask('memory', memory, (r: MemoryResult) => {
     const validateSources = (ids: string[], allowed=sourceIds) => requireControl(ids.length>0&&ids.every(id => allowed.includes(id)), 'sourceIds', 'unknown current source ID');

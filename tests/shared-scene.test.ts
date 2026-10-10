@@ -18,7 +18,7 @@ function makeShared(d: ReturnType<typeof setup>, mode: 'shared_online' | 'shared
   seedConfirmedClock(d);
   d.models.outputs.narrative_shared = { ...narrative, currentScene: { description: '继续活动', activity: { description: '游戏', startsAt: NOW, expectedEndAt: '2026-10-07T10:30:00+08:00', phoneAccess: false } }, publicNarration: '门口亮起灯', progress: '走到门口', outline: { goal: '一起游戏', openThreads: [], endingCondition: '结束本次游戏' }, simulatedUserActions: [] };
   d.models.outputs.personal_shared = { emotions: [], reply: { decision: 'now', intention: '反应', draft: '一起进去吧' }, taskChanges: [] };
-  d.models.outputs.expression = { parts: [{ kind: 'action', content: '点头' }, { kind: 'text', content: '一起进去吧' }] };
+  d.models.outputs.expression = { parts: [...(mode === 'shared_offline' ? [{ kind: 'action', content: '点头' }] : []), { kind: 'text', content: '一起进去吧' }] };
 }
 it('starts only after confirmation, emits the marker and schedules the immediate first public node', async () => {
   const d = setup(); saveInput(d.storage, 'a', '好，现在开始');
@@ -40,7 +40,7 @@ it.each(['shared_online', 'shared_offline'] as const)('keeps closed scene input 
   expect(d.models.calls[1].input.resources.messages[0].content).toBe('【动作：推门】');
   expect(d.models.calls[0].input.context.sharedMeta).toEqual(d.models.calls[1].input.context.sharedMeta);
   expect(d.storage.all('turns')[0].sharedMeta!.allowSimulatedUserActions).toBe(false);
-  expect(d.sender.sent.map(i => i.kind)).toEqual(['narration', 'action', 'text']);
+  expect(d.sender.sent.map(i => i.kind)).toEqual(mode === 'shared_offline' ? ['narration', 'action', 'text'] : ['narration', 'text']);
   expect(d.sender.sent[0].payload).toBe('门口亮起灯');
   expect(d.storage.character().scene.shared!.lastPublicNode).toBe('门口亮起灯');
   d.storage.close();

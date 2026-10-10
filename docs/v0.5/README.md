@@ -1,10 +1,10 @@
 # HDSI V0.5：当前文档与审核入口
 
-核对日期：2026-10-10。最新[安全停止R1](records/graceful-stop-r1-20261010/README.md)修复浏览器关闭失败仍报告成功的问题，原新鲜度T1～T5不改。最终188文件1009项、类型／构建／演示／双场景插件检查通过；复核时序缺口已补实，正式停服部署完成，见[交付](records/graceful-stop-r1-20261010/DELIVERY.md)。此前[安全停止交付](records/graceful-stop-20261010/DELIVERY.md)与[新鲜度交付](records/chat-reply-freshness-20261010/DELIVERY.md)保留各自基线和证据。
+核对日期：2026-10-10。最新动作表达边界修订见[实施记录](records/offline-action-only-20261010/README.md)：程序只为线下共同活动开放动作表达，其余模式采用纯文字合同；当前交付及部署状态以该记录为准。此前[安全停止R1](records/graceful-stop-r1-20261010/README.md)修复浏览器关闭失败仍报告成功的问题，原新鲜度T1～T5不改。最终188文件1009项、类型／构建／演示／双场景插件检查通过；复核时序缺口已补实，正式停服部署完成，见[交付](records/graceful-stop-r1-20261010/DELIVERY.md)。此前[安全停止交付](records/graceful-stop-20261010/DELIVERY.md)与[新鲜度交付](records/chat-reply-freshness-20261010/DELIVERY.md)保留各自基线和证据。
 
 最新[交付后复核](reviews/freshness-graceful-stop-20261010/REVIEW.md)以086cd07为基线：普通回复新鲜度可接受；安全停止原有1项P2（浏览器关闭失败被吞掉，仍报告成功并退出），现已修复，附[修复执行方案](reviews/freshness-graceful-stop-20261010/FIX_PLAN.md)。原组合探针在086cd07复现缺陷，在R1后转绿；原审核及失败日志保留历史含义，修复、独立复核补修与部署状态以[关闭记录](records/graceful-stop-r1-20261010/README.md)为准。
 
-本次[文档同步](records/document-current-sync-20261010/README.md)以源码726eb00为基线，核查当前规则、配置及导航，不修改产品、部署或服务。前次[文档核对](records/document-final-audit-20261010/README.md)和[图片／搜索修复交付](records/image-search-post-review-fixes-20261010/DELIVERY.md)保留原基线、原证据及未执行范围，不以本批覆盖历史结论。
+此前[文档同步](records/document-current-sync-20261010/README.md)以源码726eb00为基线，核查当前规则、配置及导航，不修改产品、部署或服务。前次[文档核对](records/document-final-audit-20261010/README.md)和[图片／搜索修复交付](records/image-search-post-review-fixes-20261010/DELIVERY.md)保留原基线、原证据及未执行范围，不以本批覆盖历史结论。
 
 默认提供整个 `docs/v0.5/`，从本文件阅读，并附[目录原则](../DIRECTORY_POLICY.md)。当前功能说明为以下10份；归档仅按疑点查阅。
 

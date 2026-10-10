@@ -27,10 +27,10 @@ it('samples every text, inserts each hit immediately, and freezes the final cros
   // Foreground idle interval, followed by the three unchanged sticker opportunities.
   d.random = new SequenceRandom([0.5, 0.999, 0, 0.999]);
   d.models.outputs.personal_chat = { emotions: [], reply: { decision: 'now', intention: '回答', draft: '严肃内容' }, taskChanges: [] };
-  d.models.outputs.expression = { parts: [{ kind: 'text', content: '一' }, { kind: 'action', content: '笑' }, { kind: 'text', content: '二' }, { kind: 'text', content: '三' }] };
+  d.models.outputs.expression = { parts: [{ kind: 'text', content: '一' }, { kind: 'text', content: '二' }, { kind: 'text', content: '三' }] };
   let lookups = 0; const stickers = { findSticker: async () => { lookups++; return 's'; } };
   const result = await generateTurn({ ...d, stickers }, { inputMessageIds: ['a'], taskIds: [], triggerKinds: ['input'] }, 'a');
-  expect(result.items.map(i => i.kind)).toEqual(['text', 'action', 'text', 'sticker', 'text']);
+  expect(result.items.map(i => i.kind)).toEqual(['text', 'text', 'sticker', 'text']);
   expect(lookups).toBe(1); expect(result.candidate.probability.stickerMisses).toBe(1);
   expect(result.candidate.probability.contactMisses).toBe(7); expect(d.storage.runtime().stickerMisses).toBe(2);
   d.random = new SequenceRandom([0.5, 0.999, 0, 0.999]);
@@ -41,10 +41,10 @@ it('samples every text, inserts each hit immediately, and freezes the final cros
 it('excludes offline entry and exit text and preserves the count', async () => {
   const d = setup(); saveInput(d.storage, 'a', '一起走'); d.config.stickersEnabled = true; d.random = new SequenceRandom([0]);
   d.storage.set('runtime', { ...d.storage.runtime(), stickerMisses: 10 });
-  d.models.outputs.personal_chat = { emotions: [], reply: { decision: 'now', intention: '确认', draft: '好' }, taskChanges: [], sharedChange: { action: 'start', mode: 'shared_offline', title: '散步' } };
-  d.models.outputs.expression = { parts: [{ kind: 'text', content: '好' }] };
+  d.models.outputs.personal_chat = { emotions: [], reply: { decision: 'now', intention: '确认', draft: '好', actions: ['点头'] }, taskChanges: [], sharedChange: { action: 'start', mode: 'shared_offline', title: '散步' } };
+  d.models.outputs.expression = { parts: [{ kind: 'action', content: '点头' }, { kind: 'text', content: '好' }] };
   const stickers = { findSticker: async () => { throw new Error('offline must not retrieve'); } };
   const r = await generateTurn({ ...d, stickers }, { inputMessageIds: ['a'], taskIds: [], triggerKinds: ['input'] }, 'a');
-  expect(r.items.map(i => i.kind)).toEqual(['narration', 'text']); expect(r.candidate.probability.stickerMisses).toBe(10);
+  expect(r.items.map(i => i.kind)).toEqual(['narration', 'action', 'text']); expect(r.candidate.probability.stickerMisses).toBe(10);
   d.storage.close();
 });

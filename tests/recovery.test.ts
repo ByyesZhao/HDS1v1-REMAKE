@@ -10,7 +10,7 @@ function unfinished(id = 'a'): TurnRecord {
 it('sends in order with real confirmation times, then commits once', async () => {
   const d = setup(); saveInput(d.storage, 'a', '你好');
   d.models.outputs.personal_chat = { emotions: [], reply: { decision: 'now', intention: '回答', draft: '你好' }, taskChanges: [] };
-  d.models.outputs.expression = { parts: [{ kind: 'text', content: '你好' }, { kind: 'action', content: '笑' }, { kind: 'text', content: '哈'.repeat(13) }] };
+  d.models.outputs.expression = { parts: [{ kind: 'text', content: '你好' }, { kind: 'text', content: '笑' }, { kind: 'text', content: '哈'.repeat(13) }] };
   const app = new HdsiApp(d);
   await app.runTurn({ inputMessageIds: ['a'], taskIds: [], triggerKinds: ['input'] });
   expect(d.sender.sent.map(i => i.payload)).toEqual(['你好', '笑', '哈'.repeat(13)]);

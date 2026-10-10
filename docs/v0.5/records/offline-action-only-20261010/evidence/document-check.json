@@ -1,0 +1,27 @@
+{
+  "date": "2026-10-10",
+  "codeBaseline": "008ca2c + offline action boundary correction",
+  "markdownFiles": 88,
+  "checkedLinks": 755,
+  "missingLinks": [],
+  "checkedAnchors": 14,
+  "missingAnchors": [],
+  "currentRuleFiles": [
+    "docs/v0.5/architecture/REMAKE_V0.5.md",
+    "docs/v0.5/subsystems/REMAKE_V0.5_CONTEXT.md",
+    "docs/v0.5/subsystems/REMAKE_V0.5_DIRECTORS.md",
+    "docs/v0.5/subsystems/REMAKE_V0.5_EXPRESSION_STICKERS.md",
+    "docs/v0.5/subsystems/REMAKE_V0.5_MEMORY.md",
+    "docs/v0.5/subsystems/REMAKE_V0.5_RECOVERY.md",
+    "docs/v0.5/subsystems/REMAKE_V0.5_SCHEDULING.md",
+    "docs/v0.5/subsystems/REMAKE_V0.5_SHARED_ACTIVITY.md",
+    "docs/v0.5/subsystems/REMAKE_V0.5_WEB_SEARCH.md",
+    "docs/v0.5/reference/BACKGROUND_VIEW_MAPPING_20261008.md",
+    "docs/v0.5/reference/MODEL_CALLS_AND_WEB_OPTIONS_20261009.md",
+    "docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md"
+  ],
+  "headingIssues": [],
+  "checkedSourcePaths": 70,
+  "missingSourcePaths": [],
+  "scope": "All local Markdown targets/anchors, current numbered sections and fully spelled literal source paths; no runtime test. Source rule comparison is recorded separately in README.md."
+}

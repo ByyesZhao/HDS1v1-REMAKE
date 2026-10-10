@@ -1,0 +1,200 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/offline-action-only.test.ts
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/offline-action-only/HDSI-remake
+
+ ❯ tests/offline-action-only.test.ts (17 tests | 13 failed) 75ms
+   × rejects an action segment in chat 7ms
+   × rejects an action segment in shared_online 1ms
+   × rejects an action marker disguised as text in chat 1ms
+   × rejects an action marker disguised as text in shared_online 0ms
+   × blocks ordinary personal action intentions 2ms
+   × blocks autonomous contact action intentions 2ms
+   × blocks online shared action intentions 1ms
+   × does not grant actions when entering an online activity 1ms
+   × repairs a forbidden action instead of sending or silently dropping it in chat 4ms
+   × repairs a forbidden action instead of sending or silently dropping it in shared_online 1ms
+   × keeps the selected chat contract across lookup and repair 1ms
+   × retains the existing repair limit when all action replies are invalid 1ms
+   × ordinary app repairs both personal and expression actions before public output 24ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 13 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/offline-action-only.test.ts > rejects an action segment in chat
+ FAIL  tests/offline-action-only.test.ts > rejects an action segment in shared_online
+AssertionError: expected [Function] to throw an error
+ ❯ tests/offline-action-only.test.ts:22:94
+     20| // A removed mode gate would let the original bedtime action escape as…
+     21| it.each(['chat', 'shared_online'])('rejects an action segment in %s', …
+     22|   expect(() => expressionTask(mode).parse({ parts: [{ kind: 'action', …
+       |                                                                                              ^
+     23|   expect(expressionTask(mode).parse({ parts: [{ kind: 'text', content:…
+     24| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/13]⎯
+
+ FAIL  tests/offline-action-only.test.ts > rejects an action marker disguised as text in chat
+ FAIL  tests/offline-action-only.test.ts > rejects an action marker disguised as text in shared_online
+AssertionError: expected [Function] to throw an error
+ ❯ tests/offline-action-only.test.ts:26:102
+     24| });
+     25| it.each(['chat', 'shared_online'])('rejects an action marker disguised…
+     26|   expect(() => expressionTask(mode).parse({ parts: [{ kind: 'text', co…
+       |                                                                                                      ^
+     27| });
+     28| it('keeps real offline actions available', () => {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/13]⎯
+
+ FAIL  tests/offline-action-only.test.ts > blocks ordinary personal action intentions
+AssertionError: expected [Function] to throw an error
+ ❯ tests/offline-action-only.test.ts:32:107
+     30| });
+     31| it('blocks ordinary personal action intentions', () => {
+     32|   expect(() => personalTask('chat', NOW, [], 'chat', []).parse({ emoti…
+       |                                                                                                           ^
+     33| });
+     34| it('blocks autonomous contact action intentions', () => {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/13]⎯
+
+ FAIL  tests/offline-action-only.test.ts > blocks autonomous contact action intentions
+AssertionError: expected [Function] to throw an error
+ ❯ tests/offline-action-only.test.ts:35:199
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/13]⎯
+
+ FAIL  tests/offline-action-only.test.ts > blocks online shared action intentions
+AssertionError: expected [Function] to throw an error
+ ❯ tests/offline-action-only.test.ts:38:132
+     36| });
+     37| it('blocks online shared action intentions', () => {
+     38|   expect(() => personalTask('shared', NOW, [], 'shared_online', [], me…
+       |                                                                                                                                    ^
+     39| });
+     40| it('uses the entering offline mode for opening intentions', () => {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/13]⎯
+
+ FAIL  tests/offline-action-only.test.ts > does not grant actions when entering an online activity
+AssertionError: expected [Function] to throw an error
+ ❯ tests/offline-action-only.test.ts:44:178
+     42| });
+     43| it('does not grant actions when entering an online activity', () => {
+     44|   expect(() => personalTask('chat', NOW, [], 'chat', []).parse({ emoti…
+       |                                                                                                                                                                                  ^
+     45| });
+     46| it('keeps offline closing intentions before the end marker', () => {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/13]⎯
+
+ FAIL  tests/offline-action-only.test.ts > repairs a forbidden action instead of sending or silently dropping it in chat
+ FAIL  tests/offline-action-only.test.ts > repairs a forbidden action instead of sending or silently dropping it in shared_online
+AssertionError: expected [ { kind: 'action', …(1) } ] to deeply equal [ { kind: 'text', content: '我睡啦，晚安' } ]
+
+- Expected
++ Received
+
+  [
+    {
+-     "content": "我睡啦，晚安",
+-     "kind": "text",
++     "content": "把手机扣在枕边，缩进被窝里闭了眼",
++     "kind": "action",
+    },
+  ]
+
+ ❯ tests/offline-action-only.test.ts:57:24
+     55|   } });
+     56|   const result = await runExpression(models, { mode, intent: { intenti…
+     57|   expect(result.parts).toEqual([{ kind: 'text', content: '我睡啦，晚安' }]);
+       |                        ^
+     58|   expect(requests).toHaveLength(2);
+     59|   expect(requests[1].repair?.errors).toMatch(/kind|action/);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/13]⎯
+
+ FAIL  tests/offline-action-only.test.ts > keeps the selected chat contract across lookup and repair
+AssertionError: expected [ { kind: 'action', …(1) } ] to deeply equal [ { kind: 'text', content: '我睡啦' } ]
+
+- Expected
++ Received
+
+  [
+    {
+-     "content": "我睡啦",
+-     "kind": "text",
++     "content": "把手机扣在枕边，缩进被窝里闭了眼",
++     "kind": "action",
+    },
+  ]
+
+ ❯ tests/offline-action-only.test.ts:71:24
+     69|   } });
+     70|   const result = await runExpression(models, input, { lookup: async ()…
+     71|   expect(result.parts).toEqual([{ kind: 'text', content: '我睡啦' }]);
+       |                        ^
+     72|   expect(requests).toHaveLength(3);
+     73|   expect(requests.every(r => r.task.promptPolicy?.facts.mode === 'chat…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/13]⎯
+
+ FAIL  tests/offline-action-only.test.ts > retains the existing repair limit when all action replies are invalid
+AssertionError: promise resolved "{ parts: [ { kind: 'action', …(1) } ] }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "parts": [
++     {
++       "content": "把手机扣在枕边，缩进被窝里闭了眼",
++       "kind": "action",
++     },
++   ],
+  }
+
+ ❯ tests/offline-action-only.test.ts:79:74
+     77|   let calls = 0;
+     78|   const models = new ModelClient({ complete: async () => { calls++; re…
+     79|   await expect(runExpression(models, { mode: 'chat' }, { lookup: null …
+       |                                                                          ^
+     80|   expect(calls).toBe(3);
+     81| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/13]⎯
+
+ FAIL  tests/offline-action-only.test.ts > ordinary app repairs both personal and expression actions before public output
+AssertionError: expected [ [ 'action', '把手机扣在枕边，缩进被窝里闭了眼' ] ] to deeply equal [ [ 'text', '我准备睡啦' ] ]
+
+- Expected
++ Received
+
+  [
+    [
+-     "text",
+-     "我准备睡啦",
++     "action",
++     "把手机扣在枕边，缩进被窝里闭了眼",
+    ],
+  ]
+
+ ❯ tests/offline-action-only.test.ts:96:57
+     94|     } });
+     95|     await new HdsiApp({ ...d, models }).runTurn({ inputMessageIds: ['a…
+     96|     expect(d.sender.sent.map(x => [x.kind, x.payload])).toEqual([['tex…
+       |                                                         ^
+     97|     expect(requests.filter(r => r.repair)).toHaveLength(2);
+     98|     expect(d.storage.unfinishedTurn()).toBeNull();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/13]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  13 failed | 4 passed (17)
+   Start at  23:37:23
+   Duration  747ms (transform 61%, import 25%, tests 13%, worker 1%)
+
