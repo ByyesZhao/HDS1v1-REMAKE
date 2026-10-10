@@ -15,3 +15,5 @@ T3：348b207 起；真实 Chrome + port/provider 红回归 8失败。连接原 D
 T4：c124bdd 起；main/role-main 登录壳 RED 5失败。删除凭据区域及提示，区域外独立 article/main 可保留；多表单逐项判定。GREEN 4文件/31测试，真实离线探针 loginMain=login_wall、0/1、无材料，R3保持1/0与0剩余页。新测试起初错误假定失败 DTO 传递异常文本；现沿原合同断言 read_error，DOM/探针另验 login_wall，保留中间日志。
 
 T5：5a53d27 起；真实 Context 的服务拒绝/一直不就绪 RED 2失败（有限外层截止+finally停止）。独立脚本注册前建立启动截止与internal/error出口，共同await启动和ready；所有结算清理监听/计时器，finally落盘。GREEN 3文件/7测试；旧审核探针有限返回并产失败报告。默认60000ms启动预算，未更改正式Host。
+
+补充边界：取消经 prepare 不冻结未知，CLI 启动失败退出1并保存原错误；2文件/10测试通过。类型首次门禁发现新测试 NodeNext 动态导入缺扩展名，校正 .js 后类型/构建通过；原失败日志保留。

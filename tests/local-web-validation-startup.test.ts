@@ -11,3 +11,9 @@ it.each(['reject','never','ready'])('standalone validation settles and writes re
  if(mode==='reject')expect(saved.error).toBe('SYNTHETIC_BROWSER_START_FAILURE');if(mode==='never')expect(saved.error).toContain('startup timeout');if(mode!=='ready')expect(networkPages).toBe(0);
  }finally{clearTimeout(timer);await ctx?.stop();require.cache[pluginPath]!.exports=originalPlugin;require.cache[koishiPath]!.exports=originalKoishi;rmSync(root,{recursive:true,force:true});}
 });
+
+it('standalone CLI returns nonzero and saves original startup failure',async()=>{
+ const {spawnSync}=require('node:child_process'),root=mkdtempSync(join(tmpdir(),'hdsi-startup-cli-')),report=join(root,'report.json');
+ const fixture=`const {createRequire}=require('node:module');const req=createRequire(process.cwd()+'/package.json');req('tsx/cjs');const {Service}=req('koishi');class Failed extends Service{static [Service.provide]='puppeteer';constructor(ctx){super(ctx,'puppeteer');}async start(){throw Error('SYNTHETIC_BROWSER_START_FAILURE');}}const path=req.resolve('koishi-plugin-puppeteer');req(path);require.cache[path].exports={default:Failed};process.argv=['node','scripts/validate-local-web.ts','--online','--probe','--report',process.argv[1]];req('./scripts/validate-local-web.ts');`;
+ try{const child=spawnSync(process.execPath,['-e',fixture,report],{cwd:process.cwd(),timeout:10000,encoding:'utf8'});expect(child.error).toBeUndefined();expect(child.status).toBe(1);expect(JSON.parse(readFileSync(report,'utf8'))).toMatchObject({passed:false,error:'SYNTHETIC_BROWSER_START_FAILURE',remainingOwnedPages:0,drained:true});}finally{rmSync(root,{recursive:true,force:true});}
+});

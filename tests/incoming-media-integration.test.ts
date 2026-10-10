@@ -22,7 +22,7 @@ it('sleep does not inspect incoming images',async()=>{
 });
 
 it('disabled_visual_input_preserves_confirmed_deferred_image_after_disk_reopen',async()=>{
- const {modern}=await import('./chat-fixture');const {Storage}=await import('../src/storage');const {initialCharacter}=await import('../src/config');const {EnvironmentStore}=await import('../src/environment/store');const {SchoolStore}=await import('../src/school/store');
+ const {modern}=await import('./chat-fixture.js');const {Storage}=await import('../src/storage.js');const {initialCharacter}=await import('../src/config.js');const {EnvironmentStore}=await import('../src/environment/store.js');const {SchoolStore}=await import('../src/school/store.js');
  const d=modern(),root=mkdtempSync(join(tmpdir(),'hdsi-confirmed-reopen-')),path=join(root,'story.sqlite');d.storage.close();d.storage=new Storage(path);d.storage.set('character',initialCharacter(d.clock.now()));d.storage.set('runtime',{...d.storage.runtime(),nextEnvironmentAt:'2099-01-01T00:00:00Z'});
  let service:IncomingMediaService|undefined,downloads=0;const make=(enabled:boolean)=>{const store=new IncomingMediaStore(d.storage);return new IncomingMediaService(store,new IncomingAssets(store,join(root,'assets'),new AttachmentResolver(async()=>{downloads++;throw Error('forbidden download');})),d.models,{enabled});};
  const app=()=>new HdsiApp({...d,chat:undefined,environmentStore:new EnvironmentStore(d.storage),schoolStore:new SchoolStore(d.storage),incomingMedia:service});

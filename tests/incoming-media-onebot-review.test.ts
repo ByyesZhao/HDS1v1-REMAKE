@@ -28,7 +28,7 @@ it('runtime assembly uses bound OneBot internal.getImage and persists downloaded
 });
 
 it('onebot_get_image_failure_freezes_unknown_and_turn_finishes',async()=>{
- const {modern}=await import('./chat-fixture');const {saveInput}=await import('./helpers');const {HdsiApp}=await import('../src/app');const {IncomingMediaStore}=await import('../src/input-media/store');const {IncomingAssets}=await import('../src/input-media/assets');const {IncomingMediaService}=await import('../src/input-media/service');
+ const {modern}=await import('./chat-fixture.js');const {saveInput}=await import('./helpers.js');const {HdsiApp}=await import('../src/app.js');const {IncomingMediaStore}=await import('../src/input-media/store.js');const {IncomingAssets}=await import('../src/input-media/assets.js');const {IncomingMediaService}=await import('../src/input-media/service.js');
  const d=modern(),root=mkdtempSync(join(tmpdir(),'hdsi-onebot-failure-'));const internal=new OneBot.Internal({logger:{debug(){}}});internal._request=async()=>({retcode:100,data:null});
  const store=new IncomingMediaStore(d.storage),service=new IncomingMediaService(store,new IncomingAssets(store,root,new AttachmentResolver(async()=>{throw Error('forbidden network');},file=>internal.getImage(file))),d.models,{enabled:true});
  try{const parsed=parseIncomingContent('m',(await adapted()).content);saveInput(d.storage,'m',parsed.content);store.register(parsed.attachments);
@@ -42,4 +42,11 @@ it.each(['reject','resolve'])('platform cancellation preserves original abort on
  const running=resolver.resolve({id:'a',messageId:'m',order:0,kind:'image',platformFile:'token'},controller.signal);controller.abort(reason);
  if(outcome==='reject')reject(Error('platform late failure'));else resolve({base64:png.toString('base64')});
  await expect(running).rejects.toBe(reason);
+});
+
+it('canceled platform prepare does not freeze an unavailable observation',async()=>{
+ const {modern}=await import('./chat-fixture.js');const {saveInput}=await import('./helpers.js');const {IncomingMediaStore}=await import('../src/input-media/store.js');const {IncomingAssets}=await import('../src/input-media/assets.js');const {IncomingMediaService}=await import('../src/input-media/service.js');
+ const d=modern(),root=mkdtempSync(join(tmpdir(),'hdsi-cancel-prepare-')),controller=new AbortController(),reason=Error('cancel prepare');let reject!:(e:Error)=>void,entered!:()=>void;const started=new Promise<void>(r=>entered=r),api=new Promise<any>((_,no)=>reject=no);
+ const store=new IncomingMediaStore(d.storage),service=new IncomingMediaService(store,new IncomingAssets(store,root,new AttachmentResolver(fetch,()=>{entered();return api;})),d.models,{enabled:true});
+ try{saveInput(d.storage,'m','image');store.register([{id:'a',messageId:'m',order:0,kind:'image',platformFile:'token'}]);d.storage.save('turns','t',{id:'t',visualContext:{version:1,entries:[]}} as any);const pending=service.prepareForTurn('t',['m'],controller.signal);const failure=expect(pending).rejects.toBe(reason);await started;controller.abort(reason);reject(Error('late API error'));await failure;expect(service.readFrozenForTurn('t')).toEqual([]);expect(store.forMessages(['m'])[0].downloadStatus).not.toBe('unavailable');expect(d.models.calls).toHaveLength(0);}finally{await service.stop();d.storage.close();rmSync(root,{recursive:true,force:true});}
 });
