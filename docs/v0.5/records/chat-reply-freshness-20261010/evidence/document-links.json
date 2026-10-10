@@ -1,74 +1,9 @@
 {
-  "checkedLinks": 638,
-  "missingLinks": [
-    {
-      "file": "docs\\v0.5\\README.md",
-      "target": "../../runtime/archive/README.md"
-    },
-    {
-      "file": "docs\\v0.5\\reviews\\chat-reply-freshness-20261010\\REVIEW.md",
-      "target": "../../../../src/host/runtime.ts:64"
-    },
-    {
-      "file": "docs\\v0.5\\reviews\\chat-reply-freshness-20261010\\REVIEW.md",
-      "target": "../../../../src/host/scheduler.ts:16"
-    },
-    {
-      "file": "docs\\v0.5\\reviews\\chat-reply-freshness-20261010\\REVIEW.md",
-      "target": "../../../../src/app.ts:37"
-    },
-    {
-      "file": "docs\\v0.5\\reviews\\chat-reply-freshness-20261010\\REVIEW.md",
-      "target": "../../../../src/host/scheduler.ts:85"
-    },
-    {
-      "file": "docs\\v0.5\\reviews\\chat-reply-freshness-20261010\\REVIEW.md",
-      "target": "../../../../src/host/scheduler.ts:28"
-    },
-    {
-      "file": "docs\\v0.5\\reviews\\chat-reply-freshness-20261010\\REVIEW.md",
-      "target": "../../../../src/recovery.ts:127"
-    },
-    {
-      "file": "docs\\v0.5\\reviews\\chat-reply-freshness-20261010\\REVIEW.md",
-      "target": "../../../../src/web/store.ts:18"
-    },
-    {
-      "file": "docs\\v0.5\\reviews\\chat-reply-freshness-20261010\\REVIEW.md",
-      "target": "../../../../src/model/client.ts:30"
-    },
-    {
-      "file": "docs\\v0.5\\reviews\\chat-reply-freshness-20261010\\REVIEW.md",
-      "target": "../../../../src/memory/organize.ts:16"
-    },
-    {
-      "file": "docs\\v0.5\\reviews\\chat-reply-freshness-20261010\\REVIEW.md",
-      "target": "../../../../src/input-media/service.ts:29"
-    },
-    {
-      "file": "docs\\v0.5\\reviews\\chat-reply-freshness-20261010\\REVIEW.md",
-      "target": "../../../../src/input-media/context.ts:6"
-    },
-    {
-      "file": "docs\\v0.5\\reviews\\chat-reply-freshness-20261010\\REVIEW.md",
-      "target": "../../../../src/host/scheduler.ts:20"
-    },
-    {
-      "file": "docs\\v0.5\\reviews\\chat-reply-freshness-20261010\\REVIEW.md",
-      "target": "../../../../src/storage.ts:117"
-    },
-    {
-      "file": "docs\\v0.5\\reviews\\chat-reply-freshness-20261010\\REVIEW.md",
-      "target": "../../../../src/app.ts:100"
-    },
-    {
-      "file": "docs\\v0.5\\reviews\\chat-reply-freshness-20261010\\REVIEW.md",
-      "target": "../../../../src/recovery.ts:107"
-    },
-    {
-      "file": "docs\\v0.5\\records\\document-organization-20261009\\README.md",
-      "target": "../../../../runtime/archive/README.md"
-    }
+  "checkedLinks": 643,
+  "missingLinks": [],
+  "deploymentOnlyTargets": [
+    "runtime\\archive\\README.md",
+    "runtime\\archive\\README.md"
   ],
-  "scope": "local links only, no credentials or previous evidence rewriting"
+  "scope": "strip line anchors; ignored runtime/archive checked at original deployment directory; no credentials or original evidence rewriting"
 }

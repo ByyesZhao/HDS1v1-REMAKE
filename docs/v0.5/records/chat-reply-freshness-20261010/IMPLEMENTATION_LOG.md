@@ -53,3 +53,5 @@ Ruling: 原跨活动回归改用到期预约触发新活动，仍验证旧活动
 T5磁盘增强：真实阶段runId／确认页额度跨关闭重开保持；首次sending登记后尚未调用QQ恢复；post result已保存但提交事务中断后，记忆／经历／情绪／任务应用一次。测试首版degree字段错误导致夹具失败，已修正，原日志保留。
 
 Task T5: complete — 五组新增36项；全量184文件990项，typecheck/build/demo/双场景smoke/隔离check/hash verify均退出码0（logs）。全量首次8失败已解释并修复，复跑结果不是旧基线的35项。
+
+最终T5提交82254ef；链接复核643条目标通过，忽略部署归档的2处目标在原项目确认存在。初版链接探针未去行号／未考虑ignored部署归档，失败JSON另存document-links-first，修正探针后document-links为当前结果。未运行旧核对脚本覆写其历史证据。
