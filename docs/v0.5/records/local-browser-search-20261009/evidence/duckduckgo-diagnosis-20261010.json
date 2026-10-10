@@ -1,0 +1,32 @@
+{
+  "date": "2026-10-10",
+  "oldSource": "D:\\HDSI\\runtime\\on-demand-browsing-20261001\\prepare-search-update.cjs",
+  "copiedPublicSourceExcerpt": [
+    "  current.browser.searchUrlTemplate = 'https://html.duckduckgo.com/html/?q={query}'",
+    "  sourceBaseline: '1c174ec', chosenTemplate: 'https://html.duckduckgo.com/html/?q={query}',"
+  ],
+  "currentProvider": "src/web/browser/provider.ts",
+  "currentConfiguredDuckDuckGoEntry": "https://html.duckduckgo.com/html/?q={query}",
+  "priorBrowserEvidence": "public-browser-probe-duckduckgo.json",
+  "anonymousHttpProbe": [
+    {
+      "entry": "lite",
+      "url": "https://lite.duckduckgo.com/lite/?q=Mozilla%20Readability",
+      "status": 202,
+      "captchaForm": true,
+      "candidateLinks": 0,
+      "challengeStatement": true
+    },
+    {
+      "entry": "html",
+      "url": "https://html.duckduckgo.com/html/?q=Mozilla%20Readability",
+      "status": 202,
+      "captchaForm": true,
+      "candidateLinks": 0,
+      "challengeStatement": true
+    }
+  ],
+  "boundary": "Anonymous urllib GET only; not a new real-browser acceptance. No login, CAPTCHA interaction, config/database edits or service startup. Block trigger and manual recovery remain unverified.",
+  "officialNonJsReference": "https://duckduckgo.com/duckduckgo-help-pages/features/non-javascript",
+  "engineIntegrationReference": "https://docs.searxng.org/dev/engines/online/duckduckgo.html"
+}
