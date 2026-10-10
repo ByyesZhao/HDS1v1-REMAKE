@@ -1,0 +1,26 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/reply-freshness-context.test.ts tests/web-recovery.test.ts tests/web-phases.test.ts tests/web-memory-sources.test.ts tests/incoming-media-turn.test.ts tests/chat-active-consistency.test.ts
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/chat-reply-freshness/HDSI-remake
+
+ ❯ tests/reply-freshness-context.test.ts (3 tests | 1 failed) 77ms
+   × new_generation_starts_without_old_lookup_repair_or_web_payload 47ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/reply-freshness-context.test.ts > new_generation_starts_without_old_lookup_repair_or_web_payload
+AssertionError: expected undefined to be defined
+ ❯ tests/reply-freshness-context.test.ts:16:72
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 5 passed (6)
+      Tests  1 failed | 25 passed (26)
+   Start at  16:54:10
+   Duration  2.36s (import 40%, tests 33%, transform 26%, worker 1%)
+
+    Isolate  6 workers spawned · ~94ms startup each (spawn + environment, per file)
+             at least ~471ms faster with isolate: false — reuses workers across files instead of one per file
+

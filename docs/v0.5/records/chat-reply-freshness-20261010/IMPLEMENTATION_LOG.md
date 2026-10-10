@@ -35,3 +35,9 @@ T3 RED：4项失败；首次实现定向回归发现 collectReady 抽取 prepare
 ## T4 brief
 
 业务 stageKey=reply:generation:stage:taskName；同代际恢复身份／额度不变，换代独立额度。仅清旧业务 checkpoint，附件阶段和 ready/unrecognized/pending 冻结保留。最终本人查阅来源只取有效 personalRunId。真实 ModelClient 请求证明旧 lookup／repair／材料不自动注入。
+
+T4 RED：2项失败；GREEN：6文件27项通过，退出码0（T4-green-complete）。中间测试修正 SQL 未指定排序和 lookupDetails 测试请求格式；原失败日志保留。新增真实 ModelClient 验证查阅／修补／公开缓存计数及实际图片 DTO；不用 mock 参数冒充权限证明。
+
+## T5 brief
+
+真实 SQLite 文件重开，覆盖 waiting、全 pending、sending、confirmed/retry、silent post、旧轮与事件接管恢复。检查有效提交一次、原消息批次不变；全量检查、演示、双场景 smoke、隔离启动检查后同步当前文档。
