@@ -35,3 +35,9 @@
 2026-10-10：源码已在main合并（0658cbb），主目录复验typecheck及新增36项退出0；与隔离审查版本的src/tests/runtime/package无差异。本批完整990项、build/demo/smoke证据来自隔离工作树，未声称主目录旧lib通过新功能全量验收。655条当前文档链接有效。
 
 **正式部署待停服确认。** 原Koishi仍运行，主目录lib、正式配置和数据库均未更新；无数据库升级要求。已请求用户Ctrl+C停止HDSI，确认后才能备份旧lib并构建，然后由用户手动启动；SnowLuma可继续运行。已向native工具提交临时工作树归档请求，全部必要源代码、脚本和日志已并入main。
+
+## 停服部署完成
+
+用户确认HDSI已停止，预检Koishi进程和5141监听均不存在。旧224个lib文件备份至`D:/HDSI-remake/runtime/archive/batches/chat-reply-freshness-20261010-173309`；主目录build、184文件990项、demo、双场景smoke及禁止fetch的正式只读启动检查全部退出0。正式配置、koishi.yml、数据库及WAL指纹一致，67个表情包检查通过。SHM因SQLite只读检查的共享读锁元数据改变，不能把它说成字节不变；没有业务数据写入。详见[部署证据](evidence/formal-build-deployment.json)。
+
+首次差异检查把SHM也要求完全不变，断言失败；核实只有SHM变化后修正报告口径，不修改数据库。此前“部署待确认”为历史节点，现已完成构建部署。用户随后批准新增安全停止功能，该功能另批实施；HDSI仍未启动。恢复旧产物时先停服、将当前lib改名保留，再复制备份lib，不混合两版文件。
