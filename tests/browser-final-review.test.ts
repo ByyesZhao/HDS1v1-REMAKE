@@ -27,3 +27,13 @@ it('unknown popup close failure is not swallowed as a successful parent drain',a
  const managed=createManagedBrowserProvider(createKoishiBrowserPort(async()=>f.page as any),{engine:'bing',navigationTimeoutMs:1000,maxConcurrentPages:1});
  await expect(managed.provider.read(url)).rejects.toThrow('popup close failed');await expect(managed.dispose()).rejects.toThrow('popup close failed');
 });
+
+it.each(['main','div role="main"'])('main_wrapped_login_is_not_full_body: %s',tag=>{
+ const close=tag.startsWith('div')?'div':tag;const p=extract('<'+tag+'><h1>Sign in</h1><p>Sign in to continue reading.</p><form><input type="password"><button>Sign in</button></form></'+close+'>');expect(p.access).toBe('login_wall');expect(p.main).toBeNull();expect(()=>extractReadablePage(p)).toThrow('login_wall');
+});
+it.each([
+ '<article><p>Independent body.</p></article><aside><h1>Sign in</h1><form><input type="password"></form></aside>',
+ '<main><article><p>Independent body.</p></article><div><h1>Sign in</h1><p>Login prompt.</p><form><input type="password"></form></div></main>',
+ '<main><p>Independent body.</p><div role="dialog"><p>Login prompt.</p><form><input type="password"></form></div></main>',
+ '<article><p>Independent body.</p></article><form hidden><input type="password"></form><main><p>Sign in to continue.</p><form><input type="password"></form></main>',
+])('independent body survives adjacent login regions: %s',html=>{expect(extractReadablePage(extract(html)).body).toBe('Independent body.');});

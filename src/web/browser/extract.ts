@@ -4,7 +4,6 @@ export const BROWSER_EXTRACTOR_VERSION='dom-v2/readability-0.6.0';
 /** Self-contained function: the identical DOM algorithm runs in the browser and fixture tests. */
 export function extractDomEvidence(document:Document,finalUrl:string,engine:BrowserEngine|null=null,ReadabilityCtor?:new(doc:Document)=>{parse():{textContent:string;title:string}|null}):BrowserPageResult{
  const result:BrowserPageResult={finalUrl,title:document.title??'',access:'ok',search:null,main:null};
- const select=(selector:string)=>document.querySelector(selector);
  // Measure connected original nodes before cloning/removing styles. CSS visibility
  // is inherited but can be overridden; display:none and hidden ancestors cannot.
  const nodes=Array.from(document.querySelectorAll('*'));
@@ -19,19 +18,33 @@ export function extractDomEvidence(document:Document,finalUrl:string,engine:Brow
  const visible=(node:Element)=>states.get(node)?.visible??false;
  const wall=Array.from(document.querySelectorAll('form#challenge-form,form#captcha-form,#b_captcha,iframe[src*="recaptcha"],iframe[src*="hcaptcha"],form[action*="captcha"]')).find(visible);
  if(wall&&visible(wall)){result.access='captcha';return result;}
- const password=select('form input[type="password"]');if(password&&visible(password)&&!select('article,main,[role="main"]')){result.access='login_wall';return result;}
+ const passwords=Array.from(document.querySelectorAll('form input[type="password"]')).filter(visible);
+ const loginRegions=new Set<Element>();
+ for(const password of passwords){const form=password.closest('form')!;
+  const component=form.closest('dialog,[role="dialog"],aside,[role="complementary"]');
+  let region:Element=component??form;
+  if(!component)for(let parent=form.parentElement;parent;parent=parent.parentElement){
+   // An independent semantic body beside the credential branch bounds the login region.
+   const independent=Array.from(parent.querySelectorAll('article,main,[role="main"]')).some(n=>visible(n)&&!passwords.some(p=>n.contains(p)));
+   if(independent)break;region=parent;
+   if(parent.matches('article,main,[role="main"],body'))break;
+  }
+  loginRegions.add(region);
+ }
+ const outsideLogin=(node:Element)=>![...loginRegions].some(region=>region.contains(node));
  let detected=engine;
  if(!detected){try{const url=new URL(finalUrl);if(/(^|\.)bing\.com$/.test(url.hostname)&&url.pathname==='/search')detected='bing';else if(/(^|\.)duckduckgo\.com$/.test(url.hostname)&&url.searchParams.has('q'))detected='duckduckgo';}catch{}}
  if(detected){
   const selectors=detected==='bing'?'#b_results .b_algo h2 a':'a.result__a,[data-testid="result"] a[data-testid="result-title-a"]';
-  const links=Array.from(document.querySelectorAll(selectors)).filter(visible).map(a=>({url:a.getAttribute('href')??'',title:(a.textContent??'').trim()})).filter(a=>!!a.url&&!!a.title);
-  const empty=Array.from(document.querySelectorAll(detected==='bing'?'#b_results .b_no':'#links .no-results,.results .no-results,.no-results')).find(visible);
+  const links=Array.from(document.querySelectorAll(selectors)).filter(node=>visible(node)&&outsideLogin(node)).map(a=>({url:a.getAttribute('href')??'',title:(a.textContent??'').trim()})).filter(a=>!!a.url&&!!a.title);
+  const empty=Array.from(document.querySelectorAll(detected==='bing'?'#b_results .b_no':'#links .no-results,.results .no-results,.no-results')).find(node=>visible(node)&&outsideLogin(node));
+  if(passwords.length&&!links.length&&!empty){result.access='login_wall';return result;}
   result.search={state:links.length?'results':empty&&visible(empty)?'empty':'unready',links,evidence:links.length?selectors:empty&&visible(empty)?'engine empty-result element':null};return result;
  }
  const clone=document.cloneNode(true) as Document;
  const copies=Array.from(clone.querySelectorAll('*'));
  for(let i=0;i<nodes.length;i++){const state=states.get(nodes[i])!,copy=copies[i];
-  if(state.blocked)copy.remove();
+  if(state.blocked||loginRegions.has(nodes[i]))copy.remove();
   else if(!state.visible){for(const child of Array.from(copy.childNodes))if(child.nodeType===3)child.remove();copy.replaceWith(...Array.from(copy.childNodes));}
  }
  for(const e of Array.from(clone.querySelectorAll('script,style,noscript,template,nav,header,footer,aside,form,button,[aria-busy="true"],[role="navigation"],[role="status"],[role="progressbar"],[role="contentinfo"],[class*="footer"],[id*="footer"],[class*="copyright"],[id*="copyright"],[hidden],[aria-hidden="true"]')))e.remove();
@@ -41,6 +54,7 @@ export function extractDomEvidence(document:Document,finalUrl:string,engine:Brow
  for(const [selector,source] of [['article','article'],['main,[role="main"]','main']] as const){const nodes=Array.from(clone.querySelectorAll(selector));const contents=nodes.filter(hasBodyEvidence).map(text).filter(Boolean);if(contents.length){result.main={text:contents.join('\n\n'),source};return result;}}
  const Ctor=ReadabilityCtor??(globalThis as unknown as {Readability?:typeof ReadabilityCtor}).Readability;
  if(Ctor&&clone.documentElement&&hasBodyEvidence(clone.documentElement)){try{const readable=new Ctor(clone).parse();if(readable?.textContent?.trim())result.main={text:readable.textContent.trim(),source:'readability'};}catch{}}
+ if(passwords.length&&!result.main)result.access='login_wall';
  return result;
 }
 function candidateUrl(value:string,base:string):string|null{
