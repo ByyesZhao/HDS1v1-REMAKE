@@ -2,7 +2,7 @@
 
 返回[版本索引](../README.md)。
 
-最新为[图片输入与本地搜索交付后复核](image-search-post-implementation-20261010/REVIEW.md)，基线2a2e77e；确认的4项P2、1项P3已按方案修复，见[修复关闭](../records/image-search-post-review-fixes-20261010/REVIEW_CLOSURE.md)与[最终交付](../records/image-search-post-review-fixes-20261010/DELIVERY.md)；原报告保留基线含义，附[修复执行方案](image-search-post-implementation-20261010/FIX_PLAN.md)。真实协议2 App、Chrome页面提取与Koishi启动失败均有离线复现。原173文件／882项均有独立通过记录，其中2项因沙箱限制单独复跑；构建、类型、演示及双场景插件验收通过。主体架构保留；执行者逐项回归已完成，整批175文件912项及类型/构建/demo/双场景smoke通过，独立审查收尾。
+最新为[图片输入与本地搜索交付后复核](image-search-post-implementation-20261010/REVIEW.md)，基线2a2e77e；确认的4项P2、1项P3已按方案修复，见[修复关闭](../records/image-search-post-review-fixes-20261010/REVIEW_CLOSURE.md)与[最终交付](../records/image-search-post-review-fixes-20261010/DELIVERY.md)；原报告保留基线含义，附[修复执行方案](image-search-post-implementation-20261010/FIX_PLAN.md)。真实协议2 App、Chrome页面提取与Koishi启动失败均有离线复现。原173文件／882项均有独立通过记录，其中2项因沙箱限制单独复跑；构建、类型、演示及双场景插件验收通过。主体架构保留；执行者逐项回归已完成，整批175文件920项及类型/构建/demo/双场景smoke通过，一次独立审查补修完成（原报告与TDD关闭分别保留）。
 
 前次[图片输入理解与本地搜索计划审核](image-input-local-search-20261009/PLAN_REVIEW.md)，基线4fe090c，包含源码核对、离线探针与具体修订／测试要求；意见已纳入[修订执行包](../plans/image-input-local-search-20261009/README.md)，随后I1～I6、S1～S5已交付。原计划审核不是新功能验收，当前待办以本次交付后复核为准。
 

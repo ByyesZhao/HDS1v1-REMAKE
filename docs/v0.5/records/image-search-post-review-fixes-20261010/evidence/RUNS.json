@@ -16,6 +16,26 @@
       "file": "T5-startup.json",
       "sourceCommit": "5a53d27 + T5 changes (committed as 32efb3c)",
       "kind": "actual Context, synthetic rejecting service"
+    },
+    {
+      "files": [
+        "final-browser.json",
+        "final-images.json"
+      ],
+      "sourceCommit": "e4c4c83 + final review fixes (committed as 47eb14d)",
+      "kind": "actual Chrome and protocol2 App, synthetic offline"
     }
-  ]
+  ],
+  "finalGates": {
+    "sourceCommit": "47eb14d",
+    "files": 175,
+    "tests": 920,
+    "fullTestLog": "../logs/full-test-reviewed.log",
+    "typecheck": "passed",
+    "build": "passed",
+    "demo": "passed before supplemental fix; main integration rerun pending",
+    "smoke": "passed before supplemental fix; main integration rerun pending",
+    "pageNetworkRequests": 0,
+    "realModelCalls": 0
+  }
 }
