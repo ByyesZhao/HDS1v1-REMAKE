@@ -4,19 +4,19 @@
 
 V0.5整理当前实现：普通最近4个完整对话段、活动完整授权原文和结束后记忆召回；7／90／3／30记忆周期及100／1000／500容量；每日06:00世界／校园／课题组／周增量链；普通15秒合批、共同60秒或全文`【推进】`，约10轮软收尾、20轮硬上限；冻结发送与按阶段恢复。
 
-这是架构文档版本。现有npm包元数据仍为0.2.0，数据库各子系统版本保持原协议，本批新增环境异步协议2，新库默认启用；旧库须显式升级。正式配置未改；正式库已按后续授权备份升级环境规划至2，原数据保留。
+这是架构文档版本。现有npm包元数据仍为0.2.0，数据库各子系统版本保持原协议，环境异步协议2新库默认启用；旧库须显式升级。正式库已按后续授权备份升级环境规划至2，原数据保留；2026-10-10又按用户要求启用新图识别及Bing搜索，见[配置记录](docs/v0.5/records/feature-enablement-20261010/README.md)。
 
 ## 1. 当前状态
 
 前批交付为[当前审核改进T1～T9](docs/archive/records/current-audit-improvements-20261009/DELIVERY.md)。此前REVIEW26的107／620、ASTRA T1～T13的121／681和R1的122／693保留各批历史含义。ASTRA随后已独立重跑137文件776项并[确认关闭](docs/archive/reviews/post-t1-t9-20261009/REVIEW.md)。环境异步E1～E5及交付后R1／R2、只读启动检查修复均已完成，最终148文件826项及离线验收通过，该批见[修复与正式升级交付](docs/v0.5/records/environment-post-delivery-fixes-20261009/DELIVERY.md)；初批过程见[本批记录](docs/v0.5/records/environment-async-20261009/README.md)。旧证据仍按原批次解释。
 
-本批已加入三条固定回复规则及程序选择的图片／表情分支，纯附件可落库、收尾可已读不回。150文件840项、类型、构建及离线验收通过，见[最新回复规则交付](docs/v0.5/records/reply-guidance-20261009/DELIVERY.md)。附件类型检测不等于实时识图；没有新的正式库迁移或在线调用。
+此前加入三条固定回复规则及程序选择的图片／表情分支，纯附件可落库、收尾可已读不回，该批150文件840项见[回复规则交付](docs/v0.5/records/reply-guidance-20261009/DELIVERY.md)。后续图片输入／本地搜索及复核修复已交付，最新代码验收175文件920项，见[交付](docs/v0.5/records/image-search-post-review-fixes-20261010/DELIVERY.md)。配置启用不作为新增在线验收。
 
 67项旧图库的图片、说明、标签和1024维向量已在新项目复用；运行不依赖旧HDSI目录。角色背景和用途映射已批准启用，故事阶段完整背景保留，未迁移作者事实或覆盖已有细节。
 
-网页核心与本地浏览器provider已实现，正式开关保持关闭；记忆向量索引已实现，真实语义阈值未标定，当前先用已标定词法和直接键。真实QQ持续收发、新图在线描述、现实新闻搜索及数月稳定运行尚未验收。服务继续由用户手动启动。
+网页核心与本地浏览器provider已实现，正式配置已启用Bing搜索和新图识别；记忆向量索引已实现，真实语义阈值未标定，当前先用已标定词法和直接键。真实QQ持续收发、新图在线描述、现实新闻搜索及数月稳定运行尚未验收。服务继续由用户手动启动／重启。
 
-[图片输入交付](docs/v0.5/records/image-input-20261009/DELIVERY.md)与[本地搜索交付](docs/v0.5/records/local-browser-search-20261009/DELIVERY.md)已提供。保持现有模型／强度，两项正式开关仍关闭；启用步骤见各交付，不启动QQ服务。
+[图片输入交付](docs/v0.5/records/image-input-20261009/DELIVERY.md)与[本地搜索交付](docs/v0.5/records/local-browser-search-20261009/DELIVERY.md)保留原基线。后续[配置启用](docs/v0.5/records/feature-enablement-20261010/README.md)保持现有模型／强度，启动检查通过；等待用户手动启动，未由配置操作启动QQ服务。
 
 ## 2. 开发与离线验证
 
@@ -69,7 +69,7 @@ SnowLuma登录该机器人，OneBot反向WebSocket对应`ws://127.0.0.1:5141/one
 
 `narrative`、`narrative_shared`、`personal_chat`、`personal_life`、`personal_shared`、`expression`、`memory`、`memory_consolidation`、`world`、`school_campus`、`school_group`、`school_week`。
 
-另有`stickerDescriptionModel`。固定信息审核使用memory_audit提示／资料投影，实际模型任务名和复用连接均为memory_consolidation。当前全部Flash；记忆提取／深度整理／新图描述high，其余上述故事与环境任务low。每项可独立改`deepseek-v4-pro`，格式修补及工具续调用继承原连接。强度支持none／low／high／max，具体有效值与Schema默认差别见[对应清单](docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md)。
+另有`stickerDescriptionModel`及可选`incomingImageModel`；用户图观察未单独覆盖时复用素材描述连接。固定信息审核使用memory_audit提示／资料投影，实际模型任务名和复用连接均为memory_consolidation。当前全部Flash；记忆提取／深度整理／新图描述及用户图观察high，其余上述故事与环境任务low。每项可独立改`deepseek-v4-pro`，格式修补及工具续调用继承原连接。强度支持none／low／high／max，具体有效值与Schema默认差别见[对应清单](docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md)。
 
 示例（当前支持的本地解码格式）：
 
@@ -167,8 +167,8 @@ npm run stickers -- rebuild - config.local.json runtime/data/hdsi-remake.sqlite
 
 ## 用户图片与本地浏览器配置
 
-正式配置本批未修改。审阅后可启用visualInput.enabled=true；incomingImageModel可选，未配复用stickerDescriptionModel。入站观察独立于发送图库，不改旧67项素材向量。
+2026-10-10用户授权后已配置visualInput.enabled=true；incomingImageModel未配，复用stickerDescriptionModel（Flash/high）。角色有权读取时才准备视觉观察；字节预取不代表已经看到。入站观察独立于发送图库，不改旧67项素材向量。
 
-webSearch.enabled=true且provider="browser"；browser默认engine="bing"、navigationTimeoutMs=60000、maxConcurrentPages=1。在runtime的Koishi plugins中启用puppeteer并使用本项目依赖；未就绪时故事实例等待，不由HDSI启动另一个浏览器。没有搜索API计次费，仍消耗本机资源、网络和模型续调用。当前DuckDuckGo公开验收遇到验证码，不自动回退。
+当前显式配置webSearch.enabled=true、provider="browser"、engine="bing"、navigationTimeoutMs=60000、maxConcurrentPages=1。runtime的Koishi plugins已加入puppeteer:hdsi-web（headless=true），使用本项目依赖并自动查找本机Chrome；未就绪时故事实例等待，不由HDSI启动另一个浏览器。没有搜索API计次费，仍消耗本机资源、网络和模型续调用。此前DuckDuckGo公开验收遇到验证码，不自动回退。
 
 只读隔离check支持--config、--database、--koishi-config三个绝对路径；默认启动器原路径保留。prepare-feature-check.ts生成image／search合成库，verify检查哈希；不复制正式库。两项开关不要通过改版本号或删表启用，部署／回退仍按一致备份和手动启动规则。

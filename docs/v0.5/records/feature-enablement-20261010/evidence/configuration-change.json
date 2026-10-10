@@ -1,0 +1,31 @@
+{
+  "date": "2026-10-10",
+  "codeBaseline": "31f331c",
+  "backupDirectory": "runtime/archive/batches/feature-enablement-20261010-1791605688978",
+  "visualInput": {
+    "enabled": true
+  },
+  "webSearch": {
+    "enabled": true,
+    "maxSuccessReads": 20,
+    "maxFailures": 40,
+    "provider": "browser",
+    "browser": {
+      "engine": "bing",
+      "navigationTimeoutMs": 60000,
+      "maxConcurrentPages": 1
+    }
+  },
+  "puppeteer": {
+    "plugin": "puppeteer:hdsi-web",
+    "headless": true,
+    "autoDetectedBrowser": "C:/Program Files/Google/Chrome/Application/chrome.exe"
+  },
+  "unchanged": {
+    "otherStorySettings": true,
+    "models": true,
+    "embeddings": true,
+    "existingKoishiPlugins": true
+  },
+  "scope": "Configuration-only enablement; no service startup, provider request or database modification."
+}

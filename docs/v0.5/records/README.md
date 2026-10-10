@@ -4,6 +4,7 @@
 
 | 记录 | 状态 |
 | --- | --- |
+| [图片／搜索配置启用](feature-enablement-20261010/README.md) | 用户授权打开新图识别、Bing搜索和Puppeteer；模型未改，只读启动检查通过；服务由用户启动／重启 |
 | [最终文档核对](document-final-audit-20261010/README.md) | c4477da基线；同步当前功能说明、模型／搜索配置、恢复例外及导航；没有产品改动或在线调用 |
 | [图片／搜索交付后修复](image-search-post-review-fixes-20261010/README.md) | R1～R5逐项回归完成；实际Chrome和Context证据；175文件920项通过，一次独立审查补修完成（原报告与TDD关闭分别保留） |
 | [图片输入](image-input-20261009/DELIVERY.md) | I1～I6独立交付；观察／历史权限／原资产恢复；真实图片模型质量未执行 |

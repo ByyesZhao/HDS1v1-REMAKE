@@ -4,7 +4,7 @@
 
 ## 1. 接入状态
 
-已实现模型工具、独立会话、20／40、缓存、结果不足和恢复，以及本地浏览器 provider。provider 可选 unconfigured 或 browser，browser 可选 Bing／DuckDuckGo。当前正式配置为enabled=false、provider=unconfigured；配置缺省浏览器引擎为Bing。启用 browser 需安装并启用本项目 Puppeteer 服务，服务就绪后才创建故事实例。
+已实现模型工具、独立会话、20／40、缓存、结果不足和恢复，以及本地浏览器 provider。provider 可选 unconfigured 或 browser，browser 可选 Bing／DuckDuckGo。当前正式配置为enabled=true、provider=browser、engine=bing；Schema缺省仍为关闭／未配置。Koishi已配置Puppeteer，本机Chrome已静态查到；用户启动／重启且服务就绪后才创建故事实例。见[配置启用记录](../records/feature-enablement-20261010/README.md)。
 
 浏览器搜索一页返回候选，再读目标完整正文；候选标题／摘要不当正文。article/main还需非纯链接、非仅标题的正文证据，结构性status加载壳继续等待；短正文不加字数阈值。正文按 article、main、Readability 提取，不无条件使用整页 body；导航、页脚、验证／登录壳不能冒充正文。动态主体和页面内导航切换共用原操作时限。旧 webSources 不作兜底；不调用 DeepSeek 原生搜索或付费 API，没有隐藏翻页、换引擎、RSS 或重试。
 

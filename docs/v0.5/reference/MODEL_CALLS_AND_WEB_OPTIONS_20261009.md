@@ -1,6 +1,6 @@
 # 当前模型调用与网页搜索配置参考
 
-核对日期：2026-10-10。代码基线`c4477da`（产品修复`47eb14d`）。返回[版本索引](../README.md)。本次重新核对本地配置白名单及`src/settings.ts`缺省值，见[配置证据](../records/document-final-audit-20261010/evidence/effective-models.json)；不包含密钥、背景或配置全文，也未启动服务或发起模型／搜索请求。
+核对日期：2026-10-10。产品修复基线`47eb14d`，随后文档提交`31f331c`。返回[版本索引](../README.md)。模型以[此前白名单](../records/document-final-audit-20261010/evidence/effective-models.json)为准；之后按用户授权[启用图片／搜索](../records/feature-enablement-20261010/README.md)，只改变开关和浏览器装配，不改模型。本次只读启动检查加载本地认证但不输出凭据／背景，不启动服务或发起模型／搜索请求。
 
 ## 1. 本地部署配置的DeepSeek用途
 
@@ -24,7 +24,7 @@
 | 新表情素材看图描述 | `stickerDescriptionModel` | high | `src/output/sticker-description.ts`；显式导入新素材时 |
 | 用户图片／表情观察 | `incomingImageModel`；未配复用`stickerDescriptionModel` | high（当前复用值） | `src/input-media/observe.ts`；角色有权读取且需新观察，或接续已冻结pending |
 
-`incoming_image`使用四字段观察合同，与发送图库描述合同分开。当前`visualInput.enabled=false`且没有`incomingImageModel`覆盖；关闭时不新开图片视觉观察，但已冻结pending仍接续原模型任务。已确认历史观察不因开关关闭丢失；已知原生face与成功观察缓存免视觉请求。
+`incoming_image`使用四字段观察合同，与发送图库描述合同分开。当前`visualInput.enabled=true`且没有`incomingImageModel`覆盖；在角色有权读取时准备新图观察。若以后关闭，已冻结pending仍接续原模型任务，已确认历史观察不丢失。已知原生face与成功观察缓存免视觉请求。
 
 这不是每轮必须执行的15次调用。环境和维护准备使用原连接，不额外增加另一套模型。固定信息审核若要单独设置模型／强度，需要后续增加连接配置；当前改变`memory_consolidation`会同时影响整理和审核。未设置独立`incomingImageModel`时，改变`stickerDescriptionModel`也同时影响用户图观察。
 
@@ -61,13 +61,13 @@
 
 | 配置 | 当前正式有效值 | 已实现含义 |
 | --- | --- | --- |
-| `webSearch.enabled` | false | 是否向模型开放网页工具 |
-| `webSearch.provider` | unconfigured | 可选unconfigured／browser；启用但未配置provider会提前报错 |
-| `webSearch.browser.engine` | bing（缺省） | 可选bing／duckduckgo，不自动换引擎 |
-| `webSearch.browser.navigationTimeoutMs` | 60000（缺省） | 页面操作期限，包含排队、建页、导航和正文就绪等待 |
-| `webSearch.browser.maxConcurrentPages` | 1（缺省） | 本实例共享页槽上限，真实关闭／迟到建页排空后才释放 |
+| `webSearch.enabled` | true（显式配置） | 是否向模型开放网页工具 |
+| `webSearch.provider` | browser | 可选unconfigured／browser；启用但未配置provider会提前报错 |
+| `webSearch.browser.engine` | bing（显式配置） | 可选bing／duckduckgo，不自动换引擎 |
+| `webSearch.browser.navigationTimeoutMs` | 60000（显式配置） | 页面操作期限，包含排队、建页、导航和正文就绪等待 |
+| `webSearch.browser.maxConcurrentPages` | 1（显式配置） | 本实例共享页槽上限，真实关闭／迟到建页排空后才释放 |
 | `webSearch.maxSuccessReads`／`maxFailures` | 20／40 | 同一逻辑阶段累计，含修补／续调用／恢复；不是收费或HTTP次数 |
 
-启用browser还需要当前Koishi的Puppeteer服务和可用浏览器；服务就绪后才创建故事实例。当前提取器为`dom-v2/readability-0.6.0`，按原DOM可见性和清理后独立正文判断，不把隐藏内容或登录引导当已读正文。页面正文没有人为字符／token截断。独立浏览器验收脚本的启动等待默认60000ms，与页面操作期限分别计算。
+当前Koishi已配置Puppeteer，静态查找确认本机Chrome存在；服务就绪后才创建故事实例，仍需用户启动／重启使配置生效。当前提取器为`dom-v2/readability-0.6.0`，按原DOM可见性和清理后独立正文判断，不把隐藏内容或登录引导当已读正文。页面正文没有人为字符／token截断。独立浏览器验收脚本的启动等待默认60000ms，与页面操作期限分别计算。
 
 已有公开工程验收中Bing成功返回候选并读取中文／英文目标正文，DuckDuckGo当时遇到验证码；这不证明当前任意网站可读，也不代表正式服务已启用或真实模型工具续调用质量已验证。详见[搜索原交付](../records/local-browser-search-20261009/DELIVERY.md)、[最新修复交付](../records/image-search-post-review-fixes-20261010/DELIVERY.md)与[搜索规则](../subsystems/REMAKE_V0.5_WEB_SEARCH.md)。

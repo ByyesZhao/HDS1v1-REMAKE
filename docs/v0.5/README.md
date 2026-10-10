@@ -23,12 +23,13 @@
 
 背景用途参考为[已批准映射](reference/BACKGROUND_VIEW_MAPPING_20261008.md)，不是新审批。运行和显式升级命令见[项目README](../../README.md)。
 
-各模型用途及当前搜索配置见[模型调用与网页搜索参考](reference/MODEL_CALLS_AND_WEB_OPTIONS_20261009.md)。本次重新读取[配置白名单](records/document-final-audit-20261010/evidence/effective-models.json)：13个已配置连接均Flash，10个low／3个high；用户图观察未单独覆盖，复用Flash/high。搜索和新图识别正式开关均关闭，搜索provider仍为unconfigured；适配器已实现不等于正式服务已启用。
+各模型用途及当前搜索配置见[模型调用与网页搜索参考](reference/MODEL_CALLS_AND_WEB_OPTIONS_20261009.md)。[前次配置白名单](records/document-final-audit-20261010/evidence/effective-models.json)确认13个已配置连接均Flash，10个low／3个high；用户图观察未单独覆盖，复用Flash/high。随后按用户要求[打开新图识别和Bing搜索](records/feature-enablement-20261010/README.md)，搜索provider为browser，Koishi已配置Puppeteer。模型参数保持不变；已配置启用不等于服务已经启动或真实在线质量已验收。
 
 ## 最新交付与审核
 
 | 材料 | 状态 |
 | --- | --- |
+| [图片／搜索正式配置启用](records/feature-enablement-20261010/README.md) | 两项开关打开、browser／Bing与Puppeteer就绪配置；只读启动检查通过，仍由用户手动启动／重启 |
 | [最新文档核对](records/document-final-audit-20261010/README.md) | 总架构、8份子系统、实现对应、模型参考与导航按当前代码同步；本地链接／章节检查，配置白名单重新核对 |
 | [图片／搜索修复交付](records/image-search-post-review-fixes-20261010/DELIVERY.md) | R1～R5与失败回归；dom-v2；175文件920项、类型/构建/demo/双场景smoke通过；一次独立审查补修完成（原报告与TDD关闭分别保留） |
 | [图片／搜索交付后复核](reviews/image-search-post-implementation-20261010/REVIEW.md)及[修复执行方案](reviews/image-search-post-implementation-20261010/FIX_PLAN.md) | 基线2a2e77e；4 P2／1 P3已修，关闭与新证据见[交付](records/image-search-post-review-fixes-20261010/DELIVERY.md)；含真实App／Chrome／Koishi离线复现；主体架构保留 |
@@ -64,6 +65,6 @@
 
 ## 验证与送审范围
 
-本地browser provider已接入，正式搜索关闭；Bing公开候选和正文读取已通过工程验收，实际模型续调用质量未验证；记忆 `semantic=null`，纯语义标定未启用。真实QQ持续收发、供应商模型质量、新图在线描述及数月运行未由本批验证。环境准备有同步冻结／提交成本，合成样本不证明所有查询恒定时间。
+本地browser provider已接入，正式配置已启用Bing搜索和新图识别，等待用户启动／重启后使用；Bing公开候选和正文读取已通过此前工程验收，实际模型续调用质量未验证；记忆 `semantic=null`，纯语义标定未启用。真实QQ持续收发、供应商模型质量、新图在线描述及数月运行未由本批验证。环境准备有同步冻结／提交成本，合成样本不证明所有查询恒定时间。
 
 审代码时另提供 `src/`、`tests/`、`scripts/`、包和锁文件、公开样例、`runtime/check.cjs`、`runtime/plugin-smoke*.cjs`和两个启动cmd。密钥、私有配置、正式库、人物背景及 `runtime/archive/`不属默认送审材料。旧复现按报告指定基线运行，不要求修复后的代码仍重现旧错误。
