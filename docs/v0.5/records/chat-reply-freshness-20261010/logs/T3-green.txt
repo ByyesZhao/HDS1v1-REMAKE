@@ -1,0 +1,204 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/reply-freshness-host.test.ts tests/environment-async-host-gates.test.ts tests/memory-idle-host.test.ts tests/chat-flow.test.ts
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/chat-reply-freshness/HDSI-remake
+
+ ❯ tests/reply-freshness-host.test.ts (4 tests | 1 failed) 97ms
+   × event_makes_phone_unreadable_then_end_restores_inputs 17ms
+ ❯ tests/memory-idle-host.test.ts (6 tests | 6 failed) 52ms
+   × maintenance_errors_not_front_failure 18ms
+   × inflight_backend_does_not_block_input_story 6ms
+   × cleanup_yields_to_front 5ms
+   × expiry_without_new_messages 15ms
+   × real input between ready units waits full idle after its story 4ms
+   × environment_0600_first_not_idle_reset 4ms
+ ❯ tests/environment-async-host-gates.test.ts (6 tests | 6 failed) 83ms
+   × ready rechecks pause after candidate selection and reuses work after reopening 24ms
+   × ready rechecks input after candidate selection and reuses work after reopening 30ms
+   × ready rechecks stop after candidate selection and reuses work after reopening 6ms
+   × pending rechecks pause after candidate selection and reuses work after reopening 5ms
+   × pending rechecks input after candidate selection and reuses work after reopening 12ms
+   × pending rechecks stop after candidate selection and reuses work after reopening 4ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 13 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/environment-async-host-gates.test.ts > ready rechecks pause after candidate selection and reuses work after reopening
+ FAIL  tests/environment-async-host-gates.test.ts > ready rechecks input after candidate selection and reuses work after reopening
+ FAIL  tests/environment-async-host-gates.test.ts > ready rechecks stop after candidate selection and reuses work after reopening
+AssertionError: expected 'ready' to be 'committed' // Object.is equality
+
+Expected: "committed"
+Received: "ready"
+
+ ❯ tests/environment-async-host-gates.test.ts:49:52
+     47|   // A completed background preparation wakes the Host independently.
+     48|   await new Promise<void>(resolve=>setImmediate(resolve));await host.w…
+     49|   expect(d.environmentStore.step(step.id)!.status).toBe('committed');
+       |                                                    ^
+     50|   expect(d.storage.all('events')).toHaveLength(1);expect(worldCalls).t…
+     51|   if(initial==='ready')expect(d.storage.all('events')[0].id).toBe(expe…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/13]⎯
+
+ FAIL  tests/environment-async-host-gates.test.ts > pending rechecks pause after candidate selection and reuses work after reopening
+ FAIL  tests/environment-async-host-gates.test.ts > pending rechecks input after candidate selection and reuses work after reopening
+ FAIL  tests/environment-async-host-gates.test.ts > pending rechecks stop after candidate selection and reuses work after reopening
+AssertionError: expected 'pending' to be 'committed' // Object.is equality
+
+Expected: "committed"
+Received: "pending"
+
+ ❯ tests/environment-async-host-gates.test.ts:49:52
+     47|   // A completed background preparation wakes the Host independently.
+     48|   await new Promise<void>(resolve=>setImmediate(resolve));await host.w…
+     49|   expect(d.environmentStore.step(step.id)!.status).toBe('committed');
+       |                                                    ^
+     50|   expect(d.storage.all('events')).toHaveLength(1);expect(worldCalls).t…
+     51|   if(initial==='ready')expect(d.storage.all('events')[0].id).toBe(expe…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/13]⎯
+
+ FAIL  tests/memory-idle-host.test.ts > maintenance_errors_not_front_failure
+AssertionError: the given combination of arguments (null and string) is invalid for this assertion. You can use an array, a map, an object, a set, a string, or a weakset instead of a string
+ ❯ tests/memory-idle-host.test.ts:15:306
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/13]⎯
+
+ FAIL  tests/memory-idle-host.test.ts > inflight_backend_does_not_block_input_story
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/memory-idle-host.test.ts:20:75
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/13]⎯
+
+ FAIL  tests/memory-idle-host.test.ts > cleanup_yields_to_front
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/memory-idle-host.test.ts:27:317
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/13]⎯
+
+ FAIL  tests/memory-idle-host.test.ts > expiry_without_new_messages
+AssertionError: expected { capacityExitedAt: null, …(31) } to be null
+
+- Expected:
+null
+
++ Received:
+{
+  "archiveEnteredAt": "2026-07-10T02:01:00.000Z",
+  "capacityExitReason": null,
+  "capacityExitedAt": null,
+  "consolidatedRevision": null,
+  "content": "经历-expires",
+  "createdAt": "2026-10-08T02:00:00.000Z",
+  "evaluatedEvidenceVersion": null,
+  "eventSummary": "经历-expires",
+  "evidenceMemoryIds": [],
+  "expiresAt": "2027-01-06T02:00:00.000Z",
+  "feelingSummary": "",
+  "happenedAt": "2026-10-08T02:00:00.000Z",
+  "happenedUntil": "2026-10-08T02:00:00.000Z",
+  "id": "expires",
+  "importance": "normal",
+  "kind": "long",
+  "lastEventUpdateAt": "2026-10-08T02:00:00.000Z",
+  "legacyMentions": 0,
+  "linkedLongId": null,
+  "mergedInto": null,
+  "ownerId": "expires",
+  "ownerType": "long",
+  "retainedFrom": "2026-10-08T02:00:00.000Z",
+  "revision": 1,
+  "shortExpiresAt": null,
+  "sourceIds": [
+    "source-expires",
+  ],
+  "stateVersion": 1,
+  "status": "active",
+  "summaryQuality": "preview",
+  "topics": [],
+  "totalAwakenings": 0,
+  "windowAwakenings": 0,
+}
+
+ ❯ tests/memory-idle-host.test.ts:30:369
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/13]⎯
+
+ FAIL  tests/memory-idle-host.test.ts > real input between ready units waits full idle after its story
+AssertionError: expected undefined to be truthy
+
+- Expected:
+true
+
++ Received:
+undefined
+
+ ❯ tests/memory-idle-host.test.ts:36:62
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/13]⎯
+
+ FAIL  tests/memory-idle-host.test.ts > environment_0600_first_not_idle_reset
+AssertionError: expected [] to deeply equal [ 'world', 'school_campus', …(1) ]
+
+- Expected
++ Received
+
+- [
+-   "world",
+-   "school_campus",
+-   "school_group",
+- ]
++ []
+
+ ❯ tests/memory-idle-host.test.ts:45:51
+     43|  d.models.outputs.memory_consolidation={units:[{unitKey:'r',action:'re…
+     44|  const h=new SerialHost(new HdsiApp(d),{timers:false});hosts.push(h);a…
+     45|  expect(d.models.calls.slice(0,3).map(c=>c.name)).toEqual(['world','sc…
+       |                                                   ^
+     46| });
+     47|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/13]⎯
+
+ FAIL  tests/reply-freshness-host.test.ts > event_makes_phone_unreadable_then_end_restores_inputs
+AssertionError: expected 1791388800000 to be 1791338475000 // Object.is equality
+
+- Expected
++ Received
+
+- 1791338475000
++ 1791388800000
+
+ ❯ tests/reply-freshness-host.test.ts:20:751
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/13]⎯
+
+
+ Test Files  3 failed | 1 passed (4)
+      Tests  13 failed | 9 passed (22)
+   Start at  16:51:01
+   Duration  1.76s (import 42%, transform 34%, tests 23%, worker 1%)
+
+    Isolate  4 workers spawned · ~94ms startup each (spawn + environment, per file)
+             at least ~281ms faster with isolate: false — reuses workers across files instead of one per file
+

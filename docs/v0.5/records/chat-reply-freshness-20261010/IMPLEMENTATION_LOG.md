@@ -29,3 +29,9 @@ T2 RED：6项失败；GREEN：5文件30项通过，退出码0。首次 sending �
 ## T3 brief
 
 持久 waiting 用专用宿主分支，单 unfinished 不改变。同 ID 改绑普通／到期事件，真正改绑 generation+1。事件接管输入／batch／check 为空，原未读留给后续。定时同选择规则，等待不能启动环境或维护；状态显示实际等待期限。
+
+T3 RED：4项失败；首次实现定向回归发现 collectReady 抽取 prepare 后漏读 state，修正后 GREEN：4文件22项通过，typecheck通过（日志保留首次失败）。
+
+## T4 brief
+
+业务 stageKey=reply:generation:stage:taskName；同代际恢复身份／额度不变，换代独立额度。仅清旧业务 checkpoint，附件阶段和 ready/unrecognized/pending 冻结保留。最终本人查阅来源只取有效 personalRunId。真实 ModelClient 请求证明旧 lookup／repair／材料不自动注入。

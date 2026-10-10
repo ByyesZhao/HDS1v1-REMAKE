@@ -61,7 +61,13 @@ export class SerialHost {
       this.input.closeReady(d.clock.now());
       d.storage.transaction(()=>d.storage.runtime().dialogueContextVersion===2?d.chat?.closeDue(d.clock.now()):d.dialogue?.closeDue(d.clock.now()));
       if (d.storage.runtime().paused || this.stopped) break;
-      if (d.storage.unfinishedTurn()) {
+      const unfinished=d.storage.unfinishedTurn();
+      if(unfinished?.replyFreshness?.state==='waiting'){
+        const continuation=await this.scheduler.collectWaitingContinuation(unfinished.id,d.clock.now());
+        if(continuation.kind==='wait')break;
+        this.recover=false;await this.app.continueWaitingTurn(unfinished.id,continuation.request,continuation.scope);continue;
+      }
+      if (unfinished) {
         if (!this.recover) break;
         this.recover = false; await this.app.resumeUnfinishedTurn();continue;
       }
@@ -103,7 +109,7 @@ export class SerialHost {
   private async nextDeadline():Promise<string|null>{
     const d=this.app.dependencies,front=await this.scheduler.nextDeadline(d.clock.now(),{environmentInFlightStepId:this.environment.inFlightStepId});
     const back=d.storage.runtime().paused||d.storage.runtime().openBatch||d.storage.unfinishedTurn()?null:d.maintenance?.nextDeadline(d.clock.now());
-    const cleanup=d.memoryCleanup?.nextDeadline(d.clock.now());
+    const cleanup=d.storage.unfinishedTurn()?null:d.memoryCleanup?.nextDeadline(d.clock.now());
     return [front,back,cleanup,this.environment.nextMidnight(),(d.storage.runtime().dialogueContextVersion===2?d.chat?.nextDeadline(d.clock.now()):d.dialogue?.nextDeadline(d.clock.now()))].filter((at):at is string=>!!at).sort((a,b)=>milliseconds(a)-milliseconds(b))[0]??null;
   }
   async pause(): Promise<void> {
@@ -121,7 +127,7 @@ export class SerialHost {
   }
   async status(): Promise<string> {
     const d = this.app.dependencies, t = d.storage.unfinishedTurn();
-    const stage = !t ? '空闲' : t.outputComplete ? '后处理' : t.frozenResult ? '发送' : '生成';
+    const stage = !t ? '空闲' : t.replyFreshness?.state==='waiting'?'等待新消息合批': t.outputComplete ? '后处理' : t.frozenResult ? '发送' : '生成';
     const next = await this.nextDeadline();
     const display = next ? new Intl.DateTimeFormat('zh-CN', { timeZone: d.config.timezone, dateStyle: 'short', timeStyle: 'medium' }).format(new Date(next)) : '无';
     const maintenance=d.maintenance?.status(),environment=this.environment.status();

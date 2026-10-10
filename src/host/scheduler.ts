@@ -1,4 +1,4 @@
-import {ordinaryInputRevision,isOrdinaryReplyRequest} from './reply-freshness';
+import {ordinaryInputRevision,isOrdinaryReplyRequest,hasReplyAttempt,type WaitingContinuation} from './reply-freshness';
 import { defaultConfig,type AppConfig } from '../config';
 import {releaseSchoolNotices,selectSchoolNotices,schoolNotificationEligible,schoolNoticeDeadline,createSchoolNoticeEvaluationContext} from '../school/notices';
 import {ensureEnvironmentBatch,selectEnvironmentStepMetadata,environmentDeadline} from '../environment/scheduler';
@@ -15,15 +15,8 @@ export class Scheduler {
   async collectReady(now: string,options:{environmentInFlightStepId?:string|null}={}): Promise<TurnRequest | null> {
     new InputBuffer(this.storage).closeReady(now);
     if (this.storage.runtime().paused || this.storage.unfinishedTurn()) return null;
-    const noticeContext=createSchoolNoticeEvaluationContext(this.storage);
-    this.storage.transaction(()=>releaseSchoolNotices(this.storage,now, this.config.timezone,noticeContext));
-    const state = this.storage.character();
-    if (isSleeping(state, now)) {
-      this.storage.transaction(() => {
-        state.nextAutonomousAt = null; this.storage.set('character', state);
-        const r = this.storage.runtime(); r.pendingBatchIds = []; this.storage.set('runtime', r);
-      });
-    }
+    const noticeContext=this.prepare(now);
+    const state=this.storage.character();
     const runtime = this.storage.runtime();
     const front = this.foreground(now);
     if (front) {const request={...front,schoolNoticeRefs:selectSchoolNotices(this.storage,now, this.config.timezone,noticeContext)};return isOrdinaryReplyRequest(this.storage,request,now)?{...request,replyInputRevision:ordinaryInputRevision(this.storage)}:request;}
@@ -39,10 +32,54 @@ export class Scheduler {
     return null;
   }
 
-  private foreground(now: string): TurnRequest | null {
+  private prepare(now:string) {
+    const noticeContext=createSchoolNoticeEvaluationContext(this.storage);
+    this.storage.transaction(()=>releaseSchoolNotices(this.storage,now, this.config.timezone,noticeContext));
+    const state = this.storage.character();
+    if (isSleeping(state, now)) {
+      this.storage.transaction(() => {
+        state.nextAutonomousAt = null; this.storage.set('character', state);
+        const r = this.storage.runtime(); r.pendingBatchIds = []; this.storage.set('runtime', r);
+      });
+    }
+    return noticeContext;
+  }
+  private waitingDecision(turnId:string,now:string):WaitingContinuation {
+    const turn=this.storage.read('turns',turnId);
+    if(!turn?.replyFreshness||turn.replyFreshness.state!=='waiting'||turn.replyFreshness.scope!=='ordinary'||hasReplyAttempt(this.storage,turnId))return {kind:'wait',deadline:null};
+    const context=createSchoolNoticeEvaluationContext(this.storage);
+    const event=this.foreground(now,true);
+    const refs=selectSchoolNotices(this.storage,now,this.config.timezone,context);
+    if(event)return {kind:'run',scope:'event',request:{...event,inputMessageIds:[],batchIds:[],schoolNoticeRefs:refs}};
+    if(schoolNotificationEligible(this.storage,now,this.config.timezone,context))return {kind:'run',scope:'event',request:{inputMessageIds:[],taskIds:[],triggerKinds:['school_notification'],batchIds:[],sharedMeta:null,schoolNoticeRefs:refs}};
+    const runtime=this.storage.runtime(),state=this.storage.character();
+    const quiet=[turn.replyFreshness.quietUntil,runtime.openBatch?.readyAt].filter((v):v is string=>!!v).sort((a,b)=>milliseconds(b)-milliseconds(a))[0]??now;
+    if(canRead(state,now)&&!runtime.openBatch&&due(quiet,now)){
+      const request=this.foreground(now,false);
+      if(request&&isOrdinaryReplyRequest(this.storage,request,now))return {kind:'run',scope:'ordinary',request:{...request,replyInputRevision:ordinaryInputRevision(this.storage)}};
+    }
+    const candidates:string[]=[];
+    if(isSleeping(state,now))candidates.push(state.sleep!.wakeAt);
+    else {
+      for(const task of this.storage.all('tasks').filter(t=>t.status==='pending'&&t.kind!=='check_messages'))candidates.push(task.at);
+      if(state.sleep)candidates.push(due(state.sleep.wakeAt,now)?now:state.sleep.sleepAt);
+      if(canRead(state,now)){
+        if(!due(quiet,now))candidates.push(quiet);
+        for(const task of this.storage.all('tasks').filter(t=>t.status==='pending'&&t.kind==='check_messages'))candidates.push(new Date(Math.max(milliseconds(task.at),milliseconds(quiet))).toISOString());
+      } else {this.stashPending(now);const end=state.scene.activity?.expectedEndAt;if(end&&milliseconds(end)>milliseconds(now))candidates.push(end);}
+    }
+    const notice=schoolNoticeDeadline(this.storage,now,this.config.timezone,context);if(notice)candidates.push(notice);
+    return {kind:'wait',deadline:candidates.sort((a,b)=>milliseconds(a)-milliseconds(b))[0]??null};
+  }
+  async collectWaitingContinuation(turnId:string,now:string):Promise<WaitingContinuation>{
+    if(this.storage.runtime().paused)return {kind:'wait',deadline:null};
+    const turn=this.storage.unfinishedTurn();if(turn?.id!==turnId||turn.replyFreshness?.state!=='waiting')return {kind:'wait',deadline:null};
+    new InputBuffer(this.storage).closeReady(now);this.prepare(now);return this.waitingDecision(turnId,now);
+  }
+  private foreground(now: string,eventsOnly=false): TurnRequest | null {
     const state = this.storage.character(), runtime = this.storage.runtime();
-    const dueTasks = this.storage.all('tasks').filter(t => t.status === 'pending' && due(t.at, now));
-    if (hasValidSharedScene(state)) {
+    const dueTasks = this.storage.all('tasks').filter(t => t.status === 'pending' && due(t.at, now)&&(!eventsOnly||t.kind!=='check_messages'));
+    if (hasValidSharedScene(state) && !eventsOnly) {
       this.storage.transaction(() => refreshSharedStep(this.storage, now));
       const inputs = this.storage.unreadActivityMessages(state.scene.shared!.activityId);
       const tasks = dueTasks.filter(t => t.kind !== 'scene_step');
@@ -57,7 +94,7 @@ export class Scheduler {
     const hasOther = wake || dueTasks.some(t => t.kind !== 'check_messages');
     const readable = canRead(state,now);
     const tasks = dueTasks.filter(t => t.kind !== 'check_messages' || !open && (readable || hasOther));
-    const inputs = !open && (readable || hasOther) ? this.storage.unreadMessages() : [];
+    const inputs = !eventsOnly && !open && (readable || hasOther) ? this.storage.unreadMessages() : [];
     const batchIds = [...new Set(inputs.flatMap(m=>m.batchId?[m.batchId]:[]))];
     const kinds: TriggerKind[] = [];
     if (inputs.length) kinds.push('input');
@@ -84,7 +121,8 @@ export class Scheduler {
   async nextDeadline(now: string,options:{environmentInFlightStepId?:string|null}={}): Promise<string | null> {
     const runtime = this.storage.runtime();
     if (runtime.paused) return runtime.openBatch?.readyAt ?? null;
-    if (this.storage.unfinishedTurn()) return null;
+    const unfinished=this.storage.unfinishedTurn();
+    if (unfinished){if(unfinished.replyFreshness?.state!=='waiting')return null;const result=this.waitingDecision(unfinished.id,now);return result.kind==='run'?now:result.deadline;}
     const state = this.storage.character();
     const noticeContext=createSchoolNoticeEvaluationContext(this.storage);
     const candidates: string[] = [];
