@@ -1,0 +1,39 @@
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/graceful-stop-r1/HDSI-remake
+
+(node:28228) PromiseRejectionHandledWarning: Promise rejection was handled asynchronously (rejection id: 3)
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/browser-graceful-stop-failure.test.ts (5 tests | 1 failed | 4 skipped) 159ms
+   × drain rejection is observed immediately while lifecycle start remains queued 158ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/browser-graceful-stop-failure.test.ts > drain rejection is observed immediately while lifecycle start remains queued
+AssertionError: expected [ Error: synthetic page close failure ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   Error {
++     "message": "synthetic page close failure",
++   },
++ ]
+
+ ❯ tests/browser-graceful-stop-failure.test.ts:61:47
+
+     59|  let response:Response|undefined;
+     60|  try{const pending=f.stop().then(r=>response=r);await vi.waitFor(()=>{…
+     61|   await tick();await tick();expect(unhandled).toEqual([]);expect(respo…
+       |                                               ^
+     62|   f.startGate.release();await pending;expect(response!.status).toBe(50…
+     63|  }finally{process.off('unhandledRejection',listener);await f.cleanup()…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 skipped (5)
+   Start at  18:38:57
+   Duration  1.12s (transform 56%, import 28%, tests 16%)
+

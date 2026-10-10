@@ -17,3 +17,13 @@ Engineering fixtures are isolated. Formal stop/deploy occurs separately under us
 原回复新鲜度 T1～T5 无改动，无数据库／配置／依赖／公开接口修改；没有真实QQ、真实模型或断电验收。
 
 Task 1: complete — 7 files /25 focused tests; probe and typecheck exit0. Full suite188 files/1009 tests exit0,129.19s; build/demo/double-scenario smoke exit0. Document247 local links missing0; diff-check exit0. Logs are scoped to this worktree and this revision. Final independent review pending; formal deployment pending.
+
+## 独立复核与一次补修
+
+[独立审查](INDEPENDENT_REVIEW.md)审查59db942，Important一项为排队拒绝测试时序屏障过早成立，无产品缺陷及Minor。已等actualCloses===1、drainSettled=true后检查事件循环；旧回调回放 queued-rejection-red.txt 退出1，实际捕获 synthetic page close failure 的 unhandledRejection，另有 PromiseRejectionHandledWarning，证明监听延迟。恢复修复回调后7文件25项及类型检查再次退出0，focused-final.txt无unhandled。首轮all-red只证明HTTP错判，不冒充这个新增时序RED。原独立审查结论保留，关闭由执行者证据证明，无第二次独立复审。
+
+Final: Ruling: 正式部署独立于只读审查执行；QQ／模型、断电和长期运行不借离线测试认定已验收 — 范围符合用户授权及测试隔离 — 若据此作运行质量承诺会夸大证据。
+Final: Ruling: 本轮保持基线falsy拒绝值语义，修复真实页面槽的Error传播 — 用户要求局部补修且不做极端防御扩展 — 若非Error拒绝值实际出现，既有truthiness错误判定风险仍需另处理。
+Final: fixed reviewer timing barrier — queued-rejection RED→GREEN; final suite pending.
+
+Final: fixed timing barrier — queued-rejection-red exit1 (actual unhandled Error) → focused-final 25/25 exit0; final suite188 files/1009 tests exit0,130.62s. Independent Important closed by executor evidence; no further product changes or re-review. No deferred minors.

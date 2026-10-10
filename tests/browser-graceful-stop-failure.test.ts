@@ -15,7 +15,7 @@ async function fixture(options:{fail?:boolean;blockStart?:boolean;blockClose?:bo
  const dir=await mkdtemp(join(tmpdir(),'hdsi-browser-r1-'));
  const startGate=gate(),closeGate=gate(),events=new Map<string,Array<()=>any>>();
  const errors:unknown[]=[],logs:string[]=[],exit=vi.fn(),closeOptions:unknown[]=[];
- let pageClosed=false,pageCloseCalls=0,actualCloses=0,storageCloseReached=false,started=false;
+ let pageClosed=false,pageCloseCalls=0,actualCloses=0,storageCloseReached=false,started=false,drainSettled=false;
  const page={on(){},setRequestInterception:async()=>{},goto:async()=>({status:()=>500}),
   url:()=> 'https://synthetic.test/',title:async()=>'',isClosed:()=>pageClosed,browser:()=>({connected:true}),
   close:async()=>{pageCloseCalls++;if(options.fail)throw Error('synthetic page close failure');pageClosed=true;}};
@@ -29,7 +29,7 @@ async function fixture(options:{fail?:boolean;blockStart?:boolean;blockClose?:bo
    return {host:{start:async()=>{started=true;if(options.blockStart)await startGate.promise;},status:async()=>''},
     stopAcceptingInput(){},close:(o:unknown)=>{closeOptions.push(o);return closing??=(async()=>{
      actualCloses++;if(options.blockClose)await closeGate.promise;await managed!.dispose();storageCloseReached=true;
-    })();}} as any;
+    })().finally(()=>{drainSettled=true;});}} as any;
   });
  const ready=events.get('ready')!.at(-1)!();
  await vi.waitFor(()=>expect(started).toBe(true));
@@ -38,7 +38,7 @@ async function fixture(options:{fail?:boolean;blockStart?:boolean;blockClose?:bo
  const headers={authorization:`Bearer ${descriptor.token}`},url=`http://127.0.0.1:${descriptor.port}/stop`;
  return {ctx,errors,logs,exit,closeOptions,startGate,closeGate,ready,descriptor,headers,
   stop:()=>fetch(url,{method:'POST',headers}),
-  get pageCloseCalls(){return pageCloseCalls;},get actualCloses(){return actualCloses;},get storageCloseReached(){return storageCloseReached;},
+  get drainSettled(){return drainSettled;},get pageCloseCalls(){return pageCloseCalls;},get actualCloses(){return actualCloses;},get storageCloseReached(){return storageCloseReached;},
   cleanup:async()=>{startGate.release();closeGate.release();await ready;await control.close();await rm(dir,{recursive:true,force:true});}};
 }
 function expectFailed(f:Awaited<ReturnType<typeof fixture>>){
@@ -57,7 +57,7 @@ it('drain rejection is observed immediately while lifecycle start remains queued
  const f=await fixture({fail:true,blockStart:true}),unhandled:unknown[]=[];
  const listener=(e:unknown)=>unhandled.push(e);process.on('unhandledRejection',listener);
  let response:Response|undefined;
- try{const pending=f.stop().then(r=>response=r);await vi.waitFor(()=>expect(f.pageCloseCalls).toBe(1));
+ try{const pending=f.stop().then(r=>response=r);await vi.waitFor(()=>{expect(f.actualCloses).toBe(1);expect(f.drainSettled).toBe(true);});
   await tick();await tick();expect(unhandled).toEqual([]);expect(response).toBeUndefined();
   f.startGate.release();await pending;expect(response!.status).toBe(500);expect(await response!.json()).toMatchObject({stopped:false});expectFailed(f);
  }finally{process.off('unhandledRejection',listener);await f.cleanup();}
