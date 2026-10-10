@@ -1,0 +1,12 @@
+{
+  "baseline": "2a2e77e",
+  "observedForMs": 1000,
+  "serviceStarts": 1,
+  "startupErrors": [
+    "Error: SYNTHETIC_BROWSER_START_FAILURE"
+  ],
+  "validationSettled": true,
+  "reportExists": true,
+  "rootDisposalsByValidation": 1,
+  "cleanup": "review probe calls Context.stop after observation"
+}

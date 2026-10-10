@@ -9,8 +9,8 @@ import {BrowserPageSlots} from '../src/web/browser/slots';
 import type {BrowserEngine,BrowserPort} from '../src/web/browser/types';
 const localRequire=createRequire(resolve('package.json'));
 const browserConfig=(engine:BrowserEngine)=>({engine,navigationTimeoutMs:60000,maxConcurrentPages:1});
-export async function validateLocalWeb(options:{online?:boolean;probe?:boolean;engine?:BrowserEngine;report?:string}={}):Promise<any>{
- const engine=options.engine??'bing',started=performance.now();let ctx:any,managed:any,owned=0,maxOwned=0,operations=0;
+export async function validateLocalWeb(options:{online?:boolean;probe?:boolean;engine?:BrowserEngine;report?:string;startupTimeoutMs?:number}={}):Promise<any>{
+ const engine=options.engine??'bing',started=performance.now();let ctx:any,managed:any,owned=0,maxOwned=0,operations=0;let stopStartupWait=()=>{};
  const report:any={mode:options.online?'public-browser':'offline',probe:options.probe??false,engine,query:'中国气象局',realNetworkRequests:options.online?null:0,passed:false,drained:false,pages:[],versions:{extractor:BROWSER_EXTRACTOR_VERSION,puppeteerPlugin:localRequire('koishi-plugin-puppeteer/package.json').version,readability:localRequire('@mozilla/readability/package.json').version}};
  const save=()=>{if(options.report){mkdirSync(dirname(resolve(options.report)),{recursive:true});writeFileSync(resolve(options.report),JSON.stringify(report,null,2));}};
  function tracked(port:BrowserPort):BrowserPort{return {async openPage(){
@@ -23,9 +23,17 @@ export async function validateLocalWeb(options:{online?:boolean;probe?:boolean;e
   if(options.online){
    const {Context}=localRequire('koishi'),runtimeRequire=createRequire(resolve('runtime/package.json'));
    ctx=new Context();ctx.plugin(runtimeRequire('@koishijs/plugin-http').default);
-   const ready=new Promise<BrowserPort>(r=>ctx.inject(['puppeteer'],(inner:any)=>r(createKoishiBrowserPort(()=>inner.puppeteer.page()))));
-   ctx.plugin(localRequire('koishi-plugin-puppeteer').default,{headless:true});
-   await ctx.start();port=await ready;report.browserVersion=await ctx.puppeteer.browser.version();
+   const ready=new Promise<BrowserPort>((resolveReady,reject)=>{
+    const offError=ctx.on('internal/error',(error:unknown)=>reject(error));
+    const timer=setTimeout(()=>reject(Error('browser startup timeout after '+(options.startupTimeoutMs??60000)+'ms')),options.startupTimeoutMs??60000);
+    stopStartupWait=()=>{clearTimeout(timer);offError();};
+    ctx.inject(['puppeteer'],(inner:any)=>resolveReady(createKoishiBrowserPort(()=>inner.puppeteer.page())));
+   });
+   // Attach both outcomes before registering the service; Koishi may report its
+   // asynchronous start failure without rejecting Context.start().
+   void ready.then(stopStartupWait,stopStartupWait);
+   const startup=Promise.resolve().then(()=>{ctx.plugin(localRequire('koishi-plugin-puppeteer').default,{headless:true});return ctx.start();});
+   [,port]=await Promise.all([startup,ready]);report.browserVersion=await ctx.puppeteer.browser.version();
   }else{
    const {parseHTML}=localRequire('linkedom');
    port={async openPage(){return {async read(request){
@@ -74,6 +82,7 @@ export async function validateLocalWeb(options:{online?:boolean;probe?:boolean;e
   report.passed=true;
  }catch(error){report.error=error instanceof Error?error.message:String(error);report.passed=false;}
  finally{
+  stopStartupWait();
   try{await managed?.dispose();report.drained=owned===0;if(!report.drained)report.passed=false;}catch(error){report.drainError=String(error);report.passed=false;}
   try{if(ctx?.canvas)await ctx.canvas.ctx.scope.dispose();await ctx?.stop();}catch(error){report.stopError=String(error);report.passed=false;}
   report.ownedPageOperations=operations;report.maximumOwnedPages=maxOwned;report.remainingOwnedPages=owned;report.durationMs=performance.now()-started;save();

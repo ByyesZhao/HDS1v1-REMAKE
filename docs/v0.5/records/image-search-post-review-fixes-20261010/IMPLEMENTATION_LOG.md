@@ -13,3 +13,5 @@ T2：32bffb9 起；磁盘重开后关闭识别，延期 personal 观察丢失，
 T3：348b207 起；真实 Chrome + port/provider 红回归 8失败。连接原 DOM 一次预序计算样式与继承状态，对应克隆删除不可见内容；访问墙/空态遍历所有匹配。dom-v2；GREEN 5文件/20测试（真实 Chrome 9），额外探针 hiddenArticle 正文正确、hiddenCaptcha=1/0、4页面排空。中间绿跑发现遗留克隆 style 循环因 CRLF 未移除，已定位移除，保留日志。
 
 T4：c124bdd 起；main/role-main 登录壳 RED 5失败。删除凭据区域及提示，区域外独立 article/main 可保留；多表单逐项判定。GREEN 4文件/31测试，真实离线探针 loginMain=login_wall、0/1、无材料，R3保持1/0与0剩余页。新测试起初错误假定失败 DTO 传递异常文本；现沿原合同断言 read_error，DOM/探针另验 login_wall，保留中间日志。
+
+T5：5a53d27 起；真实 Context 的服务拒绝/一直不就绪 RED 2失败（有限外层截止+finally停止）。独立脚本注册前建立启动截止与internal/error出口，共同await启动和ready；所有结算清理监听/计时器，finally落盘。GREEN 3文件/7测试；旧审核探针有限返回并产失败报告。默认60000ms启动预算，未更改正式Host。
