@@ -1,0 +1,52 @@
+{
+  "healthy": {
+    "httpStatus": 200,
+    "body": {
+      "stopped": true
+    },
+    "exitCalls": 1,
+    "storageCloseReached": true,
+    "searchFailure": "search page blocked: http_error",
+    "browserStatus": {
+      "state": "stopping",
+      "error": null
+    },
+    "errors": [],
+    "logs": [
+      "收到停止请求：停止新输入和新任务，等待当前故事轮、导演及后台工作保存。",
+      "当前工作已保存，HDSI停止完成。"
+    ]
+  },
+  "failed": {
+    "httpStatus": 200,
+    "body": {
+      "stopped": true
+    },
+    "exitCalls": 1,
+    "storageCloseReached": false,
+    "searchFailure": "synthetic page close failure",
+    "browserStatus": {
+      "state": "failed",
+      "error": "synthetic page close failure"
+    },
+    "errors": [
+      "Error: synthetic page close failure"
+    ],
+    "logs": [
+      "收到停止请求：停止新输入和新任务，等待当前故事轮、导演及后台工作保存。",
+      "当前工作已保存，HDSI停止完成。"
+    ]
+  }
+}
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+200 !== 500
+
+    at main (D:\HDSI-remake\docs\v0.5\reviews\freshness-graceful-stop-20261010\probe-browser-stop.ts:87:10) {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 200,
+  expected: 500,
+  operator: 'strictEqual',
+  diff: 'simple'
+}

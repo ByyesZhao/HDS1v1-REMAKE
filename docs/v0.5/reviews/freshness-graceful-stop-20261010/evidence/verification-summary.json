@@ -1,0 +1,57 @@
+{
+  "reviewedAt": "2026-10-10",
+  "baseline": "086cd07372a85540799a98f2c6dcf68013fe26f0",
+  "fullRun": {
+    "command": "node node_modules/vitest/vitest.mjs run --reporter=default --reporter=json --outputFile.json=docs/v0.5/reviews/freshness-graceful-stop-20261010/evidence/full-tests.json",
+    "exitCode": 1,
+    "files": 187,
+    "passedTests": 985,
+    "failedTests": 2,
+    "skippedTests": 17,
+    "seconds": 135.2,
+    "environmentFailures": [
+      "tests/browser-visible-dom.test.ts",
+      "tests/runtime-check-readonly.test.ts"
+    ],
+    "log": "logs/full-tests.txt",
+    "report": "evidence/full-tests.json"
+  },
+  "narrowEnvironmentRerun": {
+    "command": "node node_modules/vitest/vitest.mjs run tests/runtime-check-readonly.test.ts tests/browser-visible-dom.test.ts --reporter=default --reporter=json --outputFile.json=docs/v0.5/reviews/freshness-graceful-stop-20261010/evidence/environment-rerun.json",
+    "exitCode": 0,
+    "files": 2,
+    "passedTests": 19,
+    "seconds": 5.36,
+    "sandbox": "require_escalated; isolated fixture data and local fake pages only",
+    "log": "logs/environment-rerun.txt",
+    "report": "evidence/environment-rerun.json"
+  },
+  "combinedExistingTests": {
+    "files": 187,
+    "tests": 1004,
+    "passed": 1004,
+    "singleSuccessfulFullInvocation": false
+  },
+  "typecheck": {
+    "command": "node node_modules/typescript/bin/tsc --noEmit",
+    "exitCode": 0,
+    "log": "logs/typecheck.txt",
+    "note": "Empty log is normal successful tsc --noEmit output."
+  },
+  "defectProbe": {
+    "command": "node --import tsx docs/v0.5/reviews/freshness-graceful-stop-20261010/probe-browser-stop.ts",
+    "exitCode": 1,
+    "log": "logs/browser-stop-red.txt",
+    "expectedHttpStatus": 500,
+    "actualHttpStatus": 200,
+    "actualExitCalls": 1,
+    "storageCloseReachedMarker": false,
+    "status": "Confirmed R1; product repair not implemented in review"
+  },
+  "limits": [
+    "No product source, test suite or build artifact edits.",
+    "No formal HDSI service start or stop, configuration or database operations.",
+    "Build/demo/plugin smoke not rerun in this review.",
+    "No live model, QQ, power-loss or long-duration validation."
+  ]
+}

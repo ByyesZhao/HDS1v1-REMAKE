@@ -2,7 +2,9 @@
 
 返回[版本索引](../README.md)。
 
-最新为[普通回复跟进新消息方案审核](chat-reply-freshness-20261010/REVIEW.md)，源码基线3fb4e1c；保留原方案 B，补齐 4 项重要合同，附[细化执行方案 T1～T5](chat-reply-freshness-20261010/EXECUTION_PLAN.md)。当前基线定向回归8文件35项通过，合成探针复核旧行为与重算接点；新功能现已实施，最新工程验证与独立复核见[交付](../records/chat-reply-freshness-20261010/DELIVERY.md)。原报告不改写为实施验收。
+最新为[普通回复新鲜度与安全停止交付后复核](freshness-graceful-stop-20261010/REVIEW.md)，基线086cd07。新鲜度T1～T5未发现需修复问题；安全停止新增1项P2（浏览器关闭失败仍报告成功并退出）待修，附[修复执行方案](freshness-graceful-stop-20261010/FIX_PLAN.md)与HTTP组合探针。既有187文件1004项经全量运行及两组沙箱限制复跑均有通过记录；新增缺陷探针为RED，原I1断连修复仍通过。
+
+前次[普通回复跟进新消息方案审核](chat-reply-freshness-20261010/REVIEW.md)，源码基线3fb4e1c；保留原方案 B，补齐 4 项重要合同，附[细化执行方案 T1～T5](chat-reply-freshness-20261010/EXECUTION_PLAN.md)。原基线定向回归8文件35项通过，合成探针复核旧行为与重算接点；新功能现已实施，工程验证与独立复核见[交付](../records/chat-reply-freshness-20261010/DELIVERY.md)。原报告不改写为实施验收。
 
 前次[查看消息资格计划审核](phone-access-20261010/PLAN_REVIEW.md)，源码基线a66a89c。审核当时未实施，结论为设计可继续，无阻断问题；1处恢复验收措辞需收窄，附协议2回归及现场查询接点建议。审核当时既有定向回归5文件／23项通过；现已实施，实际交付与部署状态见[记录](../records/phone-access-20261010/DELIVERY.md)。
 

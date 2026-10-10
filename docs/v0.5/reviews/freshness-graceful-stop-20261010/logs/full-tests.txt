@@ -1,0 +1,369 @@
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ✓ tests/environment-async-upgrade.test.ts (16 tests) 8782ms
+   ✓ upgrade inspection classifies missing ready 750ms
+   ✓ upgrade inspection classifies missing running 735ms
+   ✓ upgrade inspection classifies missing frozen pending 735ms
+   ✓ upgrade inspection classifies missing attempted pending 692ms
+   ✓ upgrade inspection classifies explicit legacy pending 704ms
+   ✓ upgrade inspection classifies async attempted pending 704ms
+   ✓ upgrade inspection classifies async running 666ms
+   ✓ upgrade inspection classifies legacy committed 734ms
+   ✓ upgrade inspection classifies async superseded 701ms
+   ✓ upgrade inspection classifies missing untouched pending 701ms
+   ✓ untouched missing preparation version upgrades to async and repeated apply is byte-inert 713ms
+ ✓ tests/review24-dialogue.test.ts (21 tests) 7842ms
+   ✓ explicit_rebuild_check_is_readonly_and_reports_new_partition_instead_of_metadata_only 847ms
+   ✓ rebuild_refuses_inflight_version_1_without_mutating_it 804ms
+   ✓ rebuild_refuses_inflight_version_2_without_mutating_it 788ms
+   ✓ rebuild_failure_rolls_back_old_index_and_parameters_after_backup 784ms
+   ✓ cli_rebuild_check_and_apply_share_explicit_mode_and_config 599ms
+   ✓ v1_confirmed_activity_span_distinguishes_missing 781ms
+ ✓ tests/chat-input-cost.test.ts (1 test) 5730ms
+   ✓ routine input with fixed working set does not decode unrelated historical tables 5729ms
+ ✓ tests/memory-capacity-idle-integration.test.ts (2 tests) 5272ms
+   ✓ mixed_capacity_idle_and_recovery 2703ms
+   ✓ pruned_snapshots_all_surfaces and old_library_batch_cleanup_front_priority 2568ms
+ ✓ tests/memory-capacity-upgrade.test.ts (10 tests) 5195ms
+   ✓ dry-run permits long active exit but retains deletion protection: expired short with missing summary 966ms
+   ✓ dry-run permits long active exit but retains deletion protection: capacity-exited short before expiry 972ms
+   ✓ dry_run_readonly_no_ddl and inspection_matches_runtime_archive_count 952ms
+   ✓ CLI reads only memory settings without a background or key file 643ms
+ ✓ tests/shared-v3-upgrade.test.ts (6 tests) 5073ms
+   ✓ version_one_unfinished_preparation_is_not_legacy: readonly check and repeated apply preserve valid unfinished work 993ms
+   ✓ version_one_unfinished_environment_is_not_legacy: readonly check and repeated apply preserve valid unfinished work 961ms
+   ✓ readonly_check_does_not_initialize: check neither edits the file nor adds schema 953ms
+   ✓ stopped_backup_then_upgrade: preserves ordinary state and creates a readable backup before initializing 967ms
+   ✓ legacy_shared_is_not_reset: reports actual IDs and refuses guesses even when there are no memories 929ms
+ ✓ tests/context-query-cost.test.ts (3 tests) 4219ms
+   ✓ directed window decodes only four complete segments at H=10000; memory never reads raw window 710ms
+   ✓ directed window decodes only four complete segments at H=50000; memory never reads raw window 3419ms
+ ✓ tests/reply-freshness-recovery.test.ts (11 tests) 5167ms
+   ✓ waiting_new_input_deadline_survives_real_disk_reopen 350ms
+   ✓ pending_candidate_reopen_stale=false 420ms
+   ✓ pending_candidate_reopen_stale=true 484ms
+   ✓ sealed_or_legacy_sending_preserves_text_and_confirmed_receipts 468ms
+   ✓ sealed_or_legacy_tail_retry_preserves_text_and_confirmed_receipts 447ms
+   ✓ sealed_or_legacy_legacy_preserves_text_and_confirmed_receipts 443ms
+   ✓ silent_sealed_post_failure_reopens_without_reconsidering_new_input 487ms
+   ✓ event_takeover_before_send_reopen_keeps_scope_generation_and_chat_pending 574ms
+   ✓ disk_same_generation_keeps_real_stage_run_id_and_confirmed_web_quota 577ms
+   ✓ sending_registered_before_qq_call_survives_disk_reopen 442ms
+   ✓ saved_post_result_reopens_and_commits_memory_emotion_task_experience_once 474ms
+ ✓ tests/chat-upgrade.test.ts (9 tests) 3790ms
+   ✓ version2_check_detects_corrupt_association_readonly_with_actual_segment_count 920ms
+   ✓ nondefault_idle_same_check_and_apply; check_no_business_writes; reapply_v2_idempotent 734ms
+   ✓ failed_plan_rolls_back 756ms
+   ✓ cli_defaults_target2_reads_public_idle_config_without_models_or_keys 347ms
+ ❯ tests/runtime-check-readonly.test.ts (2 tests | 2 failed) 10ms
+   × launcher readonly check reads schema 3 without installing missing auxiliary indexes 7ms
+   × launcher readonly check reads schema 2 without installing missing auxiliary indexes 3ms
+ ❯ tests/browser-visible-dom.test.ts (17 tests | 17 skipped) 380ms
+   ↓ actual CSS excludes invisible body: sheet article
+   ↓ actual CSS excludes invisible body: hidden ancestor
+   ↓ actual CSS excludes invisible body: sheet ancestor
+   ↓ actual CSS excludes invisible body: fixed short
+   ↓ actual CSS excludes invisible body: inherited visibility override
+   ↓ hidden captcha does not spend failure quota
+   ↓ visible captcha after hidden first wall still blocks
+   ↓ hidden bing links and empty state wait for visible results
+   ↓ hidden duckduckgo links and empty state wait for visible results
+   ↓ credential shell counting and independent body: main login
+   ↓ credential shell counting and independent body: role login
+   ↓ credential shell counting and independent body: article beside login
+   ↓ credential shell counting and independent body: dialog beside main
+   ↓ credential shell counting and independent body: article about login
+   ↓ empty or hidden article does not make login successful in actual CSS: <article></article>
+   ↓ empty or hidden article does not make login successful in actual CSS: <article><h1>Heading only</h1></article>
+   ↓ empty or hidden article does not make login successful in actual CSS: <style>.hidden{display:none}</style><article><p class="hidden">HIDDEN_BODY</p></article>
+ ✓ tests/world-school-upgrade.test.ts (6 tests) 2187ms
+   ✓ readonly_check_no_writes_reports_unfinished_without_blocking_front 397ms
+   ✓ old_frozen_not_applied_success_preserved_front_still_blocks_and_backup_before_apply 507ms
+   ✓ repeat_upgrade_same_batch_and_closed_at 335ms
+   ✓ config_compat_does_not_bypass_db_gate 398ms
+   ✓ old_ungenerated_environment_superseded_without_marking_success 326ms
+ ✓ tests/graceful-stop-process.test.ts (2 tests) 1570ms
+   ✓ real stop client waits for child world preparation and exits only after disk result is saved 772ms
+   ✓ disconnected stopping client still saves ready on disk and exits without a second request 797ms
+ ✓ tests/scheduling-query-workload.test.ts (1 test) 1750ms
+   ✓ fixed active collections keep returned and decoded query rows independent of unrelated history 1749ms
+ ✓ tests/review17-identities.test.ts (6 tests) 1189ms
+   ✓ production middleware ignores platform redelivery: 你好 shared=true 311ms
+ ✓ tests/memory-payload-compaction-cli.test.ts (3 tests) 1815ms
+   ✓ inspect is read-only; apply requires stopped and bounded continuation backs up original payloads 982ms
+   ✓ CLI defaults to dry run and never needs a local config 551ms
+ ✓ tests/memory-cleanup-write-amplification.test.ts (6 tests) 1320ms
+   ✓ cleanup K=10 never rewrites H=5000 already compacted terminal rows 863ms
+ ✓ tests/plugin-smoke-contract.test.ts (7 tests) 1399ms
+   ✓ real Koishi smoke completes empty and required-notice V1 batches without repairs 1250ms
+ ✓ tests/chat-recovery.test.ts (7 tests) 1056ms
+   ✓ opening_sending_failure_file_reopen_start_and_resume_recovers_same_opening 361ms
+   ✓ opening_post_failure_file_reopen_start_and_resume_recovers_same_opening 329ms
+   ✓ version2_file_reopen_preserves_activity_selection_and_confirmed_output 312ms
+ ✓ tests/shared-v3-recovery.test.ts (6 tests) 1043ms
+   ✓ recover_exact_same_step: file reopen at partial keeps output/count/control exactly once 308ms
+   ✓ recover_exact_same_step: file reopen at post keeps output/count/control exactly once 306ms
+ ✓ tests/memory-v3-retrieval.test.ts (8 tests) 1013ms
+   ✓ SQL filtering and unlimited relevant recall hold with ten thousand records at three and six months 803ms
+ ✓ tests/query-index-compatibility.test.ts (1 test) 822ms
+   ✓ read-only old schema queries work without installing indexes; writable install preserves all rows and rowid 821ms
+ ✓ tests/memory-maintenance-checkpoint.test.ts (12 tests) 781ms
+   ✓ reopens interrupted pending maintenance with frozen input and the same checkpoint 336ms
+   ✓ reopens interrupted computing maintenance with frozen input and the same checkpoint 330ms
+stdout | tests/local-web-validation-startup.test.ts > standalone validation settles and writes report on browser reject
+[E] app Error: SYNTHETIC_BROWSER_START_FAILURE
+        at Browser.start (D:/HDSI-remake/tests/local-web-validation-startup.test.ts:6:149)
+        at D:\HDSI-remake\node_modules\@cordisjs\core\lib\index.cjs:1213:18
+        at processTicksAndRejections (node:internal/process/task_queues:104:5)
+
+ ✓ tests/local-web-validation-startup.test.ts (4 tests) 949ms
+   ✓ standalone CLI returns nonzero and saves original startup failure 697ms
+ ✓ tests/visual-input-entry.test.ts (2 tests) 634ms
+   ✓ real middleware persists visual inputs and redelivery identity; shared=false 326ms
+   ✓ real middleware persists visual inputs and redelivery identity; shared=true 307ms
+ ✓ tests/review-recovery.test.ts (8 tests) 624ms
+stdout | tests/dialogue-upgrade.test.ts > legacy_30_maps_to_four_episodes and explicit settings win without activating budgets
+HDSI: recentMessagesLimit 已替换为完整对话段窗口，缺省4段／15分钟。
+HDSI: recentMessagesLimit 已替换为完整对话段窗口，缺省4段／15分钟。
+
+ ✓ tests/dialogue-upgrade.test.ts (6 tests) 502ms
+ ✓ tests/feature-check-fixture.test.ts (1 test) 651ms
+   ✓ creates a self-contained image check fixture, real readonly check does not change it 650ms
+ ✓ tests/web-integration.test.ts (1 test) 496ms
+   ✓ completes four stages after a file-database model failure and reopen, preserving long page tail and stable reading provenance 495ms
+ ✓ tests/shared-v3-flow.test.ts (17 tests) 476ms
+ ✓ tests/storage.test.ts (2 tests) 405ms
+ ✓ tests/incoming-media-integration.test.ts (3 tests) 389ms
+   ✓ disabled_visual_input_preserves_confirmed_deferred_image_after_disk_reopen 348ms
+ ✓ tests/phone-access-flow.test.ts (10 tests) 565ms
+   ✓ disk restart keeps a finite unread check, skips confirmed bubbles and retries unknown sending in protocol 2 390ms
+ ✓ tests/graceful-stop-control.test.ts (4 tests) 387ms
+ ✓ tests/environment-async-recovery.test.ts (8 tests) 363ms
+   ✓ ready file reopen preserves creation ID and never regenerates 301ms
+ ✓ tests/browser-web-plugin.test.ts (3 tests) 392ms
+ ✓ tests/incoming-media-onebot-review.test.ts (8 tests) 376ms
+   ✓ runtime assembly uses bound OneBot internal.getImage and persists downloaded bytes 333ms
+ ✓ tests/incoming-media-smoke.test.ts (2 tests) 600ms
+   ✓ actual plugin registers media without downloading inside input transaction; enabled=false 310ms
+ ✓ tests/web-status.test.ts (3 tests) 306ms
+ ✓ tests/web-store.test.ts (3 tests) 295ms
+ ✓ tests/memory-v3-recovery.test.ts (4 tests) 314ms
+ ✓ tests/memory-v3-store.test.ts (5 tests) 283ms
+ ✓ tests/incoming-media-turn.test.ts (1 test) 259ms
+ ✓ tests/shared-v3-state.test.ts (4 tests) 278ms
+ ✓ tests/memory-capacity-lifecycle.test.ts (6 tests) 282ms
+ ✓ tests/prompt-context-integration.test.ts (3 tests) 255ms
+ ✓ tests/memory-v3-host.test.ts (7 tests) 234ms
+ ✓ tests/memory-v3-maintenance.test.ts (7 tests) 242ms
+ ✓ tests/browser-koishi-port.test.ts (1 test) 217ms
+ ✓ tests/resource-pool-index.test.ts (4 tests) 195ms
+ ✓ tests/reply-freshness-host.test.ts (6 tests) 161ms
+ ✓ tests/memory-idle-host.test.ts (6 tests) 140ms
+ ✓ tests/reply-freshness-context.test.ts (5 tests) 142ms
+ ✓ tests/memory-batch-characters.test.ts (12 tests) 141ms
+ ✓ tests/web-host.test.ts (2 tests) 137ms
+ ✓ tests/browser-final-review.test.ts (13 tests) 139ms
+ ✓ tests/shared-v3-cross-activity.test.ts (6 tests) 131ms
+ ✓ tests/reply-freshness-turn.test.ts (10 tests) 144ms
+ ✓ tests/environment-async-host-gates.test.ts (6 tests) 125ms
+ ✓ tests/activity-context.test.ts (6 tests) 116ms
+ ✓ tests/memory-capacity-cleanup.test.ts (7 tests) 103ms
+ ✓ tests/shared-v3-contracts.test.ts (8 tests) 111ms
+ ✓ tests/review17-summary-repair.test.ts (21 tests) 117ms
+ ✓ tests/review17-capacity-cost.test.ts (1 test) 111ms
+ ✓ tests/memory-v3-lifecycle.test.ts (10 tests) 106ms
+ ✓ tests/world-school-integration.test.ts (4 tests) 95ms
+ ✓ tests/environment-async-phases.test.ts (3 tests) 94ms
+ ✓ tests/world-school-calendar.test.ts (13 tests) 94ms
+ ✓ tests/model-settings.test.ts (13 tests) 80ms
+ ✓ tests/memory.test.ts (5 tests) 99ms
+ ✓ tests/memory-payload-recovery-matrix.test.ts (15 tests) 88ms
+ ✓ tests/activity-memory-context.test.ts (4 tests) 95ms
+ ✓ tests/memory-idle-fairness.test.ts (7 tests) 95ms
+ ✓ tests/probability.test.ts (4 tests) 90ms
+ ✓ tests/personal-stage-preparation.test.ts (10 tests) 92ms
+ ✓ tests/world-school-review14-contracts.test.ts (13 tests) 92ms
+ ✓ tests/memory-event-time.test.ts (10 tests) 85ms
+ ✓ tests/shared-scene.test.ts (5 tests) 86ms
+ ✓ tests/chat-flow.test.ts (6 tests) 86ms
+ ✓ tests/local-web-acceptance.test.ts (1 test) 164ms
+ ✓ tests/world-school-review14-calendar.test.ts (11 tests) 84ms
+ ✓ tests/world-school-story.test.ts (5 tests) 79ms
+ ✓ tests/review-fixes.test.ts (15 tests) 78ms
+ ✓ tests/web-phases.test.ts (5 tests) 79ms
+ ✓ tests/web-session.test.ts (12 tests) 82ms
+ ✓ tests/recovery.test.ts (6 tests) 80ms
+ ✓ tests/browser-web-integration.test.ts (2 tests) 78ms
+ ✓ tests/world-school-batch.test.ts (8 tests) 78ms
+ ✓ tests/dialogue-flow.test.ts (6 tests) 78ms
+ ✓ tests/review7-maintenance.test.ts (3 tests) 68ms
+ ✓ tests/review7-memory.test.ts (11 tests) 71ms
+ ✓ tests/memory-idle-consolidation.test.ts (8 tests) 74ms
+ ✓ tests/review7-web.test.ts (9 tests) 71ms
+ ✓ tests/environment-async-boundaries.test.ts (6 tests) 75ms
+ ✓ tests/memory-payload-compaction.test.ts (3 tests) 74ms
+ ✓ tests/memory-final-review.test.ts (6 tests) 69ms
+ ✓ tests/memory-v3-deployment.test.ts (5 tests) 65ms
+ ✓ tests/prompt-context-errors.test.ts (5 tests) 68ms
+ ✓ tests/prompt-context-call-skip.test.ts (8 tests) 65ms
+ ✓ tests/stickers.test.ts (4 tests) 65ms
+ ✓ tests/reply-guidance.test.ts (12 tests) 67ms
+ ✓ tests/graceful-stop-host.test.ts (6 tests) 68ms
+stdout | tests/browser-web-plugin-extra.test.ts > failed HDSI startup is reported and acquired instance closes exactly once
+[E] hdsi-browser Error: synthetic host startup failure
+        at Object.start (D:/HDSI-remake/tests/browser-web-plugin-extra.test.ts:9:110)
+        at D:/HDSI-remake/src/deployment/browser-runtime.ts:22:24
+        at processTicksAndRejections (node:internal/process/task_queues:104:5)
+        at D:/HDSI-remake/src/deployment/browser-runtime.ts:12:91
+
+stdout | tests/browser-web-plugin-extra.test.ts > rejecting browser service preserves original Koishi error and never opens a story runtime
+[E] app Error: synthetic browser startup failure
+        at D:/HDSI-remake/tests/browser-web-plugin-extra.test.ts:13:55
+        at file:///D:/HDSI-remake/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:1628:35
+        at file:///D:/HDSI-remake/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:2783:26
+        at file:///D:/HDSI-remake/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:3321:20
+        at new Promise (<anonymous>)
+        at runWithCancel (file:///D:/HDSI-remake/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:3316:10)
+        at file:///D:/HDSI-remake/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:3301:20
+        at new Promise (<anonymous>)
+        at runWithTimeout (file:///D:/HDSI-remake/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:3259:10)
+        at file:///D:/HDSI-remake/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:3882:64
+
+ ✓ tests/browser-web-plugin-extra.test.ts (2 tests) 65ms
+ ✓ tests/scheduler.test.ts (4 tests) 62ms
+ ✓ tests/integration.test.ts (2 tests) 65ms
+ ✓ tests/web-model-tools.test.ts (6 tests) 63ms
+ ✓ tests/dialogue-recovery.test.ts (6 tests) 63ms
+ ✓ tests/phone-access-deployment.test.ts (6 tests) 61ms
+ ✓ tests/world-school-models.test.ts (9 tests) 56ms
+ ✓ tests/review26-memory-create.test.ts (8 tests) 57ms
+ ✓ tests/review17-promotion-audit.test.ts (6 tests) 57ms
+ ✓ tests/environment-async-tools.test.ts (3 tests) 59ms
+ ✓ tests/chat-active-consistency.test.ts (13 tests) 59ms
+ ✓ tests/environment-async-slots.test.ts (1 test) 57ms
+ ✓ tests/review10-public.test.ts (12 tests) 56ms
+ ✓ tests/web-recovery.test.ts (2 tests) 57ms
+ ✓ tests/memory-pending-refresh.test.ts (5 tests) 57ms
+ ✓ tests/tasks.test.ts (3 tests) 57ms
+ ✓ tests/school-week-text-contract.test.ts (6 tests) 52ms
+ ✓ tests/memory-capacity-prune-race.test.ts (5 tests) 57ms
+ ✓ tests/memory-v3-index.test.ts (5 tests) 50ms
+ ✓ tests/web-memory-sources.test.ts (2 tests) 48ms
+ ✓ tests/shared-v3-scheduler.test.ts (8 tests) 47ms
+ ✓ tests/memory-idle-contracts.test.ts (6 tests) 47ms
+ ✓ tests/world-school-knowledge-version.test.ts (5 tests) 54ms
+ ✓ tests/environment-async-host.test.ts (1 test) 46ms
+ ✓ tests/turn.test.ts (5 tests) 44ms
+ ✓ tests/storage-queries.test.ts (4 tests) 47ms
+ ✓ tests/memory-projection-retrieval.test.ts (6 tests) 54ms
+ ✓ tests/environment-async-provenance.test.ts (3 tests) 46ms
+ ✓ tests/phone-access-contracts.test.ts (11 tests) 46ms
+ ✓ tests/incoming-media-assets.test.ts (3 tests) 40ms
+ ✓ tests/memory-index-coalescing.test.ts (3 tests) 42ms
+ ✓ tests/school-week-contract-recovery.test.ts (4 tests) 43ms
+ ✓ tests/world-school-notices.test.ts (5 tests) 42ms
+ ✓ tests/chat-window-sql.test.ts (6 tests) 42ms
+ ✓ tests/chat-episodes.test.ts (5 tests) 38ms
+ ✓ tests/browser-page-slots.test.ts (4 tests) 52ms
+ ✓ tests/chat-consistency.test.ts (7 tests) 40ms
+ ✓ tests/world-school-perspective.test.ts (6 tests) 41ms
+ ✓ tests/world-school-review14-time.test.ts (4 tests) 41ms
+ ✓ tests/deployment.test.ts (4 tests) 36ms
+ ✓ tests/memory-capacity-deployment.test.ts (2 tests) 34ms
+ ✓ tests/memory-idle-recovery.test.ts (3 tests) 36ms
+ ✓ tests/dialogue-episodes.test.ts (5 tests) 36ms
+ ✓ tests/reply-freshness-scheduler.test.ts (4 tests) 34ms
+ ✓ tests/prompt-context-views.test.ts (6 tests) 31ms
+ ✓ tests/context-channels.test.ts (4 tests) 31ms
+ ✓ tests/shared-v3-input.test.ts (5 tests) 29ms
+ ✓ tests/world-school-review14-environment.test.ts (4 tests) 29ms
+ ✓ tests/memory-idle-policy.test.ts (4 tests) 26ms
+ ✓ tests/school-notice-evaluation.test.ts (2 tests) 32ms
+ ✓ tests/school-notice-queries.test.ts (3 tests) 28ms
+ ✓ tests/incoming-media-cleanup.test.ts (2 tests) 32ms
+ ✓ tests/input.test.ts (2 tests) 28ms
+ ✓ tests/web-deployment.test.ts (2 tests) 28ms
+ ✓ tests/memory-capacity-state.test.ts (3 tests) 26ms
+ ✓ tests/prompt-policy.test.ts (3 tests) 30ms
+ ✓ tests/environment-queries.test.ts (2 tests) 27ms
+ ✓ tests/memory-capacity-retrieval.test.ts (2 tests) 24ms
+ ✓ tests/world-school-state.test.ts (4 tests) 23ms
+ ✓ tests/incoming-media-store-cost.test.ts (1 test) 25ms
+ ✓ tests/browser-web-config.test.ts (1 test) 24ms
+ ✓ tests/world-school-acceptance-tool.test.ts (2 tests) 29ms
+ ✓ tests/prompt-context-transport.test.ts (6 tests) 22ms
+ ✓ tests/world-school-personal-reminder.test.ts (1 test) 24ms
+ ✓ tests/incoming-media-entry.test.ts (2 tests) 25ms
+ ✓ tests/model-call-context.test.ts (3 tests) 21ms
+ ✓ tests/chat-window-snapshot.test.ts (2 tests) 19ms
+ ✓ tests/incoming-image-model.test.ts (1 test) 18ms
+ ✓ tests/environment-preparation-snapshot.test.ts (1 test) 19ms
+ ✓ tests/environment.test.ts (2 tests) 18ms
+ ✓ tests/background-stage-views.test.ts (3 tests) 19ms
+ ✓ tests/browser-page-extraction.test.ts (5 tests) 18ms
+ ✓ tests/world-school-reminder-timing.test.ts (3 tests) 16ms
+ ✓ tests/phone-access-cli.test.ts (7 tests) 12ms
+ ✓ tests/browser-search-provider.test.ts (1 test) 9ms
+ ✓ tests/web-content.test.ts (3 tests) 6ms
+ ✓ tests/incoming-media-context.test.ts (2 tests) 5ms
+ ✓ tests/shared-story-seed.test.ts (3 tests) 5ms
+ ✓ tests/expression-context-view.test.ts (2 tests) 4ms
+ ✓ tests/environment-context-view.test.ts (2 tests) 4ms
+ ✓ tests/web-provider.test.ts (1 test) 3ms
+ ✓ tests/runtime-check-paths.test.ts (1 test) 3ms
+ ✓ tests/output.test.ts (1 test) 2ms
+ ✓ tests/plugin.test.ts (1 test) 2ms
+ ✓ tests/browser-check-config.test.ts (1 test) 2ms
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/browser-visible-dom.test.ts [ tests/browser-visible-dom.test.ts ]
+Error: Failed to launch the browser process!
+[1010/181344.203:ERROR:third_party\crashpad\crashpad\util\win\registration_protocol_win.cc:136] TransactNamedPipe: 管道已结束。 (0x6D)
+[1010/181344.235:ERROR:third_party\crashpad\crashpad\client\crashpad_client_win.cc:142] crash server failed to launch, self-terminating
+
+
+TROUBLESHOOTING: https://pptr.dev/troubleshooting
+
+ ❯ Interface.onClose node_modules/@puppeteer/browsers/src/launch.ts:436:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/runtime-check-readonly.test.ts > launcher readonly check reads schema 3 without installing missing auxiliary indexes
+Error: EPERM: operation not permitted, symlink 'D:\HDSI-remake\runtime\node_modules' -> 'D:\HDSI-remake\.tmp\freshness-stop-review\hdsi-launcher-readonly-62stvy\runtime\node_modules'
+ ❯ tests/runtime-check-readonly.test.ts:12:3
+     10|   mkdirSync(runtime,{recursive:true});writeFileSync(join(runtime,'pack…
+     11|   copyFileSync(resolve('runtime/check.cjs'),join(runtime,'check.cjs'));
+     12|   symlinkSync(resolve('runtime/node_modules'),join(runtime,'node_modul…
+       |   ^
+     13|   symlinkSync(resolve('lib'),join(root,'lib'),'junction');
+     14|   const settings=JSON.parse(readFileSync('examples/story.sample.json',…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  tests/runtime-check-readonly.test.ts > launcher readonly check reads schema 2 without installing missing auxiliary indexes
+Error: EPERM: operation not permitted, symlink 'D:\HDSI-remake\runtime\node_modules' -> 'D:\HDSI-remake\.tmp\freshness-stop-review\hdsi-launcher-readonly-anAwrZ\runtime\node_modules'
+ ❯ tests/runtime-check-readonly.test.ts:12:3
+     10|   mkdirSync(runtime,{recursive:true});writeFileSync(join(runtime,'pack…
+     11|   copyFileSync(resolve('runtime/check.cjs'),join(runtime,'check.cjs'));
+     12|   symlinkSync(resolve('runtime/node_modules'),join(runtime,'node_modul…
+       |   ^
+     13|   symlinkSync(resolve('lib'),join(root,'lib'),'junction');
+     14|   const settings=JSON.parse(readFileSync('examples/story.sample.json',…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  2 failed | 185 passed (187)
+      Tests  2 failed | 985 passed | 17 skipped (1004)
+   Start at  18:12:49
+   Duration  135.20s (tests 77%, import 20%, transform 2%, worker 1%)
+
+    Isolate  187 workers spawned · ~122ms startup each (spawn + environment, per file)
+             at least ~22.65s faster with isolate: false — reuses workers across files instead of one per file
+
+JSON report written to D:/HDSI-remake/docs/v0.5/reviews/freshness-graceful-stop-20261010/evidence/full-tests.json

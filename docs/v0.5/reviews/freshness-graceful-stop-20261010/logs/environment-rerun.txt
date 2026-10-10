@@ -1,0 +1,16 @@
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ✓ tests/browser-visible-dom.test.ts (17 tests) 2399ms
+   ✓ hidden bing links and empty state wait for visible results 377ms
+   ✓ hidden duckduckgo links and empty state wait for visible results 371ms
+ ✓ tests/runtime-check-readonly.test.ts (2 tests) 2510ms
+   ✓ launcher readonly check reads schema 3 without installing missing auxiliary indexes 1284ms
+   ✓ launcher readonly check reads schema 2 without installing missing auxiliary indexes 1224ms
+
+ Test Files  2 passed (2)
+      Tests  19 passed (19)
+   Start at  18:17:31
+   Duration  5.36s (tests 95%, transform 3%, import 2%)
+
+JSON report written to D:/HDSI-remake/docs/v0.5/reviews/freshness-graceful-stop-20261010/evidence/environment-rerun.json
