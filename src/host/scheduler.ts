@@ -1,3 +1,4 @@
+import {ordinaryInputRevision,isOrdinaryReplyRequest} from './reply-freshness';
 import { defaultConfig,type AppConfig } from '../config';
 import {releaseSchoolNotices,selectSchoolNotices,schoolNotificationEligible,schoolNoticeDeadline,createSchoolNoticeEvaluationContext} from '../school/notices';
 import {ensureEnvironmentBatch,selectEnvironmentStepMetadata,environmentDeadline} from '../environment/scheduler';
@@ -25,7 +26,7 @@ export class Scheduler {
     }
     const runtime = this.storage.runtime();
     const front = this.foreground(now);
-    if (front) return {...front,schoolNoticeRefs:selectSchoolNotices(this.storage,now, this.config.timezone,noticeContext)};
+    if (front) {const request={...front,schoolNoticeRefs:selectSchoolNotices(this.storage,now, this.config.timezone,noticeContext)};return isOrdinaryReplyRequest(this.storage,request,now)?{...request,replyInputRevision:ordinaryInputRevision(this.storage)}:request;}
     if(schoolNotificationEligible(this.storage,now, this.config.timezone,noticeContext))return {inputMessageIds:[],taskIds:[],triggerKinds:['school_notification'],batchIds:[],sharedMeta:null,schoolNoticeRefs:selectSchoolNotices(this.storage,now, this.config.timezone,noticeContext)};
     if (!hasValidSharedScene(state) && !isSleeping(state, now) && runtime.pendingBatchIds.length && !canRead(state, now)) this.stashPending(now);
     if(!runtime.openBatch){
@@ -52,16 +53,17 @@ export class Scheduler {
     }
     if (isSleeping(state, now)) return null;
     const wake = !!state.sleep && due(state.sleep.wakeAt, now);
+    const open = !!runtime.openBatch;
     const hasOther = wake || dueTasks.some(t => t.kind !== 'check_messages');
-    const tasks = dueTasks.filter(t => t.kind !== 'check_messages' || canRead(state, now) || hasOther);
-    const pending = runtime.pendingBatchIds;
-    const batchIds = wake || tasks.some(t => t.kind === 'check_messages') ? [...pending] : canRead(state, now) ? pending.slice(0, 1) : [];
+    const readable = canRead(state,now);
+    const tasks = dueTasks.filter(t => t.kind !== 'check_messages' || !open && (readable || hasOther));
+    const inputs = !open && (readable || hasOther) ? this.storage.unreadMessages() : [];
+    const batchIds = [...new Set(inputs.flatMap(m=>m.batchId?[m.batchId]:[]))];
     const kinds: TriggerKind[] = [];
-    if (batchIds.length) kinds.push('input');
+    if (inputs.length) kinds.push('input');
     for (const task of tasks) if (!kinds.includes(task.kind)) kinds.push(task.kind);
     if (wake) kinds.push('sleep');
     if (!kinds.length) return null;
-    const inputs = this.storage.unreadMessages().filter(m => !pending.includes(m.batchId!) || batchIds.includes(m.batchId!));
     return { inputMessageIds: inputs.map(m => m.id), taskIds: tasks.map(t => t.id), triggerKinds: kinds, batchIds, sharedMeta: null };
   }
 
@@ -100,7 +102,8 @@ export class Scheduler {
         && runtime.sharedClock.activityId === state.scene.shared!.activityId) candidates.push(sharedDeadline(state.scene.shared!, runtime.sharedClock));
       for (const task of this.storage.all('tasks').filter(t => t.status === 'pending')) {
         if (shared && task.kind !== 'appointment') continue;
-        if (task.kind !== 'check_messages' || canRead(state, now)) candidates.push(task.at);
+        if (task.kind !== 'check_messages') candidates.push(task.at);
+        else if(canRead(state,now)) candidates.push(runtime.openBatch?new Date(Math.max(milliseconds(task.at),milliseconds(runtime.openBatch.readyAt))).toISOString():task.at);
         else if (state.scene.activity?.expectedEndAt) candidates.push(new Date(Math.max(milliseconds(task.at), milliseconds(state.scene.activity.expectedEndAt))).toISOString());
       }
     }

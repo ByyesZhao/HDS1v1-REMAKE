@@ -1,0 +1,112 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/reply-freshness-scheduler.test.ts
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/chat-reply-freshness/HDSI-remake
+
+ ❯ tests/reply-freshness-scheduler.test.ts (4 tests | 4 failed) 39ms
+   × ordinary_14999_waits_15000_selects_all 25ms
+   × duplicate_control_do_not_advance_revision 4ms
+   × stashed_unread_is_selected_when_readable 4ms
+   × open_batch_defers_due_check_without_blocking_appointment 4ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/reply-freshness-scheduler.test.ts > ordinary_14999_waits_15000_selects_all
+AssertionError: expected { inputMessageIds: [ 'a' ], …(5) } to be null
+
+- Expected:
+null
+
++ Received:
+{
+  "batchIds": [
+    "bde6d839-0ed6-48dc-98cf-832f5d5509d5",
+  ],
+  "inputMessageIds": [
+    "a",
+  ],
+  "schoolNoticeRefs": [],
+  "sharedMeta": null,
+  "taskIds": [],
+  "triggerKinds": [
+    "input",
+  ],
+}
+
+ ❯ tests/reply-freshness-scheduler.test.ts:10:46
+      8|  await b.acceptInput({id:'a',content:'old',receivedAt:d.clock.now()});…
+      9|  await b.acceptInput({id:'b',content:'new',receivedAt:d.clock.now()});
+     10|  expect(await s.collectReady(d.clock.now())).toBeNull();expect(await s…
+       |                                              ^
+     11|  d.clock.advance(14999);expect(await s.collectReady(d.clock.now())).to…
+     12|  const r=await s.collectReady(d.clock.now());expect(r!.inputMessageIds…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/reply-freshness-scheduler.test.ts > duplicate_control_do_not_advance_revision
+AssertionError: expected { openBatch: { …(2) }, …(17) } to have property "ordinaryInputRevision" with value 1
+
+- Expected:
+1
+
++ Received:
+undefined
+
+ ❯ tests/reply-freshness-scheduler.test.ts:16:103
+     14| it('duplicate_control_do_not_advance_revision',async()=>{
+     15|  const d=modern(),b=new InputBuffer(d.storage),m={id:'a',content:'hell…
+     16|  await b.acceptInput({id:'ctrl',content:'【推进】',receivedAt:d.clock.now(…
+       |                                                                                                       ^
+     17| });
+     18| it('stashed_unread_is_selected_when_readable',async()=>{
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  tests/reply-freshness-scheduler.test.ts > stashed_unread_is_selected_when_readable
+TypeError: Cannot read properties of null (reading 'inputMessageIds')
+ ❯ tests/reply-freshness-scheduler.test.ts:20:79
+     18| it('stashed_unread_is_selected_when_readable',async()=>{
+     19|  const d=modern();saveInput(d.storage,'a','hello');d.storage.set('runt…
+     20|  const r=await new Scheduler(d.storage).collectReady(d.clock.now());ex…
+       |                                                                               ^
+     21| });
+     22| it('open_batch_defers_due_check_without_blocking_appointment',async()=…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  tests/reply-freshness-scheduler.test.ts > open_batch_defers_due_check_without_blocking_appointment
+AssertionError: expected { inputMessageIds: [], …(5) } to be null
+
+- Expected:
+null
+
++ Received:
+{
+  "batchIds": [],
+  "inputMessageIds": [],
+  "schoolNoticeRefs": [],
+  "sharedMeta": null,
+  "taskIds": [
+    "check",
+  ],
+  "triggerKinds": [
+    "check_messages",
+  ],
+}
+
+ ❯ tests/reply-freshness-scheduler.test.ts:25:46
+     23|  const d=modern(),b=new InputBuffer(d.storage),s=new Scheduler(d.stora…
+     24|  d.storage.save('tasks','check',{id:'check',kind:'check_messages',chec…
+     25|  expect(await s.collectReady(d.clock.now())).toBeNull();
+       |                                              ^
+     26|  d.storage.save('tasks','event',{id:'event',kind:'appointment',at:d.cl…
+     27|  const r=await s.collectReady(d.clock.now());expect(r!.triggerKinds).t…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed (4)
+   Start at  16:46:15
+   Duration  337ms (transform 63%, import 18%, tests 17%, worker 1%)
+

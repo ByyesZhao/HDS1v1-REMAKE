@@ -58,6 +58,7 @@ export class InputBuffer {
       });
       runtime.activeDialogueEpisodeId=this.storage.runtime().activeDialogueEpisodeId;
       runtime.activeChatEpisodeId=this.storage.runtime().activeChatEpisodeId;
+      runtime.ordinaryInputRevision = (runtime.ordinaryInputRevision ?? 0) + 1;
       runtime.openBatch = { id: batchId, readyAt: addMs(message.receivedAt, 15_000) };
       this.storage.set('runtime', runtime);
       assertActiveWindow(this.storage,{requiredMessageIds:[message.id]});
