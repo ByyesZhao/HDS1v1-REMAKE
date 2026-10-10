@@ -1,0 +1,97 @@
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/graceful-stop-r1/HDSI-remake
+
+ ❯ tests/browser-graceful-stop-failure.test.ts (5 tests | 4 failed) 666ms
+   × live page close failure reaches HTTP caller without success exit 90ms
+   × drain rejection is observed immediately while lifecycle start remains queued 71ms
+   × concurrent and later failed stop requests share actual close work and all fail 125ms
+   × disconnected stop client cannot turn page close failure into success exit 194ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/browser-graceful-stop-failure.test.ts > live page close failure reaches HTTP caller without success exit
+AssertionError: expected 200 to be 500 // Object.is equality
+
+- Expected
++ Received
+
+- 500
++ 200
+
+ ❯ tests/browser-graceful-stop-failure.test.ts:53:20
+     51|  const f=await fixture({fail:true});try{const r=await f.stop();await t…
+     52|   expect(getBrowserRuntimeStatus(f.ctx).error).toBe('synthetic page cl…
+     53|   expect(r.status).toBe(500);expect(await r.json()).toMatchObject({sto…
+       |                    ^
+     54|  }finally{await f.cleanup();}
+     55| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/browser-graceful-stop-failure.test.ts > drain rejection is observed immediately while lifecycle start remains queued
+AssertionError: expected 200 to be 500 // Object.is equality
+
+- Expected
++ Received
+
+- 500
++ 200
+
+ ❯ tests/browser-graceful-stop-failure.test.ts:62:64
+     60|  try{const pending=f.stop().then(r=>response=r);await vi.waitFor(()=>e…
+     61|   await tick();await tick();expect(unhandled).toEqual([]);expect(respo…
+     62|   f.startGate.release();await pending;expect(response!.status).toBe(50…
+       |                                                                ^
+     63|  }finally{process.off('unhandledRejection',listener);await f.cleanup()…
+     64| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  tests/browser-graceful-stop-failure.test.ts > concurrent and later failed stop requests share actual close work and all fail
+AssertionError: expected 200 to be 500 // Object.is equality
+
+- Expected
++ Received
+
+- 500
++ 200
+
+ ❯ tests/browser-graceful-stop-failure.test.ts:68:61
+     66|  const f=await fixture({fail:true,blockClose:true});try{
+     67|   const a=f.stop(),b=f.stop();await vi.waitFor(()=>expect(f.logs.some(…
+     68|   for(const r of await Promise.all([a,b])){expect(r.status).toBe(500);…
+       |                                                             ^
+     69|   const later=await f.stop();expect(later.status).toBe(500);expect(awa…
+     70|  }finally{await f.cleanup();}
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  tests/browser-graceful-stop-failure.test.ts > disconnected stop client cannot turn page close failure into success exit
+AssertionError: expected "vi.fn()" to not be called at all, but actually been called 1 times
+
+Received:
+
+  1st vi.fn() call:
+
+    Array []
+
+
+Number of calls: 1
+
+ ❯ expectFailed tests/browser-graceful-stop-failure.test.ts:47:21
+     45|  expect(getBrowserRuntimeStatus(f.ctx)).toMatchObject({state:'failed',…
+     46|  expect(f.pageCloseCalls).toBe(1);expect(f.actualCloses).toBe(1);expec…
+     47|  expect(f.exit).not.toHaveBeenCalled();expect(f.logs.some(s=>s.include…
+       |                     ^
+     48|  expect(f.errors.some(e=>String(e).includes('synthetic page close fail…
+     49| }
+ ❯ tests/browser-graceful-stop-failure.test.ts:85:98
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 1 passed (5)
+   Start at  18:32:34
+   Duration  1.61s (tests 44%, transform 37%, import 19%)
+
