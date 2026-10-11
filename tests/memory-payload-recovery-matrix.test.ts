@@ -1,7 +1,7 @@
 import {it,expect} from 'vitest';
 import {fixture,at} from './memory-capacity-fixture';
 import {WebSearchStore} from '../src/web/store';
-const checkpoint={input:{body:'完整恢复正文'},repairCount:2,lookupUsed:true,pendingOperationId:'unfinished-op',toolResults:[],privateLookupResult:{body:'细节'}};
+const checkpoint={formatVersion:2 as const,input:{body:'完整恢复正文'},repairCount:2,lookupUsed:true,pendingOperationId:'unfinished-op',toolResults:[],privateLookupResult:{body:'细节'}};
 const states=[
  ...['pending','running','ready','committed','superseded'].map(status=>({type:'environment',status,terminal:['committed','superseded'].includes(status)})),
  ...['pending','computing','ready','done'].map(status=>({type:'maintenance',status,terminal:status==='done'})),

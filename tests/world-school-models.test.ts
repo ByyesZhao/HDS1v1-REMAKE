@@ -38,7 +38,7 @@ it('repair_and_retry_keep_counters_and_next_date_independent_quota',async()=>{
  const d=setup();d.storage.set('runtime',{...d.storage.runtime(),nextEnvironmentAt:null});ensureEnvironmentBatch(d.storage,d.config,NOW);const step=selectEnvironmentStep(d.storage,NOW)!;
  const store=new WebSearchStore(d.storage),web=new WebSearchService(store,undefined,d.clock,{enabled:false}),ref=store.openStage('environment',step.id,'generation','world');
  const op=store.beginOperation(ref.runId,{kind:'read',url:'https://example.test'});store.commitStep(ref.runId,{operationId:op.operationId,stepIndex:0,nextCandidateIndex:1,reason:'failed'});
- store.saveCheckpoint(ref.runId,{input:{},repairCount:2,lookupUsed:true,pendingOperationId:null,toolResults:[],repair:{original:'bad',errors:'bad'}});
+ store.saveCheckpoint(ref.runId,{formatVersion:2,input:{},repairCount:2,lookupUsed:true,pendingOperationId:null,toolResults:[],repair:{original:'bad',errors:'bad'}});
  await runEnvironmentStep({...d,web},step.id,async()=>{throw new ModelFormatError('bad');});d.clock.advance(300000);
  await runEnvironmentStep({...d,web},step.id,async()=>{expect(store.snapshot(ref.runId)).toMatchObject({counters:{successReads:0,failures:1},repairCount:0,lookupUsed:true});return {stage:'world',changes:[]};});
  d.clock.time='2026-10-08T06:00:00+08:00';ensureEnvironmentBatch(d.storage,d.config,d.clock.now());const next=selectEnvironmentStep(d.storage,d.clock.now())!;const newRef=store.openStage('environment',next.id,'generation','world');expect(store.snapshot(newRef.runId).counters).toEqual({successReads:0,failures:0});expect(store.snapshot(ref.runId).counters.failures).toBe(1);d.storage.close();

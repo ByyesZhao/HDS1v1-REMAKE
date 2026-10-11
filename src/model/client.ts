@@ -1,3 +1,4 @@
+import {hydrateResult,toResultRef} from '../web/persistence';
 import { buildCompletionEnvelope } from './resource-pool';
 import { isStageModelInput } from './context-types';
 import type { PromptStage } from './context-types';
@@ -27,17 +28,28 @@ export class ModelClient implements ModelRunner {
     const policy=task.promptPolicy??buildPromptPolicy(task.name as PromptStage,factsFromInput(input));
     const selectedTask=task.promptPolicy?task:{...task,promptPolicy:policy,prompt:task.prompt+'\n'+policyRules(policy)};
     const web=options.web;
-    const checkpoint:WebModelCheckpoint=web?.checkpoint()??{input,repairCount:0,lookupUsed:false,pendingOperationId:null,toolResults:[]};
+    const checkpoint:WebModelCheckpoint=web?.checkpoint()??{formatVersion:2,input,repairCount:0,lookupUsed:false,pendingOperationId:null,toolResults:[]};
     // Regeneration uses the current business input; the phase identity and confirmed tool progress survive.
     checkpoint.input=input;
+    const materialPool=new Map((web?.materials()??[]).map(m=>[m.id,m]));
+    const hydrate=(ref:import('../web/types').WebToolResultRef)=>{try{return hydrateResult(ref,materialPool);}catch(error){throw Error(`web run ${web?.id}: ${error instanceof Error?error.message:String(error)}`);}};
+    // Validate durable recovery references before replacing a legacy checkpoint or doing new work.
+    checkpoint.toolResults.forEach(hydrate);
+    if(checkpoint.pendingOperationId){
+      const pending=web!.operation(checkpoint.pendingOperationId);
+      for(const id of pending.materialIds)if(!materialPool.has(id))throw Error(`web run ${web!.id}: missing web material ${id}`);
+      if(pending.response)hydrate(pending.response);
+    }
     const save=()=>{options.signal?.throwIfAborted();web?.saveCheckpoint(checkpoint);};
     const lookup = options.lookup === undefined
       ? this.lookupDetails && (async (request: LookupRequest) => this.lookupDetails!(typeof request === 'string' ? request : request.query))
       : options.lookup;
     const perform=async(operationId:string)=>{
       const op=web!.operation(operationId);
-      const result=op.request.kind==='search'?await web!.searchAndRead(op.request.request,{operationId,signal:options.signal}):await web!.readPage(op.request.url,{operationId,signal:options.signal});
-      checkpoint.toolResults.push(result);checkpoint.pendingOperationId=null;save();
+      const operationOptions={operationId,signal:options.signal,materialPool:{runId:web!.id,materials:materialPool}};
+      const result=op.status==='done'?{...hydrate(op.response!),counters:web!.state().counters}:op.request.kind==='search'?await web!.searchAndRead(op.request.request,operationOptions):await web!.readPage(op.request.url,operationOptions);
+      for(const material of result.materials)materialPool.set(material.id,material);
+      checkpoint.toolResults.push(toResultRef(result));checkpoint.pendingOperationId=null;save();
     };
     const performLookup=async()=>{checkpoint.privateLookupResult=await lookup!(checkpoint.lookupRequest!);checkpoint.lookupPending=false;save();};
     save();if(checkpoint.lookupPending&&checkpoint.lookupRequest&&lookup)await performLookup();
@@ -46,8 +58,8 @@ export class ModelClient implements ModelRunner {
       options.signal?.throwIfAborted();const state=web?.state();
       const quota=!!web&&!!state&&(state.counters.successReads>=web.limits.successReads||state.counters.failures>=web.limits.failures);
       const tools={web:!!web?.available&&!quota,lookup:!!lookup&&!checkpoint.lookupUsed};
-      const materials=web?.materials()??[];
-      const raw=await this.transport.complete({task:selectedTask,input,repair:checkpoint.repair,lookupResult:checkpoint.privateLookupResult,tools,webMaterials:materials,webResults:checkpoint.toolResults,webStatus:state?{counters:state.counters,stopReason:quota?'quota':null}:undefined},{signal:options.signal});
+      const materials=[...materialPool.values()];
+      const raw=await this.transport.complete({task:selectedTask,input,repair:checkpoint.repair,lookupResult:checkpoint.privateLookupResult,tools,webMaterials:materials,webResults:checkpoint.toolResults.map(hydrate),webStatus:state?{counters:state.counters,stopReason:quota?'quota':null}:undefined},{signal:options.signal});
       options.signal?.throwIfAborted();if(materials.length)web!.markProvided(materials.map(m=>m.id));
       let value:any,operation:ReturnType<typeof parseWebTool>;
       try {

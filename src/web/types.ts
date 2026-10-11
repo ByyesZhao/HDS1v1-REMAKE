@@ -4,11 +4,19 @@ export interface ModelRunRef {runId:string;ownerType:'turn'|'maintenance'|'asset
 export interface WebSearchRequest {query:string;requestedPages?:number}
 export interface WebMaterial {id:string;url:string;title:string;body:string;readAt:string;bodyCharacters:number;selectionMode:'full_body'|'relevant_passages';sourceKind:'external_reference'}
 export interface WebSearchCounters {successReads:number;failures:number}
-export interface WebOperationOptions {operationId:string;signal?:AbortSignal}
+export interface WebOperationOptions {
+ operationId:string;signal?:AbortSignal;
+ /** Invocation-local bodies already loaded from this run; never retained by the service. */
+ materialPool?:{runId:string;materials:ReadonlyMap<string,WebMaterial>};
+}
 export interface WebSearchResponse {materials:WebMaterial[];counters:WebSearchCounters;stopReason:'quota'|'satisfied'|'no_candidates'|null;failures?:Array<{reason:string;url?:string}>;requestedPages?:number;obtainedPages?:number;message?:'结果不足'}
 export type WebOperationRequest={kind:'search';request:WebSearchRequest}|{kind:'read';url:string};
 export interface WebOperationRecord {operationId:string;runId:string;request:WebOperationRequest;candidateUrls:string[]|null;nextCandidateIndex:number;status:'pending'|'running'|'done';materialIds:string[];failures:Array<{reason:string;url?:string}>;confirmedSteps:number[];response:WebSearchResponse|null}
-export interface WebModelCheckpoint {lookupRequest?:import('../memory/types').LookupRequest;lookupPending?:boolean;input:unknown;repairCount:number;lookupUsed:boolean;pendingOperationId:string|null;toolResults:WebSearchResponse[];privateLookupResult?:unknown;repair?:{original:unknown;errors:string}}
+export interface LegacyWebModelCheckpoint {lookupRequest?:import('../memory/types').LookupRequest;lookupPending?:boolean;input:unknown;repairCount:number;lookupUsed:boolean;pendingOperationId:string|null;toolResults:WebSearchResponse[];privateLookupResult?:unknown;repair?:{original:unknown;errors:string}}
+export type LegacyWebOperationRecord=WebOperationRecord;
+export type WebToolResultRef=Omit<WebSearchResponse,'materials'>&{materialIds:string[]};
+export type WebOperationState=Omit<WebOperationRecord,'response'>&{formatVersion:2;response:WebToolResultRef|null};
+export type WebModelCheckpoint=Omit<LegacyWebModelCheckpoint,'toolResults'>&{formatVersion:2;toolResults:WebToolResultRef[]};
 export interface WebSessionMetrics {cacheHits:number;providerSearchCalls:number;providerReadCalls:number}
 export interface WebSessionState {ref:ModelRunRef;counters:WebSearchCounters;metrics:WebSessionMetrics;nextOperationOrdinal:number}
 export type WebMaterialMetadata=Omit<WebMaterial,'body'>&{firstOperationId:string;provided:boolean};
@@ -20,8 +28,8 @@ export interface WebSearchSession {
   id:string;ref:ModelRunRef;available:boolean;limits:WebSearchCounters;
   searchAndRead(request:WebSearchRequest,options:WebOperationOptions):Promise<WebSearchResponse>;
   readPage(url:string,options:WebOperationOptions):Promise<WebSearchResponse>;
-  snapshot():WebSessionSnapshot;beginOperation(request:WebOperationRequest):WebOperationRecord;
-  state():WebSessionState;checkpoint():WebModelCheckpoint|null;operation(operationId:string):WebOperationRecord;materials(ids?:readonly string[]):WebMaterial[];
+  snapshot():WebSessionSnapshot;beginOperation(request:WebOperationRequest):WebOperationState;
+  state():WebSessionState;checkpoint():WebModelCheckpoint|null;operation(operationId:string):WebOperationState;materials(ids?:readonly string[]):WebMaterial[];
   saveCheckpoint(checkpoint:WebModelCheckpoint):void;markProvided(materialIds:string[]):void;
 }
 

@@ -78,7 +78,7 @@ export async function runMemoryCapacityAcceptance(path:string){
       storage.prepare('INSERT INTO memory_maintenance_jobs VALUES(?,?)').run(job.id,JSON.stringify(job));
     }
     storage.save('turns','payload-turn',{id:'payload-turn',done:true} as any);storage.save('post_jobs','payload-turn',{turnId:'payload-turn',result:{schemaVersion:3,shortTermChanges:[{content:sentinel}],longTermChanges:[],detailChanges:[]} as any});
-    const web=new WebSearchStore(storage),ref=web.openStage('turn','payload-turn','memory','memory');web.saveCheckpoint(ref.runId,{input:sentinel,privateLookupResult:sentinel,repair:{original:sentinel,errors:'test'},repairCount:1,lookupUsed:true,pendingOperationId:null,toolResults:[]});
+    const web=new WebSearchStore(storage),ref=web.openStage('turn','payload-turn','memory','memory');web.saveCheckpoint(ref.runId,{formatVersion:2,input:sentinel,privateLookupResult:sentinel,repair:{original:sentinel,errors:'test'},repairCount:1,lookupUsed:true,pendingOperationId:null,toolResults:[]});
     let cleaned=0,arrived=false,frontBeforeSecondCleanup=false;const apply=cleanup.applyOne.bind(cleanup);
     cleanup.applyOne=(at)=>{if(cleaned===1)frontBeforeSecondCleanup=!!storage.read('messages','during-cleanup')?.seenTurnId;const result=apply(at);if(result==='applied')cleaned++;return result;};
     await host.stop();

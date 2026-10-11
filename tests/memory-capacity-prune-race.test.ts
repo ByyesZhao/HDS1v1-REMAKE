@@ -27,7 +27,7 @@ it('timeout_no_pruned_retry',async()=>{
  await vi.advanceTimersByTimeAsync(120000);expect(d.store.job<any>('memory_maintenance_jobs','deep').status).toBe('done');expect(d.maintenance.startOne(days(1))).toBe(false);await d.maintenance.stop();vi.useRealTimers();
 });
 it('completed_payload_compaction preserves webpage counters and unfinished recovery',()=>{
- const d=fixture(),web=new WebSearchService(new WebSearchStore(d.storage),undefined,d.clock);const ref=web.store.openStage('turn','done','memory','memory');web.store.saveCheckpoint(ref.runId,{input:{secret:'详细正文'},privateLookupResult:{content:'详细正文'},repair:{original:'详细正文',errors:'x'},repairCount:1,lookupUsed:true,pendingOperationId:null,toolResults:[]});
+ const d=fixture(),web=new WebSearchService(new WebSearchStore(d.storage),undefined,d.clock);const ref=web.store.openStage('turn','done','memory','memory');web.store.saveCheckpoint(ref.runId,{formatVersion:2,input:{secret:'详细正文'},privateLookupResult:{content:'详细正文'},repair:{original:'详细正文',errors:'x'},repairCount:1,lookupUsed:true,pendingOperationId:null,toolResults:[]});
  web.compactOwnerCheckpoint('turn','done');expect(web.store.snapshot(ref.runId).checkpoint).toBeNull();expect(web.store.snapshot(ref.runId).counters).toEqual({successReads:0,failures:0});
  d.storage.save('post_jobs','done',{turnId:'done',result:{schemaVersion:3,shortTermChanges:[{content:'详细正文'}],longTermChanges:[],detailChanges:[]} as any});d.storage.save('turns','done',{id:'done',done:true} as any);
  d.storage.save('post_jobs','running',{turnId:'running',result:{schemaVersion:3,shortTermChanges:[{content:'恢复正文'}],longTermChanges:[],detailChanges:[]} as any});d.storage.save('turns','running',{id:'running',done:false} as any);

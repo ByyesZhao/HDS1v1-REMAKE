@@ -1,0 +1,48 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/web-persistence-v2.test.ts
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ❯ tests/web-persistence-v2.test.ts (12 tests | 2 failed) 2884ms
+   × partial_recovery_parses_confirmed_materials_once_and_returns_complete_tool_response 292ms
+   × same_run_repeat_read_reuses_loaded_body_and_keeps_complete_public_response 269ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/web-persistence-v2.test.ts > partial_recovery_parses_confirmed_materials_once_and_returns_complete_tool_response
+AssertionError: expected [ 'm', 'm' ] to have a length of 1 but got 2
+
+- Expected
++ Received
+
+- 1
++ 2
+
+ ❯ tests/web-persistence-v2.test.ts:39:44
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/web-persistence-v2.test.ts > same_run_repeat_read_reuses_loaded_body_and_keeps_complete_public_response
+AssertionError: expected [ 'm', 'm', 'm' ] to deeply equal [ 'm' ]
+
+- Expected
++ Received
+
+  [
+    "m",
++   "m",
++   "m",
+  ]
+
+ ❯ tests/web-persistence-v2.test.ts:45:23
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 10 passed (12)
+   Start at  09:57:28
+   Duration  3.34s (tests 90%, transform 6%, import 4%)
+

@@ -16,7 +16,7 @@ function fixture(path=':memory:'){const db=new Storage(path);dbs.push(db);const 
 it('control_reads_parse_zero_body_characters',async()=>{
  const dir=mkdtempSync(join(tmpdir(),'hdsi-web-light-'));dirs.push(dir);const path=join(dir,'web.sqlite');let d=fixture(path);
  for(let i=0;i<20;i++){const m=material(`m${i}`),op=d.store.beginOperation(d.ref.runId,{kind:'read',url:m.url});d.store.commitStep(d.ref.runId,{operationId:op.operationId,stepIndex:0,nextCandidateIndex:1,material:m});}
- const checkpoint:WebModelCheckpoint={input:{large:'CHECKPOINT_ONLY_'+'c'.repeat(100000)},repairCount:1,lookupUsed:true,pendingOperationId:null,toolResults:[{materials:[material('checkpoint')],counters:{successReads:20,failures:0},stopReason:'quota'}]};
+ const checkpoint:WebModelCheckpoint={formatVersion:2,input:{large:'CHECKPOINT_ONLY_'+'c'.repeat(100000)},repairCount:1,lookupUsed:true,pendingOperationId:null,toolResults:[{materialIds:['m0'],counters:{successReads:20,failures:0},stopReason:'quota'}]};
  d.store.saveCheckpoint(d.ref.runId,checkpoint);d.db.close();dbs.splice(dbs.indexOf(d.db),1);d=fixture(path);
  const provider={signature:'offline',search:vi.fn(async()=>[]),read:vi.fn(async()=>({bodyFormat:'text' as const,title:'',body:'unused'}))},service=new WebSearchService(d.store,provider,new TestClock(),{enabled:true});
  const parse=JSON.parse;let parsedBodyCharacters=0;const parseSpy=vi.spyOn(JSON,'parse').mockImplementation((value,...args)=>{if(typeof value==='string'&&(value.includes('BODY_ONLY_')||value.includes('CHECKPOINT_ONLY_')))parsedBodyCharacters+=value.length;return parse(value,...args);});

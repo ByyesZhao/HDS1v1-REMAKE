@@ -58,7 +58,7 @@ it('pending lookup resumes and atomically persists result plus basis; stale repr
  const client=new ModelClient({complete:async request=>{calls++;if(!request.lookupResult)return {lookupDetails:'手机'};return {changes:[]};}});
  dep.models=client as any;dep.generateEnvironment=(input,options)=>generateEnvironmentStep(dep,input,options);
  const ref=d.web.store.openStage('environment',step.id,'generation',step.stage);
- d.web.store.saveCheckpoint(ref.runId,{input:{},repairCount:1,lookupUsed:true,lookupPending:true,lookupRequest:'手机',pendingOperationId:null,toolResults:[]});
+ d.web.store.saveCheckpoint(ref.runId,{formatVersion:2,input:{},repairCount:1,lookupUsed:true,lookupPending:true,lookupRequest:'手机',pendingOperationId:null,toolResults:[]});
  const p=new EnvironmentPreparation(dep);p.startOne(step.id,NOW);await p.wait();
  expect(calls).toBe(1);expect(d.web.store.snapshot(ref.runId).checkpoint).toMatchObject({lookupPending:false});expect(d.environmentStore.step(step.id)?.preparationSnapshot?.usedBasis?.owners[0].ownerId).toBe('phone');
  store.saveOwner({...owner,value:'B',content:'手机B',revision:2});expect(p.applyReady(step.id,NOW)).toBe('stale');

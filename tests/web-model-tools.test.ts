@@ -25,7 +25,7 @@ it('failed model transmission neither registers a source nor triggers format rep
  await new ModelClient({complete:async()=>({answer:'recovered'})}).runModel(task,{}, {web:d.web,lookup:null});expect(d.provider.read).toHaveBeenCalledTimes(1);expect(d.service.selfReadSources('t')).toHaveLength(1);
 });
 it('resumes a pending provider operation and retains private lookup and repair state',async()=>{
- const d=setup(),op=d.web.beginOperation({kind:'read',url:'https://example.test/a'});d.web.saveCheckpoint({input:{private:'owner'},repairCount:1,repair:{original:{bad:1},errors:'bad'},lookupUsed:true,privateLookupResult:{phone:'private'},pendingOperationId:op.operationId,toolResults:[]});
+ const d=setup(),op=d.web.beginOperation({kind:'read',url:'https://example.test/a'});d.web.saveCheckpoint({formatVersion:2,input:{private:'owner'},repairCount:1,repair:{original:{bad:1},errors:'bad'},lookupUsed:true,privateLookupResult:{phone:'private'},pendingOperationId:op.operationId,toolResults:[]});
  const requests:any[]=[];const lookup=vi.fn();await new ModelClient({complete:async r=>{requests.push(r);return {answer:'ok'};}}).runModel(task,{private:'owner'},{web:d.web,lookup});expect(lookup).not.toHaveBeenCalled();expect(requests[0].lookupResult).toEqual({phone:'private'});expect(requests[0].repair.errors).toBe('bad');expect(d.web.snapshot().checkpoint!.pendingOperationId).toBeNull();expect(d.provider.read).toHaveBeenCalledTimes(1);
 });
 it('stops tools at quota and returns budget feedback without extra provider calls',async()=>{
@@ -38,6 +38,6 @@ it('transport schema permits only available tools and preserves task model setti
  await transport.complete({task,input:{},tools:{web:false,lookup:false}});expect(JSON.stringify(body.response_format.json_schema.schema)).not.toContain('webSearch');expect(body.messages[0].content).not.toContain('可先只返回');
 });
 it('an already stopped run cannot save a checkpoint or call transport while replaying a completed operation',async()=>{
- const d=setup(),op=d.web.beginOperation({kind:'read',url:'https://example.test/a'});await d.web.readPage('https://example.test/a',{operationId:op.operationId});d.web.saveCheckpoint({input:{},repairCount:0,lookupUsed:false,pendingOperationId:op.operationId,toolResults:[]});const save=vi.spyOn(d.web,'saveCheckpoint'),complete=vi.fn(async()=>({answer:'late'})),controller=new AbortController();controller.abort(Error('backend stopped'));
+ const d=setup(),op=d.web.beginOperation({kind:'read',url:'https://example.test/a'});await d.web.readPage('https://example.test/a',{operationId:op.operationId});d.web.saveCheckpoint({formatVersion:2,input:{},repairCount:0,lookupUsed:false,pendingOperationId:op.operationId,toolResults:[]});const save=vi.spyOn(d.web,'saveCheckpoint'),complete=vi.fn(async()=>({answer:'late'})),controller=new AbortController();controller.abort(Error('backend stopped'));
  await expect(new ModelClient({complete}).runModel(task,{}, {web:d.web,signal:controller.signal,lookup:null})).rejects.toThrow('backend stopped');expect(save).not.toHaveBeenCalled();expect(complete).not.toHaveBeenCalled();
 });

@@ -1,0 +1,11 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/web-payload-cost.test.ts tests/web-persistence-v2.test.ts tests/web-payload-migration.test.ts tests/web-payload-migration-cli.test.ts
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+
+ Test Files  4 passed (4)
+      Tests  24 passed (24)
+   Start at  09:52:49
+   Duration  8.54s (tests 93%, import 4%, transform 3%)
+

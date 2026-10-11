@@ -50,7 +50,7 @@ it('pause_does_not_publish_and_overdue_notice_unreadable_waits_readable_can_wake
 });
 it('running_restart_reuses_input_attempt_and_tool_checkpoint_without_reset',async()=>{
  const d=setup();d.storage.set('runtime',{...d.storage.runtime(),nextEnvironmentAt:null});ensureEnvironmentBatch(d.storage,d.config,NOW);const step=selectEnvironmentStep(d.storage,NOW)!,input=environmentInput(d,step),store=new WebSearchStore(d.storage),web=new WebSearchService(store,undefined,d.clock,{enabled:false}),ref=store.openStage('environment',step.id,'generation','world');
- store.saveCheckpoint(ref.runId,{input:{fixture:true},repairCount:1,lookupUsed:true,pendingOperationId:null,toolResults:[],repair:{original:'bad',errors:'format'}});d.environmentStore.saveStep({...step,status:'running',attempt:3,inputSnapshot:input});d.clock.advance(60000);
+ store.saveCheckpoint(ref.runId,{formatVersion:2,input:{fixture:true},repairCount:1,lookupUsed:true,pendingOperationId:null,toolResults:[],repair:{original:'bad',errors:'format'}});d.environmentStore.saveStep({...step,status:'running',attempt:3,inputSnapshot:input});d.clock.advance(60000);
  await runEnvironmentStep({...d,web},step.id,async frozen=>{expect(frozen).toEqual(input);expect(store.snapshot(ref.runId)).toMatchObject({repairCount:1,lookupUsed:true});return {stage:'world',changes:[]};});expect(d.environmentStore.step(step.id)).toMatchObject({attempt:3,status:'committed',inputSnapshot:input});d.storage.close();
 });
 it('upstream_public_changes_increment_delivery_revision_internal_notes_do_not',()=>{
