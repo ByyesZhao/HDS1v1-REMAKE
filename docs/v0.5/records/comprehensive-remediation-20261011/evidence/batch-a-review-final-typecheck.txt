@@ -1,0 +1,5 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 typecheck
+npm notice run tsc --noEmit
+tests/incoming-media-asset-lease.test.ts(141,45): error TS2352: Conversion of type '() => Promise<Buffer<ArrayBufferLike>>' to type '{ <T extends NodeJS.ArrayBufferView>(path: PathLike | FileHandle, options: ReadFileOptionsWithBuffer<T>): Promise<BufferView<T>>; (path: PathLike | FileHandle, options?: ReadFileOptionsWithBufferEncoding | ... 1 more ... | undefined): Promise<...>; (path: PathLike | FileHandle, options: BufferEncoding | ReadFileOpti...' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Type 'Promise<Buffer<ArrayBufferLike>>' is not comparable to type 'Promise<string>'.
+    Type 'Buffer<ArrayBufferLike>' is not comparable to type 'string'.

@@ -138,7 +138,7 @@ it('graceful stop waits for the in-flight observation before storage closes',asy
 });
 it('graceful stop also waits while an accepted observation is acquiring its image bytes',async()=>{
  const d=fixture(),entered=deferred(),gate=deferred<Buffer>();
- vi.mocked(readFile).mockImplementationOnce((()=>{entered.resolve();return gate.promise;}) as typeof readFile);
+ vi.mocked(readFile).mockImplementationOnce(async()=>{entered.resolve();return await gate.promise as any;});
  const pending=d.service.prepareForTurn('t',['a']);await entered.promise;let stopped=false;
  const stopping=d.service.stop({graceful:true}).then(()=>{stopped=true;});
  try{await new Promise(resolve=>setTimeout(resolve,0));expect(stopped).toBe(false);gate.resolve(d.bytes);await Promise.all([pending,stopping]);
