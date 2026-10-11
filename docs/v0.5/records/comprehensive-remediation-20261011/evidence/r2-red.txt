@@ -1,0 +1,72 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/host-pause-selection.test.ts --reporter=dot
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+xxx···
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/host-pause-selection.test.ts > pause after ready selection starts no new story and resume consumes it once
+AssertionError: expected [ { name: 'narrative', …(2) }, …(1) ] to have a length of +0 but got 2
+
+- Expected
++ Received
+
+- 0
++ 2
+
+ ❯ tests/host-pause-selection.test.ts:26:26
+     24|   expect(d.models.calls).toHaveLength(0);expect(d.storage.all('turns')…
+     25|   await Promise.all([starting,pausing]);
+     26|   expect(d.models.calls).toHaveLength(0);expect(d.storage.all('turns')…
+       |                          ^
+     27|   expect(d.storage.read('tasks','due')!.status).toBe('pending');
+     28|   await host.resume();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/host-pause-selection.test.ts > pause after waiting chat selection preserves generation until resume
+AssertionError: expected [ { name: 'narrative', …(2) }, …(2) ] to have a length of +0 but got 3
+
+- Expected
++ Received
+
+- 0
++ 3
+
+ ❯ tests/host-pause-selection.test.ts:41:26
+     39|   const starting=host.start();const pausing=host.pause();expect(d.mode…
+     40|   await Promise.all([starting,pausing]);
+     41|   expect(d.models.calls).toHaveLength(0);expect(d.storage.read('turns'…
+       |                          ^
+     42|   expect(d.storage.all('turns')).toHaveLength(1);
+     43|   await host.resume();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  tests/host-pause-selection.test.ts > pause after waiting event selection preserves generation until resume
+AssertionError: expected [ { name: 'narrative', …(2) }, …(1) ] to have a length of +0 but got 2
+
+- Expected
++ Received
+
+- 0
++ 2
+
+ ❯ tests/host-pause-selection.test.ts:41:26
+     39|   const starting=host.start();const pausing=host.pause();expect(d.mode…
+     40|   await Promise.all([starting,pausing]);
+     41|   expect(d.models.calls).toHaveLength(0);expect(d.storage.read('turns'…
+       |                          ^
+     42|   expect(d.storage.all('turns')).toHaveLength(1);
+     43|   await host.resume();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 3 passed (6)
+   Start at  09:29:09
+   Duration  910ms (transform 57%, import 25%, tests 17%, worker 1%)
+

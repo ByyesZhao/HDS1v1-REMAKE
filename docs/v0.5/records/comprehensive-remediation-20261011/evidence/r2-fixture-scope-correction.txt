@@ -1,0 +1,44 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/host-pause-selection.test.ts tests/reply-freshness-host.test.ts tests/environment-async-host-gates.test.ts tests/graceful-stop-host.test.ts --reporter=dot
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+···················x····
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/host-pause-selection.test.ts > pause after waiting chat selection preserves generation until resume
+AssertionError: expected { …(19) } to match object { Object (done, replyFreshness) }
+(25 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "done": true,
+    "replyFreshness": {
+      "generation": 2,
+-     "scope": "chat",
++     "scope": "ordinary",
+    },
+  }
+
+ ❯ tests/host-pause-selection.test.ts:44:38
+     42|   expect(d.storage.all('turns')).toHaveLength(1);
+     43|   await host.resume();
+     44|   expect(d.storage.read('turns',id)).toMatchObject({done:true,replyFre…
+       |                                      ^
+     45|   expect(d.models.calls.filter(c=>c.name==='narrative')).toHaveLength(…
+     46|  }finally{await host.stop();d.storage.close();}
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 3 passed (4)
+      Tests  1 failed | 23 passed (24)
+   Start at  09:29:19
+   Duration  2.14s (import 40%, tests 31%, transform 28%, worker 1%)
+
+    Isolate  4 workers spawned · ~123ms startup each (spawn + environment, per file)
+             at least ~370ms faster with isolate: false — reuses workers across files instead of one per file
+

@@ -1,0 +1,15 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/host-pause-selection.test.ts tests/reply-freshness-host.test.ts tests/environment-async-host-gates.test.ts tests/graceful-stop-host.test.ts tests/appointment-update-host.test.ts --reporter=dot
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+···························
+
+ Test Files  5 passed (5)
+      Tests  27 passed (27)
+   Start at  09:29:38
+   Duration  3.01s (tests 42%, import 36%, transform 21%, worker 1%)
+
+    Isolate  5 workers spawned · ~128ms startup each (spawn + environment, per file)
+             at least ~511ms faster with isolate: false — reuses workers across files instead of one per file
+

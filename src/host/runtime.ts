@@ -64,7 +64,7 @@ export class SerialHost {
       const unfinished=d.storage.unfinishedTurn();
       if(unfinished?.replyFreshness?.state==='waiting'){
         const continuation=await this.scheduler.collectWaitingContinuation(unfinished.id,d.clock.now());
-        if(this.stopped)break;
+        if(this.stopped||d.storage.runtime().paused)break;
         if(continuation.kind==='wait')break;
         this.recover=false;await this.app.continueWaitingTurn(unfinished.id,continuation.request,continuation.scope);continue;
       }
@@ -78,7 +78,7 @@ export class SerialHost {
         if(report?.missingCanonicalIds.length)this.options.onWarning?.('记忆依据缺失：'+report.missingCanonicalIds.join(', '));
       }
       const ready = await this.scheduler.collectReady(d.clock.now(),{environmentInFlightStepId:this.environment.inFlightStepId});
-      if(this.stopped)break;
+      if(this.stopped||d.storage.runtime().paused)break;
       if(ready?.environmentStepId&&d.environmentStore.stepMetadata(d.environmentStore.firstActiveBatch()!.id).find(s=>s.id===ready.environmentStepId)?.preparationVersion===1){
         const runtime=d.storage.runtime();
         if(this.stopped||runtime.paused||runtime.openBatch||d.storage.unfinishedTurn())break;
