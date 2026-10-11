@@ -91,7 +91,7 @@ it.each([false,true])('mixed_school_recovery_can_switch_life_to_chat (invalid=%s
   const failed=await failMixed(x);x.clock.advance(600_000);x.reopen();x.requests.length=0;let runId='',repairCount=-1;
   x.setResponse(async r=>{if(r.task.name==='narrative')return failed.narration(r,true);if(r.task.name==='personal_chat'){
    expect((r.input as any).context.at).toBe(x.clock.now());expect((r.input as any).roles.visibleIds).toEqual(['new']);expect(r.repair?.original).toEqual(failed.invalid);
-   const ref=x.deps().web!.store.openStage('turn',failed.turn.id,'personal','personal_chat');runId=ref.runId;repairCount=x.deps().web!.store.checkpoint(runId)!.repairCount;
+   const state=x.deps().web!.store.state(failed.ref.runId);runId=state.ref.runId;repairCount=x.deps().web!.store.checkpoint(runId)!.repairCount;
    return invalid?{...silent,taskChanges:[{action:'create',task:{kind:'check_messages',at:after(x.clock.now(),600_000),description:'旧合同合法检查',checkReason:'unread',messageIds:['new']}}]}:silent;
   }return emptyMemory;});
   if(invalid)await expect(new HdsiApp(x.deps()).resumeUnfinishedTurn()).rejects.toThrow(ModelFormatError);else await new HdsiApp(x.deps()).resumeUnfinishedTurn();
