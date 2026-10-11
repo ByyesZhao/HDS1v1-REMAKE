@@ -1,0 +1,170 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/incoming-media-asset-lease.test.ts tests/incoming-media-assets.test.ts tests/incoming-media-turn.test.ts tests/incoming-image-model.test.ts --reporter=dot
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+xxx·xxxxxxx·····
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 10 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/incoming-media-asset-lease.test.ts > ready asset is read once and encoded once throughout a real observation transport
+AssertionError: expected { reads: 3, encodes: 2 } to deeply equal { reads: 1, encodes: 1 }
+
+- Expected
++ Received
+
+  {
+-   "encodes": 1,
+-   "reads": 1,
++   "encodes": 2,
++   "reads": 3,
+  }
+
+ ❯ tests/incoming-media-asset-lease.test.ts:52:19
+     50| it('ready asset is read once and encoded once throughout a real observ…
+     51|  const d=fixture();expect((await d.service.prepareForTurn('t',['a']))[…
+     52|  expect(d.work()).toEqual({reads:1,encodes:1});expect(d.fetcher).toHav…
+       |                   ^
+     53|  expect(d.bodies[0].messages[1].content[1].image_url.url).toBe(d.url);
+     54|  expect(active(d.assets)).toBe(0);expect(payloads(d.assets)).toBe(0);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/11]⎯
+
+ FAIL  tests/incoming-media-asset-lease.test.ts > image tool continuation and format repair reuse one payload lease
+AssertionError: expected { reads: 5, encodes: 4 } to deeply equal { reads: 1, encodes: 1 }
+
+- Expected
++ Received
+
+  {
+-   "encodes": 1,
+-   "reads": 1,
++   "encodes": 4,
++   "reads": 5,
+  }
+
+ ❯ tests/incoming-media-asset-lease.test.ts:60:19
+     58|  const d=fixture([{webRead:{url:'https://offline.test/page'}},{descrip…
+     59|  await d.service.prepareForTurn('t',['a']);expect(d.fetcher).toHaveBee…
+     60|  expect(d.work()).toEqual({reads:1,encodes:1});expect(d.bodies.every(b…
+       |                   ^
+     61|  expect(d.bodies[1].messages[1].content[0].text).toContain('公开合成正文');
+     62|  expect(JSON.stringify(d.web!.store.snapshot(d.web!.store.openStage('t…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/11]⎯
+
+ FAIL  tests/incoming-media-asset-lease.test.ts > cached observation validates the pending frozen file without encoding, even when new recognition is disabled
+AssertionError: expected { reads: 1, encodes: 1 } to deeply equal { reads: 1, encodes: +0 }
+
+- Expected
++ Received
+
+  {
+-   "encodes": 0,
++   "encodes": 1,
+    "reads": 1,
+  }
+
+ ❯ tests/incoming-media-asset-lease.test.ts:69:19
+     67|  const disabled=new IncomingMediaService(d.store,d.assets,d.model,{ena…
+     68|  expect((await disabled.prepareForTurn('pending',['b']))[0].origin).to…
+     69|  expect(d.work()).toEqual({reads:1,encodes:0});expect(d.fetcher).not.t…
+       |                   ^
+     70|  d.add('c','missing',true);unlinkSync(d.path);d.reset();
+     71|  await expect(disabled.prepareForTurn('missing',['c'])).rejects.toThro…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/11]⎯
+
+ FAIL  tests/incoming-media-asset-lease.test.ts > concurrent leases share the read and lazy encoding, protect retirement, and release idempotently
+TypeError: d.assets.acquireImageAsset is not a function
+ ❯ tests/incoming-media-asset-lease.test.ts:83:58
+     81| });
+     82| it('concurrent leases share the read and lazy encoding, protect retire…
+     83|  const d=fixture(),[one,two]=await Promise.all([d.assets.acquireImageA…
+       |                                                          ^
+     84|  expect(d.work()).toEqual({reads:1,encodes:0});expect(await d.assets.r…
+     85|  expect(await d.assets.resolveImageAsset(d.ref)).toBe(d.url);one.relea…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/11]⎯
+
+ FAIL  tests/incoming-media-asset-lease.test.ts > two same-hash observations keep their own leases until the shared model settles
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/incoming-media-asset-lease.test.ts:94:70
+     92|  const original=d.fetcher.getMockImplementation()!;d.fetcher.mockImple…
+     93|  const one=d.service.prepareForTurn('t',['a']),two=d.service.prepareFo…
+     94|  await entered.promise;expect(await d.assets.retire(d.ref,()=>true)).t…
+       |                                                                      ^
+     95|  await Promise.all([one,two]);expect(d.fetcher).toHaveBeenCalledTimes(…
+     96| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/11]⎯
+
+ FAIL  tests/incoming-media-asset-lease.test.ts > two same-hash observations keep their own leases until the shared model settles
+Error: Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+ ❯ tests/incoming-media-asset-lease.test.ts:23:1
+     21| const observation={description:'合成图片',visibleText:[],possibleTone:null…
+     22| const cleanups:Array<()=>Promise<void>>=[];
+     23| afterEach(async()=>{for(const cleanup of cleanups.splice(0))await clea…
+       | ^
+     24| function deferred<T=void>(){let resolve!:(value:T)=>void;const promise…
+     25| function fixture(values:unknown[]=[observation],withWeb=false){
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/11]⎯
+
+ FAIL  tests/incoming-media-asset-lease.test.ts > observation model failure releases bytes and recovery reads afresh
+ FAIL  tests/incoming-media-asset-lease.test.ts > observation format failure releases bytes and recovery reads afresh
+ FAIL  tests/incoming-media-asset-lease.test.ts > observation abort failure releases bytes and recovery reads afresh
+AssertionError: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ tests/incoming-media-asset-lease.test.ts:101:27
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/11]⎯
+
+ FAIL  tests/incoming-media-asset-lease.test.ts > abort immediately after acquisition cannot confirm a cached observation
+TypeError: Cannot read properties of undefined (reading 'bind')
+ ❯ tests/incoming-media-asset-lease.test.ts:108:43
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/11]⎯
+
+ FAIL  tests/incoming-media-asset-lease.test.ts > graceful stop waits for the in-flight observation before storage closes
+AssertionError: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ tests/incoming-media-asset-lease.test.ts:117:176
+    115|  d.fetcher.mockImplementation(async(...args)=>{entered.resolve();await…
+    116|  const pending=d.service.prepareForTurn('t',['a']);await entered.promi…
+    117|  const stopping=d.service.stop({graceful:true}).then(()=>{stopped=true…
+       |                                                                                                                                                                                ^
+    118|  await Promise.resolve();expect(stopped).toBe(false);gate.resolve();aw…
+    119| });
+ ❯ tests/incoming-media-asset-lease.test.ts:118:69
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/11]⎯
+
+
+ Test Files  1 failed | 3 passed (4)
+      Tests  10 failed | 6 passed (16)
+   Start at  09:41:18
+   Duration  11.70s (tests 94%, import 4%, transform 2%)
+

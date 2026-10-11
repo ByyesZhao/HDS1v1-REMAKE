@@ -1,0 +1,56 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/incoming-media-asset-lease.test.ts --reporter=dot
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+······x·······x
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/incoming-media-asset-lease.test.ts > simultaneous first transport resolutions encode their shared bytes only once
+AssertionError: expected { reads: 1, encodes: 2 } to deeply equal { reads: 1, encodes: 1 }
+
+- Expected
++ Received
+
+  {
+-   "encodes": 1,
++   "encodes": 2,
+    "reads": 1,
+  }
+
+ ❯ tests/incoming-media-asset-lease.test.ts:100:143
+     98| it('simultaneous first transport resolutions encode their shared bytes…
+     99|  const d=fixture(),lease=await d.assets.acquireImageAsset(d.ref);
+    100|  try{expect(await Promise.all([d.assets.resolveImageAsset(d.ref),d.ass…
+       |                                                                                                                                               ^
+    101|  finally{lease.release();}
+    102| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/incoming-media-asset-lease.test.ts > graceful stop also waits while an accepted observation is acquiring its image bytes
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/incoming-media-asset-lease.test.ts:144:72
+    142|  const pending=d.service.prepareForTurn('t',['a']);await entered.promi…
+    143|  const stopping=d.service.stop({graceful:true}).then(()=>{stopped=true…
+    144|  try{await new Promise(resolve=>setTimeout(resolve,0));expect(stopped)…
+       |                                                                        ^
+    145|  expect(d.db.read('turns','t')!.visualContext!.entries[0].status).toBe…
+    146|  }finally{gate.resolve(d.bytes);await Promise.allSettled([pending,stop…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 13 passed (15)
+   Start at  09:45:09
+   Duration  725ms (tests 37%, transform 37%, import 25%, worker 1%)
+

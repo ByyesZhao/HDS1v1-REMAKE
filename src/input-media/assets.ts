@@ -30,12 +30,13 @@ export class AttachmentResolver {
 export class IncomingAssets {
  private jobs=new Map<string,Promise<string>>();private saves=new Map<string,Promise<void>>();
  private controllers=new Set<AbortController>();private uses=new Map<string,number>();private deleting=new Map<string,Promise<void>>();
+ private payloads=new Map<string,{bytes:Promise<Buffer>;mimeType:string;dataUrl?:string}>();
  private stopped=false;
  constructor(readonly store:IncomingMediaStore,readonly root:string,private resolver:AttachmentResolver) {}
  async ensureAsset(id:string,signal?:AbortSignal):Promise<string> {
   if(this.stopped)throw Error('incoming media stopped');signal?.throwIfAborted();
   const a=this.store.storage.read('message_attachments',id);if(!a)throw Error('missing attachment');
-  if(a.assetRef){const asset=this.store.storage.read('image_assets',a.assetRef);if(asset?.state==='ready'){await readFile(join(this.root,asset.relativePath));return asset.id;}if(asset?.state==='deleting')await this.deleting.get(asset.id);}
+  if(a.assetRef){const asset=this.store.storage.read('image_assets',a.assetRef);if(asset?.state==='ready')return asset.id;if(asset?.state==='deleting')await this.deleting.get(asset.id);}
   const existing=this.jobs.get(id);if(existing)return existing;
   const controller=new AbortController();this.controllers.add(controller);
   const onAbort=()=>controller.abort(signal?.reason);signal?.addEventListener('abort',onAbort,{once:true});
@@ -51,11 +52,21 @@ export class IncomingAssets {
   })().finally(()=>{this.jobs.delete(id);this.controllers.delete(controller);signal?.removeEventListener('abort',onAbort);});
   this.jobs.set(id,job);return job;
  }
- async resolveImageAsset(ref:string):Promise<string>{
+ async acquireImageAsset(ref:string):Promise<{release():void}>{
   if(this.deleting.has(ref))await this.deleting.get(ref);
   const asset=this.store.storage.read('image_assets',ref);if(!asset||asset.state!=='ready')throw Error('pending image asset missing: '+ref);
+  // Claim use before yielding to disk I/O so retirement cannot remove a held image.
   this.uses.set(ref,(this.uses.get(ref)??0)+1);
-  try{const bytes=await readFile(join(this.root,asset.relativePath));return 'data:'+asset.mimeType+';base64,'+bytes.toString('base64');}finally{this.uses.set(ref,this.uses.get(ref)!-1);}
+  let payload=this.payloads.get(ref);
+  if(!payload){payload={bytes:readFile(join(this.root,asset.relativePath)),mimeType:asset.mimeType};this.payloads.set(ref,payload);}
+  let released=false;
+  const release=()=>{if(released)return;released=true;const remaining=this.uses.get(ref)!-1;if(remaining)this.uses.set(ref,remaining);else{this.uses.delete(ref);this.payloads.delete(ref);}};
+  try{await payload.bytes;return {release};}catch(error){release();throw error;}
+ }
+ async resolveImageAsset(ref:string):Promise<string>{
+  const lease=await this.acquireImageAsset(ref);
+  try{const payload=this.payloads.get(ref)!,bytes=await payload.bytes;return payload.dataUrl??=('data:'+payload.mimeType+';base64,'+bytes.toString('base64'));}
+  finally{lease.release();}
  }
  async retire(ref:string,eligible:()=>boolean):Promise<boolean> {
   const asset=this.store.storage.read('image_assets',ref);if(!asset||!['ready','deleting'].includes(asset.state)||this.uses.get(ref)||this.jobs.size||!eligible())return false;

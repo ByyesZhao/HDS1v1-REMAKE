@@ -1,0 +1,15 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/incoming-media-asset-lease.test.ts tests/incoming-media-assets.test.ts tests/incoming-media-turn.test.ts tests/incoming-image-model.test.ts tests/incoming-media-cleanup.test.ts tests/incoming-media-onebot-review.test.ts --reporter=dot
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+····························
+
+ Test Files  6 passed (6)
+      Tests  28 passed (28)
+   Start at  09:43:11
+   Duration  3.28s (import 37%, tests 37%, transform 25%, worker 1%)
+
+    Isolate  6 workers spawned · ~121ms startup each (spawn + environment, per file)
+             at least ~607ms faster with isolate: false — reuses workers across files instead of one per file
+

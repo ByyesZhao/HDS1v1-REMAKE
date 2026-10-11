@@ -9,7 +9,7 @@ import type {ModelRunner} from '../types';
 import type {PreparedAttachment,FrozenAttachment,ObservationRecord,AttachmentRecord} from './types';
 import type {WebSearchService} from '../web/service';
 export class IncomingMediaService {
- private prefetched=new Set<Promise<unknown>>();private observations=new Map<string,Promise<ObservationRecord>>();private stopped=false;private primed=false;
+ private prefetched=new Set<Promise<unknown>>();private observations=new Map<string,Promise<ObservationRecord>>();private preparations=new Set<Promise<PreparedAttachment[]>>();private stopped=false;private primed=false;
  constructor(readonly store:IncomingMediaStore,readonly assets:IncomingAssets,private models:ModelRunner,private config:{enabled:boolean;recentSegments?:number},private web?:WebSearchService){}
  async primeStickerObservations(){if(this.primed||!this.config.enabled)return;this.primed=true;for(const sticker of this.store.storage.all('stickers')){await readFile(sticker.path).then(b=>createHash('sha256').update(b).digest('hex')).catch(()=>null);}/* Existing mixed-purpose descriptions are deliberately ineligible. */}
  prefetchForMessages(ids:readonly string[]):void{if(!this.config.enabled||this.stopped)return;for(const a of this.store.forMessages(ids).filter(a=>a.kind!=='native_face'&&!a.assetRef)){const job=this.assets.ensureAsset(a.id).catch(()=>{}).finally(()=>this.prefetched.delete(job));this.prefetched.add(job);}}
@@ -26,7 +26,11 @@ export class IncomingMediaService {
   return [{messageId:a.messageId,attachmentId:a.id,order:a.order,status:'ready',origin:row.origin,observationRef:row.id,recognizerVersion:row.recognizerVersion,observation:row.observation} as PreparedAttachment];
  });}
  private freeze(turnId:string,entry:FrozenAttachment){const turn=this.store.storage.read('turns',turnId);if(!turn)throw Error('missing image turn');const entries=turn.visualContext?.entries??[];const index=entries.findIndex(e=>e.attachmentId===entry.attachmentId);if(index<0)entries.push(entry);else entries[index]=entry;this.store.storage.save('turns',turnId,{...turn,visualContext:{version:1,entries}});}
- async prepareForTurn(turnId:string,ids:readonly string[],signal?:AbortSignal):Promise<PreparedAttachment[]> {
+ prepareForTurn(turnId:string,ids:readonly string[],signal?:AbortSignal):Promise<PreparedAttachment[]> {
+  const preparing=this.prepare(turnId,ids,signal);this.preparations.add(preparing);
+  void preparing.finally(()=>this.preparations.delete(preparing)).catch(()=>{});return preparing;
+ }
+ private async prepare(turnId:string,ids:readonly string[],signal?:AbortSignal):Promise<PreparedAttachment[]> {
   if(this.stopped)throw Error('incoming media stopped');signal?.throwIfAborted();
   const result:PreparedAttachment[]=[];
   for(const a of this.store.forMessages(ids)){
@@ -37,6 +41,8 @@ export class IncomingMediaService {
    const base={messageId:a.messageId,attachmentId:a.id,order:a.order};
    const face=a.kind==='native_face'?faceObservation(a.faceId):null;
    let row:ObservationRecord|undefined,origin:PreparedAttachment['origin']='vision';
+   let lease:{release():void}|undefined;
+   try{
    if(!frozen&&a.confirmedObservationRef){row=this.store.storage.read('image_observations',a.confirmedObservationRef)??undefined;if(!row||row.recognizerVersion!==a.confirmedRecognizerVersion)throw Error('confirmed image observation missing or incompatible');origin='cache';}
    else if(face){row={id:'face:'+a.faceId+':'+PLATFORM_FACE_VERSION,contentHash:null,recognizerVersion:PLATFORM_FACE_VERSION,origin:'platform',observation:face,confirmedAt:new Date().toISOString()};const old=this.store.storage.read('image_observations',row.id);if(old)row=old;origin='platform';}
    else if(!frozen&&(a.kind==='native_face'||!this.config.enabled)){
@@ -51,16 +57,19 @@ export class IncomingMediaService {
     const phaseKey=frozen?.status==='pending'?frozen.phaseKey:'incoming_image:'+a.id;
     this.freeze(turnId,{...base,status:'pending',imageAssetRef:ref,phaseKey,recognizerVersion:V});
     // Disk ref is validated even when a previous model/tool checkpoint exists.
-    await this.assets.resolveImageAsset(ref);
+    lease=await this.assets.acquireImageAsset(ref);
+    signal?.throwIfAborted();
     const cached=this.store.findObservation(ref,V);if(cached){row=cached;origin='cache';}
     else {let promise=this.observations.get(ref);
      if(!promise){promise=(async()=>{const observation=await observeIncomingImage(this.models,ref,phaseOptions(this.web,'turn',turnId,phaseKey,'incoming_image',{lookup:null,signal}));return {id:ref+':'+V,contentHash:ref,recognizerVersion:V,origin:'vision' as const,observation,confirmedAt:new Date().toISOString()};})();this.observations.set(ref,promise);promise.finally(()=>this.observations.delete(ref)).catch(()=>{});}
      row=await promise;signal?.throwIfAborted();
     }
    }
+   signal?.throwIfAborted();
    const entry:PreparedAttachment={...base,status:'ready',origin,observationRef:row.id,recognizerVersion:row.recognizerVersion,observation:row.observation};
    this.store.storage.transaction(()=>{this.store.saveObservation(row!);const current=this.store.storage.read('message_attachments',a.id)!;this.store.storage.save('message_attachments',a.id,{...current,confirmedObservationRef:row!.id,confirmedRecognizerVersion:row!.recognizerVersion});const {observation,...terminal}=entry;this.freeze(turnId,terminal);});
    result.push(entry);
+   }finally{lease?.release();}
   }
   return result;
  }
@@ -97,5 +106,5 @@ export class IncomingMediaService {
   const ref=this.cleanupCandidate();if(!ref)return 'none';
   return await this.assets.retire(ref,()=>!this.protectedAsset(ref))?'applied':'none';
  }
- async stop(options:{graceful?:boolean}={}){this.stopped=true;await this.assets.stop(options);await Promise.allSettled([...this.prefetched,...this.observations.values()]);}
+ async stop(options:{graceful?:boolean}={}){this.stopped=true;await this.assets.stop(options);await Promise.allSettled([...this.prefetched,...this.observations.values(),...this.preparations]);}
 }
