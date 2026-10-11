@@ -1,0 +1,24 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 typecheck
+npm notice run tsc --noEmit
+src/web/service.ts(18,5): error TS2739: Type '{ id: string; ref: ModelRunRef; available: boolean; limits: { successReads: number; failures: number; }; snapshot: () => WebSessionSnapshot; beginOperation: (r: WebOperationRequest) => WebOperationRecord; saveCheckpoint: (c: WebModelCheckpoint) => void; markProvided: (ids: string[]) => void; searchAndRead: (request:...' is missing the following properties from type 'WebSearchSession': state, checkpoint, operation, materials
+tests/incoming-media-asset-lease.test.ts(83,58): error TS2339: Property 'acquireImageAsset' does not exist on type 'IncomingAssets'.
+tests/incoming-media-asset-lease.test.ts(83,92): error TS2339: Property 'acquireImageAsset' does not exist on type 'IncomingAssets'.
+tests/incoming-media-asset-lease.test.ts(108,25): error TS2339: Property 'acquireImageAsset' does not exist on type 'IncomingAssets'.
+tests/incoming-media-asset-lease.test.ts(108,76): error TS2769: No overload matches this call.
+  Overload 1 of 4, '(object: IncomingAssets, key: "stop" | "ensureAsset" | "resolveImageAsset" | "retire"): Mock<((id: string, signal?: AbortSignal | undefined) => Promise<...>) | ((ref: string) => Promise<...>) | ((ref: string, eligible: () => boolean) => Promise<...>) | ((options?: { ...; }) => Promise<...>)>', gave the following error.
+    Argument of type '"acquireImageAsset"' is not assignable to parameter of type '"stop" | "ensureAsset" | "resolveImageAsset" | "retire"'.
+  Overload 2 of 4, '(object: IncomingAssets, key: never): never', gave the following error.
+    Argument of type '"acquireImageAsset"' is not assignable to parameter of type 'never'.
+tests/incoming-media-asset-lease.test.ts(108,116): error TS2345: Argument of type '(ref: any) => Promise<any>' is not assignable to parameter of type '() => string | IncomingMediaStore'.
+  Target signature provides too few arguments. Expected 1 or more, but got 0.
+tests/incoming-media-asset-lease.test.ts(108,122): error TS7006: Parameter 'ref' implicitly has an 'any' type.
+tests/memory-policy-snapshot.test.ts(17,74): error TS2345: Argument of type '{ content: string; sourceIds: string[]; value?: undefined; } | { content: undefined; value: string; sourceIds: string[]; } | { content: string; value: string; sourceIds: never[]; }' is not assignable to parameter of type 'Partial<MemoryCandidate> & { content: string; }'.
+  Type '{ content: undefined; value: string; sourceIds: string[]; }' is not assignable to type 'Partial<MemoryCandidate> & { content: string; }'.
+    Type '{ content: undefined; value: string; sourceIds: string[]; }' is not assignable to type '{ content: string; }'.
+      Types of property 'content' are incompatible.
+        Type 'undefined' is not assignable to type 'string'.
+tests/memory-policy-snapshot.test.ts(52,147): error TS2345: Argument of type 'Partial<MemoryCandidate>' is not assignable to parameter of type 'Partial<MemoryCandidate> & { content: string; }'.
+  Type 'Partial<MemoryCandidate>' is not assignable to type '{ content: string; }'.
+    Types of property 'content' are incompatible.
+      Type 'string | undefined' is not assignable to type 'string'.
+        Type 'undefined' is not assignable to type 'string'.

@@ -1,7 +1,7 @@
 import type {Storage} from '../storage';
 import {memoryOwnerData,type MemoryCandidate} from './types';
 // ECMAScript String.trim whitespace, also used by the full owner/contract checks.
-const trimWhitespace=String.fromCodePoint(9,10,11,12,13,32,160,5760,...Array.from({length:11},(_,i)=>8192+i),8232,8233,8239,8287,12288,65279);
+export const trimWhitespace=String.fromCodePoint(9,10,11,12,13,32,160,5760,...Array.from({length:11},(_,i)=>8192+i),8232,8233,8239,8287,12288,65279);
 // Counts, scheduling and inspection must not hydrate memory text or historical model inputs.
 export function memoryMetadata(db:Pick<Storage,'prepare'>):MemoryCandidate[] {
   const tables=new Set(db.prepare("SELECT name FROM sqlite_master WHERE type='table'").all().map(r=>String(r.name)));

@@ -1,0 +1,42 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/memory-policy-snapshot.test.ts tests/memory-pending-refresh.test.ts tests/memory-batch-characters.test.ts
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ❯ tests/memory-pending-refresh.test.ts (0 test)
+ ❯ tests/memory-policy-snapshot.test.ts (0 test)
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/memory-pending-refresh.test.ts [ tests/memory-pending-refresh.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{94ce7132-b207-46e5-96d5-ca8e9c095190}\AC\Temp\hVsyqsdDEypi-_iGCO32c\ssr\de2ecbd112eea2c34dfd1176e339eebb8314887b'
+ ❯ tests/memory-pending-refresh.test.ts:2:1
+      1| import {it,expect} from 'vitest';
+      2| import {fixture,long,at,days} from './memory-capacity-fixture';
+       | ^
+      3| import {MemoryLifecycle} from '../src/memory/lifecycle';
+      4| import {MemoryIndex} from '../src/memory/index';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/memory-policy-snapshot.test.ts [ tests/memory-policy-snapshot.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{94ce7132-b207-46e5-96d5-ca8e9c095190}\AC\Temp\hVsyqsdDEypi-_iGCO32c\ssr\de2ecbd112eea2c34dfd1176e339eebb8314887b'
+ ❯ tests/memory-policy-snapshot.test.ts:3:1
+      1| import {it,expect} from 'vitest';
+      2| import {DatabaseSync} from 'node:sqlite';
+      3| import {fixture,long,at} from './memory-capacity-fixture';
+       | ^
+      4| import type {MemoryCandidate} from '../src/memory/types';
+      5| import {memoryMetadata,metadataCanonical} from '../src/memory/metadata…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed | 1 passed (3)
+      Tests  13 passed (13)
+   Start at  09:41:03
+   Duration  1.09s (transform 49%, tests 26%, import 23%, worker 2%)
+
+    Isolate  3 workers spawned · ~129ms startup each (spawn + environment, per file)
+             at least ~259ms faster with isolate: false — reuses workers across files instead of one per file
+

@@ -1,0 +1,35 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/memory-policy-snapshot.test.ts -t policy_projection_matches_content_and_source_predicates
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ❯ tests/memory-policy-snapshot.test.ts (5 tests | 1 failed | 4 skipped) 25ms
+   × policy_projection_matches_content_and_source_predicates 25ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/memory-policy-snapshot.test.ts > policy_projection_matches_content_and_source_predicates
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/memory-policy-snapshot.test.ts:27:26
+     25|  for(const [i,data] of cases.entries()){
+     26|   const row=snapshot.memoryById.get(`sample-${i}`)!;
+     27|   expect(row.hasContent).toBe((data.content??data.value??'').trim().le…
+       |                          ^
+     28|   expect(row.hasSources).toBe(data.sourceIds.length>0);
+     29|   for(const field of ['content','value','eventSummary','feelingSummary…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 skipped (5)
+   Start at  09:41:56
+   Duration  340ms (transform 70%, import 15%, tests 12%, worker 2%)
+

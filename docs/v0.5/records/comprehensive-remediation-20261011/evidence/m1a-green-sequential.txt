@@ -1,0 +1,43 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/memory-policy-snapshot.test.ts tests/memory-pending-refresh.test.ts tests/memory-batch-characters.test.ts --maxWorkers=1
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ❯ tests/memory-policy-snapshot.test.ts (0 test)
+ ❯ tests/memory-batch-characters.test.ts (0 test)
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/memory-batch-characters.test.ts [ tests/memory-batch-characters.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{16c0bdae-d6b4-46f1-98a0-41560d3e3946}\AC\Temp\W8y-kGiyf85BPxOkLpIJu\ssr\de2ecbd112eea2c34dfd1176e339eebb8314887b'
+ ❯ tests/memory-batch-characters.test.ts:3:1
+      1| import {it,expect} from 'vitest';
+      2| import {fixture,long,at,days} from './memory-capacity-fixture';
+      3| import {MemoryLifecycle} from '../src/memory/lifecycle';
+       | ^
+      4| import {MemoryIndex} from '../src/memory/index';
+      5| import {MemoryMaintenance} from '../src/memory/maintenance';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/memory-policy-snapshot.test.ts [ tests/memory-policy-snapshot.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\<user>\AppData\Local\Packages\sandbox.{16c0bdae-d6b4-46f1-98a0-41560d3e3946}\AC\Temp\W8y-kGiyf85BPxOkLpIJu\ssr\de2ecbd112eea2c34dfd1176e339eebb8314887b'
+ ❯ tests/memory-policy-snapshot.test.ts:3:1
+      1| import {it,expect} from 'vitest';
+      2| import {DatabaseSync} from 'node:sqlite';
+      3| import {fixture,long,at} from './memory-capacity-fixture';
+       | ^
+      4| import type {MemoryCandidate} from '../src/memory/types';
+      5| import {memoryMetadata,metadataCanonical} from '../src/memory/metadata…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed | 1 passed (3)
+      Tests  5 passed (5)
+   Start at  09:41:20
+   Duration  1.00s (transform 60%, import 27%, tests 10%, worker 3%)
+
+    Isolate  3 workers spawned · ~135ms startup each (spawn + environment, per file)
+             at least ~271ms faster with isolate: false — reuses workers across files instead of one per file
+

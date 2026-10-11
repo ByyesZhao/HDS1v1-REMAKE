@@ -40,6 +40,27 @@ it('dependency closure is complete beyond the main character soft target',async(
  expect(d.maintenance.startOne(d.clock.now())).toBe(true);
  const input=d.models.calls[0].input;expect(input.context.selectedIds).toEqual(['short']);expect(input.resources.owners.find((r:any)=>r.id==='long').eventSummary).toBe('L'.repeat(300));await flush();await d.maintenance.stop();
 });
+it('incremental_candidates_hydrate_full_text_before_batch_selection',async()=>{
+ const d=setup(true,{batchItems:20,batchCharacters:280}),tail='全文尾部标记';
+ const dependency=long(d.store,'dependency',{content:'长期依据'.repeat(100)});
+ for(let i=0;i<40;i++){
+  const row=d.store.makeOwner({ownerType:'short',ownerId:`short-${String(i).padStart(2,'0')}`},{content:'正文'.repeat(60)+tail,linkedLongId:dependency.id,shortExpiresAt:days(2),sourceIds:[]},at);
+  d.store.saveOwner(row);d.store.queueDirty(row,'event',at);
+ }
+ // A policy scan must never expose placeholder text as an owner. Only hydrated
+ // owners may reach the character target and the model input.
+ const available=d.maintenance['incrementalCandidates'](new Set());
+ expect(available).toHaveLength(40);
+ expect(available.every(row=>!Object.hasOwn(row,'content')&&!Object.hasOwn(row,'sourceIds'))).toBe(true);
+ expect(d.maintenance.startOne(d.clock.now())).toBe(true);
+ const input=d.models.calls[0].input;
+ expect(input.context.selectedIds).toEqual(['short-00','short-01']);
+ expect(input.resources.owners.filter((row:any)=>row.kind==='short')).toHaveLength(40);
+ for(const id of input.context.selectedIds)expect(input.resources.owners.find((row:any)=>row.id===id).content).toBe('正文'.repeat(60)+tail);
+ expect(input.resources.owners.find((row:any)=>row.id==='dependency').eventSummary).toBe(dependency.content);
+ expect(d.store.dirtyOwners().filter(row=>row.status==='pending')).toHaveLength(38);
+ await flush();await d.maintenance.stop();
+});
 function pending(d:ReturnType<typeof setup>,rows:ReturnType<typeof long>[],startedAt:string|null|undefined,retryAt:string|null=null){
  for(const r of rows)d.store.reserveDirty(r);
  d.store.saveJob('memory_maintenance_jobs',{id:'prior',kind:'consolidation',startedAt,cutoff:at,createdAt:at,status:'pending',snapshot:rows,selectedIds:rows.map(r=>r.id),readSet:rows,result:null,appliedUnitKeys:[],staleUnitKeys:[],retryAt,lastError:null});

@@ -10,7 +10,7 @@ import { MemoryLifecycle } from './lifecycle';
 import { MemoryIndex } from './index';
 import type { IndexJob,MaintenanceJob,MaintenanceUnit,MemoryCandidate,OwnerVersion } from './types';
 import { phaseOptions } from '../web/phases';
-import {memoryMetadata,metadataCanonical} from './metadata';
+import {readMemoryPolicySnapshot,policyCanonical,type MemoryPolicyRow} from './policy-snapshot';
 import {promotionEligible} from './capacity';
 export interface MaintenanceOptions {clock:Clock;onReady?:()=>void;batchItems?:number;batchCharacters?:number|null;backgroundTimeoutMs?:number;retryDelayMs?:number;web?:import('../web/service').WebSearchService;idle?:import('./idle').MemoryIdle}
 type Work={table:'memory_index_jobs';job:IndexJob}|{table:'memory_maintenance_jobs';job:MaintenanceJob};
@@ -88,12 +88,13 @@ export class MemoryMaintenance {
     const available=this.incrementalCandidates(reserved);
     if(!available.length)return;
     const first=available[0],audit=first.kind==='detail'||first.kind==='learned';
-    const selected=this.selectBatch(available.filter(r=>(r.kind==='detail'||r.kind==='learned')===audit).map(r=>this.store.owner(r)!));
+    const owners=available.filter(r=>(r.kind==='detail'||r.kind==='learned')===audit).map(r=>this.store.owner(r)).filter((r):r is MemoryCandidate=>!!r);
+    const selected=this.selectBatch(owners);
     if(selected.length)this.makeJob(selected,now,now);
   }
-  private incrementalCandidates(reserved:Set<string>):MemoryCandidate[]{
-    const metadata=memoryMetadata(this.store.storage),byOwner=new Map(metadata.map(r=>[`${r.ownerType}:${r.ownerId}`,r]));
-    return this.store.dirtyOwners().filter(r=>r.status==='pending'&&!reserved.has(r.ownerId)).map(r=>byOwner.get(`${r.ownerType}:${r.ownerId}`)).filter((r):r is MemoryCandidate=>!!r&&r.status!=='merged'&&r.status!=='discarded'&&(!r.linkedLongId||!reserved.has(r.linkedLongId)&&!reserved.has(metadataCanonical(metadata,r.linkedLongId)?.id??r.linkedLongId)));
+  private incrementalCandidates(reserved:Set<string>):MemoryPolicyRow[]{
+    const snapshot=readMemoryPolicySnapshot(this.store.storage);
+    return this.store.dirtyOwners().filter(r=>r.status==='pending'&&!reserved.has(r.ownerId)).map(r=>snapshot.byOwner.get(`${r.ownerType}:${r.ownerId}`)).filter((r):r is MemoryPolicyRow=>!!r&&r.status!=='merged'&&r.status!=='discarded'&&(!r.linkedLongId||!reserved.has(r.linkedLongId)&&!reserved.has(policyCanonical(snapshot,r.linkedLongId,'metadata')?.id??r.linkedLongId)));
   }
   private refreshUnstarted(job:MaintenanceJob,now:string):MaintenanceJob|null {
     if(job.startedAt!==null||job.result!==null||job.appliedUnitKeys.length)return job;

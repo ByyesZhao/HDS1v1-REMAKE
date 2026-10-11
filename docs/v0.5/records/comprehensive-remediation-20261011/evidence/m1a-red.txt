@@ -1,0 +1,27 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/memory-policy-snapshot.test.ts
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ❯ tests/memory-policy-snapshot.test.ts (0 test)
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/memory-policy-snapshot.test.ts [ tests/memory-policy-snapshot.test.ts ]
+Error: Cannot find module '../src/memory/policy-snapshot' imported from D:/HDSI-remake/tests/memory-policy-snapshot.test.ts
+ ❯ tests/memory-policy-snapshot.test.ts:6:1
+      4| import type {MemoryCandidate} from '../src/memory/types';
+      5| import {memoryMetadata,metadataCanonical} from '../src/memory/metadata…
+      6| import {readMemoryPolicySnapshot,policyRow,replacePolicyRow,policyCano…
+       | ^
+      7| import {summaryRepairPair,summaryRepairPolicyPair,summaryRepairBasis} …
+      8|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  09:39:48
+   Duration  318ms (worker 97%, environment 3%)
+
