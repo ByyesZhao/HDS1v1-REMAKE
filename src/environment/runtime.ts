@@ -29,7 +29,7 @@ export async function runEnvironmentStep(d:Dependencies,stepId:string,generate:E
  if(localDate(d.clock.now(),batch.timezone)!==batch.localDate){ensureEnvironmentBatch(d.storage,d.config,d.clock.now());return;}
  if(step.status!=='ready'){
   const isNew=step.status!=='running';
-  if(isNew&&step.attempt>0&&d.web){const ref=d.web.store.openStage('environment',step.id,'generation',step.stage),cp=d.web.store.snapshot(ref.runId).checkpoint;if(cp){cp.repairCount=0;delete cp.repair;d.web.store.saveCheckpoint(ref.runId,cp);}}
+  if(isNew&&step.attempt>0&&d.web){const ref=d.web.store.openStage('environment',step.id,'generation',step.stage),cp=d.web.store.checkpoint(ref.runId);if(cp){cp.repairCount=0;delete cp.repair;d.web.store.saveCheckpoint(ref.runId,cp);}}
   step={...step,status:'running',attempt:step.attempt+(isNew?1:0),startedAt:step.startedAt??d.clock.now(),retryAt:null,inputSnapshot:step.inputSnapshot??environmentInput(d,step)};
   d.environmentStore.saveStep(step);
   let frozen:EnvironmentChangeSet;

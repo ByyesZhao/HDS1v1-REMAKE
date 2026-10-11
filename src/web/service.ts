@@ -15,19 +15,19 @@ export class WebSearchService {
   }
   openSession(ref:ModelRunRef,guard?:()=>void):WebSearchSession {
     const available=this.config.enabled&&this.provider.available!==false;
-    return {id:ref.runId,ref,available,limits:{successReads:this.config.maxSuccessReads,failures:this.config.maxFailures},snapshot:()=>this.store.snapshot(ref.runId),beginOperation:r=>this.store.beginOperation(ref.runId,r,guard),saveCheckpoint:c=>this.store.saveCheckpoint(ref.runId,c),markProvided:ids=>this.store.markProvided(ref.runId,ids,guard),
+    return {id:ref.runId,ref,available,limits:{successReads:this.config.maxSuccessReads,failures:this.config.maxFailures},snapshot:()=>this.store.snapshot(ref.runId),state:()=>this.store.state(ref.runId),checkpoint:()=>this.store.checkpoint(ref.runId),operation:id=>this.store.operation(ref.runId,id),materials:ids=>this.store.materials(ref.runId,ids),beginOperation:r=>this.store.beginOperation(ref.runId,r,guard),saveCheckpoint:c=>this.store.saveCheckpoint(ref.runId,c),markProvided:ids=>this.store.markProvided(ref.runId,ids,guard),
       searchAndRead:(request,options)=>this.serial(ref.runId,()=>this.execute(ref,{kind:'search',request},options,guard)),readPage:(url,options)=>this.serial(ref.runId,()=>this.execute(ref,{kind:'read',url:normalizeWebUrl(url)},options,guard))};
   }
   private serial<T>(id:string,fn:()=>Promise<T>):Promise<T>{const result=(this.locks.get(id)??Promise.resolve()).catch(()=>undefined).then(fn);this.locks.set(id,result);return result.finally(()=>{if(this.locks.get(id)===result)this.locks.delete(id);});}
-  private quota(runId:string):boolean {const c=this.store.snapshot(runId).counters;return c.successReads>=this.config.maxSuccessReads||c.failures>=this.config.maxFailures;}
+  private quota(runId:string):boolean {const c=this.store.state(runId).counters;return c.successReads>=this.config.maxSuccessReads||c.failures>=this.config.maxFailures;}
   private response(runId:string,operationId:string,stopReason:WebSearchResponse['stopReason']):WebSearchResponse {
-    const s=this.store.snapshot(runId),op=this.store.operation(runId,operationId),materials=s.materials.filter(m=>op.materialIds.includes(m.id));
+    const s=this.store.state(runId),op=this.store.operation(runId,operationId),materials=this.store.materials(runId,op.materialIds);
     const requestedPages=op.request.kind==='search'?op.request.request.requestedPages??1:1;
     return {materials,counters:s.counters,stopReason,failures:op.failures,requestedPages,obtainedPages:materials.length,...(materials.length<requestedPages?{message:'结果不足' as const}:{})};
   }
   private async execute(ref:ModelRunRef,_request:WebOperationRequest,options:WebOperationOptions,guard?:()=>void):Promise<WebSearchResponse>{
     options.signal?.throwIfAborted();guard?.();
-    const runId=ref.runId;let op=this.store.operation(runId,options.operationId);if(op.status==='done')return {...op.response!,counters:this.store.snapshot(runId).counters};
+    const runId=ref.runId;let op=this.store.operation(runId,options.operationId);if(op.status==='done')return {...op.response!,counters:this.store.state(runId).counters};
     const finish=(reason:WebSearchResponse['stopReason'])=>{const result=this.response(runId,op.operationId,reason);this.store.finishOperation(runId,op.operationId,result);return result;};
     if(!this.config.enabled||this.provider.available===false)return {...finish(null),failures:[{reason:'unavailable'}]};
     options.signal?.throwIfAborted();guard?.();if(this.quota(runId))return finish('quota');
@@ -42,13 +42,13 @@ export class WebSearchService {
     }
     op=this.store.operation(runId,op.operationId);
     const requested=op.request.kind==='search'?op.request.request.requestedPages??1:1;
-    const target=Math.min(requested,this.config.maxSuccessReads-this.store.snapshot(runId).counters.successReads+op.materialIds.length);
+    const target=Math.min(requested,this.config.maxSuccessReads-this.store.state(runId).counters.successReads+op.materialIds.length);
     const owner=`${ref.ownerType}:${ref.ownerId}`;let publicCache=this.cache.get(owner);if(!publicCache){publicCache=new Map();this.cache.set(owner,publicCache);}
     while(op.nextCandidateIndex<op.candidateUrls!.length&&op.materialIds.length<target&&!this.quota(runId)){
       options.signal?.throwIfAborted();guard?.();const stepIndex=op.nextCandidateIndex,rawUrl=op.candidateUrls![stepIndex];let url:string;
       try{url=normalizeWebUrl(rawUrl);}catch{this.store.commitStep(runId,{operationId:op.operationId,stepIndex,nextCandidateIndex:stepIndex+1,reason:'read_error',url:rawUrl});op=this.store.operation(runId,op.operationId);continue;}
-      const own=this.store.snapshot(runId).materials.find(m=>m.url===url);
-      if(own){if(op.request.kind==='read'){this.store.commitStep(runId,{operationId:op.operationId,stepIndex,nextCandidateIndex:stepIndex+1,material:own});}else this.store.saveOperation({...op,nextCandidateIndex:stepIndex+1});op=this.store.operation(runId,op.operationId);continue;}
+      const own=this.store.materialMetadata(runId,url)[0];
+      if(own){if(op.request.kind==='read'){const material=this.store.materials(runId,[own.id])[0];this.store.commitStep(runId,{operationId:op.operationId,stepIndex,nextCandidateIndex:stepIndex+1,material});}else this.store.saveOperation({...op,nextCandidateIndex:stepIndex+1});op=this.store.operation(runId,op.operationId);continue;}
       const cacheKey=`${this.provider.signature}:${url}`,cached=publicCache.get(cacheKey);let material:WebMaterial;
       try{
         if(cached){this.store.incrementMetric(runId,'cacheHits');material={...cached,readAt:this.clock.now()};}
@@ -59,7 +59,7 @@ export class WebSearchService {
     if(op.request.kind==='search'&&!op.materialIds.length&&!op.failures.length&&!this.quota(runId))this.store.commitStep(runId,{operationId:op.operationId,stepIndex:-2,nextCandidateIndex:op.nextCandidateIndex,reason:'no_candidates'});
     return finish(this.quota(runId)?'quota':op.materialIds.length>=target?'satisfied':'no_candidates');
   }
-  providedUrls(runId:string):string[]{const s=this.store.snapshot(runId);return s.materials.filter(m=>s.providedMaterialIds.includes(m.id)).map(m=>m.url);}
+  providedUrls(runId:string):string[]{return this.store.materialMetadata(runId).filter(m=>m.provided).map(m=>m.url);}
   selfReadSources(turnId:string,runId?:string){return this.store.selfReadSources(turnId,runId);}
   releaseOwner(ownerType:ModelRunRef['ownerType'],ownerId:string):void {this.cache.delete(`${ownerType}:${ownerId}`);}
   compactOwnerCheckpoint(ownerType:ModelRunRef['ownerType'],ownerId:string):void {this.store.compactOwnerCheckpoint(ownerType,ownerId);}

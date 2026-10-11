@@ -8,9 +8,19 @@ import {WebSearchService} from '../src/web/service';
 import {ModelClient} from '../src/model/client';
 import {modelTask} from '../src/model/contracts';
 import {z} from 'zod';
-import {TestClock,NOW,emptyMemory} from './helpers';
+import {TestClock,NOW,emptyMemory,setup} from './helpers';
+import {organizeMemory} from '../src/memory/organize';
+import type {TurnRecord} from '../src/types';
 import {addMs} from '../src/time';
 const dbs:Storage[]=[];afterEach(()=>dbs.splice(0).forEach(d=>d.close()));
+it('organize_loads_source_materials_once_per_run',async()=>{
+ const d=setup();dbs.push(d.storage);const store=new WebSearchStore(d.storage),web=new WebSearchService(store,{signature:'offline',search:async()=>[],read:async(url)=>({bodyFormat:'text' as const,title:url,body:'body '+url})},d.clock,{enabled:true});
+ const session=web.openSession(store.openStage('turn','t','personal','personal_life'));for(const name of ['a','b','unprovided']){const url=`https://example.test/${name}`,op=session.beginOperation({kind:'read',url});await session.readPage(url,{operationId:op.operationId});}
+ const rows=session.snapshot().materials;session.markProvided(rows.slice(0,2).map(m=>m.id));const sources=web.selfReadSources('t'),snapshot=vi.spyOn(store,'snapshot'),materials=vi.spyOn(store,'materials');
+ const turn={id:'t',at:NOW,frozenResult:{experiences:[],visibleMessageIds:[],reconsiderMessageIds:[],nextState:d.storage.character(),taskChanges:[],personal:null}} as unknown as TurnRecord;
+ await organizeMemory({...d,web},turn);const input=d.models.calls.find(c=>c.name==='memory')!.input;
+ expect(snapshot).not.toHaveBeenCalled();expect(materials).toHaveBeenCalledTimes(1);expect(materials).toHaveBeenCalledWith(session.id,rows.slice(0,2).map(m=>m.id));expect(input.roles.selfReadSources).toEqual(sources);expect(input.resources.materials.map((m:any)=>({id:m.id,body:m.body}))).toEqual(rows.slice(0,2).map(m=>({id:m.id,body:m.body})));expect(input.roles.currentSourceIds).toEqual(sources.map(s=>s.id));
+});
 it('only actual life reading can independently support short memory; details and awaken still require ordinary current sources',async()=>{
  const db=new Storage(':memory:');dbs.push(db);const ws=new WebSearchStore(db),web=new WebSearchService(ws,{signature:'fixture',search:async()=>[{url:'https://example.test',title:'snippet'}],read:async()=>({bodyFormat:'text' as const,title:'正文',body:'查阅资料：雨后清新'})},new TestClock(),{enabled:true});
  for(const name of ['narrative','personal_life','memory'] as const){const s=web.openSession(ws.openStage('turn','t',name,name));let n=0;await new ModelClient({complete:async()=>++n===1?{webSearch:{query:'q'}}:{answer:'ok'}}).runModel(modelTask(name,z.object({answer:z.string()})),{}, {web:s,lookup:null});}

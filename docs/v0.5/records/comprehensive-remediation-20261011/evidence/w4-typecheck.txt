@@ -1,0 +1,13 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 typecheck
+npm notice run tsc --noEmit
+tests/incoming-media-asset-lease.test.ts(83,58): error TS2339: Property 'acquireImageAsset' does not exist on type 'IncomingAssets'.
+tests/incoming-media-asset-lease.test.ts(83,92): error TS2339: Property 'acquireImageAsset' does not exist on type 'IncomingAssets'.
+tests/incoming-media-asset-lease.test.ts(108,25): error TS2339: Property 'acquireImageAsset' does not exist on type 'IncomingAssets'.
+tests/incoming-media-asset-lease.test.ts(108,76): error TS2769: No overload matches this call.
+  Overload 1 of 4, '(object: IncomingAssets, key: "stop" | "ensureAsset" | "resolveImageAsset" | "retire"): Mock<((id: string, signal?: AbortSignal | undefined) => Promise<...>) | ((ref: string) => Promise<...>) | ((ref: string, eligible: () => boolean) => Promise<...>) | ((options?: { ...; }) => Promise<...>)>', gave the following error.
+    Argument of type '"acquireImageAsset"' is not assignable to parameter of type '"stop" | "ensureAsset" | "resolveImageAsset" | "retire"'.
+  Overload 2 of 4, '(object: IncomingAssets, key: never): never', gave the following error.
+    Argument of type '"acquireImageAsset"' is not assignable to parameter of type 'never'.
+tests/incoming-media-asset-lease.test.ts(108,116): error TS2345: Argument of type '(ref: any) => Promise<any>' is not assignable to parameter of type '() => string | IncomingMediaStore'.
+  Target signature provides too few arguments. Expected 1 or more, but got 0.
+tests/incoming-media-asset-lease.test.ts(108,122): error TS7006: Parameter 'ref' implicitly has an 'any' type.

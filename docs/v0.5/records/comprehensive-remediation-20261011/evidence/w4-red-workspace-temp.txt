@@ -1,0 +1,81 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/web-light-state.test.ts tests/web-store.test.ts tests/web-model-tools.test.ts tests/web-memory-sources.test.ts --maxWorkers=1
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ❯ tests/web-model-tools.test.ts (7 tests | 1 failed) 69ms
+   × loads one checkpoint and uses direct operation and body reads through lookup tools and repair 6ms
+ ❯ tests/web-light-state.test.ts (3 tests | 2 failed) 417ms
+   × control_reads_parse_zero_body_characters 405ms
+   × materials select only the requested run and IDs in persistent insertion order 5ms
+ ❯ tests/web-memory-sources.test.ts (3 tests | 1 failed) 42ms
+   × organize_loads_source_materials_once_per_run 15ms
+ ❯ tests/web-store.test.ts (4 tests | 2 failed) 290ms
+   × commit_step_uses_url_metadata_and_rolls_back_atomically 7ms
+   × completed_operation_replay_uses_current_counters 7ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/web-light-state.test.ts > control_reads_parse_zero_body_characters
+TypeError: d.store.state is not a function
+ ❯ tests/web-light-state.test.ts:25:18
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  tests/web-light-state.test.ts > materials select only the requested run and IDs in persistent insertion order
+TypeError: d.store.materials is not a function
+ ❯ tests/web-light-state.test.ts:40:17
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  tests/web-memory-sources.test.ts > organize_loads_source_materials_once_per_run
+Error: The property "materials" is not defined on the object.
+ ❯ tests/web-memory-sources.test.ts:19:181
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  tests/web-model-tools.test.ts > loads one checkpoint and uses direct operation and body reads through lookup tools and repair
+Error: The property "checkpoint" is not defined on the object.
+ ❯ tests/web-model-tools.test.ts:18:70
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  tests/web-store.test.ts > commit_step_uses_url_metadata_and_rolls_back_atomically
+Error: The property "materialMetadata" is not defined on the object.
+ ❯ tests/web-store.test.ts:12:59
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+ FAIL  tests/web-store.test.ts > completed_operation_replay_uses_current_counters
+AssertionError: expected "snapshot" to not be called at all, but actually been called 1 times
+
+Received:
+
+  1st snapshot call:
+
+    Array [
+      "db335bd2-4e95-42af-b7f2-b42a88082e42",
+    ]
+
+
+Number of calls: 1
+
+ ❯ tests/web-store.test.ts:16:722
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+
+ Test Files  4 failed (4)
+      Tests  6 failed | 11 passed (17)
+   Start at  09:40:07
+   Duration  2.17s (tests 50%, import 30%, transform 19%, worker 1%)
+
+    Isolate  4 workers spawned · ~122ms startup each (spawn + environment, per file)
+             at least ~365ms faster with isolate: false — reuses workers across files instead of one per file
+

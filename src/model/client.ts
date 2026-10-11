@@ -27,7 +27,7 @@ export class ModelClient implements ModelRunner {
     const policy=task.promptPolicy??buildPromptPolicy(task.name as PromptStage,factsFromInput(input));
     const selectedTask=task.promptPolicy?task:{...task,promptPolicy:policy,prompt:task.prompt+'\n'+policyRules(policy)};
     const web=options.web;
-    const checkpoint:WebModelCheckpoint=web?.snapshot().checkpoint??{input,repairCount:0,lookupUsed:false,pendingOperationId:null,toolResults:[]};
+    const checkpoint:WebModelCheckpoint=web?.checkpoint()??{input,repairCount:0,lookupUsed:false,pendingOperationId:null,toolResults:[]};
     // Regeneration uses the current business input; the phase identity and confirmed tool progress survive.
     checkpoint.input=input;
     const save=()=>{options.signal?.throwIfAborted();web?.saveCheckpoint(checkpoint);};
@@ -35,7 +35,7 @@ export class ModelClient implements ModelRunner {
       ? this.lookupDetails && (async (request: LookupRequest) => this.lookupDetails!(typeof request === 'string' ? request : request.query))
       : options.lookup;
     const perform=async(operationId:string)=>{
-      const op=web!.snapshot().operations.find(o=>o.operationId===operationId)!;
+      const op=web!.operation(operationId);
       const result=op.request.kind==='search'?await web!.searchAndRead(op.request.request,{operationId,signal:options.signal}):await web!.readPage(op.request.url,{operationId,signal:options.signal});
       checkpoint.toolResults.push(result);checkpoint.pendingOperationId=null;save();
     };
@@ -43,11 +43,11 @@ export class ModelClient implements ModelRunner {
     save();if(checkpoint.lookupPending&&checkpoint.lookupRequest&&lookup)await performLookup();
     if(checkpoint.pendingOperationId)await perform(checkpoint.pendingOperationId);
     while(true) {
-      options.signal?.throwIfAborted();const snapshot=web?.snapshot();
-      const quota=!!web&&!!snapshot&&(snapshot.counters.successReads>=web.limits.successReads||snapshot.counters.failures>=web.limits.failures);
+      options.signal?.throwIfAborted();const state=web?.state();
+      const quota=!!web&&!!state&&(state.counters.successReads>=web.limits.successReads||state.counters.failures>=web.limits.failures);
       const tools={web:!!web?.available&&!quota,lookup:!!lookup&&!checkpoint.lookupUsed};
-      const materials=snapshot?.materials??[];
-      const raw=await this.transport.complete({task:selectedTask,input,repair:checkpoint.repair,lookupResult:checkpoint.privateLookupResult,tools,webMaterials:materials,webResults:checkpoint.toolResults,webStatus:snapshot?{counters:snapshot.counters,stopReason:quota?'quota':null}:undefined},{signal:options.signal});
+      const materials=web?.materials()??[];
+      const raw=await this.transport.complete({task:selectedTask,input,repair:checkpoint.repair,lookupResult:checkpoint.privateLookupResult,tools,webMaterials:materials,webResults:checkpoint.toolResults,webStatus:state?{counters:state.counters,stopReason:quota?'quota':null}:undefined},{signal:options.signal});
       options.signal?.throwIfAborted();if(materials.length)web!.markProvided(materials.map(m=>m.id));
       let value:any,operation:ReturnType<typeof parseWebTool>;
       try {

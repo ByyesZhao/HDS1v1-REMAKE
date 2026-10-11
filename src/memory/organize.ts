@@ -34,7 +34,10 @@ export async function organizeMemory(d: Dependencies, turn: TurnRecord): Promise
   const longIds=memories.filter(m=>m.ownerType==='long'||m.ownerType==='learned').map(m=>m.id);
   const options=turnPhaseOptions(d.web,turn,'memory','memory',{lookup:async q=>{const result={...await builder.lookupForMemory(q,base),school:personalSchoolContext(d.storage,c.schoolObservations??[],typeof q==='string'?q:q.query)};includeLookupIds(result);return result;}});
   function includeLookupIds(result:unknown){const rows=isStageModelInput(result)?result.resources.owners:result&&typeof result==='object'&&'retrieved' in result&&Array.isArray(result.retrieved)?result.retrieved:[];for(const row of rows){const ids=row.kind==='short'?shortIds:longIds;if(['short','long','learned'].includes(row.kind)&&!ids.includes(row.id))ids.push(row.id);}}
-  includeLookupIds(options.web?.snapshot().checkpoint?.privateLookupResult);
+  includeLookupIds(options.web?.checkpoint()?.privateLookupResult);
+  const materialIdsByRun=new Map<string,string[]>();
+  for(const source of selfWebReadSources){const ids=materialIdsByRun.get(source.runId)??[];ids.push(source.materialId);materialIdsByRun.set(source.runId,ids);}
+  const materialsByRun=new Map([...materialIdsByRun].map(([runId,ids])=>[runId,new Map((d.web?.store.materials(runId,ids)??[]).map(material=>[material.id,material]))]));
   return withTurnVisualContext(d.models,d.incomingMedia,turn.id).runModel(memoryTask(sourceIds,longIds,shortIds,selfWebReadSources.map(s=>s.id)), stageInput('memory',{
     dialogueWindowVersion:turn.dialogueWindowVersion??1,currentActivityMessages:turn.dialogueWindowVersion===2?activityContextMessages(d.storage,turn.activityContext,'memory',c.visibleMessageIds):[],at: turn.at, background: d.config.background, experiences: c.experiences, visibleMessages, reconsiderMessages, outgoing,
     school:personalSchoolContext(d.storage,c.schoolObservations??[],query),
@@ -45,7 +48,7 @@ export async function organizeMemory(d: Dependencies, turn: TurnRecord): Promise
     } } : {}),
     details: context.details, retrieved: memories,
     selfWebReadSources,
-    selfWebReadMaterials:selfWebReadSources.map(source=>({sourceId:source.id,material:d.web?.store.snapshot(source.runId).materials.find(m=>m.id===source.materialId)})),
+    selfWebReadMaterials:selfWebReadSources.map(source=>({sourceId:source.id,material:materialsByRun.get(source.runId)?.get(source.materialId)})),
     ...(selfWebReadSources.length&&c.personal&&'innerThought' in c.personal?{selfWebReadReactions:{innerThought:c.personal.innerThought,emotions:c.personal.emotions}}:{}),
   }),options);
 }

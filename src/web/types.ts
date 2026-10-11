@@ -10,6 +10,8 @@ export type WebOperationRequest={kind:'search';request:WebSearchRequest}|{kind:'
 export interface WebOperationRecord {operationId:string;runId:string;request:WebOperationRequest;candidateUrls:string[]|null;nextCandidateIndex:number;status:'pending'|'running'|'done';materialIds:string[];failures:Array<{reason:string;url?:string}>;confirmedSteps:number[];response:WebSearchResponse|null}
 export interface WebModelCheckpoint {lookupRequest?:import('../memory/types').LookupRequest;lookupPending?:boolean;input:unknown;repairCount:number;lookupUsed:boolean;pendingOperationId:string|null;toolResults:WebSearchResponse[];privateLookupResult?:unknown;repair?:{original:unknown;errors:string}}
 export interface WebSessionMetrics {cacheHits:number;providerSearchCalls:number;providerReadCalls:number}
+export interface WebSessionState {ref:ModelRunRef;counters:WebSearchCounters;metrics:WebSessionMetrics;nextOperationOrdinal:number}
+export type WebMaterialMetadata=Omit<WebMaterial,'body'>&{firstOperationId:string;provided:boolean};
 export interface WebSessionSnapshot {ref:ModelRunRef;counters:WebSearchCounters;materials:WebMaterial[];providedMaterialIds:string[];operations:WebOperationRecord[];nextOperationOrdinal:number;repairCount:number;lookupUsed:boolean;checkpoint:WebModelCheckpoint|null;metrics:WebSessionMetrics}
 export type WebConfirmedStep={operationId:string;stepIndex:number;nextCandidateIndex:number}&({material:WebMaterial;reason?:never;url?:never}|{reason:string;url?:string;material?:never});
 export interface WebSearchConfig {enabled:boolean;maxSuccessReads:number;maxFailures:number}
@@ -19,6 +21,7 @@ export interface WebSearchSession {
   searchAndRead(request:WebSearchRequest,options:WebOperationOptions):Promise<WebSearchResponse>;
   readPage(url:string,options:WebOperationOptions):Promise<WebSearchResponse>;
   snapshot():WebSessionSnapshot;beginOperation(request:WebOperationRequest):WebOperationRecord;
+  state():WebSessionState;checkpoint():WebModelCheckpoint|null;operation(operationId:string):WebOperationRecord;materials(ids?:readonly string[]):WebMaterial[];
   saveCheckpoint(checkpoint:WebModelCheckpoint):void;markProvided(materialIds:string[]):void;
 }
 

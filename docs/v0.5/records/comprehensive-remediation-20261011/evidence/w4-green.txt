@@ -1,0 +1,31 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/web-light-state.test.ts tests/web-store.test.ts tests/web-model-tools.test.ts tests/web-memory-sources.test.ts
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ❯ tests/web-model-tools.test.ts (7 tests | 1 failed) 69ms
+   × loads one checkpoint and uses direct operation and body reads through lookup tools and repair 6ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/web-model-tools.test.ts > loads one checkpoint and uses direct operation and body reads through lookup tools and repair
+DataCloneError: parse(v) {
+		if (typeof v?.answer !== "string") throw Error("answer required");
+		return v;
+	} could not be cloned.
+ ❯ Object.complete tests/web-model-tools.test.ts:19:58
+
+ ❯ ModelClient.runModel src/model/client.ts:50:38
+ ❯ tests/web-model-tools.test.ts:19:104
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 3 passed (4)
+      Tests  1 failed | 16 passed (17)
+   Start at  09:41:09
+   Duration  2.23s (tests 52%, import 29%, transform 18%, worker 1%)
+
+    Isolate  4 workers spawned · ~125ms startup each (spawn + environment, per file)
+             at least ~374ms faster with isolate: false — reuses workers across files instead of one per file
+

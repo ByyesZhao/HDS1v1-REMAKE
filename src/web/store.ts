@@ -1,7 +1,7 @@
 import {webCheckpointIndex} from '../memory/payload-compaction';
 import { randomUUID } from 'node:crypto';
 import { Storage } from '../storage';
-import type { ModelRunRef,WebSessionSnapshot,WebOperationRequest,WebOperationRecord,WebConfirmedStep,WebModelCheckpoint,WebSearchResponse,WebMaterial,SelfWebReadSource,WebSessionMetrics,WebSearchCounters,WebOwnerRef,WebStatusSummary } from './types';
+import type { ModelRunRef,WebSessionSnapshot,WebSessionState,WebMaterialMetadata,WebOperationRequest,WebOperationRecord,WebConfirmedStep,WebModelCheckpoint,WebSearchResponse,WebMaterial,SelfWebReadSource,WebSessionMetrics,WebSearchCounters,WebOwnerRef,WebStatusSummary } from './types';
 type Table='web_sessions'|'web_operations'|'web_materials'|'self_web_read_sources';
 interface SessionData {ref:ModelRunRef;counters:WebSearchCounters;nextOperationOrdinal:number;checkpoint:WebModelCheckpoint|null;metrics:WebSessionMetrics}
 interface MaterialData {runId:string;material:WebMaterial;firstOperationId:string;provided:boolean}
@@ -11,13 +11,14 @@ export class WebSearchStore {
     storage.prepare(webCheckpointIndex).run();
     storage.prepare("CREATE UNIQUE INDEX IF NOT EXISTS web_stage_identity ON web_sessions(json_extract(data,'$.ref.ownerType'),json_extract(data,'$.ref.ownerId'),json_extract(data,'$.ref.stageKey'))").run();
     for(const table of ['web_operations','web_materials'])storage.prepare(`CREATE INDEX IF NOT EXISTS ${table}_run ON ${table}(json_extract(data,'$.runId'))`).run();
+    storage.prepare("CREATE INDEX IF NOT EXISTS web_materials_run_url ON web_materials(json_extract(data,'$.runId'),json_extract(data,'$.material.url'))").run();
   }
   private get<T>(table:Table,id:string):T|null {const r=this.storage.prepare(`SELECT data FROM ${table} WHERE id=?`).get(id);return r?JSON.parse(String(r.data)):null;}
   private put(table:Table,id:string,data:unknown):void {this.storage.prepare(`INSERT INTO ${table}(id,data) VALUES(?,?) ON CONFLICT(id) DO UPDATE SET data=excluded.data`).run(id,JSON.stringify(data));}
   private session(runId:string):SessionData {const s=this.get<SessionData>('web_sessions',runId);if(!s)throw new Error('unknown web session');return s;}
   openStage(ownerType:ModelRunRef['ownerType'],ownerId:string,stageKey:string,taskName:string):ModelRunRef {
-    const row=this.storage.prepare("SELECT data FROM web_sessions WHERE json_extract(data,'$.ref.ownerType')=? AND json_extract(data,'$.ref.ownerId')=? AND json_extract(data,'$.ref.stageKey')=?").get(ownerType,ownerId,stageKey);
-    if(row){const data=JSON.parse(String(row.data)) as SessionData;if(data.ref.taskName!==taskName){data.ref.taskName=taskName;this.put('web_sessions',data.ref.runId,data);}return data.ref;}
+    const row=this.storage.prepare("SELECT json_extract(data,'$.ref') ref FROM web_sessions WHERE json_extract(data,'$.ref.ownerType')=? AND json_extract(data,'$.ref.ownerId')=? AND json_extract(data,'$.ref.stageKey')=?").get(ownerType,ownerId,stageKey);
+    if(row){const ref=JSON.parse(String(row.ref)) as ModelRunRef;if(ref.taskName!==taskName){this.storage.prepare("UPDATE web_sessions SET data=json_set(data,'$.ref.taskName',?) WHERE id=?").run(taskName,ref.runId);ref.taskName=taskName;}return ref;}
     const count=this.storage.prepare("SELECT count(*) AS n FROM web_sessions WHERE json_extract(data,'$.ref.ownerType')=? AND json_extract(data,'$.ref.ownerId')=? AND json_extract(data,'$.ref.taskName')=?").get(ownerType,ownerId,taskName)!;
     const ref:ModelRunRef={runId:randomUUID(),ownerType,ownerId,stageKey,taskName,ordinal:Number(count.n)+1};
     this.put('web_sessions',ref.runId,{ref,counters:{successReads:0,failures:0},nextOperationOrdinal:0,checkpoint:null,metrics:{cacheHits:0,providerSearchCalls:0,providerReadCalls:0}} satisfies SessionData);return ref;
@@ -27,23 +28,40 @@ export class WebSearchStore {
     const operations=this.storage.prepare("SELECT data FROM web_operations WHERE json_extract(data,'$.runId')=? ORDER BY rowid").all(runId).map(r=>JSON.parse(String(r.data)) as WebOperationRecord);
     return {...session,materials:materials.map(m=>m.material),providedMaterialIds:materials.filter(m=>m.provided).map(m=>m.material.id),operations,repairCount:session.checkpoint?.repairCount??0,lookupUsed:session.checkpoint?.lookupUsed??false};
   }
+  state(runId:string):WebSessionState {
+    const row=this.storage.prepare("SELECT json_extract(data,'$.ref') ref,json_extract(data,'$.counters') counters,json_extract(data,'$.metrics') metrics,json_extract(data,'$.nextOperationOrdinal') nextOperationOrdinal FROM web_sessions WHERE id=?").get(runId);
+    if(!row)throw new Error('unknown web session');
+    return {ref:JSON.parse(String(row.ref)),counters:JSON.parse(String(row.counters)),metrics:JSON.parse(String(row.metrics)),nextOperationOrdinal:Number(row.nextOperationOrdinal)};
+  }
+  checkpoint(runId:string):WebModelCheckpoint|null {
+    const row=this.storage.prepare("SELECT json_extract(data,'$.checkpoint') checkpoint FROM web_sessions WHERE id=?").get(runId);
+    if(!row)throw new Error('unknown web session');return row.checkpoint===null?null:JSON.parse(String(row.checkpoint));
+  }
+  materialMetadata(runId:string,url?:string):WebMaterialMetadata[] {
+    return this.storage.prepare("SELECT json_extract(data,'$.material.id') id,json_extract(data,'$.material.url') url,json_extract(data,'$.material.title') title,json_extract(data,'$.material.readAt') readAt,json_extract(data,'$.material.bodyCharacters') bodyCharacters,json_extract(data,'$.material.selectionMode') selectionMode,json_extract(data,'$.material.sourceKind') sourceKind,json_extract(data,'$.firstOperationId') firstOperationId,json_extract(data,'$.provided') provided FROM web_materials WHERE json_extract(data,'$.runId')=?"+(url===undefined?'':" AND json_extract(data,'$.material.url')=?")+' ORDER BY rowid').all(...(url===undefined?[runId]:[runId,url])).map(row=>({id:String(row.id),url:String(row.url),title:String(row.title),readAt:String(row.readAt),bodyCharacters:Number(row.bodyCharacters),selectionMode:row.selectionMode as WebMaterial['selectionMode'],sourceKind:row.sourceKind as WebMaterial['sourceKind'],firstOperationId:String(row.firstOperationId),provided:!!row.provided}));
+  }
+  materials(runId:string,ids?:readonly string[]):WebMaterial[] {
+    if(ids?.length===0)return [];
+    const filter=ids?" AND json_extract(data,'$.material.id') IN ("+ids.map(()=>'?').join(',')+')':'';
+    return this.storage.prepare("SELECT json_extract(data,'$.material') material FROM web_materials WHERE json_extract(data,'$.runId')=?"+filter+' ORDER BY rowid').all(runId,...ids??[]).map(row=>JSON.parse(String(row.material)) as WebMaterial);
+  }
   materialRows(runId:string):MaterialData[]{return this.storage.prepare("SELECT data FROM web_materials WHERE json_extract(data,'$.runId')=? ORDER BY rowid").all(runId).map(r=>JSON.parse(String(r.data)));}
   operation(runId:string,id:string):WebOperationRecord {const op=this.get<WebOperationRecord>('web_operations',id);if(!op||op.runId!==runId)throw new Error('unknown web operation');return op;}
   beginOperation(runId:string,request:WebOperationRequest,guard?:()=>void):WebOperationRecord {
-    return this.storage.transaction(()=>{guard?.();const session=this.session(runId),operationId=`${runId}:op:${session.nextOperationOrdinal++}`;
+    return this.storage.transaction(()=>{guard?.();const row=this.storage.prepare("UPDATE web_sessions SET data=json_set(data,'$.nextOperationOrdinal',json_extract(data,'$.nextOperationOrdinal')+1) WHERE id=? RETURNING json_extract(data,'$.nextOperationOrdinal')-1 ordinal").get(runId);if(!row)throw new Error('unknown web session');const operationId=`${runId}:op:${Number(row.ordinal)}`;
       const record:WebOperationRecord={operationId,runId,request,candidateUrls:request.kind==='read'?[request.url]:null,nextCandidateIndex:0,status:'pending',materialIds:[],failures:[],confirmedSteps:[],response:null};
-      this.saveOperation(record);this.put('web_sessions',runId,session);return record;});
+      this.saveOperation(record);return record;});
   }
   saveOperation(record:WebOperationRecord):void {this.put('web_operations',record.operationId,record);}
   commitStep(runId:string,step:WebConfirmedStep):void {
-    this.storage.transaction(()=>{const op=this.operation(runId,step.operationId);if(op.confirmedSteps.includes(step.stepIndex))return;const session=this.session(runId);
-      if(step.material){const existing=this.materialRows(runId).find(r=>r.material.url===step.material.url);if(!existing){session.counters.successReads++;this.put('web_materials',`${runId}:${step.material.id}`,{runId,material:step.material,firstOperationId:op.operationId,provided:false} satisfies MaterialData);}const id=existing?.material.id??step.material.id;if(!op.materialIds.includes(id))op.materialIds.push(id);}
-      else{session.counters.failures++;op.failures.push({reason:step.reason,...(step.url?{url:step.url}:{})});}
-      op.confirmedSteps.push(step.stepIndex);op.nextCandidateIndex=step.nextCandidateIndex;this.saveOperation(op);this.put('web_sessions',runId,session);
+    this.storage.transaction(()=>{const op=this.operation(runId,step.operationId);if(op.confirmedSteps.includes(step.stepIndex))return;
+      if(step.material){const existing=this.materialMetadata(runId,step.material.url)[0];if(!existing){this.incrementCounter(runId,'successReads');this.put('web_materials',`${runId}:${step.material.id}`,{runId,material:step.material,firstOperationId:op.operationId,provided:false} satisfies MaterialData);}const id=existing?.id??step.material.id;if(!op.materialIds.includes(id))op.materialIds.push(id);}
+      else{this.incrementCounter(runId,'failures');op.failures.push({reason:step.reason,...(step.url?{url:step.url}:{})});}
+      op.confirmedSteps.push(step.stepIndex);op.nextCandidateIndex=step.nextCandidateIndex;this.saveOperation(op);
     });
   }
   finishOperation(runId:string,id:string,response:WebSearchResponse):void {this.storage.transaction(()=>{const op=this.operation(runId,id);this.saveOperation({...op,status:'done',response});});}
-  saveCheckpoint(runId:string,checkpoint:WebModelCheckpoint):void {const session=this.session(runId);this.put('web_sessions',runId,{...session,checkpoint});}
+  saveCheckpoint(runId:string,checkpoint:WebModelCheckpoint):void {const result=this.storage.prepare("UPDATE web_sessions SET data=json_set(data,'$.checkpoint',json(?)) WHERE id=?").run(JSON.stringify(checkpoint),runId);if(!result.changes)throw new Error('unknown web session');}
   compactStages(ownerType:ModelRunRef['ownerType'],ownerId:string,stageKeys:readonly string[]):void {
     const update=this.storage.prepare("UPDATE web_sessions SET data=json_set(data,'$.checkpoint',NULL) WHERE json_extract(data,'$.ref.ownerType')=? AND json_extract(data,'$.ref.ownerId')=? AND json_extract(data,'$.ref.stageKey')=? AND json_extract(data,'$.checkpoint') IS NOT NULL");
     for(const key of stageKeys)update.run(ownerType,ownerId,key);
@@ -51,13 +69,15 @@ export class WebSearchStore {
   compactOwnerCheckpoint(ownerType:ModelRunRef['ownerType'],ownerId:string):void {
     this.storage.prepare("UPDATE web_sessions SET data=json_set(data,'$.checkpoint',NULL) WHERE json_extract(data,'$.ref.ownerType')=? AND json_extract(data,'$.ref.ownerId')=? AND json_extract(data,'$.checkpoint') IS NOT NULL").run(ownerType,ownerId);
   }
-  incrementMetric(runId:string,metric:keyof WebSessionMetrics):void {const session=this.session(runId);session.metrics[metric]++;this.put('web_sessions',runId,session);}
+  private incrementCounter(runId:string,counter:keyof WebSearchCounters):void {this.incrementSessionNumber(runId,`$.counters.${counter}`);}
+  private incrementSessionNumber(runId:string,path:string):void {const result=this.storage.prepare("UPDATE web_sessions SET data=json_set(data,?,json_extract(data,?)+1) WHERE id=?").run(path,path,runId);if(!result.changes)throw new Error('unknown web session');}
+  incrementMetric(runId:string,metric:keyof WebSessionMetrics):void {if(!['cacheHits','providerSearchCalls','providerReadCalls'].includes(metric))throw new Error('unknown web metric');this.incrementSessionNumber(runId,`$.metrics.${metric}`);}
   markProvided(runId:string,materialIds:string[],guard?:()=>void):void {
-    this.storage.transaction(()=>{guard?.();const session=this.session(runId),rows=this.materialRows(runId);if(materialIds.some(id=>!rows.some(r=>r.material.id===id)))throw new Error('unknown provided web material');
-      for(const row of rows.filter(r=>materialIds.includes(r.material.id))){this.put('web_materials',`${runId}:${row.material.id}`,{...row,provided:true});
+    this.storage.transaction(()=>{guard?.();const session=this.state(runId),rows=this.materialMetadata(runId);if(materialIds.some(id=>!rows.some(r=>r.id===id)))throw new Error('unknown provided web material');
+      for(const row of rows.filter(r=>materialIds.includes(r.id))){this.storage.prepare("UPDATE web_materials SET data=json_set(data,'$.provided',json('true')) WHERE id=?").run(`${runId}:${row.id}`);
         if(session.ref.ownerType==='turn'&&session.ref.taskName==='personal_life'){
-          const id=`${runId}:self-read:${row.material.id}`;
-          if(!this.get('self_web_read_sources',id)){const source:SelfWebReadSource={id,turnId:session.ref.ownerId,runId,operationId:row.firstOperationId,materialId:row.material.id,url:row.material.url,readAt:row.material.readAt,sourceKind:'self_web_read',phase:'personal_life'};this.put('self_web_read_sources',id,source);}
+          const id=`${runId}:self-read:${row.id}`;
+          if(!this.get('self_web_read_sources',id)){const source:SelfWebReadSource={id,turnId:session.ref.ownerId,runId,operationId:row.firstOperationId,materialId:row.id,url:row.url,readAt:row.readAt,sourceKind:'self_web_read',phase:'personal_life'};this.put('self_web_read_sources',id,source);}
         }
       }
     });

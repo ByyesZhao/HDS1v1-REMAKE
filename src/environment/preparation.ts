@@ -66,7 +66,7 @@ export class EnvironmentPreparation {
  this.invalidate(current,now,'frozen preparation basis changed before restart');return d.environmentStore.step(stepId)!;
  }
  if(!current.preparationSnapshot){const snapshot=freezeEnvironmentSnapshot({...d,retrieval},current,now);current={...current,preparationSnapshot:snapshot,inputSnapshot:snapshot.input,preparationGeneration:current.preparationGeneration??1};}
- const ref=d.web!.store.openStage('environment',current.id,'generation',current.stage),cp=d.web!.store.snapshot(ref.runId).checkpoint;
+ const ref=d.web!.store.openStage('environment',current.id,'generation',current.stage),cp=d.web!.store.checkpoint(ref.runId);
  if(current.status!=='running'&&cp){cp.repairCount=0;delete cp.repair;d.web!.store.saveCheckpoint(ref.runId,cp);}
  current={...current,status:'running',attempt:current.attempt+(current.status==='running'?0:1),startedAt:current.startedAt??now,retryAt:null};
  d.environmentStore.saveStep(current);return current;
@@ -105,7 +105,7 @@ export class EnvironmentPreparation {
  }
  }
  private invalidate(step:EnvironmentStep,now:string,reason:string):void{
- const ref=this.d.web?.store.openStage('environment',step.id,'generation',step.stage),cp=ref?this.d.web!.store.snapshot(ref.runId).checkpoint:null;
+ const ref=this.d.web?.store.openStage('environment',step.id,'generation',step.stage),cp=ref?this.d.web!.store.checkpoint(ref.runId):null;
  if(cp){cp.repairCount=0;delete cp.repair;delete cp.privateLookupResult;if(cp.lookupUsed&&cp.lookupRequest)cp.lookupPending=true;this.d.web!.store.saveCheckpoint(ref!.runId,cp);}
  this.d.environmentStore.saveStep({...step,status:'pending',retryAt:addMs(now,this.d.config.environmentRetryMs),preparationGeneration:(step.preparationGeneration??1)+1,preparationSnapshot:null,inputSnapshot:null,frozenResult:null,staleReason:reason});
  }

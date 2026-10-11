@@ -14,6 +14,11 @@ it('loops web search, read and one private lookup without spending repair allowa
  expect(await client.runModel(task,{visible:'input'},{web:d.web,runRef:d.web.ref,lookup})).toEqual({answer:'done'});
  expect(requests).toHaveLength(5);expect(lookup).toHaveBeenCalledTimes(1);expect(d.web.snapshot().repairCount).toBe(1);expect(d.web.snapshot().lookupUsed).toBe(true);expect(d.web.snapshot().counters.successReads).toBe(2);expect(d.service.selfReadSources('t')).toHaveLength(2);expect(requests[1].webMaterials[0].sourceKind).toBe('external_reference');
 });
+it('loads one checkpoint and uses direct operation and body reads through lookup tools and repair',async()=>{
+ const d=setup(),snapshot=vi.spyOn(d.store,'snapshot'),checkpoint=vi.spyOn(d.store,'checkpoint'),requests:any[]=[],values=[{webRead:{url:'https://example.test/a'}},{lookupDetails:'local'},{bad:true},{answer:'ok'}];
+ await new ModelClient({complete:async r=>{const {task:_,...request}=r;requests.push(structuredClone(request));return values.shift();}}).runModel(task,{}, {web:d.web,lookup:async()=>({private:'fact'})});
+ expect(checkpoint).toHaveBeenCalledTimes(1);expect(snapshot).not.toHaveBeenCalled();expect(requests.slice(1).map(r=>r.webMaterials[0].body)).toEqual(['公开正文','公开正文','公开正文']);expect(requests[3].repair).toBeDefined();expect(d.service.selfReadSources('t')).toHaveLength(1);
+});
 it('failed model transmission neither registers a source nor triggers format repair; retry reuses confirmed operation',async()=>{
  const d=setup();let calls=0;const client=new ModelClient({complete:async()=>{calls++;if(calls===1)return {webSearch:{query:'q'}};throw Error('context length exceeded');}});
  await expect(client.runModel(task,{}, {web:d.web,lookup:null})).rejects.toThrow('context length exceeded');expect(calls).toBe(2);expect(d.web.snapshot().counters.successReads).toBe(1);expect(d.service.selfReadSources('t')).toEqual([]);
