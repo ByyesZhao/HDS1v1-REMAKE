@@ -34,10 +34,12 @@ async function runScenario(scenario){
   const expected=scenario==='empty_week'?3:4;
   if(Object.values(calls).reduce((a,b)=>a+b,0)!==expected||calls.world!==1||calls.school_campus!==1||calls.school_group!==1||(calls.school_week??0)!==(expected-3))throw Error('unexpected generation distribution '+JSON.stringify(calls));
   const week=snapshot.steps.find(s=>s.stage==='school_week');
-  if(week.inputSnapshot.modelContractVersion!==1)throw Error('missing V1 frozen input');
-  if(scenario==='empty_week'&&(week.inputSnapshot.context.requiredNoticeKeys.length||week.frozenResult.notices.length))throw Error('empty week generated notices');
+  if(snapshot.steps.some(s=>s.terminalAudit?.version!==1||s.terminalAudit.input.modelContractVersion!==1||s.inputSnapshot!==null||s.preparationSnapshot!==null||s.frozenResult!==null))throw Error('missing V1 terminal audit or retained terminal payload');
+  const summary=week.terminalAudit;
+  if(scenario==='empty_week'&&(JSON.stringify(summary.input.requiredNoticeIds)!=='[]'||summary.result.counts.notices!==0))throw Error('empty week generated notices');
+  if(JSON.stringify([...summary.result.entityIds.notices].sort())!==JSON.stringify(rows('school_notices').map(n=>n.id).sort()))throw Error('notice audit identity mismatch');
   if(scenario==='required_notice'){
-   const frozenKeys=week.inputSnapshot.context.requiredNoticeKeys.map(n=>n.id),textKeys=requests.find(r=>r.stage==='school_week').notices.map(n=>n.key);
+   const frozenKeys=summary.input.requiredNoticeIds,textKeys=requests.find(r=>r.stage==='school_week').notices.map(n=>n.key);
    if(!frozenKeys.length||JSON.stringify(frozenKeys)!==JSON.stringify(textKeys)||!rows('school_instances').length)throw Error('notice freeze identity mismatch');
    validatePersistedNotices(frozenKeys,rows('school_notices'));
   }

@@ -1,0 +1,56 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/environment-payload-compaction.test.ts tests/environment-async-phases.test.ts tests/environment-async-recovery.test.ts
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ❯ tests/environment-payload-compaction.test.ts (20 tests | 8 failed) 218ms
+   × compacts world committed with exact IDs, fingerprints and retained metadata 31ms
+   × compacts world superseded with exact IDs, fingerprints and retained metadata 15ms
+   × compacts school_campus committed with exact IDs, fingerprints and retained metadata 17ms
+   × compacts school_campus superseded with exact IDs, fingerprints and retained metadata 14ms
+   × compacts school_group committed with exact IDs, fingerprints and retained metadata 15ms
+   × compacts school_group superseded with exact IDs, fingerprints and retained metadata 16ms
+   × compacts school_week committed with exact IDs, fingerprints and retained metadata 15ms
+   × compacts school_week superseded with exact IDs, fingerprints and retained metadata 14ms
+ ❯ tests/environment-async-recovery.test.ts (8 tests | 1 failed) 473ms
+   × ready file reopen preserves creation ID and never regenerates 399ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 9 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/environment-async-recovery.test.ts > ready file reopen preserves creation ID and never regenerates
+Error: EPERM, Permission denied: \\?\D:\HDSI-remake\.tmp\comprehensive-remediation-tests\hdsi-e4-2lpPpw '\\?\D:\HDSI-remake\.tmp\comprehensive-remediation-tests\hdsi-e4-2lpPpw'
+ ❯ tests/environment-async-recovery.test.ts:24:11
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/9]⎯
+
+ FAIL  tests/environment-payload-compaction.test.ts > compacts world committed with exact IDs, fingerprints and retained metadata
+ FAIL  tests/environment-payload-compaction.test.ts > compacts world superseded with exact IDs, fingerprints and retained metadata
+ FAIL  tests/environment-payload-compaction.test.ts > compacts school_campus committed with exact IDs, fingerprints and retained metadata
+ FAIL  tests/environment-payload-compaction.test.ts > compacts school_campus superseded with exact IDs, fingerprints and retained metadata
+ FAIL  tests/environment-payload-compaction.test.ts > compacts school_group committed with exact IDs, fingerprints and retained metadata
+ FAIL  tests/environment-payload-compaction.test.ts > compacts school_group superseded with exact IDs, fingerprints and retained metadata
+ FAIL  tests/environment-payload-compaction.test.ts > compacts school_week committed with exact IDs, fingerprints and retained metadata
+ FAIL  tests/environment-payload-compaction.test.ts > compacts school_week superseded with exact IDs, fingerprints and retained metadata
+AssertionError: expected undefined to deeply equal [ 1, +0 ]
+
+- Expected:
+[
+  1,
+  0,
+]
+
++ Received:
+undefined
+
+ ❯ tests/environment-payload-compaction.test.ts:25:116
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/9]⎯
+
+
+ Test Files  2 failed | 1 passed (3)
+      Tests  9 failed | 22 passed (31)
+   Start at  10:01:42
+   Duration  2.17s (tests 44%, transform 28%, import 27%, worker 1%)
+

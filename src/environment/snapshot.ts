@@ -1,4 +1,5 @@
-import {createHash} from 'node:crypto';
+import {digest} from './digest';
+export {digest} from './digest';
 import type {Dependencies} from '../app';
 import type {EnvironmentStep,EnvironmentStepInput,EnvironmentStage} from './types';
 import type {SchoolReadView} from '../school/read-view';
@@ -17,10 +18,6 @@ export interface EnvironmentSourcePresence {table:'messages'|'experiences'|'self
 export interface EnvironmentLookupBasis {owners:Array<Pick<MemoryCandidate,'ownerType'|'ownerId'|'revision'|'stateVersion'|'status'>>;messageIds:string[];sources:EnvironmentSourcePresence[]}
 export interface FrozenEnvironmentRetrieval {request:RetrievalRequest;candidates:Array<Omit<MemoryCandidate,'normalizedVector'>&{normalizedVector?:number[]}>;recent:Message[];sourcePresence:EnvironmentSourcePresence[];invalidSourceIds:string[];signature:string;semanticPolicy?:{version:1;capability:SemanticCapability;vectorsIncluded:boolean}}
 export interface EnvironmentPreparationSnapshot {version:1;at:string;timezone:string;input:EnvironmentStepInput;school:EnvironmentSchoolRows;businessBasis:string;retrieval:FrozenEnvironmentRetrieval;usedBasis:EnvironmentLookupBasis|null}
-export function digest(value:unknown):string {
- const stable=(v:any):any=>Array.isArray(v)?v.map(stable):v&&typeof v==='object'?Object.fromEntries(Object.keys(v).sort().map(k=>[k,stable(v[k])])):v;
- return createHash('sha256').update(JSON.stringify(stable(value))).digest('hex');
-}
 export function frozenSchoolView(snapshot:Pick<EnvironmentPreparationSnapshot,'school'>):SchoolReadView {
  const rows=snapshot.school;
  return {all:(table: keyof EnvironmentSchoolRows)=>{if(!(table in rows))throw Error('unfrozen school table '+table);return structuredClone(rows[table]);},read:(table:keyof EnvironmentSchoolRows,id:string)=>{if(!(table in rows))throw Error('unfrozen school table '+table);return structuredClone(rows[table].find(r=>r.id===id)??null);}} as SchoolReadView;

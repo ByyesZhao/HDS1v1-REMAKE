@@ -1,0 +1,358 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/environment-payload-compaction.test.ts tests/environment-async-phases.test.ts tests/environment-async-recovery.test.ts
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ❯ tests/environment-payload-compaction.test.ts (20 tests | 19 failed) 95ms
+   × compacts world committed with exact IDs, fingerprints and retained metadata 8ms
+   × compacts world superseded with exact IDs, fingerprints and retained metadata 2ms
+   × compacts school_campus committed with exact IDs, fingerprints and retained metadata 1ms
+   × compacts school_campus superseded with exact IDs, fingerprints and retained metadata 1ms
+   × compacts school_group committed with exact IDs, fingerprints and retained metadata 1ms
+   × compacts school_group superseded with exact IDs, fingerprints and retained metadata 1ms
+   × compacts school_week committed with exact IDs, fingerprints and retained metadata 1ms
+   × compacts school_week superseded with exact IDs, fingerprints and retained metadata 1ms
+   × keeps nonterminal and legacy payloads byte-for-byte (preparationVersion undefined) 1ms
+   × keeps nonterminal and legacy payloads byte-for-byte (preparationVersion 0) 1ms
+   × keeps nonterminal and legacy payloads byte-for-byte (preparationVersion 1) 1ms
+   × superseded without result has no invented result; empty week preserves applicable empty notice IDs 1ms
+   × ready publication stays recoverable until its execution settles 16ms
+   × transaction rollback at events keeps ready payload and retries exactly once 10ms
+   × transaction rollback at environment_steps keeps ready payload and retries exactly once 8ms
+   × scheduler supersede keeps an active web-backed execution payload until settle and rejects its late result 11ms
+   × observed inactive ready step is compacted after scheduler supersede through reconcile 8ms
+   × observed inactive ready step is compacted after scheduler supersede through applyReady 8ms
+   × one-shot v1 runner commits and compacts after its execution settles 6ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 19 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/environment-payload-compaction.test.ts > compacts world committed with exact IDs, fingerprints and retained metadata
+ FAIL  tests/environment-payload-compaction.test.ts > compacts world superseded with exact IDs, fingerprints and retained metadata
+ FAIL  tests/environment-payload-compaction.test.ts > compacts school_campus committed with exact IDs, fingerprints and retained metadata
+ FAIL  tests/environment-payload-compaction.test.ts > compacts school_campus superseded with exact IDs, fingerprints and retained metadata
+ FAIL  tests/environment-payload-compaction.test.ts > compacts school_group committed with exact IDs, fingerprints and retained metadata
+ FAIL  tests/environment-payload-compaction.test.ts > compacts school_group superseded with exact IDs, fingerprints and retained metadata
+ FAIL  tests/environment-payload-compaction.test.ts > compacts school_week committed with exact IDs, fingerprints and retained metadata
+ FAIL  tests/environment-payload-compaction.test.ts > compacts school_week superseded with exact IDs, fingerprints and retained metadata
+Error: Cannot find module '/src/environment/payload-compaction' imported from D:/HDSI-remake/tests/environment-payload-compaction.test.ts
+ ❯ compactor tests/environment-payload-compaction.test.ts:16:36
+
+ ❯ tests/environment-payload-compaction.test.ts:19:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/19]⎯
+
+ FAIL  tests/environment-payload-compaction.test.ts > keeps nonterminal and legacy payloads byte-for-byte (preparationVersion undefined)
+ FAIL  tests/environment-payload-compaction.test.ts > keeps nonterminal and legacy payloads byte-for-byte (preparationVersion 0)
+ FAIL  tests/environment-payload-compaction.test.ts > keeps nonterminal and legacy payloads byte-for-byte (preparationVersion 1)
+Error: Cannot find module '/src/environment/payload-compaction' imported from D:/HDSI-remake/tests/environment-payload-compaction.test.ts
+ ❯ compactor tests/environment-payload-compaction.test.ts:16:36
+
+ ❯ tests/environment-payload-compaction.test.ts:39:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/19]⎯
+
+ FAIL  tests/environment-payload-compaction.test.ts > superseded without result has no invented result; empty week preserves applicable empty notice IDs
+Error: Cannot find module '/src/environment/payload-compaction' imported from D:/HDSI-remake/tests/environment-payload-compaction.test.ts
+ ❯ compactor tests/environment-payload-compaction.test.ts:16:36
+
+ ❯ tests/environment-payload-compaction.test.ts:45:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/19]⎯
+
+ FAIL  tests/environment-payload-compaction.test.ts > ready publication stays recoverable until its execution settles
+AssertionError: expected undefined to be 'none' // Object.is equality
+
+- Expected:
+"none"
+
++ Received:
+undefined
+
+ ❯ tests/environment-payload-compaction.test.ts:54:58
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/19]⎯
+
+ FAIL  tests/environment-payload-compaction.test.ts > transaction rollback at events keeps ready payload and retries exactly once
+AssertionError: expected { stage: 'world', …(1) } to be null
+
+- Expected:
+null
+
++ Received:
+{
+  "changes": [
+    {
+      "action": "create",
+      "event": {
+        "basis": "fiction",
+        "description": "public event",
+        "endsAt": null,
+        "kind": "world",
+        "sourceUrls": [],
+        "startsAt": "2026-10-07T10:00:00+08:00",
+      },
+      "id": "2a419672-77ec-49b6-a572-d9aee5ace0fb",
+    },
+  ],
+  "stage": "world",
+}
+
+ ❯ tests/environment-payload-compaction.test.ts:61:283
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/19]⎯
+
+ FAIL  tests/environment-payload-compaction.test.ts > transaction rollback at environment_steps keeps ready payload and retries exactly once
+AssertionError: expected { stage: 'world', …(1) } to be null
+
+- Expected:
+null
+
++ Received:
+{
+  "changes": [
+    {
+      "action": "create",
+      "event": {
+        "basis": "fiction",
+        "description": "public event",
+        "endsAt": null,
+        "kind": "world",
+        "sourceUrls": [],
+        "startsAt": "2026-10-07T10:00:00+08:00",
+      },
+      "id": "fb98a174-396d-4829-a98d-748e6d276c6f",
+    },
+  ],
+  "stage": "world",
+}
+
+ ❯ tests/environment-payload-compaction.test.ts:61:283
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/19]⎯
+
+ FAIL  tests/environment-payload-compaction.test.ts > scheduler supersede keeps an active web-backed execution payload until settle and rejects its late result
+AssertionError: expected { …(14) } to match object { status: 'superseded', …(4) }
+(10 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "frozenResult": null,
+-   "inputSnapshot": null,
+-   "preparationSnapshot": null,
+-   "status": "superseded",
+-   "terminalAudit": {
+-     "result": null,
++   "inputSnapshot": {
++     "at": "2026-10-07T10:00:00+08:00",
++     "batchId": "[\"Asia/Shanghai\",\"2026-10-07\"]",
++     "context": {
++       "background": "开发样例",
++       "events": [],
++       "items": [],
++       "plans": [],
++       "schoolSetting": "",
++       "timezone": "Asia/Shanghai",
++       "worldSetting": "",
++     },
++     "modelContractVersion": 1,
++     "stage": "world",
++   },
++   "preparationSnapshot": {
++     "at": "2026-10-07T10:00:00+08:00",
++     "businessBasis": "9295d08572367eda159af5f26f751b2c87cb9de1bd9f84ccde65240df93e7b99",
++     "input": {
++       "at": "2026-10-07T10:00:00+08:00",
++       "batchId": "[\"Asia/Shanghai\",\"2026-10-07\"]",
++       "context": {
++         "background": "开发样例",
++         "events": [],
++         "items": [],
++         "plans": [],
++         "schoolSetting": "",
++         "timezone": "Asia/Shanghai",
++         "worldSetting": "",
++       },
++       "modelContractVersion": 1,
++       "stage": "world",
++     },
++     "retrieval": {
++       "candidates": [],
++       "invalidSourceIds": [],
++       "recent": [],
++       "request": {
++         "at": "2026-10-07T10:00:00+08:00",
++         "budget": null,
++         "includeDetailHistory": false,
++         "permissions": {
++           "allowArchive": false,
++           "allowDetailHistory": false,
++           "visibleSourceIds": [],
++         },
++         "phase": "world",
++         "query": "",
++         "scope": "current",
++       },
++       "semanticPolicy": {
++         "capability": {
++           "dimensions": null,
++           "indexSignature": null,
++           "reason": "no_index",
+          },
++         "vectorsIncluded": false,
++         "version": 1,
++       },
++       "signature": "720af9dad6fe620b650141619042d60ddcbb46bba9216d32dbd4cf2028049ae0",
++       "sourcePresence": [],
++     },
++     "school": {
++       "school_instances": [],
++       "school_knowledge": [],
++       "school_notices": [],
++       "school_plan_items": [],
++       "school_plans": [],
++       "school_progress": [],
++       "school_weeks": [],
++     },
++     "timezone": "Asia/Shanghai",
++     "usedBasis": null,
++     "version": 1,
++   },
++   "status": "superseded",
+  }
+
+ ❯ tests/environment-payload-compaction.test.ts:67:417
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/19]⎯
+
+ FAIL  tests/environment-payload-compaction.test.ts > observed inactive ready step is compacted after scheduler supersede through reconcile
+ FAIL  tests/environment-payload-compaction.test.ts > observed inactive ready step is compacted after scheduler supersede through applyReady
+AssertionError: expected { …(14) } to match object { status: 'superseded', …(2) }
+(19 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "preparationSnapshot": null,
+-   "status": "superseded",
+-   "terminalAudit": {
++   "preparationSnapshot": {
++     "at": "2026-10-07T10:00:00+08:00",
++     "businessBasis": "9295d08572367eda159af5f26f751b2c87cb9de1bd9f84ccde65240df93e7b99",
++     "input": {
++       "at": "2026-10-07T10:00:00+08:00",
++       "batchId": "[\"Asia/Shanghai\",\"2026-10-07\"]",
++       "context": {
++         "background": "开发样例",
++         "events": [],
++         "items": [],
++         "plans": [],
++         "schoolSetting": "",
++         "timezone": "Asia/Shanghai",
++         "worldSetting": "",
++       },
++       "modelContractVersion": 1,
++       "stage": "world",
++     },
++     "retrieval": {
++       "candidates": [],
++       "invalidSourceIds": [],
++       "recent": [],
++       "request": {
++         "at": "2026-10-07T10:00:00+08:00",
++         "budget": null,
++         "includeDetailHistory": false,
++         "permissions": {
++           "allowArchive": false,
++           "allowDetailHistory": false,
++           "visibleSourceIds": [],
++         },
++         "phase": "world",
++         "query": "",
++         "scope": "current",
++       },
++       "semanticPolicy": {
++         "capability": {
++           "dimensions": null,
++           "indexSignature": null,
++           "reason": "no_index",
++         },
++         "vectorsIncluded": false,
++         "version": 1,
++       },
++       "signature": "720af9dad6fe620b650141619042d60ddcbb46bba9216d32dbd4cf2028049ae0",
++       "sourcePresence": [],
++     },
++     "school": {
++       "school_instances": [],
++       "school_knowledge": [],
++       "school_notices": [],
++       "school_plan_items": [],
++       "school_plans": [],
++       "school_progress": [],
++       "school_weeks": [],
++     },
++     "timezone": "Asia/Shanghai",
++     "usedBasis": null,
+      "version": 1,
+    },
++   "status": "superseded",
+  }
+
+ ❯ tests/environment-payload-compaction.test.ts:73:43
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/19]⎯
+
+ FAIL  tests/environment-payload-compaction.test.ts > one-shot v1 runner commits and compacts after its execution settles
+AssertionError: expected { …(14) } to match object { status: 'committed', …(2) }
+(25 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "frozenResult": null,
+-   "status": "committed",
+-   "terminalAudit": {
+-     "result": {
+-       "counts": {
+-         "createdEvents": 1,
++   "frozenResult": {
++     "changes": [
++       {
++         "action": "create",
++         "event": {
++           "basis": "fiction",
++           "description": "public event",
++           "endsAt": null,
++           "kind": "world",
++           "sourceUrls": [],
++           "startsAt": "2026-10-07T10:00:00+08:00",
+          },
++         "id": "801082ae-b8d7-406c-98e1-bec5a87f406e",
+        },
+-     "version": 1,
++     ],
++     "stage": "world",
+    },
++   "status": "committed",
+  }
+
+ ❯ tests/environment-payload-compaction.test.ts:81:170
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/19]⎯
+
+
+ Test Files  1 failed | 2 passed (3)
+      Tests  19 failed | 12 passed (31)
+   Start at  10:01:02
+   Duration  1.97s (tests 36%, import 32%, transform 31%, worker 1%)
+

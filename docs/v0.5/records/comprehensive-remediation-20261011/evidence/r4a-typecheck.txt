@@ -1,0 +1,13 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run tsc --noEmit
+tests/memory-retrieval-evaluation.test.ts(17,8): error TS2307: Cannot find module '../scripts/lib/memory-retrieval-evaluation' or its corresponding type declarations.
+tests/memory-retrieval-evaluation.test.ts(44,60): error TS7006: Parameter 'o' implicitly has an 'any' type.
+tests/memory-retrieval-evaluation.test.ts(72,32): error TS7006: Parameter 'f' implicitly has an 'any' type.
+tests/memory-retrieval-evaluation.test.ts(76,43): error TS7006: Parameter 'q' implicitly has an 'any' type.
+tests/memory-retrieval-evaluation.test.ts(77,29): error TS7006: Parameter 'q' implicitly has an 'any' type.
+tests/memory-retrieval-evaluation.test.ts(135,50): error TS7006: Parameter 'o' implicitly has an 'any' type.
+tests/memory-retrieval-evaluation.test.ts(137,64): error TS7006: Parameter 'o' implicitly has an 'any' type.
+tests/memory-retrieval-evaluation.test.ts(142,61): error TS7006: Parameter 'o' implicitly has an 'any' type.
+tests/memory-retrieval-evaluation.test.ts(144,33): error TS7006: Parameter 'o' implicitly has an 'any' type.
+tests/memory-retrieval-evaluation.test.ts(153,100): error TS7006: Parameter 'store' implicitly has an 'any' type.
+tests/memory-retrieval-evaluation.test.ts(164,98): error TS7006: Parameter 'store' implicitly has an 'any' type.

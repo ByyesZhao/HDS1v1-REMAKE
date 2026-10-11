@@ -1,4 +1,5 @@
 import {EnvironmentPreparation} from './preparation';
+import {compactTerminalEnvironmentStep} from './payload-compaction';
 import {randomUUID} from 'node:crypto';
 import type {Dependencies} from '../app';
 import {ModelFormatError,ModelRequestError} from '../model/client';
@@ -53,6 +54,7 @@ export function commitEnvironmentResult(d:Dependencies,step:EnvironmentStep,now:
   const result=step.frozenResult!;
   if(result.stage==='world')for(const change of result.changes){if(change.action==='create')d.storage.save('events',change.id!,{...change.event,id:change.id!,status:'active'});else{const old=d.storage.read('events',change.id);if(!old)throw Error('unknown world event');d.storage.save('events',change.id,change.action==='cancel'?{...old,status:'cancelled'}:{...old,...change.event});}}
   else applySchoolChanges(d.storage,result,now);
-  d.environmentStore.saveStep({...step,status:'committed',completedAt:now,lastError:null});
+  const committed:EnvironmentStep={...step,status:'committed',completedAt:now,lastError:null};
+  d.environmentStore.saveStep(compactTerminalEnvironmentStep(committed,now)??committed);
   if(d.environmentStore.stepMetadata(batch.id).every(s=>s.status==='committed'))d.environmentStore.saveBatch({...batch,status:'committed',closedAt:now});
 }

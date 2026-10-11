@@ -7,9 +7,11 @@ import {addMs,milliseconds} from '../time';
 import {ensureEnvironmentBatch,localDate,selectEnvironmentStepMetadata,nextEnvironmentDate} from './scheduler';
 import {resolveResult,commitEnvironmentResult} from './runtime';
 import {freezeEnvironmentSnapshot,frozenSchoolView,environmentBusinessBasis,lookupBasisCurrent,lookupFrozenEnvironment,retrievalFor} from './snapshot';
+import {compactTerminalEnvironmentStep} from './payload-compaction';
 type Execution={stepId:string;batchId:string;generation:number;lease:symbol;controller:AbortController;promise:Promise<void>};
 export class EnvironmentPreparation {
  private active:Execution|null=null;
+ private observedStepIds=new Set<string>();
  private stopped=false;
  private draining=false;
  private errors:unknown[]=[];
@@ -24,12 +26,31 @@ export class EnvironmentPreparation {
  }
  reconcile(now:string):void{
  const existing=this.d.environmentStore.firstActiveBatch();
+ if(existing)for(const step of this.d.environmentStore.stepMetadata(existing.id))this.observedStepIds.add(step.id);
  if(existing&&(existing.timezone!==this.d.config.timezone||existing.localDate!==localDate(now,existing.timezone)))ensureEnvironmentBatch(this.d.storage,this.d.config,now);
- const active=this.active;if(!active)return;
+ const active=this.active;if(active){
  const batch=this.d.environmentStore.batch(active.batchId);
  if(!batch||batch.status!=='active'||batch.timezone!==this.d.config.timezone||batch.localDate!==localDate(now,batch.timezone)){
  active.controller.abort(new DOMException('Environment batch expired','AbortError'));
  ensureEnvironmentBatch(this.d.storage,this.d.config,now);
+ }
+ }
+ this.compactObservedTerminalPayloads(now);
+ }
+ private compactTerminalPayload(stepId:string,now:string):void{
+ if(this.active?.stepId===stepId)return;
+ this.d.storage.transaction(()=>{
+ const step=this.d.environmentStore.step(stepId);if(!step)return;
+ const compacted=compactTerminalEnvironmentStep(step,now);
+ if(compacted)this.d.environmentStore.saveStep(compacted);
+ });
+ }
+ private compactObservedTerminalPayloads(now:string):void{
+ for(const id of this.observedStepIds){
+ if(this.active?.stepId===id)continue;
+ const step=this.d.environmentStore.step(id);
+ if(!step){this.observedStepIds.delete(id);continue;}
+ if(step.status==='committed'||step.status==='superseded'){this.compactTerminalPayload(id,now);this.observedStepIds.delete(id);}
  }
  }
  nextMidnight():string|null{
@@ -72,8 +93,9 @@ export class EnvironmentPreparation {
  d.environmentStore.saveStep(current);return current;
  });
  if(step.status!=='running')return false;
+ this.observedStepIds.add(stepId);
  const execution:Execution={stepId,batchId:step.batchId,generation:step.preparationGeneration!,lease:Symbol(),controller:new AbortController(),promise:Promise.resolve()};
- this.active=execution;execution.promise=this.prepare(execution,step,d.generateEnvironment,retrieval).catch(error=>{if(!this.stopped&&!execution.controller.signal.aborted)this.errors.push(error);}).finally(()=>{if(this.active?.lease===execution.lease)this.active=null;this.options.onReady?.();});
+ this.active=execution;execution.promise=this.prepare(execution,step,d.generateEnvironment,retrieval).catch(error=>{if(!this.stopped&&!execution.controller.signal.aborted)this.errors.push(error);}).finally(()=>{if(this.active?.lease===execution.lease)this.active=null;try{this.compactObservedTerminalPayloads(d.clock.now());}catch(error){this.errors.push(error);}finally{this.options.onReady?.();}});
  return true;
  }
  private async prepare(execution:Execution,step:EnvironmentStep,generate:EnvironmentGenerator,retrieval:import('../memory/retrieval').MemoryRetrieval):Promise<void>{
@@ -112,7 +134,10 @@ export class EnvironmentPreparation {
  applyReady(stepId:string,now:string):'applied'|'stale'|'none'{
  const d=this.d;
  const original=d.environmentStore.step(stepId),originalBatch=original?d.environmentStore.batch(original.batchId):null;
- if(originalBatch?.status==='active'&&(originalBatch.timezone!==d.config.timezone||originalBatch.localDate!==localDate(now,originalBatch.timezone))){ensureEnvironmentBatch(d.storage,d.config,now);return 'stale';}
+ if(originalBatch?.status==='active')for(const step of d.environmentStore.stepMetadata(originalBatch.id))this.observedStepIds.add(step.id);
+ if(originalBatch?.status==='active'&&(originalBatch.timezone!==d.config.timezone||originalBatch.localDate!==localDate(now,originalBatch.timezone))){this.reconcile(now);return 'stale';}
+ this.compactObservedTerminalPayloads(now);
+ if(this.active?.stepId===stepId)return 'none';
  let outcome:'applied'|'stale'|'none'='none';
  d.storage.transaction(()=>{
  const step=d.environmentStore.step(stepId);if(!step||step.status!=='ready'||step.preparationVersion!==1)return;
@@ -127,7 +152,7 @@ export class EnvironmentPreparation {
  if(reason){this.invalidate(step,now,reason);outcome='stale';return;}
  commitEnvironmentResult(d,step,now);outcome='applied';
  });
- if((outcome as string)==='applied'){d.web?.releaseOwner('environment',stepId);d.web?.compactOwnerCheckpoint('environment',stepId);}
+ if((outcome as string)==='applied'){this.observedStepIds.delete(stepId);d.web?.releaseOwner('environment',stepId);d.web?.compactOwnerCheckpoint('environment',stepId);}
  return outcome;
  }
  async wait():Promise<void>{await this.active?.promise;}

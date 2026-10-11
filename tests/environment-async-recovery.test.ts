@@ -11,6 +11,7 @@ import {schoolItem,expand} from './world-school-fixture';
 import {MemoryStore} from '../src/memory/store';import {MemoryRetrieval} from '../src/memory/retrieval';
 import {setImmediate} from 'node:timers/promises';
 import {asyncFixture} from './environment-async-fixture';
+import {digest} from '../src/environment/digest';
 const event={kind:'world' as const,description:'公共事件',startsAt:NOW,endsAt:null,basis:'fiction' as const,sourceUrls:[]};
 it('ready file reopen preserves creation ID and never regenerates',async()=>{
  const dir=mkdtempSync(join(tmpdir(),'hdsi-e4-')),file=join(dir,'test.sqlite');
@@ -19,8 +20,8 @@ it('ready file reopen preserves creation ID and never regenerates',async()=>{
  const p=new EnvironmentPreparation(d);p.startOne(step.id,NOW);await p.wait();const result=d.environmentStore.step(step.id)!.frozenResult;await p.stop();d.storage.close();
  const reopened=new Storage(file),base=setup();base.storage.close();
  const next={...base,storage:reopened,environmentStore:new EnvironmentStore(reopened),schoolStore:new SchoolStore(reopened),web:new WebSearchService(new WebSearchStore(reopened),undefined,base.clock,{enabled:false}),generateEnvironment:vi.fn()};
- const resumed=new EnvironmentPreparation(next);expect(resumed.applyReady(step.id,NOW)).toBe('applied');expect(resumed.applyReady(step.id,NOW)).toBe('none');
- expect(next.generateEnvironment).not.toHaveBeenCalled();expect(reopened.read('environment_steps',step.id)?.frozenResult).toEqual(result);expect(reopened.all('events')).toHaveLength(1);await resumed.stop();reopened.close();
+ const resumed=new EnvironmentPreparation(next);expect(reopened.read('environment_steps',step.id)).toMatchObject({status:'ready',frozenResult:result,preparationSnapshot:expect.any(Object)});expect(resumed.applyReady(step.id,NOW)).toBe('applied');expect(resumed.applyReady(step.id,NOW)).toBe('none');
+ expect(next.generateEnvironment).not.toHaveBeenCalled();expect(reopened.read('environment_steps',step.id)).toMatchObject({inputSnapshot:null,preparationSnapshot:null,frozenResult:null,terminalAudit:{basis:{resultDigest:digest(result)}}});expect(reopened.all('events')).toHaveLength(1);expect(reopened.all('events')[0].id).toBe((result as any).changes[0].id);await resumed.stop();reopened.close();
  }finally{rmSync(dir,{recursive:true,force:true});}
 });
 it('new research progress invalidates group then refreezes after retry with same web identity',async()=>{

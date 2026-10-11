@@ -8,6 +8,7 @@ import {ModelClient,ModelRequestError} from '../src/model/client';
 import {schoolPlan,schoolItem} from './world-school-fixture';
 import {NOW,narrative} from './helpers';
 import {SerialHost} from '../src/host/runtime';import {HdsiApp} from '../src/app';import {setImmediate} from 'node:timers/promises';
+import {digest} from '../src/environment/digest';
 it('all four nonempty stages freeze only after predecessor commits',async()=>{
  const {d,batch}=asyncFixture();let calls=0;
  const {id,revision,...plan}=schoolPlan;const {id:itemId,revision:ir,deliveryRevision,...item}=schoolItem();
@@ -23,7 +24,10 @@ it('all four nonempty stages freeze only after predecessor commits',async()=>{
  await p.wait();expect(d.environmentStore.step(step.id)?.status).toBe('ready');
  if(i===1)expect((d.environmentStore.step(step.id)!.inputSnapshot!.context as any).events).toHaveLength(1);
  if(i===2)expect((d.environmentStore.step(step.id)!.inputSnapshot!.context as any).campusTiming).toHaveLength(1);
+ const ready=d.environmentStore.step(step.id)!;
+ if(i===3)expect((ready.inputSnapshot!.context as any).sourceItems).toHaveLength(2);
  expect(p.applyReady(step.id,NOW)).toBe('applied');
+ expect(d.environmentStore.step(step.id)).toMatchObject({inputSnapshot:null,preparationSnapshot:null,frozenResult:null,terminalAudit:{version:1,input:{modelContractVersion:1},basis:{inputDigest:digest(ready.inputSnapshot),resultDigest:digest(ready.frozenResult)},result:{stage:stages[i]}}});
  }
  expect(calls).toBe(4);expect(d.environmentStore.batch(batch.id)?.status).toBe('committed');expect(d.storage.all('events')).toHaveLength(1);expect(d.schoolStore.plans()).toHaveLength(2);expect(d.schoolStore.items()).toHaveLength(2);expect(d.schoolStore.instances().length).toBeGreaterThan(0);expect(d.schoolStore.notices().length).toBeGreaterThan(0);await p.stop();d.storage.close();
 });
