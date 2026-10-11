@@ -1,0 +1,29 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/memory-payload-compaction.test.ts --maxWorkers=1
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ❯ tests/memory-payload-compaction.test.ts (6 tests | 1 failed) 87ms
+   × legacy web checkpoints only use owner tables that exist 4ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/memory-payload-compaction.test.ts > legacy web checkpoints only use owner tables that exist
+Error: no such table: environment_steps
+ ❯ countCompletedPayloads src/memory/payload-compaction.ts:32:71
+     30| export function countCompletedPayloads(db:PayloadConnection,options:Pa…
+     31|  const present=tables(db),counts={indexJobs:0,maintenanceJobs:0,postJo…
+     32|  for(const s of specs)if(present.has(s.table))counts[s.key]=Number(db.…
+       |                                                                       ^
+     33|  if(options.includeEnvironment&&present.has('environment_steps'))count…
+     34|  return counts;
+ ❯ tests/memory-payload-compaction.test.ts:82:10
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 5 passed (6)
+   Start at  10:14:36
+   Duration  671ms (transform 53%, import 30%, tests 17%, worker 1%)
+

@@ -1,0 +1,58 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/memory-payload-compaction.test.ts
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ❯ tests/memory-payload-compaction.test.ts (5 tests | 2 failed) 83ms
+   × environment payload selection is explicit and shares the existing batch limit 18ms
+   × environment opt-in does not create missing legacy tables or accept an uncontrolled clock 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/memory-payload-compaction.test.ts > environment payload selection is explicit and shares the existing batch limit
+AssertionError: expected { indexJobs: 2, …(3) } to match object { indexJobs: 2, environmentSteps: +0 }
+(3 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "environmentSteps": 0,
+    "indexJobs": 2,
+  }
+
+ ❯ tests/memory-payload-compaction.test.ts:43:44
+     41|  for(let i=0;i<2;i++)d.storage.prepare('INSERT INTO memory_index_jobs …
+     42|  const beforeRows=d.storage.prepare('SELECT id,data FROM environment_s…
+     43|  expect(countCompletedPayloads(d.storage)).toMatchObject({indexJobs:2,…
+       |                                            ^
+     44|  expect(countCompletedPayloads(d.storage,{includeEnvironment:true})).t…
+     45|  expect(prepare.mock.calls.every(([sql])=>!/^SELECT (?:\*|data|id,data…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/memory-payload-compaction.test.ts > environment opt-in does not create missing legacy tables or accept an uncontrolled clock
+AssertionError: expected undefined to be +0 // Object.is equality
+
+- Expected:
+0
+
++ Received:
+undefined
+
+ ❯ tests/memory-payload-compaction.test.ts:65:81
+     63|  const db=new DatabaseSync(':memory:');try{
+     64|   db.exec('CREATE TABLE memory_index_jobs(id TEXT PRIMARY KEY,data TEX…
+     65|   expect(countCompletedPayloads(db,{includeEnvironment:true}).environm…
+       |                                                                                 ^
+     66|   installPayloadIndexes(db,{includeEnvironment:true});
+     67|   expect(compactCompletedPayloads(db,3,{includeEnvironment:true,at})).…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 3 passed (5)
+   Start at  10:06:08
+   Duration  677ms (transform 53%, import 30%, tests 16%, worker 1%)
+

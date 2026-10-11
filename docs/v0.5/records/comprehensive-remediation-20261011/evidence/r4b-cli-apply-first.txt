@@ -1,0 +1,24 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 memory:compact-payloads
+npm notice run tsx scripts/compact-memory-payloads.ts .tmp/comprehensive-remediation-20261011/environment-payloads.sqlite --apply --stopped --include-environment --batch-size 3 --max-batches 2 --backup-dir .tmp/comprehensive-remediation-20261011/payload-backups
+{
+  "mode": "apply",
+  "database": "D:\\HDSI-remake\\.tmp\\comprehensive-remediation-20261011\\environment-payloads.sqlite",
+  "before": {
+    "indexJobs": 2,
+    "maintenanceJobs": 0,
+    "postJobs": 0,
+    "webSessions": 0,
+    "environmentSteps": 7
+  },
+  "after": {
+    "indexJobs": 0,
+    "maintenanceJobs": 0,
+    "postJobs": 0,
+    "webSessions": 0,
+    "environmentSteps": 3
+  },
+  "batches": 2,
+  "totalUpdated": 6,
+  "hasMore": true,
+  "backupPath": "D:\\HDSI-remake\\.tmp\\comprehensive-remediation-20261011\\payload-backups\\1915d082-f519-4500-8e35-30dfb2dca571"
+}

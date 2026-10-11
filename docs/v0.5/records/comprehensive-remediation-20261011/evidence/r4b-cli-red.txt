@@ -1,0 +1,49 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/memory-payload-compaction-cli.test.ts
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ❯ tests/memory-payload-compaction-cli.test.ts (6 tests | 2 failed) 2961ms
+   × environment CLI opt-in is read-only by default and resumes within a shared limit 448ms
+   × environment second-batch failure rolls back and later resume preserves prior audit time 335ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/memory-payload-compaction-cli.test.ts > environment CLI opt-in is read-only by default and resumes within a shared limit
+AssertionError: expected { mode: 'dry-run', …(5) } to match object { mode: 'dry-run', indexJobs: 2, …(1) }
+(4 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "environmentSteps": 0,
+    "indexJobs": 2,
+    "mode": "dry-run",
+  }
+
+ ❯ tests/memory-payload-compaction-cli.test.ts:41:21
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/memory-payload-compaction-cli.test.ts > environment second-batch failure rolls back and later resume preserves prior audit time
+AssertionError: expected [Function] to throw an error
+
+- Expected:
+null
+
++ Received:
+undefined
+
+ ❯ tests/memory-payload-compaction-cli.test.ts:60:106
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 4 passed (6)
+   Start at  10:07:22
+   Duration  3.25s (tests 95%, transform 4%, import 1%)
+
