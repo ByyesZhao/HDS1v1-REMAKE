@@ -1,0 +1,40 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/memory-access-work-probe.test.ts
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ❯ tests/memory-access-work-probe.test.ts (2 tests | 1 failed) 13512ms
+   × access probe has deterministic work counts and independently reseeds every sample 12758ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/memory-access-work-probe.test.ts > access probe has deterministic work counts and independently reseeds every sample
+AssertionError: expected { snapshotLoads: 3, …(11) } to match object { snapshotLoads: 1, …(6) }
+(5 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "awakeningQueries": 0,
+    "dirtyWrites": 0,
+    "fullOwnerRows": 0,
+    "grantWrites": 0,
+-   "metadataRows": 1600,
++   "metadataRows": 4800,
+    "ownerWrites": 0,
+-   "snapshotLoads": 1,
++   "snapshotLoads": 3,
+  }
+
+ ❯ tests/memory-access-work-probe.test.ts:11:90
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed (2)
+   Start at  09:59:10
+   Duration  14.11s (tests 97%, transform 2%, import 1%)
+

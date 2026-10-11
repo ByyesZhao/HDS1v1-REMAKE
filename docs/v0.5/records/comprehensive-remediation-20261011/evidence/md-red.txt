@@ -1,0 +1,26 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/memory-access-work-probe.test.ts
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ❯ tests/memory-access-work-probe.test.ts (0 test)
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/memory-access-work-probe.test.ts [ tests/memory-access-work-probe.test.ts ]
+Error: Cannot find module '../scripts/check-memory-access-work' imported from D:/HDSI-remake/tests/memory-access-work-probe.test.ts
+ ❯ tests/memory-access-work-probe.test.ts:2:1
+      1| import {expect,it,vi} from 'vitest';
+      2| import {runMemoryAccessProbe} from '../scripts/check-memory-access-wor…
+       | ^
+      3|
+      4| it('access probe has deterministic work counts and independently resee…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  09:58:30
+   Duration  182ms (worker 97%, environment 3%)
+

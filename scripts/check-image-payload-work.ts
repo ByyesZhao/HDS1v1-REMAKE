@@ -1,4 +1,4 @@
-import {mkdtempSync,writeFileSync,rmSync,existsSync,readFileSync} from 'node:fs';
+import {mkdtempSync,writeFileSync,rmSync,existsSync,readFileSync,readdirSync} from 'node:fs';
 import fsPromises from 'node:fs/promises';
 import {resolve,join} from 'node:path';
 import {tmpdir} from 'node:os';
@@ -56,7 +56,8 @@ async function main(){
  }
  const revisionPath=join(source,'source-revision.txt');
  const revision=existsSync(revisionPath)?readFileSync(revisionPath,'utf8').trim():execFileSync('git',['rev-parse','HEAD'],{cwd:source,encoding:'utf8'}).trim();
- const report={sourceRoot:source,revision,sourceIdentity:existsSync(revisionPath)?'archived source-revision.txt':'Git HEAD; inspect dirtyFiles',dirtyFiles:existsSync(revisionPath)?[]:execFileSync('git',['diff','--name-only'],{cwd:source,encoding:'utf8'}).trim().split(/\r?\n/).filter(Boolean),node:process.version,platform:process.platform,bytes:bytes.length,warmups:1,samplesPerCase:7,timing:'prepareForTurn through confirmed observation; fixture creation and cleanup excluded',cases};
+ const sourceHashes=Object.fromEntries((readdirSync(join(source,'src'),{recursive:true}) as string[]).filter(path=>path.endsWith('.ts')).sort().map(path=>[path.replaceAll('\\','/'),createHash('sha256').update(readFileSync(join(source,'src',path))).digest('hex')]));
+ const report={sourceRoot:source,revision,sourceHashes,probeHash:createHash('sha256').update(readFileSync(__filename)).digest('hex'),sourceIdentity:existsSync(revisionPath)?'archived source-revision.txt':'Git HEAD; inspect dirtyFiles and sourceHashes',dirtyFiles:existsSync(revisionPath)?[]:execFileSync('git',['diff','--name-only'],{cwd:source,encoding:'utf8'}).trim().split(/\r?\n/).filter(Boolean),node:process.version,platform:process.platform,bytes:bytes.length,warmups:1,samplesPerCase:7,timing:'prepareForTurn through confirmed observation; fixture creation and cleanup excluded',cases};
  writeFileSync(output,JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify({output,revision,cases:cases.map(c=>({scenario:c.scenario,medianMs:c.medianMs,work:c.samples.map(({elapsedMs,...work})=>work)}))}));
 }
 void main().catch(error=>{console.error(error);process.exitCode=1;});
