@@ -1,0 +1,686 @@
+{
+  "baseline": "5b92794",
+  "scope": "Inline local Markdown links and heading anchors in docs/v0.5; code correspondence verified separately in the accompanying static audit. Historical records retain their original baseline.",
+  "markdownFiles": 136,
+  "linksChecked": 1017,
+  "errors": [],
+  "nonDocumentationChanges": [],
+  "changedHistoricalEvidence": [],
+  "whitespaceCheck": {
+    "exitCode": 0,
+    "output": ""
+  },
+  "changedTrackedDocuments": [
+    "docs/v0.5/README.md",
+    "docs/v0.5/architecture/REMAKE_V0.5.md",
+    "docs/v0.5/plans/README.md",
+    "docs/v0.5/records/README.md",
+    "docs/v0.5/reference/BACKGROUND_VIEW_MAPPING_20261008.md",
+    "docs/v0.5/reference/MODEL_CALLS_AND_WEB_OPTIONS_20261009.md",
+    "docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md",
+    "docs/v0.5/reviews/README.md",
+    "docs/v0.5/subsystems/REMAKE_V0.5_DIRECTORS.md",
+    "docs/v0.5/subsystems/REMAKE_V0.5_EXPRESSION_STICKERS.md",
+    "docs/v0.5/subsystems/REMAKE_V0.5_MEMORY.md",
+    "docs/v0.5/subsystems/REMAKE_V0.5_RECOVERY.md",
+    "docs/v0.5/subsystems/REMAKE_V0.5_SCHEDULING.md",
+    "docs/v0.5/subsystems/REMAKE_V0.5_SHARED_ACTIVITY.md",
+    "docs/v0.5/subsystems/REMAKE_V0.5_WEB_SEARCH.md"
+  ],
+  "newFiles": [
+    "docs/v0.5/records/document-post-remediation-sync-20261011/README.md",
+    "docs/v0.5/records/document-post-remediation-sync-20261011/evidence/document-verification.json"
+  ],
+  "sourceReferences": [
+    {
+      "file": "src/host/runtime.ts",
+      "line": 66
+    },
+    {
+      "file": "tests/host-pause-selection.test.ts",
+      "line": null
+    },
+    {
+      "file": "src/host/scheduler.ts",
+      "line": 17
+    },
+    {
+      "file": "src/host/task-projection.ts",
+      "line": 14
+    },
+    {
+      "file": "src/app.ts",
+      "line": 74
+    },
+    {
+      "file": "src/environment/snapshot.ts",
+      "line": 32
+    },
+    {
+      "file": "tests/scheduler-task-workset.test.ts",
+      "line": null
+    },
+    {
+      "file": "tests/appointment-update-host.test.ts",
+      "line": null
+    },
+    {
+      "file": "src/environment/payload-compaction.ts",
+      "line": 7
+    },
+    {
+      "file": "src/environment/preparation.ts",
+      "line": 42
+    },
+    {
+      "file": "src/environment/runtime.ts",
+      "line": 29
+    },
+    {
+      "file": "tests/environment-payload-compaction.test.ts",
+      "line": null
+    },
+    {
+      "file": "tests/environment-web-finalization.test.ts",
+      "line": null
+    },
+    {
+      "file": "src/web/browser/extract.ts",
+      "line": null
+    },
+    {
+      "file": "src/web/content.ts",
+      "line": null
+    },
+    {
+      "file": "src/web/store.ts",
+      "line": null
+    },
+    {
+      "file": "src/deployment/sticker-web-runtime.ts",
+      "line": null
+    },
+    {
+      "file": "scripts/compact-memory-payloads.ts",
+      "line": null
+    },
+    {
+      "file": "tests/web-light-state.test.ts",
+      "line": null
+    },
+    {
+      "file": "tests/web-persistence-v2.test.ts",
+      "line": null
+    },
+    {
+      "file": "src/input-media/assets.ts",
+      "line": null
+    },
+    {
+      "file": "src/input-media/service.ts",
+      "line": null
+    },
+    {
+      "file": "src/memory/retrieval.ts",
+      "line": 15
+    },
+    {
+      "file": "scripts/evaluate-memory-retrieval.ts",
+      "line": 44
+    },
+    {
+      "file": "scripts/prepare-memory-retrieval-vectors.ts",
+      "line": 23
+    },
+    {
+      "file": "src/host/input.ts",
+      "line": 34
+    },
+    {
+      "file": "tests/incoming-media-entry.test.ts",
+      "line": 16
+    }
+  ],
+  "documentManifest": [
+    {
+      "file": "docs/v0.5/README.md",
+      "sha256": "16a7839fee1620f3e55df5547e919ac4337cf7fc21958845ef56663d6ac46e4a"
+    },
+    {
+      "file": "docs/v0.5/architecture/REMAKE_V0.5.md",
+      "sha256": "3402d0fc0997c7eaa2916b70ccdc22c9375b8139201dcd06e2b8cad8bb538368"
+    },
+    {
+      "file": "docs/v0.5/plans/README.md",
+      "sha256": "47503f7ccdf963cedf234c0f5941bab84c6e25d8e6fd253ef0c554bd58a8af82"
+    },
+    {
+      "file": "docs/v0.5/plans/chat-reply-freshness-20261010/README.md",
+      "sha256": "757b3fc9fb3a038b0ff4ae613c32b797402e1cad1fda2c49854bc649792bee32"
+    },
+    {
+      "file": "docs/v0.5/plans/comprehensive-remediation-20261011/DELIVERY_PLAN.md",
+      "sha256": "58fbfe4f8700e42e671ecfb1e20173addff77704578affe9afb6365bb594794c"
+    },
+    {
+      "file": "docs/v0.5/plans/comprehensive-remediation-20261011/MEMORY_PLAN.md",
+      "sha256": "b5ae42cfc699e53459f0089b08704313c1899f8c2a978db6e17d7f3f3c57fae2"
+    },
+    {
+      "file": "docs/v0.5/plans/comprehensive-remediation-20261011/README.md",
+      "sha256": "f1c97b742330684d709722c86bfd2ec7fd98ad94880c104db1aaea376e09d109"
+    },
+    {
+      "file": "docs/v0.5/plans/comprehensive-remediation-20261011/RETRIEVAL_QUALITY_PLAN.md",
+      "sha256": "deb31d0d92b5652911e2ca3bd407822fbfca53a7fd190192f0da6ca24d781450"
+    },
+    {
+      "file": "docs/v0.5/plans/comprehensive-remediation-20261011/RUNTIME_PLAN.md",
+      "sha256": "d139629c0d0a7cefa1b4a984ff24b59352d48dbd84faccefeeafa174cc584cce"
+    },
+    {
+      "file": "docs/v0.5/plans/comprehensive-remediation-20261011/WEB_MEDIA_PLAN.md",
+      "sha256": "a1516d2186147d267115732b3d55e77d874944b2571a65287498145b330fdfa4"
+    },
+    {
+      "file": "docs/v0.5/plans/image-input-local-search-20261009/DESIGN.md",
+      "sha256": "f10533f3f2e0dd72b827daf6d242fc2ea54ff3d80604e3ff0a305b3c9dd7ebc4"
+    },
+    {
+      "file": "docs/v0.5/plans/image-input-local-search-20261009/EXECUTION_GUIDE.md",
+      "sha256": "db82ae4a39c86d970b0f1eb4ef8ca5af400c7c572886fe2a6a7556595e4314b9"
+    },
+    {
+      "file": "docs/v0.5/plans/image-input-local-search-20261009/IMAGE_INPUT_PLAN.md",
+      "sha256": "7793f9d63c8c4865166ea011fcbe413860524f494b31915511e5217988163c78"
+    },
+    {
+      "file": "docs/v0.5/plans/image-input-local-search-20261009/LOCAL_SEARCH_PLAN.md",
+      "sha256": "88f90fe9cf949627026b38ea93dc69c135ba4d87522c2bd6d79ce43e219a2194"
+    },
+    {
+      "file": "docs/v0.5/plans/image-input-local-search-20261009/README.md",
+      "sha256": "2ea87addc51e023f373ecdd3be0bcb303dab0629c4005cc41d8091dd9d305a3b"
+    },
+    {
+      "file": "docs/v0.5/plans/phone-access-20261010/README.md",
+      "sha256": "24d943e314d5b8e6d76a002f9709506e623459167c6e4ac57614967b0c6acac4"
+    },
+    {
+      "file": "docs/v0.5/records/README.md",
+      "sha256": "9683636a5f7135918d8e4dc8152274507787c7a9de2a316cc6ae7eca0b88e912"
+    },
+    {
+      "file": "docs/v0.5/records/chat-reply-freshness-20261010/DELIVERY.md",
+      "sha256": "f60d26d7eb73002074e3eaba74dda1f26b3e616ad198a27789e1585fe34d0411"
+    },
+    {
+      "file": "docs/v0.5/records/chat-reply-freshness-20261010/IMPLEMENTATION_LOG.md",
+      "sha256": "339e438b137fc72607066f26605c40c6731385167b95033f5155c821993c0121"
+    },
+    {
+      "file": "docs/v0.5/records/chat-reply-freshness-20261010/INDEPENDENT_REVIEW.md",
+      "sha256": "b03711c530b04bc4942ee19d314aa9b65248fabb3a8fda86ae3e39aca5818189"
+    },
+    {
+      "file": "docs/v0.5/records/chat-reply-freshness-20261010/README.md",
+      "sha256": "4548db47290e14db99da42721f325d3ba6c18a238c8d6569d9b1f67ef47a8946"
+    },
+    {
+      "file": "docs/v0.5/records/chat-reply-order-20261010/README.md",
+      "sha256": "1ce0110950d24c23bdc3a152c2cbfe6b298f673714e0eb15e997b9f88d7b9293"
+    },
+    {
+      "file": "docs/v0.5/records/comprehensive-remediation-20261011/BATCH_A.md",
+      "sha256": "bef12309286a35afb25cdaa7dfbfe9d4b6424f6e99ec079597e22f8b11fe0bff"
+    },
+    {
+      "file": "docs/v0.5/records/comprehensive-remediation-20261011/BATCH_B.md",
+      "sha256": "14aa130a8275acfe0e98a3a6b564f001e14cf886895ec5379321e376d7388aa4"
+    },
+    {
+      "file": "docs/v0.5/records/comprehensive-remediation-20261011/DELIVERY.md",
+      "sha256": "8ab24784d25b1c7240209ea43666d747d92b65419ef46d89389275e9080f60de"
+    },
+    {
+      "file": "docs/v0.5/records/comprehensive-remediation-20261011/MEMORY_ACCESS_COMPARISON.md",
+      "sha256": "e56b13a004156ff040b319aab96d33452803cba9ac034ebee4b04e6d6129637e"
+    },
+    {
+      "file": "docs/v0.5/records/comprehensive-remediation-20261011/PERFORMANCE_COMPARISON.md",
+      "sha256": "f705455c5eed860ac4d535c7d62978de9536ecb3e3cdff44715630ad7a45776e"
+    },
+    {
+      "file": "docs/v0.5/records/comprehensive-remediation-20261011/README.md",
+      "sha256": "cf9077321aed4d653343aa280c8c4c3053be7222e4ddcac7fcf434b501aca2be"
+    },
+    {
+      "file": "docs/v0.5/records/comprehensive-remediation-20261011/RETRIEVAL_EVALUATION.md",
+      "sha256": "8983804054d42875e444ae0c36bdce0950b9f35c50bb97cb5bdff3ac09d097af"
+    },
+    {
+      "file": "docs/v0.5/records/comprehensive-remediation-20261011/reviews/D1-final.md",
+      "sha256": "69f7cfce94f701cee57c337a05413e78dbc21d004bd41996fba1987b42b30eff"
+    },
+    {
+      "file": "docs/v0.5/records/comprehensive-remediation-20261011/reviews/DELIVERY-readiness.md",
+      "sha256": "8c158a88b18b2b005ac116ae9729fa6250ad44e51146b0f816b7e46501b44eca"
+    },
+    {
+      "file": "docs/v0.5/records/comprehensive-remediation-20261011/reviews/FINAL.md",
+      "sha256": "90b82909cacf248f3448ae5233b428740bbed7dee9a8c5bfb53a23dc577bb2fb"
+    },
+    {
+      "file": "docs/v0.5/records/comprehensive-remediation-20261011/reviews/M-D.md",
+      "sha256": "297839c374e072a1771fb21790fa70555140dc24156fe47d694860f2e24bb68c"
+    },
+    {
+      "file": "docs/v0.5/records/comprehensive-remediation-20261011/reviews/M1-A.md",
+      "sha256": "45e7a044869365f0d4bb1ec9f53cd215236770ad74d7a7a4f41af86f539492d3"
+    },
+    {
+      "file": "docs/v0.5/records/comprehensive-remediation-20261011/reviews/M1-B.md",
+      "sha256": "3ac2f663e34eba21e577995a5b380ba6d260a5cea8f530e1ce3ccf356c527ff9"
+    },
+    {
+      "file": "docs/v0.5/records/comprehensive-remediation-20261011/reviews/M1-C.md",
+      "sha256": "8ce7723a6225212cfb5810432fa86efc25e8f86afb9213359c5b376e8221382c"
+    },
+    {
+      "file": "docs/v0.5/records/comprehensive-remediation-20261011/reviews/M2-A.md",
+      "sha256": "ca06b38a83abbd52869672342c767e225fdf27be0356c09e44258e2281ef2e9e"
+    },
+    {
+      "file": "docs/v0.5/records/comprehensive-remediation-20261011/reviews/M2-B.md",
+      "sha256": "9a7b0cea91a58bdf88c12f90547f32ce4c9c0bff99af86518569682510967be0"
+    },
+    {
+      "file": "docs/v0.5/records/comprehensive-remediation-20261011/reviews/Q1-labels.md",
+      "sha256": "9c88e14a6d29ba9a575d880342b6e7670d64380a73791c9cd74dbc06949f2a7d"
+    },
+    {
+      "file": "docs/v0.5/records/comprehensive-remediation-20261011/reviews/Q1.md",
+      "sha256": "cc5dd6de428a9c18e386fa5947b616115c3afa9a49d256bd60e585746754d31f"
+    },
+    {
+      "file": "docs/v0.5/records/comprehensive-remediation-20261011/reviews/Q2.md",
+      "sha256": "0fc9b072418a73b42205a8bc11c4b8ee403d3fe52850512bf5056e4172e72ced"
+    },
+    {
+      "file": "docs/v0.5/records/comprehensive-remediation-20261011/reviews/Q3-labels.md",
+      "sha256": "8ef1253d56100615e089b9723a3562f1d9222c390f2bb0d2106254a6801f7839"
+    },
+    {
+      "file": "docs/v0.5/records/comprehensive-remediation-20261011/reviews/Q3.md",
+      "sha256": "68b754f37dc35608a4f98bccbf4af0176a5fce51c634a1e4f6b5d75ec4beb1d8"
+    },
+    {
+      "file": "docs/v0.5/records/comprehensive-remediation-20261011/reviews/R1-R2.md",
+      "sha256": "8ecf9ac55871f1fb24b011f74e64d1afb365d9cfb5863068d06492a17c46b6e5"
+    },
+    {
+      "file": "docs/v0.5/records/comprehensive-remediation-20261011/reviews/R3.md",
+      "sha256": "41508b1c0fea256efaca09be14e454886df7167e15c4c3d0aa440da36bf1ba69"
+    },
+    {
+      "file": "docs/v0.5/records/comprehensive-remediation-20261011/reviews/R4a.md",
+      "sha256": "d51b41be1c2e0ffe4fd231649ca22b471c08e23d300ae83d0ac9b011c2f3a532"
+    },
+    {
+      "file": "docs/v0.5/records/comprehensive-remediation-20261011/reviews/R4b.md",
+      "sha256": "2ca0f380c41e3253b3b7f993fa60ec5fda89eae9045344c62811bea5a6c1eea4"
+    },
+    {
+      "file": "docs/v0.5/records/comprehensive-remediation-20261011/reviews/V0.md",
+      "sha256": "90e126e65c92a76dc25d423732b31946a52f5caafaea0d2e5e819b50cb48e279"
+    },
+    {
+      "file": "docs/v0.5/records/comprehensive-remediation-20261011/reviews/V2-send.md",
+      "sha256": "d8825922c188455654d7fbea3f9d38608246348a765c34e19addf6648bc740bd"
+    },
+    {
+      "file": "docs/v0.5/records/comprehensive-remediation-20261011/reviews/V3.md",
+      "sha256": "fb70531d70c0397992e80d9b9dedd5f825e0ab6f781e5df36c54b7237abc171f"
+    },
+    {
+      "file": "docs/v0.5/records/comprehensive-remediation-20261011/reviews/W1-W3.md",
+      "sha256": "6b73c544966a46ead4ef94a9ebff4f7c87c985e51453b6c69e2263165bdf9cb7"
+    },
+    {
+      "file": "docs/v0.5/records/comprehensive-remediation-20261011/reviews/W2.md",
+      "sha256": "804ce1a153f7f6ff0af7ef1f4e103bbb49b8f2ba09cdb7f5320397d05ac2a588"
+    },
+    {
+      "file": "docs/v0.5/records/comprehensive-remediation-20261011/reviews/W4.md",
+      "sha256": "1b8ea4a419437c68fca00566be2ea085327d573fa5e5bf4720aff980921272cf"
+    },
+    {
+      "file": "docs/v0.5/records/comprehensive-remediation-20261011/reviews/W5.md",
+      "sha256": "3ba34ae1c7165d808748e7d6a621020631e349d89d0934c1efd93e8b2905fc68"
+    },
+    {
+      "file": "docs/v0.5/records/comprehensive-remediation-20261011/reviews/W6.md",
+      "sha256": "782ab5b00b33a95fefeb0849a79062348064199f2c826713a8f13e0eedd05f61"
+    },
+    {
+      "file": "docs/v0.5/records/comprehensive-remediation-20261011/reviews/W7.md",
+      "sha256": "e5f542e328bf43057785a1819da11ed7b889b92ab56682f783e3972479b93477"
+    },
+    {
+      "file": "docs/v0.5/records/document-current-sync-20261010/README.md",
+      "sha256": "34368da234a779c0dd0d672aa33982e2e1b6a9cc17116221704c8a879d3a9d82"
+    },
+    {
+      "file": "docs/v0.5/records/document-current-sync-20261011/README.md",
+      "sha256": "d4c0854482f0aa2da6938fbf2630e462cfe6b7e9b10f5f537fcae57413f80e2b"
+    },
+    {
+      "file": "docs/v0.5/records/document-final-audit-20261010/README.md",
+      "sha256": "af3da1c4d27d6c246400f7fe6fbb5c0a04a408c0f7e82aed049950a0d7078775"
+    },
+    {
+      "file": "docs/v0.5/records/document-model-audit-20261009/README.md",
+      "sha256": "35bf38f978a1f7c680eec0408099dccdaa0358c0fa12ec619ab9c001813c09ae"
+    },
+    {
+      "file": "docs/v0.5/records/document-organization-20261009/README.md",
+      "sha256": "0a93973f7f02757bd515b85d6b75a283296eff3ebc6a88e3f0382d42a9587153"
+    },
+    {
+      "file": "docs/v0.5/records/environment-async-20261009/DELIVERY.md",
+      "sha256": "17757a7741ed72cc210160d278a9db7fe2e38cf547983c1d7dca7d59ea1400a2"
+    },
+    {
+      "file": "docs/v0.5/records/environment-async-20261009/IMPLEMENTATION_LOG.md",
+      "sha256": "53db83f7a3be933d237afdd86ca9c728a7b6902e0891a09950ee8159c904182f"
+    },
+    {
+      "file": "docs/v0.5/records/environment-async-20261009/README.md",
+      "sha256": "b5290721b76e11a22b0780609a35c242bde4f855e994800af0be2a793e6f2366"
+    },
+    {
+      "file": "docs/v0.5/records/environment-async-20261009/REVIEW_CLOSURE.md",
+      "sha256": "a06e1cce7f8879c30f7d742f6741a38983a06b193b75a22e8315110d67a85718"
+    },
+    {
+      "file": "docs/v0.5/records/environment-async-20261009/TASK_LEDGER.md",
+      "sha256": "b8b76e2ebb4d1a33e9c3eee717666d379639eb0b6c89f4f3a049682118bf36a3"
+    },
+    {
+      "file": "docs/v0.5/records/environment-post-delivery-fixes-20261009/DELIVERY.md",
+      "sha256": "9204caed44715ca9580b49a5809cead3b9e51f68d4ce3fb3158f4f4825bfcce8"
+    },
+    {
+      "file": "docs/v0.5/records/environment-post-delivery-fixes-20261009/IMPLEMENTATION_LOG.md",
+      "sha256": "b17d41c7ef0b67932b4d8b2101b9aab6b25776294b68222750850f04c2d3137d"
+    },
+    {
+      "file": "docs/v0.5/records/environment-post-delivery-fixes-20261009/README.md",
+      "sha256": "086774f0f5e6d89e910fe44932f214b307a85cfbb373e3eb80f8b795b61ee7b0"
+    },
+    {
+      "file": "docs/v0.5/records/environment-post-delivery-fixes-20261009/TASK_LEDGER.md",
+      "sha256": "e4f0145f1477534b12a09c54fab8b596ab9afa6cbfdfb5d232c17ae22205cbe9"
+    },
+    {
+      "file": "docs/v0.5/records/feature-enablement-20261010/README.md",
+      "sha256": "d6f3a31bb564c47158583f37aa619885ec167cca35307f2d023cd280a56b9720"
+    },
+    {
+      "file": "docs/v0.5/records/graceful-stop-20261010/DELIVERY.md",
+      "sha256": "8dae63afbb32f74d9236eb62e3c38f0561fc151796beb7f3e801b919a3639779"
+    },
+    {
+      "file": "docs/v0.5/records/graceful-stop-20261010/INDEPENDENT_REVIEW.md",
+      "sha256": "b48ca46b7709fa219fdfd24a98c2f54797d3ffbe01c674b8e63e76f3615ed976"
+    },
+    {
+      "file": "docs/v0.5/records/graceful-stop-20261010/README.md",
+      "sha256": "921d7e537edc7fcc0dcab2a3ec2528cf37b325d1f1733af35fb48fd8dcfdff8e"
+    },
+    {
+      "file": "docs/v0.5/records/graceful-stop-20261010/REVIEW_CLOSURE.md",
+      "sha256": "bcfc58c953908048d0318a863b56a448ce52a3ce8668786da165c4c7ac85485a"
+    },
+    {
+      "file": "docs/v0.5/records/graceful-stop-r1-20261010/DELIVERY.md",
+      "sha256": "9b676fbfea0016f5fcab50fcc19410baa45181b974ab8f35f8acd9bcc3797a62"
+    },
+    {
+      "file": "docs/v0.5/records/graceful-stop-r1-20261010/INDEPENDENT_REVIEW.md",
+      "sha256": "8395d2e0eba4e3b7a0fca86e40296d61fd28f280e0020e6f85dc2645786d3740"
+    },
+    {
+      "file": "docs/v0.5/records/graceful-stop-r1-20261010/README.md",
+      "sha256": "c7e8dc9857fad0e7238b61badd3c53167d2db70c2c87c055d7cffe8eb0473fe8"
+    },
+    {
+      "file": "docs/v0.5/records/image-input-20261009/DELIVERY.md",
+      "sha256": "a832e77faec9c8c8ed533b529056d55bf2a37259dd08b2da2955fc6707897f2a"
+    },
+    {
+      "file": "docs/v0.5/records/image-input-20261009/IMPLEMENTATION_LOG.md",
+      "sha256": "d71b60e85f7dc913f6c39a20bbd98fec0fec4546d8b981e6c9341b8876602840"
+    },
+    {
+      "file": "docs/v0.5/records/image-input-20261009/REVIEW_CLOSURE.md",
+      "sha256": "ca3da0afd2ac84256f349befa9c3b08b7d380a203ca919719535e5395af5b761"
+    },
+    {
+      "file": "docs/v0.5/records/image-search-post-review-fixes-20261010/DELIVERY.md",
+      "sha256": "ad622dcc0ebce054691a4bfbaeca6e6251e1e0b2ef55b179d542c06958bdb855"
+    },
+    {
+      "file": "docs/v0.5/records/image-search-post-review-fixes-20261010/IMPLEMENTATION_LOG.md",
+      "sha256": "24d4f77c5f136ff267165b575295de5b7f490d545a79ced77525629fead8281f"
+    },
+    {
+      "file": "docs/v0.5/records/image-search-post-review-fixes-20261010/INDEPENDENT_REVIEW.md",
+      "sha256": "f80bd48638215958dc80432ca03590a2ddf426cfeea19f040eb72673889d1c51"
+    },
+    {
+      "file": "docs/v0.5/records/image-search-post-review-fixes-20261010/INTEGRATION_20261010.md",
+      "sha256": "91a9e11682f2c8a9e8cdc540f2de5e072a551d98adf55d8099e026653af28d27"
+    },
+    {
+      "file": "docs/v0.5/records/image-search-post-review-fixes-20261010/README.md",
+      "sha256": "19b3b656c4a2ac881e2d0050570388adf1a8d94638f44c285ba3c48fbbff10ff"
+    },
+    {
+      "file": "docs/v0.5/records/image-search-post-review-fixes-20261010/REVIEW_CLOSURE.md",
+      "sha256": "69b93756a64842e33386dcdca71467c8ae96c8affcea5f5a11cfb6ce92b9fcb1"
+    },
+    {
+      "file": "docs/v0.5/records/local-browser-search-20261009/DELIVERY.md",
+      "sha256": "a4a24f7afdd379e072bec338b43df4e94cfef7e83e8137c39332fbd7ab74a341"
+    },
+    {
+      "file": "docs/v0.5/records/local-browser-search-20261009/EXECUTION_LEDGER.md",
+      "sha256": "edc5aa5de8bdf1bd89ad013075a198273b29d3ad4b4c7422638019e71bf4c5af"
+    },
+    {
+      "file": "docs/v0.5/records/local-browser-search-20261009/FINAL_REVIEW_CLOSURE.md",
+      "sha256": "4fe4f37145eabaaba2d19ddba18f28ce6bc3f128ca468cf27358a5ad153e6732"
+    },
+    {
+      "file": "docs/v0.5/records/local-browser-search-20261009/IMPLEMENTATION_LOG.md",
+      "sha256": "30a839f111e2b4537be25575a438f267a399a95334e9b594ed6516dba70bf9db"
+    },
+    {
+      "file": "docs/v0.5/records/local-browser-search-20261009/INDEPENDENT_REVIEW.md",
+      "sha256": "850b04196de9f3978d8fbec6dd140665a9b695c754c792900edc3c60cbac0250"
+    },
+    {
+      "file": "docs/v0.5/records/local-browser-search-20261009/INTEGRATION_20261010.md",
+      "sha256": "2ec30d27b0e482e17b1c40e5a05d490ce3a260a4d4333b4d62746172b7b17da2"
+    },
+    {
+      "file": "docs/v0.5/records/local-browser-search-20261009/README.md",
+      "sha256": "2e4a5e83d40e01848b545cc5bad11bbd908ce65535cb5b522a8bed3a096d61ee"
+    },
+    {
+      "file": "docs/v0.5/records/local-browser-search-20261009/REVIEW_CLOSURE.md",
+      "sha256": "501c0c5e61fcf5d359f165b06a68b7d096b52859affed1320fed073e5830f2e4"
+    },
+    {
+      "file": "docs/v0.5/records/offline-action-only-20261010/README.md",
+      "sha256": "9c72f7e701d8cb89851aa039eb57d4d64f24cdea79d2299f7ef8c5e325bb7dad"
+    },
+    {
+      "file": "docs/v0.5/records/onebot-connection-20261010/README.md",
+      "sha256": "817450c5b228182e0b4f264a2049402d375ec5ac2d2fa397a174c504916f350e"
+    },
+    {
+      "file": "docs/v0.5/records/phone-access-20261010/DELIVERY.md",
+      "sha256": "b4c7c14d17d7c5ed3cd8b477ff20c45c05085e0187eaf25ff9d355747acc50e0"
+    },
+    {
+      "file": "docs/v0.5/records/phone-access-20261010/IMPLEMENTATION_LOG.md",
+      "sha256": "4f91a08a673eb71fb3d2db142b40efbb09e4c7b0c1f318b3fb75a253e25a099f"
+    },
+    {
+      "file": "docs/v0.5/records/phone-access-20261010/INDEPENDENT_REVIEW.md",
+      "sha256": "464775aa137d62920e7a497ded51eaaff8a45cbc0f67dc659bdc78c8a4e5bd6d"
+    },
+    {
+      "file": "docs/v0.5/records/phone-access-20261010/README.md",
+      "sha256": "49a12898dc5cc52e8cef7208ef9ac28b04cc40f9ab51ce459f961a0c23c34813"
+    },
+    {
+      "file": "docs/v0.5/records/phone-access-20261010/REVIEW_CLOSURE.md",
+      "sha256": "c851c23d3648afbee70dbb14f013b6997b158e73b38ec497199bec3d0941afda"
+    },
+    {
+      "file": "docs/v0.5/records/reply-guidance-20261009/DELIVERY.md",
+      "sha256": "0ff4b9e4a58af8ebd02e96b54599e1ae7ce6dd854ba5ee04c1fdcd9cc3716918"
+    },
+    {
+      "file": "docs/v0.5/records/reply-guidance-20261009/IMPLEMENTATION_LOG.md",
+      "sha256": "562e06b8f18865d1dc2bda5e1c44421dad0f7f121d1890c8dc9f27dca6da36d1"
+    },
+    {
+      "file": "docs/v0.5/records/reply-guidance-20261009/README.md",
+      "sha256": "e3cb9bb2c87e9e4a85fb88cf83084ef7c737948383e37b4fb89c42b5cd066a33"
+    },
+    {
+      "file": "docs/v0.5/records/runtime-web-guidance-20261011/README.md",
+      "sha256": "ff04f699d86f1cdb1c1301706698612342cd8dbecc1e6eceb0e4dc3ace2acaff"
+    },
+    {
+      "file": "docs/v0.5/reference/BACKGROUND_VIEW_MAPPING_20261008.md",
+      "sha256": "785500099b34fd95e1bdf3e6172ea7646fe7a0dff1e9b217d00f2298a968d6b6"
+    },
+    {
+      "file": "docs/v0.5/reference/MODEL_CALLS_AND_WEB_OPTIONS_20261009.md",
+      "sha256": "c248de458afa24c51e024ad68e1d173ff6e25079fce85909d29e5542205b5c24"
+    },
+    {
+      "file": "docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md",
+      "sha256": "4322b05ee582bf89498d243ca571b2aaf0aac2218644ef06b64ec8d8e0b69638"
+    },
+    {
+      "file": "docs/v0.5/reviews/README.md",
+      "sha256": "13e044a6f466fac317dcbb4376070cc335a3331e48059fa609da51f6a7490545"
+    },
+    {
+      "file": "docs/v0.5/reviews/chat-reply-freshness-20261010/EXECUTION_PLAN.md",
+      "sha256": "280a9cce6b1c900557cb78fe3ee7c0d7b5ce22ae0dc04c05acebcd91e0cff169"
+    },
+    {
+      "file": "docs/v0.5/reviews/chat-reply-freshness-20261010/REVIEW.md",
+      "sha256": "fe6b5fbf9a1869077367b1fa1056b40d50225baae0f1cef716144a3e43a8756f"
+    },
+    {
+      "file": "docs/v0.5/reviews/comprehensive-audit-20261011/DOCS_AUDIT.md",
+      "sha256": "bf225265f92b233c314f24819229f69628da528d5e5d42791726a4a48c406a7d"
+    },
+    {
+      "file": "docs/v0.5/reviews/comprehensive-audit-20261011/MEMORY_PERFORMANCE.md",
+      "sha256": "4e2c9589781f02873633f9acaa36a94bf998692730e653a51a2136f346fc851b"
+    },
+    {
+      "file": "docs/v0.5/reviews/comprehensive-audit-20261011/README.md",
+      "sha256": "b83ee1bfc49239287d69e6d2f2e64aaa4bc759255c2a7cd89bde9a6e98fcb162"
+    },
+    {
+      "file": "docs/v0.5/reviews/comprehensive-audit-20261011/RUNTIME_AUDIT.md",
+      "sha256": "bd369570ce15862cffb8984bfa899ba13631103dfb639bdb43bb4b616cac4840"
+    },
+    {
+      "file": "docs/v0.5/reviews/comprehensive-audit-20261011/WEB_MEDIA_AUDIT.md",
+      "sha256": "6372536c123207fd736036a94d9f35300e4c6d0f9f93fcfd491c689223b98297"
+    },
+    {
+      "file": "docs/v0.5/reviews/environment-async-20261009/INDEPENDENT_REVIEW.md",
+      "sha256": "5854527315ef20accc0d8b1b85d036a7b2f05e13b84627fd9cd785d298fee661"
+    },
+    {
+      "file": "docs/v0.5/reviews/environment-async-20261009/post-delivery/FIX_DIFF_REVIEW.md",
+      "sha256": "eef6c5e430224d90c7bee1d9682b0c30cfa0a9d38dfa1c26ccee84496b09a2a8"
+    },
+    {
+      "file": "docs/v0.5/reviews/environment-async-20261009/post-delivery/REVIEW.md",
+      "sha256": "0652cf9257693907ce814eb40d6b88b42cc470da20c358b1bdf6433aa4d25e98"
+    },
+    {
+      "file": "docs/v0.5/reviews/freshness-graceful-stop-20261010/FIX_PLAN.md",
+      "sha256": "a923c0b74c960496ee96c09247101ee1b8ac7510a4181a56362880941db5e670"
+    },
+    {
+      "file": "docs/v0.5/reviews/freshness-graceful-stop-20261010/REVIEW.md",
+      "sha256": "75cb7fb5e4851a8e4919d6e7d4ecb8249054c00f68de82d5ab94e748368c8a02"
+    },
+    {
+      "file": "docs/v0.5/reviews/image-input-local-search-20261009/PLAN_REVIEW.md",
+      "sha256": "f4b7754494f1341fb868eccda0109014957a936ba769818aae882e52d5eff605"
+    },
+    {
+      "file": "docs/v0.5/reviews/image-search-post-implementation-20261010/FIX_PLAN.md",
+      "sha256": "21932be7e0e98eac67d3c830d44f174d0b22b38551d30f4de3e855eb86018522"
+    },
+    {
+      "file": "docs/v0.5/reviews/image-search-post-implementation-20261010/REVIEW.md",
+      "sha256": "d03939001f491f14629d58178e96725e391a0f7865f545fc58d2cc0e1b4ccaca"
+    },
+    {
+      "file": "docs/v0.5/reviews/image-search-post-implementation-20261010/evidence/README.md",
+      "sha256": "e9c2644f28f8826e5b630b52c8f53f741c450b6fcdc6bfc0f8b983de18a88b73"
+    },
+    {
+      "file": "docs/v0.5/reviews/phone-access-20261010/PLAN_REVIEW.md",
+      "sha256": "dd19c4eeace4a2c2b4df88f9932312a6aad5003f14327aa6219e38dda706552f"
+    },
+    {
+      "file": "docs/v0.5/subsystems/REMAKE_V0.5_CONTEXT.md",
+      "sha256": "8df4cfd6375cffdfc650d5e55c72bf56b2b20c42852c17239cccff785237816f"
+    },
+    {
+      "file": "docs/v0.5/subsystems/REMAKE_V0.5_DIRECTORS.md",
+      "sha256": "caea1856743ee3089ac1faffd2c3111a799d2edac91c8984f8f21df93045dcb7"
+    },
+    {
+      "file": "docs/v0.5/subsystems/REMAKE_V0.5_EXPRESSION_STICKERS.md",
+      "sha256": "e24b570954f9a5d747cdbd6eb20a19c77976887134cb86f8f87637933a150c53"
+    },
+    {
+      "file": "docs/v0.5/subsystems/REMAKE_V0.5_MEMORY.md",
+      "sha256": "594d9e8827d028175ba13fd12133130867ad6fe7b203bab2536d6058d58b9add"
+    },
+    {
+      "file": "docs/v0.5/subsystems/REMAKE_V0.5_RECOVERY.md",
+      "sha256": "ed15ac2e712a6dbc1a8b5e8e8fc28a00503593b41e22b66bbe66c78f2ab0d87c"
+    },
+    {
+      "file": "docs/v0.5/subsystems/REMAKE_V0.5_SCHEDULING.md",
+      "sha256": "bb78bdf139a203f0181c8285f2b575eaaab8fed8703028e05da0dd36caaf4332"
+    },
+    {
+      "file": "docs/v0.5/subsystems/REMAKE_V0.5_SHARED_ACTIVITY.md",
+      "sha256": "efc6c055dcbdfd7281ebf13361d391a2b47a07abb5732b1fc6d63b85aa68863e"
+    },
+    {
+      "file": "docs/v0.5/subsystems/REMAKE_V0.5_WEB_SEARCH.md",
+      "sha256": "62314f06cb4a53f98c9c33869f59257ec29e46eb80206ef611ced07e318b9228"
+    }
+  ]
+}

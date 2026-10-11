@@ -1,6 +1,6 @@
 # 当前模型调用与网页搜索配置参考
 
-核对日期：2026-10-11。当前源码基线`65f0785`。返回[版本索引](../README.md)。模型、搜索／图片开关与业务参数以[本次白名单](../records/document-current-sync-20261011/evidence/effective-models.json)为准；[配置启用记录](../records/feature-enablement-20261010/README.md)说明启用经过。此次仅解析配置白名单和批准用途映射元数据，不加载认证或原背景文件，不启动服务或发起模型／搜索请求，模型参数保持不变。
+核对日期：2026-10-11，当前源码基线`5b92794`。返回[版本索引](../README.md)。本轮为[项目源码与既有证据的静态核对](../records/document-post-remediation-sync-20261011/README.md)，未读取私有配置、认证、原背景或正式数据库，也未运行测试、服务或模型／搜索请求。下列本地模型、搜索／图片开关与业务参数沿用2026-10-11、源码基线`65f0785`时解析的[配置白名单](../records/document-current-sync-20261011/evidence/effective-models.json)；同日10:43:28（上海时间）的[部署指纹](../records/comprehensive-remediation-20261011/evidence/deployment-postcheck.json)记录两份配置在该部署前后hash相同，不能把它称为本轮重新核验。[配置启用记录](../records/feature-enablement-20261010/README.md)保留启用经过。
 
 ## 1. 本地部署配置的DeepSeek用途
 
@@ -61,7 +61,7 @@
 
 最新程序软提示在实际工具可用时建议世界导演查当日／最近24小时重要新闻，三类个人导演按兴趣或生活／交流需要主动查阅；不会强制搜索或改变模型／强度。修补与续调用每次重查配额，用尽后不再注入搜索建议。独立本人查阅记忆来源仍仅限自主生活个人导演，见[搜索§6](../subsystems/REMAKE_V0.5_WEB_SEARCH.md#6-实际提供与本人阅读)。2026-10-11约08:42～08:50的只读运行检查尚无搜索／读页操作，见[当时记录](../records/runtime-web-guidance-20261011/README.md)；这不是持续监控结论，也不证明加入提示后的模型已执行搜索。
 
-| 配置 | 当前正式有效值 | 已实现含义 |
+| 配置 | 前次核对的正式有效值 | 已实现含义 |
 | --- | --- | --- |
 | `webSearch.enabled` | true（显式配置） | 是否向模型开放网页工具 |
 | `webSearch.provider` | browser | 可选unconfigured／browser；启用但未配置provider会提前报错 |
@@ -70,6 +70,8 @@
 | `webSearch.browser.maxConcurrentPages` | 1（显式配置） | 本实例共享页槽上限，真实关闭／迟到建页排空后才释放 |
 | `webSearch.maxSuccessReads`／`maxFailures` | 20／40 | 同一逻辑阶段累计，含修补／续调用／恢复；不是收费或HTTP次数 |
 
-当前Koishi已配置Puppeteer，启用时静态查找确认本机Chrome存在；部署已经完成，实际调用需HDSI运行且浏览器服务就绪，服务就绪后才创建故事实例。当前提取器为`dom-v2/readability-0.6.0`，按原DOM可见性和清理后独立正文判断，不把隐藏内容或登录引导当已读正文。页面正文没有人为字符／token截断。独立浏览器验收脚本的启动等待默认60000ms，与页面操作期限分别计算。
+此前已核对Koishi配置Puppeteer、启用时本机Chrome存在并完成部署；实际调用需HDSI运行且浏览器服务就绪，服务就绪后才创建故事实例。当前提取器为`dom-v3/readability-0.6.0`，按原DOM可见性和清理后独立正文判断，同档嵌套候选只取有效顶层子树，真实兄弟重复保留；不把隐藏内容或登录引导当已读正文。provider交付纯文本，正规化不再次剥标签或解实体。页面正文没有人为字符／token截断。独立浏览器验收脚本的启动等待默认60000ms，与页面操作期限分别计算。
 
-已有公开工程验收中Bing成功返回候选并读取中文／英文目标正文，DuckDuckGo当时遇到验证码；这不证明当前任意网站可读，当前正式配置已经启用，但工程验收不代表服务此刻运行或真实模型工具续调用质量已验证。详见[搜索原交付](../records/local-browser-search-20261009/DELIVERY.md)、[图片／搜索修复交付](../records/image-search-post-review-fixes-20261010/DELIVERY.md)与[搜索规则](../subsystems/REMAKE_V0.5_WEB_SEARCH.md)。
+`stickers import`按上述开关独立装配浏览器和asset阶段，`rebuild`只重建文本向量；CLI的上下文启动预算与页面预算分开。网页状态使用轻量元数据，checkpoint／operation新写formatVersion=2材料引用，模型信封仍包含完整正文。用户图一次观察通过资产租约复用原图字节与data URL，搜索续调用与修补仍给incoming_image原图；其他阶段仍只收到合法观察。详细生命周期与旧格式兼容见[搜索](../subsystems/REMAKE_V0.5_WEB_SEARCH.md)、[表达与素材](../subsystems/REMAKE_V0.5_EXPRESSION_STICKERS.md)。
+
+已有公开网页工程验收中Bing成功返回候选并读取中文／英文目标正文，DuckDuckGo当时遇到验证码；这不证明当前任意网站可读。此前启用记录确认配置已开启，工程验收不代表服务此刻运行或真实模型工具续调用质量已验证。详见[搜索原交付](../records/local-browser-search-20261009/DELIVERY.md)、[图片／搜索修复交付](../records/image-search-post-review-fixes-20261010/DELIVERY.md)与[搜索规则](../subsystems/REMAKE_V0.5_WEB_SEARCH.md)。

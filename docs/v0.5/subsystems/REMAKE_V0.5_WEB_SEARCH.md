@@ -1,16 +1,16 @@
 # HDSI V0.5：网页搜索
 
-核对日期：2026-10-11。返回[总架构](../architecture/REMAKE_V0.5.md)。搜索是共用能力模块，各逻辑模型阶段拥有独立资格、正文集合与计数。
+核对日期：2026-10-11，源码基线`5b92794`。本轮仅对项目源码及既有证据作[文档静态核对](../records/document-post-remediation-sync-20261011/README.md)，未重跑产品测试或在线验收。返回[总架构](../architecture/REMAKE_V0.5.md)。搜索是共用能力模块，各逻辑模型阶段拥有独立资格、正文集合与计数。
 
 ## 1. 接入状态
 
-已实现模型工具、独立会话、20／40、缓存、结果不足和恢复，以及本地浏览器 provider。provider 可选 unconfigured 或 browser，browser 可选 Bing／DuckDuckGo。当前正式配置为enabled=true、provider=browser、engine=bing；Schema缺省仍为关闭／未配置。Koishi已配置Puppeteer，本机Chrome已静态查到；用户启动／重启且服务就绪后才创建故事实例。见[配置启用记录](../records/feature-enablement-20261010/README.md)。
+已实现模型工具、独立会话、20／40、缓存、结果不足和恢复，以及本地浏览器 provider。provider 可选 unconfigured 或 browser，browser 可选 Bing／DuckDuckGo。2026-10-11[前次配置白名单](../records/document-current-sync-20261011/evidence/effective-models.json)记录正式配置为enabled=true、provider=browser、engine=bing；Schema缺省仍为关闭／未配置。同日10:43:28（上海时间）的[部署指纹](../records/comprehensive-remediation-20261011/evidence/deployment-postcheck.json)记录故事／Koishi配置在该部署前后未变，本轮未重新读取私有配置。Koishi的Puppeteer与本机Chrome已在此前启用时静态核对；用户启动／重启且服务就绪后才创建故事实例。见[配置启用记录](../records/feature-enablement-20261010/README.md)。
 
 浏览器搜索一页返回候选，再读目标完整正文；候选标题／摘要不当正文。article/main还需非纯链接、非仅标题的正文证据，结构性status加载壳继续等待；短正文不加字数阈值。正文按 article、main、Readability 提取，不无条件使用整页 body；导航、页脚、验证／登录壳不能冒充正文。动态主体和页面内导航切换共用原操作时限。旧 webSources 不作兜底；不调用 DeepSeek 原生搜索或付费 API，没有隐藏翻页、换引擎、RSS 或重试。
 
 provider 的 read 返回必填 `bodyFormat:'text'`，正文已在适配边界转换为纯文本。`normalizeMaterial` 仅正规化空白、URL并计 Unicode codepoint，不剥标签、不再次解实体；HTML来源必须显式先调用 `htmlToWebText`。DOM中的比较式、泛型、字面标签和实体文字因此原样保留，已有材料不重新清理。每档正文候选在清理后筛选证据，只拼接没有同档有效祖先的顶层子树，按DOM顺序保留；兄弟节点的真实重复文字不去重。
 
-提取时先在仍连接的原DOM判断计算样式及祖先隐藏，再清理对应克隆；隐藏正文、访问墙、结果项和空态不作证据。存在可见凭据表单时去除登录区域（含标题和引导）；区域边界也必须依据清理后仍有真实正文的独立主体，空main、只有标题／链接或隐藏加载内容不作豁免。只有区域外独立正文才能解除登录墙。当前提取器版本dom-v3/readability-0.6.0。独立验收脚本启动默认等待60000ms，服务失败或未就绪也会清理并落盘失败；该启动预算不改变产品页面预算。见[修复交付](../records/image-search-post-review-fixes-20261010/DELIVERY.md)。
+提取时先在仍连接的原DOM判断计算样式及祖先隐藏，再清理对应克隆；隐藏正文、访问墙、结果项和空态不作证据。存在可见凭据表单时去除登录区域（含标题和引导）；区域边界也必须依据清理后仍有真实正文的独立主体，空main、只有标题／链接或隐藏加载内容不作豁免。只有区域外独立正文才能解除登录墙。当前提取器版本dom-v3/readability-0.6.0，纯文本与嵌套提取修复见[综合整改复核](../records/comprehensive-remediation-20261011/reviews/W1-W3.md)。独立验收脚本启动默认等待60000ms，服务失败或未就绪也会清理并落盘失败；该启动预算不改变产品页面预算。见[此前修复交付](../records/image-search-post-review-fixes-20261010/DELIVERY.md)。
 
 所有阶段共用本实例页槽，默认同时分配读取页的上限1、每次页面操作60000ms，含排队、建页、导航及主体等待。取消可先返回，但直到迟到 factory 和真实 close 结算才释放资源；无法证明已关闭则阻挡继续分配／实例替换。只关闭本插件自有页面；该页产生的popup关闭也纳入同一预约的排空，关闭失败且无法证明消失时不得释放预约。
 
@@ -47,6 +47,8 @@ provider 的 read 返回必填 `bodyFormat:'text'`，正文已在适配边界转
 
 同一阶段重放已确认操作不重复计数。缓存不是本进程全局免费资源；任务结束释放该主体缓存，已保存阶段资料仍支持恢复。
 
+额度、阶段身份、材料元数据、已提供URL和本人查阅登记使用轻量读取，不为这些控制步骤装载完整snapshot或在JavaScript反序列化正文／模型checkpoint。真正模型调用仍读取完整材料；完整snapshot接口保留诊断与兼容用途。该优化减少重复解析，不代表SQLite底层页读取或历史汇总成本恒定。
+
 ## 5. 结果不足与未知
 
 返回实际成功正文、要求／取得页数、累计计数和停止原因。少于要求时明确传回“结果不足”，不伪造资料或自动改用未配置网页。
@@ -74,6 +76,8 @@ provider 的 read 返回必填 `bodyFormat:'text'`，正文已在适配边界转
 历史正文引用转换使用独立 `web:migrate-payloads` 工具，必须显式指定数据库路径，默认只读检查；`--apply --stopped` 才写入。默认每批50个残余 run、最多20批，每批事务提交，失败批回滚，已提交批保留；续跑直到 `hasMore=false` 且旧格式 session／operation 数量均为0。批大小只能为1–50，max-batches须为正整数。首次有待转换内容时，在数据库旁 `backups/web-payloads/<uuid>/`（或 `--backup-dir` 下的新uuid目录）备份主库及实际存在的WAL／SHM；无残余不创建备份。`--stopped` 是调用者的停服声明，工具不自动检测或停止服务。
 
 此转换不删除 web_materials、不推断 owner 终态，历史 asset 检查点也不会因时间或类型被删除。终态检查点回收属于 `memory:compact-payloads` 的独立范围。新代码即使未运行批量转换，也会写入v2；旧二进制不支持这些引用。回退须停服并恢复配套旧代码与同一完整DB/WAL/SHM备份，不能只切回代码，且会舍弃备份后的业务。命令见[README](../../../README.md#网页正文引用格式转换)。
+
+`memory:compact-payloads`默认可回收已确认完成的turn／maintenance及committed／superseded环境owner的网页checkpoint；缺失owner表／记录、未完成owner和asset不据类型或时间推断完成。额外的`--include-environment`仅控制preparationVersion=1终态环境步骤的inputSnapshot／preparationSnapshot／frozenResult回收，并保留terminalAudit，不是开放环境网页checkpoint清理的必要条件。该工具不删除网页材料、操作、计数或本人来源；参数及事务边界见[实现对应§5](../reference/V0.5_IMPLEMENTATION_MAP_20261009.md#5-运行参数)。
 
 环境步骤进入 committed／superseded 后，其网页 owner 要等同一步骤的旧生成器、finally 和已排队网页操作全部结束，再释放该 owner 缓存并清空 checkpoint。同一 owner 的并发收尾共享一个承诺；其他 owner 的缓存、已持久化材料、操作、额度与本人查阅来源保留。前台调度只登记收尾，不等待旧 provider；环境 wait／stop 负责排空后来由 finally 登记的清理。暂停、停止、重试及代际失效本身不构成终态，未完成任务继续保留恢复材料；不在启动时扫描全部历史终态。清理写入错误会传给调用者，不能作为清理成功，详见[独立复核](../records/comprehensive-remediation-20261011/reviews/W7.md)。
 

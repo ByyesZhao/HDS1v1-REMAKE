@@ -1,5 +1,7 @@
 # 作者背景用途映射
 
+2026-10-11按源码基线`5b92794`静态核对加载、用途选择与初始化规则；下表依据同日前次[白名单中的批准映射元数据](../records/document-current-sync-20261011/evidence/effective-models.json)。本轮未重新读取私有映射、候选、原背景或正式数据，不将前次批准／元数据核对称为重新审批；本轮范围见[文档核对记录](../records/document-post-remediation-sync-20261011/README.md)。
+
 2026-10-08用户批准本期候选，条件为风格可后续修改。启用文件为`runtime/data/background-views.local.json`，在`config.local.json`配置`backgroundViewsFile`；各块和sourceMap可手动编辑，下一次启动读取。已冻结环境步骤仍使用原输入快照。原`梁思璃设定.txt`和pending候选保留。
 
 | 用途 | 原文段号（0起始） |

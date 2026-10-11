@@ -1,8 +1,10 @@
 # HDSI V0.5：当前文档与审核入口
 
+最新文档核对：[整改后当前说明复核](records/document-post-remediation-sync-20261011/README.md)，源码基线`5b92794`。本轮重新对照现行架构、8份子系统、3份参考与代码，更新遗漏规则及导航；下列产品测试、配置核对和部署结果仍按各自记录日期解释。
+
 最新：[综合审核整改交付](records/comprehensive-remediation-20261011/DELIVERY.md)。5项错误修复、流程／性能改进、离线检索工具与独立复核完成；最终217文件1370项及工程门通过。正式部署和最终服务状态以交付页为准；[实施包](plans/comprehensive-remediation-20261011/README.md)保留已完成步骤和未执行的条件在线实验。
 
-最新综合审核：[2026-10-11 文档／代码／性能审核](reviews/comprehensive-audit-20261011/README.md)，基线 `ce7e88e`。该基线发现4项P2、1项P3代码问题及2类文档问题；后续修复进度以上方实施记录为准。原报告保留触发条件、离线探针与改进优先级。既有189文件1034项经分次复验均有通过记录；暂停缺口仅在Host API交错层复现，线上命令窗口未验证。
+整改来源：[2026-10-11 文档／代码／性能审核](reviews/comprehensive-audit-20261011/README.md)，基线 `ce7e88e`。该基线发现的4项P2、1项P3代码问题及2类文档问题已关闭，证据以上方综合整改交付为准。原报告保留触发条件、离线探针与改进优先级；189文件1034项是原基线的分次验收记录。暂停缺口仅在Host API交错层复现，线上命令窗口未验证。
 
 此前同日文档核对的源码基线为`65f0785`，[原记录](records/document-current-sync-20261011/README.md)覆盖总架构、8份子系统、3份参考与导航，仅描述当时文档核对。当前整改后的规则、维护命令与验收以上方交付为准；旧批次的“只改文档”不描述本轮产品实施。
 
@@ -31,12 +33,13 @@
 
 背景用途参考为[已批准映射](reference/BACKGROUND_VIEW_MAPPING_20261008.md)，不是新审批。运行和显式升级命令见[项目README](../../README.md)。
 
-各模型用途及当前搜索配置见[模型调用与网页搜索参考](reference/MODEL_CALLS_AND_WEB_OPTIONS_20261009.md)。[本次配置白名单](records/document-current-sync-20261011/evidence/effective-models.json)确认13个已配置连接均Flash，10个low／3个high；用户图观察未单独覆盖，复用Flash/high。此前按用户要求[打开新图识别和Bing搜索](records/feature-enablement-20261010/README.md)，搜索provider为browser，Koishi已配置Puppeteer。模型参数保持不变；已配置启用不等于服务已经启动或真实在线质量已验收。
+各模型用途及搜索配置见[模型调用与网页搜索参考](reference/MODEL_CALLS_AND_WEB_OPTIONS_20261009.md)。此前2026-10-11的[配置白名单](records/document-current-sync-20261011/evidence/effective-models.json)记录13个已配置连接均Flash，10个low／3个high；用户图观察未单独覆盖，复用Flash/high。此前按用户要求[打开新图识别和Bing搜索](records/feature-enablement-20261010/README.md)，搜索provider为browser，Koishi已配置Puppeteer；综合整改部署记录确认配置文件未改。本轮只核对代码与文档，未重新解析私有配置；配置启用不等于服务已经启动或真实在线质量已验收。
 
 ## 最新交付与审核
 
 | 材料 | 状态 |
 | --- | --- |
+| [整改后当前文档核对](records/document-post-remediation-sync-20261011/README.md) | 5b92794基线；现行说明与源码及导航复核，纯文档更新，不重跑此前产品测试或部署 |
 | [综合审核整改交付](records/comprehensive-remediation-20261011/DELIVERY.md) | 217文件1370项、工程检查与独立复核通过；350合成样本成本比较、恢复矩阵及Q1/Q2完成，Q3工具完成而线上未执行；正式部署状态见交付 |
 | [此前同日文档同步](records/document-current-sync-20261011/README.md) | 65f0785基线；规则／配置／导航重新对照，只修当前说明与入口，历史证据保留 |
 | [导演联网软提示交付](records/runtime-web-guidance-20261011/README.md) | 世界新闻及三类个人兴趣建议，仅实际工具可用时注入；189文件1034项和工程检查通过，已停服构建部署，真实搜索行为待正常运行观察 |
@@ -71,7 +74,7 @@
 
 ## 目录与后续工作
 
-最近已执行合同：[普通聊天回复跟进新消息](plans/chat-reply-freshness-20261010/README.md)及[细化方案 T1～T5](reviews/chat-reply-freshness-20261010/EXECUTION_PLAN.md)。新规则已实现；原诊断和审核探针保留旧基线，工程交付、独立复核及部署状态见[记录](records/chat-reply-freshness-20261010/README.md)。
+此前已执行合同：[普通聊天回复跟进新消息](plans/chat-reply-freshness-20261010/README.md)及[细化方案 T1～T5](reviews/chat-reply-freshness-20261010/EXECUTION_PLAN.md)。新规则已实现；原诊断和审核探针保留旧基线，工程交付、独立复核及部署状态见[记录](records/chat-reply-freshness-20261010/README.md)。
 
 此前已执行合同：[查看消息资格与专注场景](plans/phone-access-20261010/README.md)。针对首次聊天中普通文献整理被设为无结束时间不可读状态的问题，已区分查看资格与回应意愿，并强制不可读活动指定结束时间；代码及正式停服修正已完成，实际状态和未验证范围见[交付](records/phone-access-20261010/DELIVERY.md)。
 
