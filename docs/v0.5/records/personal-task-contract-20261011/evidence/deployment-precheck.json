@@ -1,0 +1,40 @@
+{
+  "checkedAt": "2026-10-11T07:21:59.004Z",
+  "readOnly": true,
+  "paused": true,
+  "openBatch": false,
+  "pendingBatchCount": 1,
+  "turns": [
+    {
+      "id": "20653c6a-c492-4a63-b7f5-23d94a6f7e54",
+      "at": "2026-10-11T06:03:24.873Z",
+      "frozenResult": false,
+      "outputComplete": false,
+      "replyFreshness": null,
+      "outbox": [],
+      "postCount": 0,
+      "stages": [
+        {
+          "stageKey": "narrative",
+          "taskName": "narrative",
+          "runId": "1499d36b-b109-4bd9-b4eb-4c9e67f2f365",
+          "repairCount": 0,
+          "lookupUsed": false,
+          "successReads": 0,
+          "failures": 0
+        },
+        {
+          "stageKey": "personal",
+          "taskName": "personal_life",
+          "runId": "b379c546-0964-4bec-b485-d41efa08f670",
+          "repairCount": 2,
+          "lookupUsed": false,
+          "successReads": 0,
+          "failures": 0
+        }
+      ],
+      "classification": "unattempted: regenerate at recovery time using new contract"
+    }
+  ],
+  "unreadCount": 1
+}

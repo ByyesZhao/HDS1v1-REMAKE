@@ -1,0 +1,34 @@
+{
+  "checkedAt": "2026-10-11T07:23:57.098Z",
+  "version": "0.5.1",
+  "testedAndDeployedCodeCommit": "0074891c259f3269c32e246d4db5a302cd22cd1e",
+  "backupRelative": "runtime/archive/batches/20261011-personal-task-contract/20261011-152300",
+  "safeStopSucceeded": true,
+  "stopDescriptorAbsent": true,
+  "koishiProcessAbsentAtDeployment": true,
+  "buildFileCount": 246,
+  "deployedLibEqualsAccepted": true,
+  "runtimePluginEntry": "lib/index.js",
+  "startupCheck": {
+    "command": "start-hdsi.cmd --check",
+    "exitCode": 0,
+    "networkRequests": false
+  },
+  "databaseAndConfigHashesUnchangedByDeploymentAndReadonlyCheck": true,
+  "paused": true,
+  "failedTurn": {
+    "id": "20653c6a-c492-4a63-b7f5-23d94a6f7e54",
+    "at": "2026-10-11T06:03:24.873Z",
+    "frozenResult": false,
+    "outputComplete": false,
+    "done": false
+  },
+  "personalStage": {
+    "runId": "b379c546-0964-4bec-b485-d41efa08f670",
+    "taskName": "personal_life",
+    "repairCount": 2
+  },
+  "serviceRestartedByAgent": false,
+  "resumeExecuted": false,
+  "onlineModelOrQQAcceptance": false
+}

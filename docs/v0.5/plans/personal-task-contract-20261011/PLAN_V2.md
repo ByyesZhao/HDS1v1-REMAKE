@@ -122,12 +122,16 @@
 
 前置：T1～T4完成；按当时用户授权确认部署和可能产生QQ输出的恢复范围。
 
-- [ ] 只读重查paused、unfinished turn、frozenResult、outputComplete、每项outbox状态／confirmedAt、firstAttemptAt、replyFreshness代际／scope、消息seen、批次、阶段键和checkpoint。先按恢复矩阵分类，不只统计confirmed数。
-- [ ] 安全停止并确认成功，无在途写入后创建唯一私有备份，保存一致DB及实际WAL/SHM、lib和配置及hash；停止失败保持现场，不强制结束。不把备份入Git。
+- [x] 只读重查paused、unfinished turn、frozenResult、outputComplete、每项outbox状态／confirmedAt、firstAttemptAt、replyFreshness代际／scope、消息seen、批次、阶段键和checkpoint。先按恢复矩阵分类，不只统计confirmed数。
+- [x] 安全停止并确认成功，无在途写入后创建唯一私有备份，保存一致DB及实际WAL/SHM、lib和配置及hash；停止失败保持现场，不强制结束。不把备份入Git。
 - [ ] 部署已验收构建，启动入口`--check`通过且解析到目标lib；启动后确认原暂停仍保留。不能以重启代替resume，也不用check:models当离线检查。
 - [ ] 经明确恢复指令执行hdsi.resume；不手改at／seen／任务时间或checkpoint。**无尝试且未完成输出时，允许既有代码自行更新at和重新决定活动／个人角色**；已尝试／输出完成则核对保留旧at。普通waiting分支沿原换代规则。
 - [ ] 记录实际恢复角色、阶段身份／预算、旧轮终态、已确认输出未重发及后续任务资格；合法回应不保证仍为沉默，新错误保持暂停和诊断。实际发送可能包括错误通知，不能把“无故事输出”写成“绝无QQ输出”。
 - [ ] 部署检查失败且尚无新业务写入时可回退匹配备份；启动后已产生状态写入、发送或提交时先审计，不能直接覆盖旧库。记录“已部署”和“已恢复”的实际完成程度。
+
+D1现场执行：只读分类、安全停止／备份和部署后只读检查已完成，见[现场记录](../../records/personal-task-contract-20261011/DEPLOYMENT.md)。第三项的启动后确认待用户手动启动；resume及其后现场验收未执行。
+
+D1现场执行：只读分类、安全停止／备份和部署后只读检查已完成，见[现场记录](../../records/personal-task-contract-20261011/DEPLOYMENT.md)。第三项的启动后确认待用户手动启动；resume及其后现场验收未执行。
 
 ## 自检与交接
 
