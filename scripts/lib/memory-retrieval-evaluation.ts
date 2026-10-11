@@ -14,6 +14,8 @@ import type { MemoryCandidate, RetrievalRequest, RetrievalPermissions } from '..
 import type { Message, TurnRecord, DetailHistory } from '../../src/types';
 import { stageInput } from '../../src/model/context-views';
 import type { ModelResourcePool, ModelRoles } from '../../src/model/context-types';
+import { createVectorReplayIndex, validateRetrievalVectorPack, retrievalVectorPackHash, IncompleteVectorsError, type RetrievalVectorPack } from './memory-retrieval-vectors';
+export { createVectorReplayIndex, validateRetrievalVectorPack, retrievalVectorPackHash, IncompleteVectorsError, prepareRetrievalVectorPack, loadRetrievalVectorPack, retrievalProviderSignature, type RetrievalVectorPack } from './memory-retrieval-vectors';
 
 export type { RetrievalCalibration } from '../../src/memory/retrieval';
 export type RetrievalSplit = 'development' | 'calibration' | 'holdout';
@@ -65,6 +67,7 @@ export interface RetrievalEvaluationReport {
   bySplit:Partial<Record<RetrievalSplit,EvaluationMetrics>>;
   alwaysInclude:{queryCount:number; injections:number; ownerKeys:RetrievalOwnerKey[]};
   negativeFalseHits:number; materializedVectorBytes:number; remoteRequests:number;
+  collectionNetworkRequests:number; replayProviderCalls:number; replayNetworkRequests:0|null; vectorPackHash?:string;
 }
 export interface FrozenRetrievalCandidate {
   calibration:RetrievalCalibration;
@@ -266,8 +269,10 @@ export function evaluationMetrics(rows:RetrievalQueryEvaluation[]):EvaluationMet
 }
 
 /** Offline by default. A caller-supplied indexFactory is the sole embedding capability. */
-export async function evaluateRetrievalDataset(dataset:RetrievalDatasetV2,calibration:RetrievalCalibration,options:{splits:RetrievalSplit[];indexFactory?:(store:MemoryStore)=>MemoryIndex}):Promise<RetrievalEvaluationReport> {
+export async function evaluateRetrievalDataset(dataset:RetrievalDatasetV2,calibration:RetrievalCalibration,options:{splits:RetrievalSplit[];indexFactory?:(store:MemoryStore)=>MemoryIndex;vectors?:RetrievalVectorPack}):Promise<RetrievalEvaluationReport> {
   validateRetrievalDataset(dataset,{benchmarkShape:false});validateCalibration(calibration);
+  if(options.vectors){check(!options.indexFactory,'vectors and indexFactory are mutually exclusive');validateRetrievalVectorPack(dataset,options.vectors,calibration.semantic?.configSignature);}
+  else if(calibration.semantic&&!options.indexFactory)throw new IncompleteVectorsError(['vectors_required']);
   check(options.splits.length>0&&options.splits.every(s=>splits.includes(s)),'at least one valid split is required');noDuplicates(options.splits,'split');
   const results:RetrievalQueryEvaluation[]=[];
   for(const query of dataset.queries){
@@ -275,7 +280,7 @@ export async function evaluateRetrievalDataset(dataset:RetrievalDatasetV2,calibr
     const storage=new Storage(':memory:');
     try {
       const store=new EvaluationMemoryStore(storage);seedFamily(storage,store,family,query);
-      const index=options.indexFactory?.(store),request=buildEvaluationRequest(query);
+      const index=options.vectors?createVectorReplayIndex(store,options.vectors):options.indexFactory?.(store),request=buildEvaluationRequest(query);
       const seeded=store.allOwners(),seededOwnerKeys=seeded.map(ownerKey).sort();
       const retrieval=new MemoryRetrieval(store,index,{},calibration);
       const remoteBefore=index?.stats.remoteRequests??0;
@@ -309,7 +314,51 @@ export async function evaluateRetrievalDataset(dataset:RetrievalDatasetV2,calibr
     byCategory:Object.fromEntries(retrievalCategories.map(c=>[c,evaluationMetrics(results.filter(r=>r.category===c))])) as Record<RetrievalCategory,EvaluationMetrics>,
     bySplit:Object.fromEntries(options.splits.map(s=>[s,evaluationMetrics(results.filter(r=>r.split===s))])),
     alwaysInclude:{queryCount:results.filter(r=>r.alwaysIncludeOwnerKeys.length>0).length,injections:results.reduce((n,r)=>n+r.alwaysIncludeOwnerKeys.length,0),ownerKeys:unique(results.flatMap(r=>r.alwaysIncludeOwnerKeys)).sort()},
-    negativeFalseHits:metrics.negativeFalseHits,materializedVectorBytes:results.reduce((n,r)=>n+r.materializedVectorBytes,0),remoteRequests:results.reduce((n,r)=>n+r.remoteRequests,0)};
+    negativeFalseHits:metrics.negativeFalseHits,materializedVectorBytes:results.reduce((n,r)=>n+r.materializedVectorBytes,0),remoteRequests:results.reduce((n,r)=>n+r.remoteRequests,0),
+    collectionNetworkRequests:options.vectors?.collectionNetworkRequests??0,replayProviderCalls:options.vectors?results.reduce((n,r)=>n+r.remoteRequests,0):0,replayNetworkRequests:options.indexFactory?null:0,...options.vectors?{vectorPackHash:retrievalVectorPackHash(options.vectors)}:{}};
+}
+
+export interface SemanticCandidateEvaluation {
+  semantic:RetrievalCalibration['semantic']; metrics:EvaluationMetrics; groups:Record<RetrievalGroup,EvaluationMetrics>;
+  eligible:boolean; reasons:string[]; replayProviderCalls:number;
+}
+export interface SemanticSelection {
+  datasetHash:string; vectorPackHash:string; configSignature:string; split:'calibration';
+  thresholdGrid:number[]; candidates:SemanticCandidateEvaluation[]; selectedSemantic:RetrievalCalibration['semantic'];
+  baseline:SemanticCandidateEvaluation; selected:SemanticCandidateEvaluation;
+  comparison:ReturnType<typeof recommendLexicalCandidate>;
+  collectionNetworkRequests:number; replayProviderCalls:number; replayNetworkRequests:0;
+}
+/** Fixed before any evaluation. Both groups use the full Cartesian product, plus a genuinely disabled baseline. */
+export const semanticThresholdGrid=Object.freeze([-1,0,0.5,0.75,0.9,1]);
+export async function selectSemanticCalibration(dataset:RetrievalDatasetV2,vectors:RetrievalVectorPack):Promise<{calibration:RetrievalCalibration;selection:SemanticSelection}> {
+  if(!vectors)throw new IncompleteVectorsError(['vectors_required']);
+  validateRetrievalVectorPack(dataset,vectors);
+  const families=dataset.families.filter(f=>f.split==='calibration'),ids=new Set(families.map(f=>f.id));
+  const subset={...dataset,families,queries:dataset.queries.filter(q=>ids.has(q.familyId))};
+  validateRetrievalDataset(subset,{benchmarkShape:false});
+  const ownerIds=new Set(families.flatMap(f=>f.owners.map(ownerKey))),queryIds=new Set(subset.queries.map(q=>q.id));
+  const subsetVectors:RetrievalVectorPack={...vectors,datasetHash:retrievalDatasetHash(subset),owners:Object.fromEntries(Object.entries(vectors.owners).filter(([id])=>ownerIds.has(id as RetrievalOwnerKey))),queries:Object.fromEntries(Object.entries(vectors.queries).filter(([id])=>queryIds.has(id)))};
+  const baselineReport=await evaluateRetrievalDataset(subset,defaultCalibration,{splits:['calibration'],vectors:subsetVectors});
+  function trial(report:RetrievalEvaluationReport):SemanticCandidateEvaluation {
+    const reasons:string[]=[];
+    for(const group of groups){
+      const m=report.groups[group];
+      if(m.precision===null||m.recall===null||m.F1===null)reasons.push(`${group}:undefined_candidate_metrics`);
+      if(m.precision!==null&&m.precision<0.95)reasons.push(`${group}:precision_below_0.95`);
+      if(m.negativeFalseHits>baselineReport.groups[group].negativeFalseHits)reasons.push(`${group}:negative_false_hits_increased`);
+    }
+    if(report.metrics.precision===null||report.metrics.recall===null||report.metrics.F1===null)reasons.push('undefined_candidate_metrics');
+    return {semantic:report.calibration.semantic??null,metrics:report.metrics,groups:report.groups,eligible:reasons.length===0,reasons,replayProviderCalls:report.replayProviderCalls};
+  }
+  const baseline=trial(baselineReport),candidates:SemanticCandidateEvaluation[]=[baseline];
+  for(const fact of semanticThresholdGrid)for(const experience of semanticThresholdGrid){
+    const calibration={lexical:{fact:1,experience:1},semantic:{fact,experience,configSignature:vectors.configSignature}};
+    candidates.push(trial(await evaluateRetrievalDataset(subset,calibration,{splits:['calibration'],vectors:subsetVectors})));
+  }
+  const eligible=candidates.filter(c=>c.eligible).sort((a,b)=>b.metrics.F1!-a.metrics.F1!||b.metrics.precision!-a.metrics.precision!||(b.semantic?.fact??-Infinity)-(a.semantic?.fact??-Infinity)||(b.semantic?.experience??-Infinity)-(a.semantic?.experience??-Infinity));
+  const selected=eligible[0]??baseline,calibration={lexical:{fact:1,experience:1},semantic:selected.semantic??null};
+  return {calibration,selection:{datasetHash:retrievalDatasetHash(dataset),vectorPackHash:retrievalVectorPackHash(vectors),configSignature:vectors.configSignature,split:'calibration',thresholdGrid:[...semanticThresholdGrid],candidates,selectedSemantic:calibration.semantic,baseline,selected,comparison:recommendLexicalCandidate(baseline,selected),collectionNetworkRequests:vectors.collectionNetworkRequests,replayProviderCalls:candidates.reduce((n,c)=>n+c.replayProviderCalls,0),replayNetworkRequests:0}};
 }
 
 /** Hash binds the complete frozen dataset; selection reads labels from calibration only. */
@@ -368,11 +417,12 @@ export function recommendLexicalCandidate(baseline:RecommendationInput,candidate
 }
 
 /** Caller must persist the frozen candidate and claim holdout use before entering this function. */
-export async function evaluatePairedHoldout(dataset:RetrievalDatasetV2,bytes:string|Buffer,candidateHash:string) {
+export async function evaluatePairedHoldout(dataset:RetrievalDatasetV2,bytes:string|Buffer,candidateHash:string,vectors?:RetrievalVectorPack) {
   const datasetHash=retrievalDatasetHash(dataset),frozen=validateFrozenCandidate(bytes,candidateHash,datasetHash);
-  check(frozen.calibration.semantic===null,'lexical candidate semantic must be null');
-  const baseline=await evaluateRetrievalDataset(dataset,defaultCalibration,{splits:['holdout']});
-  const candidate=await evaluateRetrievalDataset(dataset,frozen.calibration,{splits:['holdout']});
+  if(vectors)validateSemanticFrozenCandidate(frozen,dataset,vectors);
+  else {check(!frozen.selection.vectorPackHash,'semantic candidate requires vectors');check(frozen.calibration.semantic===null,'lexical candidate semantic must be null');}
+  const baseline=await evaluateRetrievalDataset(dataset,defaultCalibration,{splits:['holdout'],vectors});
+  const candidate=await evaluateRetrievalDataset(dataset,frozen.calibration,{splits:['holdout'],vectors});
   const queryDifferences=baseline.queries.map((before,i)=>{
     const after=candidate.queries[i];
     check(before.id===after.id&&JSON.stringify(before.request)===JSON.stringify(after.request)&&JSON.stringify(before.seededOwnerKeys)===JSON.stringify(after.seededOwnerKeys),'paired evaluation seed/request mismatch');
@@ -383,5 +433,12 @@ export async function evaluatePairedHoldout(dataset:RetrievalDatasetV2,bytes:str
   });
   return {version:2,datasetHash,candidateHash,splits:['holdout'] as const,calibration:frozen.calibration,selection:frozen.selection,
     lexicalDifference:{fact:frozen.calibration.lexical.fact-1,experience:frozen.calibration.lexical.experience-1},
-    baseline,candidate,queryDifferences,...recommendLexicalCandidate(baseline,candidate)};
+    baseline,candidate,queryDifferences,...vectors?{vectorPackHash:retrievalVectorPackHash(vectors),collectionNetworkRequests:vectors.collectionNetworkRequests,replayProviderCalls:baseline.replayProviderCalls+candidate.replayProviderCalls,replayNetworkRequests:0}:{},...recommendLexicalCandidate(baseline,candidate)};
+}
+
+export function validateSemanticFrozenCandidate(frozen:FrozenRetrievalCandidate,dataset:RetrievalDatasetV2,vectors:RetrievalVectorPack):void {
+  validateRetrievalVectorPack(dataset,vectors,frozen.calibration.semantic?.configSignature);
+  if(frozen.selection.vectorPackHash!==retrievalVectorPackHash(vectors))throw new IncompleteVectorsError(['frozen_candidate_vector_pack_hash_mismatch']);
+  if(frozen.selection.configSignature!==vectors.configSignature)throw new IncompleteVectorsError(['frozen_candidate_signature_mismatch']);
+  check(frozen.calibration.lexical.fact===1&&frozen.calibration.lexical.experience===1,'semantic candidate lexical thresholds must remain 1');
 }

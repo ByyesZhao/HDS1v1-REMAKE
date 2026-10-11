@@ -1,0 +1,70 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/memory-retrieval-semantic-evaluation.test.ts tests/memory-retrieval-evaluation.test.ts tests/memory-retrieval-calibration-split.test.ts tests/memory-v3-retrieval.test.ts --maxWorkers=1 --reporter=verbose
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ✓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > rejects_dataset_or_signature_mismatch 15ms
+ ✓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > vectors_are_reused_without_network 26ms
+ ✓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > query_missing_vector_is_reported 5ms
+ ✓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > rejects malformed vectors, owner revision/text drift and conflicting duplicate embeddings 10ms
+ ✓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > uncalibrated_baseline_makes_zero_queries 13ms
+ ✓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > does not label an arbitrary caller supplied index as proven zero network replay 12ms
+ ✓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > empty_or_no_compatible_candidate_still_skips 7ms
+ ✓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > plans without requests; resumes by signature and text hash; failures remain incomplete 12ms
+ ✓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > selects complete Cartesian candidates on calibration and binds pack hash 614ms
+ ✓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > holdout labels never fit selection and vector drift rejects a frozen candidate 586ms
+ ✓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > resumes only missing unique texts and rejects a changed provider before collection 9ms
+ ✓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > checkpoints an attempted request before awaiting its result for interrupted resumes 7ms
+ ✓ tests/memory-retrieval-semantic-evaluation.test.ts > prepare CLI requires explicit paths, dry plans and rejects aliases without changing inputs 1356ms
+ ✓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic CLI rejects incomplete packs before freeze; binds pack before one paired miniature holdout 14907ms
+ ✓ tests/memory-retrieval-calibration-split.test.ts > holdout_labels_cannot_change_selected_threshold 79ms
+ ✓ tests/memory-retrieval-calibration-split.test.ts > precision_constraint_beats_recall 18ms
+ ✓ tests/memory-retrieval-calibration-split.test.ts > ties_choose_higher_threshold 16ms
+ ✓ tests/memory-retrieval-calibration-split.test.ts > no_candidate_keeps_baseline 7ms
+ ✓ tests/memory-retrieval-calibration-split.test.ts > new negative false hits disqualify an otherwise precise candidate 342ms
+ ✓ tests/memory-retrieval-calibration-split.test.ts > candidate metrics reflect the actual SQL eligibility and direct-key pipeline 26ms
+ ✓ tests/memory-retrieval-calibration-split.test.ts > recommendation requires both group precision, nonregression, ten recall points and defined candidate metrics 0ms
+ ✓ tests/memory-retrieval-calibration-split.test.ts > CLI freezes candidate before paired holdout, records use, reports differences and refuses reuse 3496ms
+ ✓ tests/memory-retrieval-calibration-split.test.ts > CLI rejects output aliases before reading or changing inputs 904ms
+ ✓ tests/memory-retrieval-calibration-split.test.ts > CLI selection ignores report splits and an invalid frozen hash cannot consume holdout 3661ms
+ ✓ tests/memory-retrieval-calibration-split.test.ts > paired retrieval preserves direct keys, alwaysInclude, archive authorization and expiry 26ms
+ ✓ tests/memory-retrieval-calibration-split.test.ts > candidate JSON loads through synthetic settings and the actual runtime calibrationFile protocol 46ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > static benchmark label contract (does not retrieve holdout) > family_never_crosses_splits 24ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > static benchmark label contract (does not retrieve holdout) > duplicate_query_id_rejected 14ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > static benchmark label contract (does not retrieve holdout) > expected_keys_exist 20ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > static benchmark label contract (does not retrieve holdout) > six_query_categories_per_family 15ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > static benchmark label contract (does not retrieve holdout) > fact_and_experience_stratified 14ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > static benchmark label contract (does not retrieve holdout) > negative_query_has_empty_expectation 11ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > static benchmark label contract (does not retrieve holdout) > requires three distractors and source closure 19ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > static benchmark label contract (does not retrieve holdout) > retains exact file hash and detects in-memory label changes 19ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > static benchmark label contract (does not retrieve holdout) > rejects query text leakage and incomplete typed message seeds 21ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > evaluation_uses_real_retrieval 25ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > negative false hits exclude alwaysInclude and null denominators stay null 14ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > lookup_does_not_expand_permissions 3ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > memory_context_matches_personal_evidence: personal_chat 9ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > memory_context_matches_personal_evidence: personal_life 8ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > memory_context_matches_personal_evidence: personal_shared 7ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > seeds canonical closure without filtering it out of reported SQL results 9ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > requires labels for extra closure owners and follows historical owner sources 9ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > fresh databases prevent cross-query state and reports are deterministic 34ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > counts actual materialized vectors and provider requests 9ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > validates frozen candidate against exact candidate bytes and dataset hash 3ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > CLI requires explicit paths and refuses unfrozen holdout before writing a report 899ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > rejects short and long owner IDs that collide in the physical memories table 3ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > preserves same ID owners stored in different physical tables 8ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > CLI rejects Windows case aliases without modifying dataset bytes 428ms
+ ↓ tests/memory-retrieval-evaluation.test.ts > CLI rejects hard-linked input/output aliases without modifying dataset bytes 129ms [Host filesystem policy does not permit creating a hard link]
+ ✓ tests/memory-v3-retrieval.test.ts > guards archive and detail history independently and never derives permission from hidden input 30ms
+ ✓ tests/memory-v3-retrieval.test.ts > switches at seven days to preview even without vectors or completed maintenance, and archives after ninety days 8ms
+ ✓ tests/memory-v3-retrieval.test.ts > provides every relevant item beyond old quotas and excludes generic weak matches and merged records 21ms
+ ✓ tests/memory-v3-retrieval.test.ts > shares one optional long limit across ordinary and on-demand learned records, leaves alwaysInclude independent 4ms
+ ✓ tests/memory-v3-retrieval.test.ts > keeps complete recent dialogue episodes, budgets only complete records, and organizer ignores unused recent history 126ms
+ ✓ tests/memory-v3-retrieval.test.ts > filters vector candidates by current state and revision and does not enable uncalibrated semantic-only 4ms
+ ✓ tests/memory-v3-retrieval.test.ts > SQL filtering and unlimited relevant recall hold with ten thousand records at three and six months 739ms
+ ✓ tests/memory-v3-retrieval.test.ts > applies calibrated semantic thresholds before RRF60 and puts explicit aliases ahead of fused ranks 5ms
+
+ Test Files  4 passed (4)
+      Tests  58 passed | 1 skipped (59)
+   Start at  10:32:21
+   Duration  30.56s (tests 96%, import 2%, transform 2%)
+

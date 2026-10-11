@@ -3,6 +3,7 @@ import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from 'no
 import { dirname, resolve } from 'node:path';
 import { defaultCalibration } from '../src/memory/retrieval';
 import { evaluateRetrievalDataset, evaluatePairedHoldout, selectLexicalCalibration, loadRetrievalDataset, retrievalDatasetHash, validateCalibration, validateFrozenCandidate, type RetrievalSplit } from './lib/memory-retrieval-evaluation';
+import { selectSemanticCalibration, validateSemanticFrozenCandidate, loadRetrievalVectorPack, validateRetrievalVectorPack, retrievalVectorPackHash, IncompleteVectorsError } from './lib/memory-retrieval-evaluation';
 
 function sameFile(input:string,output:string):boolean {
   const left=resolve(input),right=resolve(output);
@@ -16,22 +17,25 @@ function writeJson(path:string,value:unknown,exclusive=false):void {
 }
 async function main():Promise<void> {
   const args=process.argv.slice(2),options=new Map<string,string>();
-  const allowed=new Set(['--dataset','--report','--calibration','--splits','--candidate','--candidate-hash','--select-lexical']);
+  const allowed=new Set(['--dataset','--report','--calibration','--splits','--candidate','--candidate-hash','--select-lexical','--select-semantic','--vectors']);
   for(let i=0;i<args.length;i++){
     const flag=args[i];if(!allowed.has(flag)||options.has(flag))throw Error(`invalid argument ${flag}`);
-    if(flag==='--select-lexical'){options.set(flag,'true');continue;}
+    if(flag==='--select-lexical'||flag==='--select-semantic'){options.set(flag,'true');continue;}
     const value=args[++i];if(!value||value.startsWith('--'))throw Error(`invalid argument ${flag}`);options.set(flag,value);
   }
   if(!options.has('--dataset')||!options.has('--report'))throw Error('required: --dataset <json> --report <json>');
   const datasetPath=resolve(options.get('--dataset')!),reportPath=resolve(options.get('--report')!),usagePath=datasetPath+'.holdout-used.json';
-  const selecting=options.has('--select-lexical'),candidatePath=options.has('--candidate')?resolve(options.get('--candidate')!):null;
+  const semantic=options.has('--select-semantic'),selecting=options.has('--select-lexical')||semantic,candidatePath=options.has('--candidate')?resolve(options.get('--candidate')!):null;
+  if(semantic&&options.has('--select-lexical'))throw Error('--select-semantic and --select-lexical are mutually exclusive');
+  if(options.has('--select-lexical')&&options.has('--vectors'))throw Error('--select-lexical and --vectors are mutually exclusive');
+  if(semantic&&!options.has('--vectors'))throw new IncompleteVectorsError(['vectors_required']);
   const splits=(options.get('--splits')??'development,calibration').split(',') as RetrievalSplit[];
   if(!splits.length||splits.some(s=>!['development','calibration','holdout'].includes(s))||new Set(splits).size!==splits.length)throw Error('invalid --splits');
   const holdout=splits.includes('holdout');
   if(holdout&&(splits.length!==1||splits[0]!=='holdout'))throw Error('paired holdout requires exactly --splits holdout');
-  const paths=[datasetPath,reportPath,usagePath,...candidatePath?[candidatePath]:[],...options.has('--calibration')?[resolve(options.get('--calibration')!)]:[]];
+  const paths=[datasetPath,reportPath,usagePath,...candidatePath?[candidatePath]:[],...options.has('--calibration')?[resolve(options.get('--calibration')!)]:[],...options.has('--vectors')?[resolve(options.get('--vectors')!)]:[]];
   for(let i=0;i<paths.length;i++)for(let j=i+1;j<paths.length;j++)if(sameFile(paths[i],paths[j]))throw Error('output alias must not overwrite an input file or another output');
-  if(selecting&&!candidatePath)throw Error('--select-lexical requires --candidate output');
+  if(selecting&&!candidatePath)throw Error('selection requires --candidate output');
   if(selecting&&options.has('--candidate-hash'))throw Error('--candidate-hash applies only to an existing frozen candidate');
   if(options.has('--calibration')&&(selecting||candidatePath||holdout))throw Error('--calibration cannot be combined with candidate selection/evaluation');
   if(options.has('--candidate-hash')&&!candidatePath)throw Error('--candidate-hash requires --candidate');
@@ -40,9 +44,11 @@ async function main():Promise<void> {
   if(holdout&&existsSync(usagePath))throw Error('holdout already used; obtain a new unseen family holdout before further research');
   if(selecting&&candidatePath&&existsSync(candidatePath))throw Error('candidate output already exists; frozen candidates cannot be overwritten');
   const dataset=loadRetrievalDataset(datasetPath),datasetHash=retrievalDatasetHash(dataset);
+  const vectors=options.has('--vectors')?loadRetrievalVectorPack(resolve(options.get('--vectors')!)):undefined;
+  if(vectors)validateRetrievalVectorPack(dataset,vectors);
   let frozenBytes:Buffer|undefined,candidateHash:string|undefined,calibration=defaultCalibration;
   if(selecting){
-    const selected=await selectLexicalCalibration(dataset);
+    const selected=semantic?await selectSemanticCalibration(dataset,vectors!):await selectLexicalCalibration(dataset);
     writeJson(candidatePath!,selected,true);
     frozenBytes=readFileSync(candidatePath!);candidateHash=hash(frozenBytes);
     calibration=validateFrozenCandidate(frozenBytes,candidateHash,datasetHash).calibration;
@@ -55,18 +61,20 @@ async function main():Promise<void> {
     const value=loaded&&typeof loaded==='object'&&'calibration' in loaded?loaded.calibration:loaded;
     validateCalibration(value);calibration=value;
   }
+  if(vectors&&frozenBytes)validateSemanticFrozenCandidate(validateFrozenCandidate(frozenBytes,candidateHash!,datasetHash),dataset,vectors);
+  if(!vectors&&frozenBytes&&validateFrozenCandidate(frozenBytes,candidateHash!,datasetHash).selection.vectorPackHash)throw new IncompleteVectorsError(['vectors_required']);
   if(holdout){
-    if(calibration.semantic!==null)throw Error('lexical candidate semantic must be null');
-    const usage={version:1,datasetHash,candidateHash,candidatePath,reportPath,holdoutFamilyIds:dataset.families.filter(f=>f.split==='holdout').map(f=>f.id),startedAt:new Date().toISOString(),status:'started'};
+    if(!vectors&&calibration.semantic!==null)throw Error('lexical candidate semantic must be null');
+    const usage={version:1,datasetHash,candidateHash,candidatePath,reportPath,...vectors?{vectorPackHash:retrievalVectorPackHash(vectors)}:{},holdoutFamilyIds:dataset.families.filter(f=>f.split==='holdout').map(f=>f.id),startedAt:new Date().toISOString(),status:'started'};
     // Exclusive claim survives evaluation/report failure, preventing retries from retuning on a seen holdout.
     writeJson(usagePath,usage,true);
-    const paired=await evaluatePairedHoldout(dataset,frozenBytes!,candidateHash!);
+    const paired=await evaluatePairedHoldout(dataset,frozenBytes!,candidateHash!,vectors);
     writeJson(reportPath,{...paired,holdoutUsage:{...usage,status:'completed',usagePath}});
     writeJson(usagePath,{...usage,status:'completed',completedAt:new Date().toISOString()});
     console.log(JSON.stringify({report:reportPath,datasetHash,candidateHash,recommendation:paired.recommendation,reasons:paired.reasons,recallGain:paired.recallGain},null,2));return;
   }
-  const report=await evaluateRetrievalDataset(dataset,calibration,{splits});
+  const report=await evaluateRetrievalDataset(dataset,calibration,{splits,vectors});
   writeJson(reportPath,{...report,...candidateHash?{candidateHash}:{} });
   console.log(JSON.stringify({report:reportPath,datasetHash:report.datasetHash,candidateHash,splits,queries:report.queries.length,metrics:report.metrics,groups:report.groups,remoteRequests:report.remoteRequests,materializedVectorBytes:report.materializedVectorBytes},null,2));
 }
-main().catch(error=>{console.error(error instanceof Error?error.message:String(error));process.exitCode=1;});
+main().catch(error=>{console.error(error instanceof IncompleteVectorsError?JSON.stringify({status:error.status,issues:error.issues}):error instanceof Error?error.message:String(error));process.exitCode=1;});

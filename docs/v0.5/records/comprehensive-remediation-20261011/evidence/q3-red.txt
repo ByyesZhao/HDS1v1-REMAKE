@@ -1,0 +1,118 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/memory-retrieval-semantic-evaluation.test.ts --maxWorkers=1 --reporter=verbose
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ × tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > rejects_dataset_or_signature_mismatch 11ms
+   → api.prepareRetrievalVectorPack is not a function
+ × tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > vectors_are_reused_without_network 3ms
+   → api.prepareRetrievalVectorPack is not a function
+ × tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > query_missing_vector_is_reported 3ms
+   → api.prepareRetrievalVectorPack is not a function
+ × tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > uncalibrated_baseline_makes_zero_queries 3ms
+   → api.prepareRetrievalVectorPack is not a function
+ × tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > empty_or_no_compatible_candidate_still_skips 4ms
+   → api.prepareRetrievalVectorPack is not a function
+ × tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > plans without requests; resumes by signature and text hash; failures remain incomplete 4ms
+   → api.prepareRetrievalVectorPack is not a function
+ × tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > selects complete Cartesian candidates on calibration and binds pack hash 3ms
+   → api.prepareRetrievalVectorPack is not a function
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > rejects_dataset_or_signature_mismatch
+TypeError: api.prepareRetrievalVectorPack is not a function
+ ❯ prepare tests/memory-retrieval-semantic-evaluation.test.ts:25:81
+     23| }
+     24| const api=evaluation as any;
+     25| const prepare=(dataset:RetrievalDatasetV2,extra:Record<string,unknown>…
+       |                                                                                 ^
+     26|
+     27| describe('semantic replay miniature only; not quality evidence',()=>{
+ ❯ tests/memory-retrieval-semantic-evaluation.test.ts:29:36
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯
+
+ FAIL  tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > vectors_are_reused_without_network
+TypeError: api.prepareRetrievalVectorPack is not a function
+ ❯ prepare tests/memory-retrieval-semantic-evaluation.test.ts:25:81
+     23| }
+     24| const api=evaluation as any;
+     25| const prepare=(dataset:RetrievalDatasetV2,extra:Record<string,unknown>…
+       |                                                                                 ^
+     26|
+     27| describe('semantic replay miniature only; not quality evidence',()=>{
+ ❯ tests/memory-retrieval-semantic-evaluation.test.ts:35:36
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯
+
+ FAIL  tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > query_missing_vector_is_reported
+TypeError: api.prepareRetrievalVectorPack is not a function
+ ❯ prepare tests/memory-retrieval-semantic-evaluation.test.ts:25:81
+     23| }
+     24| const api=evaluation as any;
+     25| const prepare=(dataset:RetrievalDatasetV2,extra:Record<string,unknown>…
+       |                                                                                 ^
+     26|
+     27| describe('semantic replay miniature only; not quality evidence',()=>{
+ ❯ tests/memory-retrieval-semantic-evaluation.test.ts:44:36
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯
+
+ FAIL  tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > uncalibrated_baseline_makes_zero_queries
+TypeError: api.prepareRetrievalVectorPack is not a function
+ ❯ prepare tests/memory-retrieval-semantic-evaluation.test.ts:25:81
+     23| }
+     24| const api=evaluation as any;
+     25| const prepare=(dataset:RetrievalDatasetV2,extra:Record<string,unknown>…
+       |                                                                                 ^
+     26|
+     27| describe('semantic replay miniature only; not quality evidence',()=>{
+ ❯ tests/memory-retrieval-semantic-evaluation.test.ts:48:36
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/7]⎯
+
+ FAIL  tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > empty_or_no_compatible_candidate_still_skips
+TypeError: api.prepareRetrievalVectorPack is not a function
+ ❯ prepare tests/memory-retrieval-semantic-evaluation.test.ts:25:81
+     23| }
+     24| const api=evaluation as any;
+     25| const prepare=(dataset:RetrievalDatasetV2,extra:Record<string,unknown>…
+       |                                                                                 ^
+     26|
+     27| describe('semantic replay miniature only; not quality evidence',()=>{
+ ❯ tests/memory-retrieval-semantic-evaluation.test.ts:53:36
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/7]⎯
+
+ FAIL  tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > plans without requests; resumes by signature and text hash; failures remain incomplete
+TypeError: api.prepareRetrievalVectorPack is not a function
+ ❯ tests/memory-retrieval-semantic-evaluation.test.ts:66:26
+     64|   it('plans without requests; resumes by signature and text hash; fail…
+     65|     const d=miniature();d.queries[1].text=d.queries[0].text;
+     66|     const plan=await api.prepareRetrievalVectorPack(d,provider,{online…
+       |                          ^
+     67|     expect(plan).toMatchObject({status:'incomplete',collectionNetworkR…
+     68|     const collected=await prepare(d);expect(collected.collectionNetwor…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/7]⎯
+
+ FAIL  tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > selects complete Cartesian candidates on calibration and binds pack hash
+TypeError: api.prepareRetrievalVectorPack is not a function
+ ❯ prepare tests/memory-retrieval-semantic-evaluation.test.ts:25:81
+     23| }
+     24| const api=evaluation as any;
+     25| const prepare=(dataset:RetrievalDatasetV2,extra:Record<string,unknown>…
+       |                                                                                 ^
+     26|
+     27| describe('semantic replay miniature only; not quality evidence',()=>{
+ ❯ tests/memory-retrieval-semantic-evaluation.test.ts:76:36
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/7]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  7 failed (7)
+   Start at  10:26:40
+   Duration  597ms (transform 56%, import 35%, tests 8%, worker 1%)
+

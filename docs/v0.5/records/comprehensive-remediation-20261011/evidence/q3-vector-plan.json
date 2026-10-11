@@ -1,0 +1,1 @@
+{"mode":"plan","datasetHash":"30a2c1920b7d7b84cf9d633fdb7c0c215d4f0bf3a723bd712472e4ff4d7b5652","configSignature":"{\"endpoint\":\"https://offline.invalid\",\"model\":\"offline-plan-only\",\"dimensions\":1024,\"template\":\"memory-v3-text-2\"}","status":"incomplete","plannedRequests":600,"collectionNetworkRequests":0,"requestsThisRun":0}

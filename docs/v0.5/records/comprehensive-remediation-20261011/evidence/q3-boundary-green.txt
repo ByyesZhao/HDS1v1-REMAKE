@@ -1,0 +1,24 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/memory-retrieval-semantic-evaluation.test.ts --maxWorkers=1 --reporter=verbose
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ✓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > rejects_dataset_or_signature_mismatch 15ms
+ ✓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > vectors_are_reused_without_network 26ms
+ ✓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > query_missing_vector_is_reported 5ms
+ ✓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > rejects malformed vectors, owner revision/text drift and conflicting duplicate embeddings 10ms
+ ✓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > uncalibrated_baseline_makes_zero_queries 12ms
+ ✓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > empty_or_no_compatible_candidate_still_skips 7ms
+ ✓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > plans without requests; resumes by signature and text hash; failures remain incomplete 13ms
+ ✓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > selects complete Cartesian candidates on calibration and binds pack hash 599ms
+ ✓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > holdout labels never fit selection and vector drift rejects a frozen candidate 566ms
+ ✓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > resumes only missing unique texts and rejects a changed provider before collection 9ms
+ ✓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > checkpoints an attempted request before awaiting its result for interrupted resumes 7ms
+ ✓ tests/memory-retrieval-semantic-evaluation.test.ts > prepare CLI requires explicit paths, dry plans and rejects aliases without changing inputs 1332ms
+ ✓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic CLI rejects incomplete packs before freeze; binds pack before one paired miniature holdout 14996ms
+
+ Test Files  1 passed (1)
+      Tests  13 passed (13)
+   Start at  10:30:53
+   Duration  18.16s (tests 98%, transform 1%, import 1%)
+

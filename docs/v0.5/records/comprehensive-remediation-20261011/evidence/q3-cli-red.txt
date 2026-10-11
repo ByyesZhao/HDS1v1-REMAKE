@@ -1,0 +1,107 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/memory-retrieval-semantic-evaluation.test.ts --maxWorkers=1 --reporter=verbose
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ✓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > rejects_dataset_or_signature_mismatch 15ms
+ ✓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > vectors_are_reused_without_network 26ms
+ ✓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > query_missing_vector_is_reported 5ms
+ ✓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > uncalibrated_baseline_makes_zero_queries 12ms
+ ✓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > empty_or_no_compatible_candidate_still_skips 6ms
+ ✓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > plans without requests; resumes by signature and text hash; failures remain incomplete 11ms
+ ✓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > selects complete Cartesian candidates on calibration and binds pack hash 585ms
+ × tests/memory-retrieval-semantic-evaluation.test.ts > prepare CLI requires explicit paths, dry plans and rejects aliases without changing inputs 112ms
+   → node:internal/modules/esm/resolve:272
+    throw new ERR_MODULE_NOT_FOUND(
+          ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module 'D:\HDSI-remake\scripts\prepare-memory-retrieval-vectors.ts' imported from D:\HDSI-remake\
+    at finalizeResolution (node:internal/modules/esm/resolve:272:11)
+    at moduleResolve (node:internal/modules/esm/resolve:879:10)
+    at defaultResolve (node:internal/modules/esm/resolve:1006:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:705:20)
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:725:38)
+    at nextStep (node:internal/modules/customization_hooks:189:26)
+    at resolveBaseSync (file:///D:/HDSI-remake/node_modules/tsx/dist/register-nyXW-TH3.mjs:2:11092)
+    at resolveDirectorySync (file:///D:/HDSI-remake/node_modules/tsx/dist/register-nyXW-TH3.mjs:2:12398)
+    at resolveTsPathsSync (file:///D:/HDSI-remake/node_modules/tsx/dist/register-nyXW-TH3.mjs:2:13605)
+    at resolve (file:///D:/HDSI-remake/node_modules/tsx/dist/register-nyXW-TH3.mjs:2:16832) {
+  code: 'ERR_MODULE_NOT_FOUND',
+  url: 'file:///D:/HDSI-remake/scripts/prepare-memory-retrieval-vectors.ts'
+}
+
+Node.js v24.21.0
+: expected 1 to be +0 // Object.is equality
+ × tests/memory-retrieval-semantic-evaluation.test.ts > semantic CLI rejects incomplete packs before freeze; binds pack before one paired miniature holdout 421ms
+   → expected 'invalid argument --vectors\n' to match /incomplete/
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/memory-retrieval-semantic-evaluation.test.ts > prepare CLI requires explicit paths, dry plans and rejects aliases without changing inputs
+AssertionError: node:internal/modules/esm/resolve:272
+    throw new ERR_MODULE_NOT_FOUND(
+          ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module 'D:\HDSI-remake\scripts\prepare-memory-retrieval-vectors.ts' imported from D:\HDSI-remake\
+    at finalizeResolution (node:internal/modules/esm/resolve:272:11)
+    at moduleResolve (node:internal/modules/esm/resolve:879:10)
+    at defaultResolve (node:internal/modules/esm/resolve:1006:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:705:20)
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:725:38)
+    at nextStep (node:internal/modules/customization_hooks:189:26)
+    at resolveBaseSync (file:///D:/HDSI-remake/node_modules/tsx/dist/register-nyXW-TH3.mjs:2:11092)
+    at resolveDirectorySync (file:///D:/HDSI-remake/node_modules/tsx/dist/register-nyXW-TH3.mjs:2:12398)
+    at resolveTsPathsSync (file:///D:/HDSI-remake/node_modules/tsx/dist/register-nyXW-TH3.mjs:2:13605)
+    at resolve (file:///D:/HDSI-remake/node_modules/tsx/dist/register-nyXW-TH3.mjs:2:16832) {
+  code: 'ERR_MODULE_NOT_FOUND',
+  url: 'file:///D:/HDSI-remake/scripts/prepare-memory-retrieval-vectors.ts'
+}
+
+Node.js v24.21.0
+: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ resolveBaseSync node_modules/tsx/dist/register-nyXW-TH3.mjs:2:11092
+ ❯ resolveDirectorySync node_modules/tsx/dist/register-nyXW-TH3.mjs:2:12398
+ ❯ resolveTsPathsSync node_modules/tsx/dist/register-nyXW-TH3.mjs:2:13605
+ ❯ tests/memory-retrieval-semantic-evaluation.test.ts:118:39
+    116|   const args=['--dataset',dataset,'--config',config,'--output',output];
+    117|   const result=run('prepare-memory-retrieval-vectors',args);
+    118|   expect(result.status,result.stderr).toBe(0);expect(JSON.parse(result…
+       |                                       ^
+    119|   expect(existsSync(output)).toBe(false);expect(existsSync(join(dir,'m…
+    120|   const alias=run('prepare-memory-retrieval-vectors',['--dataset',data…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/memory-retrieval-semantic-evaluation.test.ts > semantic CLI rejects incomplete packs before freeze; binds pack before one paired miniature holdout
+AssertionError: expected 'invalid argument --vectors\n' to match /incomplete/
+
+- Expected:
+/incomplete/
+
++ Received:
+"invalid argument --vectors
+"
+
+ ❯ tests/memory-retrieval-semantic-evaluation.test.ts:130:116
+    128|   const args=['--dataset',dataset,'--vectors',vectors,'--report',repor…
+    129|   const missing=structuredClone(pack);delete missing.queries['q0-direc…
+    130|   const rejected=run('evaluate-memory-retrieval',args);expect(rejected…
+       |                                                                                                                    ^
+    131|   expect(existsSync(candidate)).toBe(false);expect(existsSync(dataset+…
+    132|   writeFileSync(vectors,JSON.stringify(pack));
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 7 passed (9)
+   Start at  10:28:22
+   Duration  1.74s (tests 75%, transform 15%, import 10%)
+

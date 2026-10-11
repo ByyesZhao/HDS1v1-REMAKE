@@ -1,0 +1,20 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/memory-retrieval-semantic-evaluation.test.ts --maxWorkers=1 --reporter=verbose
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ✓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > rejects_dataset_or_signature_mismatch 15ms
+ ✓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > vectors_are_reused_without_network 28ms
+ ✓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > query_missing_vector_is_reported 5ms
+ ✓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > uncalibrated_baseline_makes_zero_queries 12ms
+ ✓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > empty_or_no_compatible_candidate_still_skips 7ms
+ ✓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > plans without requests; resumes by signature and text hash; failures remain incomplete 12ms
+ ✓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > selects complete Cartesian candidates on calibration and binds pack hash 598ms
+ ✓ tests/memory-retrieval-semantic-evaluation.test.ts > prepare CLI requires explicit paths, dry plans and rejects aliases without changing inputs 1038ms
+ ✓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic CLI rejects incomplete packs before freeze; binds pack before one paired miniature holdout 15993ms
+
+ Test Files  1 passed (1)
+      Tests  9 passed (9)
+   Start at  10:29:05
+   Duration  18.26s (tests 98%, transform 1%, import 1%)
+

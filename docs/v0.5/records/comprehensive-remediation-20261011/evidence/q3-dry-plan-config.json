@@ -1,0 +1,8 @@
+{
+  "memoryEmbedding": {
+    "baseUrl": "https://offline.invalid",
+    "apiKeyEnv": "HDSI_Q3_OFFLINE_ONLY",
+    "model": "offline-plan-only",
+    "dimensions": 1024
+  }
+}

@@ -1,0 +1,47 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/memory-retrieval-semantic-evaluation.test.ts -t resumes only missing --maxWorkers=1 --reporter=verbose
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ↓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > rejects_dataset_or_signature_mismatch
+ ↓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > vectors_are_reused_without_network
+ ↓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > query_missing_vector_is_reported
+ ↓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > rejects malformed vectors, owner revision/text drift and conflicting duplicate embeddings
+ ↓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > uncalibrated_baseline_makes_zero_queries
+ ↓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > empty_or_no_compatible_candidate_still_skips
+ ↓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > plans without requests; resumes by signature and text hash; failures remain incomplete
+ ↓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > selects complete Cartesian candidates on calibration and binds pack hash
+ ↓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > holdout labels never fit selection and vector drift rejects a frozen candidate
+ × tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > resumes only missing unique texts and rejects a changed provider before collection 21ms
+   → expected [] to have a length of 1 but got +0
+ ↓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > checkpoints an attempted request before awaiting its result for interrupted resumes
+ ↓ tests/memory-retrieval-semantic-evaluation.test.ts > prepare CLI requires explicit paths, dry plans and rejects aliases without changing inputs
+ ↓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic CLI rejects incomplete packs before freeze; binds pack before one paired miniature holdout
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > resumes only missing unique texts and rejects a changed provider before collection
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/memory-retrieval-semantic-evaluation.test.ts:124:30
+    122|     expect(partial).toMatchObject({status:'incomplete',collectionNetwo…
+    123|     const resumed=await prepare(d,{previous:partial});expect(resumed).…
+    124|     expect(resumed.failures).toHaveLength(1);
+       |                              ^
+    125|     await expect(api.prepareRetrievalVectorPack(d,{...provider,model:'…
+    126|     expect(attempts).toBe(4);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 12 skipped (13)
+   Start at  10:31:31
+   Duration  577ms (transform 58%, import 36%, tests 5%, worker 1%)
+

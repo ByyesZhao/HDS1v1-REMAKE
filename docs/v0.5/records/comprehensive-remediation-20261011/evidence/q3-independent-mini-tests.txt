@@ -1,0 +1,36 @@
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ✓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > rejects_dataset_or_signature_mismatch 15ms
+ ✓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > vectors_are_reused_without_network 31ms
+ ✓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > query_missing_vector_is_reported 5ms
+ ✓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > rejects malformed vectors, owner revision/text drift and conflicting duplicate embeddings 10ms
+ ✓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > uncalibrated_baseline_makes_zero_queries 13ms
+ ✓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > does not label an arbitrary caller supplied index as proven zero network replay 12ms
+ ✓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > empty_or_no_compatible_candidate_still_skips 8ms
+ ✓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > plans without requests; resumes by signature and text hash; failures remain incomplete 13ms
+ ✓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > selects complete Cartesian candidates on calibration and binds pack hash 624ms
+ ✓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > holdout labels never fit selection and vector drift rejects a frozen candidate 586ms
+ ✓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > resumes only missing unique texts and rejects a changed provider before collection 9ms
+ ✓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic replay miniature only; not quality evidence > checkpoints an attempted request before awaiting its result for interrupted resumes 9ms
+ ✓ tests/memory-retrieval-semantic-evaluation.test.ts > prepare CLI requires explicit paths, dry plans and rejects aliases without changing inputs 1245ms
+ ✓ tests/memory-retrieval-semantic-evaluation.test.ts > semantic CLI rejects incomplete packs before freeze; binds pack before one paired miniature holdout 15294ms
+ ✓ tests/memory-retrieval-calibration-split.test.ts > holdout_labels_cannot_change_selected_threshold 80ms
+ ✓ tests/memory-retrieval-calibration-split.test.ts > precision_constraint_beats_recall 20ms
+ ✓ tests/memory-retrieval-calibration-split.test.ts > ties_choose_higher_threshold 17ms
+ ✓ tests/memory-retrieval-calibration-split.test.ts > no_candidate_keeps_baseline 7ms
+ ✓ tests/memory-retrieval-calibration-split.test.ts > new negative false hits disqualify an otherwise precise candidate 343ms
+ ✓ tests/memory-retrieval-calibration-split.test.ts > candidate metrics reflect the actual SQL eligibility and direct-key pipeline 24ms
+ ✓ tests/memory-retrieval-calibration-split.test.ts > recommendation requires both group precision, nonregression, ten recall points and defined candidate metrics 1ms
+ ✓ tests/memory-retrieval-calibration-split.test.ts > CLI freezes candidate before paired holdout, records use, reports differences and refuses reuse 3576ms
+ ✓ tests/memory-retrieval-calibration-split.test.ts > CLI rejects output aliases before reading or changing inputs 899ms
+ ✓ tests/memory-retrieval-calibration-split.test.ts > CLI selection ignores report splits and an invalid frozen hash cannot consume holdout 3732ms
+ ✓ tests/memory-retrieval-calibration-split.test.ts > paired retrieval preserves direct keys, alwaysInclude, archive authorization and expiry 27ms
+ ✓ tests/memory-retrieval-calibration-split.test.ts > candidate JSON loads through synthetic settings and the actual runtime calibrationFile protocol 44ms
+
+ Test Files  2 passed (2)
+      Tests  26 passed (26)
+   Start at  10:38:14
+   Duration  27.64s (tests 97%, transform 1%, import 1%)
+
+Independent review test exit code: 0

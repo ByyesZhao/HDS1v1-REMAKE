@@ -1,0 +1,7 @@
+
+Algorithm Hash                                                             Path
+--------- ----                                                             ----
+SHA256    8ABAC8950E18AB379EFFE7231B04D5DEBEBD654F6A758892A898C52CAEAE1366 D:\HDSI-remake\tests\fixtures\memory-retrieval-v2.json
+SHA256    30A2C1920B7D7B84CF9D633FDB7C0C215D4F0BF3A723BD712472E4FF4D7B5652 D:\HDSI-remake\tests\fixtures\memory-retrieval-semantic-v2.json
+
+
