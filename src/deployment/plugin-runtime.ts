@@ -131,5 +131,15 @@ export function createPluginRuntimeSync(ctx:Context,config:Config,settings:Story
     });
   }
   let closing:Promise<void>|null=null;
-  return {host,stopAcceptingInput(){accepting=false;},close(options:{graceful?:boolean}={}){accepting=false;return closing??=(async()=>{await host.stop(options);await incomingMedia.stop(options);await managedBrowser?.dispose();storage.close();})();}};
+  const logShutdownError=(error:unknown):void=>{if(error instanceof AggregateError){for(const cause of error.errors)logShutdownError(cause);}else logger.error(error);};
+  return {host,stopAcceptingInput(){accepting=false;},close(options:{graceful?:boolean}={}){accepting=false;return closing??=(async()=>{
+    const errors:unknown[]=[];
+    // Host.stop reports failures only after its foreground/background drains settle.
+    // Continue releasing resources, but a media/browser drain failure must still
+    // leave Storage open for any work that could not be safely settled.
+    try{await host.stop(options);}catch(error){errors.push(error);}
+    try{await incomingMedia.stop(options);await managedBrowser?.dispose();storage.close();}catch(error){errors.push(error);}
+    if(errors.length===1)throw errors[0];
+    if(errors.length)throw new AggregateError(errors,'HDSI runtime shutdown failed');
+  })().catch(error=>{logShutdownError(error);throw error;});}};
 }

@@ -1,0 +1,238 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/web-owner-finalization.test.ts tests/environment-web-finalization.test.ts tests/environment-async-host.test.ts tests/environment-async-recovery.test.ts tests/environment-async-boundaries.test.ts --maxWorkers=1
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ❯ tests/environment-web-finalization.test.ts (15 tests | 12 failed) 119ms
+   × superseded_execution_cannot_repopulate_owner_after_finalization 29ms
+   × expired_ready_step_schedules_cleanup_before_stale_return 8ms
+   × reconcile_cleans_non_active_superseded_owners 7ms
+   × scheduler_supersede_is_observed_by_preparation 7ms
+   × failed_finalization_is_observable_and_retains_observed_id_for_explicit_retry 6ms
+   × successful_finalization_wakes_once_without_rediscovering_committed_history 6ms
+   × one_shot_version_0_waits_for_cleanup_before_return 4ms
+   × one_shot_version_1_waits_for_cleanup_before_return 3ms
+   × legacy_already-terminal_finalizes_checkpoint_and_retains_legacy_payload 5ms
+   × legacy_expired-before_finalizes_checkpoint_and_retains_legacy_payload 6ms
+   × legacy_expired-error_finalizes_checkpoint_and_retains_legacy_payload 6ms
+   × legacy_expired-result_finalizes_checkpoint_and_retains_legacy_payload 7ms
+ ❯ tests/environment-async-host.test.ts (3 tests | 1 failed) 72ms
+   × host_stop_waits_for_finalizers_before_storage_close 5ms
+ ❯ tests/web-owner-finalization.test.ts (2 tests | 2 failed) 27ms
+   × finalize_owner_waits_for_queued_operation_then_releases_cache 24ms
+   × rejected_operation_does_not_block_cleanup_and_checkpoint_write_failure_is_retryable 3ms
+ ❯ tests/environment-async-boundaries.test.ts (7 tests | 1 failed) 90ms
+   × already_superseded_applyReady_observes_its_explicit_step_and_schedules_cleanup 21ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 16 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/environment-async-boundaries.test.ts > already_superseded_applyReady_observes_its_explicit_step_and_schedules_cleanup
+AssertionError: expected { formatVersion: 2, …(6) } to be null
+
+- Expected:
+null
+
++ Received:
+{
+  "formatVersion": 2,
+  "input": {
+    "saved": true,
+  },
+  "lookupPending": false,
+  "lookupUsed": false,
+  "pendingOperationId": null,
+  "repairCount": 0,
+  "toolResults": [],
+}
+
+ ❯ tests/environment-async-boundaries.test.ts:16:44
+     14|  d.web.store.saveCheckpoint(ref.runId,{formatVersion:2,input:{saved:tr…
+     15|  d.clock.advance(86400000);ensureEnvironmentBatch(d.storage,d.config,d…
+     16|  expect(d.web.store.checkpoint(ref.runId)).toBeNull();expect(d.environ…
+       |                                            ^
+     17| });
+     18| it('unrelated new chat does not stale group; known membership does sta…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/16]⎯
+
+ FAIL  tests/environment-async-host.test.ts > host_stop_waits_for_finalizers_before_storage_close
+Error: The property "finalizeOwner" is not defined on the object.
+ ❯ tests/environment-async-host.test.ts:40:49
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/16]⎯
+
+ FAIL  tests/environment-web-finalization.test.ts > superseded_execution_cannot_repopulate_owner_after_finalization
+AssertionError: expected { formatVersion: 2, …(6) } to be null
+
+- Expected:
+null
+
++ Received:
+{
+  "formatVersion": 2,
+  "input": {
+    "body": "saved model input",
+  },
+  "lookupPending": false,
+  "lookupUsed": false,
+  "pendingOperationId": null,
+  "repairCount": 0,
+  "toolResults": [],
+}
+
+ ❯ tests/environment-web-finalization.test.ts:23:286
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/16]⎯
+
+ FAIL  tests/environment-web-finalization.test.ts > expired_ready_step_schedules_cleanup_before_stale_return
+ FAIL  tests/environment-web-finalization.test.ts > reconcile_cleans_non_active_superseded_owners
+ FAIL  tests/environment-web-finalization.test.ts > scheduler_supersede_is_observed_by_preparation
+AssertionError: expected { formatVersion: 2, …(6) } to be null
+
+- Expected:
+null
+
++ Received:
+{
+  "formatVersion": 2,
+  "input": {
+    "body": "saved model input",
+  },
+  "lookupPending": false,
+  "lookupUsed": false,
+  "pendingOperationId": null,
+  "repairCount": 0,
+  "toolResults": [],
+}
+
+ ❯ tests/environment-web-finalization.test.ts:32:59
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/16]⎯
+
+ FAIL  tests/environment-web-finalization.test.ts > failed_finalization_is_observable_and_retains_observed_id_for_explicit_retry
+AssertionError: expected undefined to match object { message: StringContaining{…} }
+
+- Expected:
+{
+  "message": StringContaining "cleanup failure",
+}
+
++ Received:
+undefined
+
+ ❯ tests/environment-web-finalization.test.ts:37:201
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/16]⎯
+
+ FAIL  tests/environment-web-finalization.test.ts > successful_finalization_wakes_once_without_rediscovering_committed_history
+AssertionError: expected +0 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/environment-web-finalization.test.ts:50:250
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/16]⎯
+
+ FAIL  tests/environment-web-finalization.test.ts > one_shot_version_0_waits_for_cleanup_before_return
+ FAIL  tests/environment-web-finalization.test.ts > one_shot_version_1_waits_for_cleanup_before_return
+Error: The property "finalizeOwner" is not defined on the object.
+ ❯ tests/environment-web-finalization.test.ts:63:53
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/16]⎯
+
+ FAIL  tests/environment-web-finalization.test.ts > legacy_already-terminal_finalizes_checkpoint_and_retains_legacy_payload
+ FAIL  tests/environment-web-finalization.test.ts > legacy_expired-before_finalizes_checkpoint_and_retains_legacy_payload
+AssertionError: expected { formatVersion: 2, …(6) } to be null
+
+- Expected:
+null
+
++ Received:
+{
+  "formatVersion": 2,
+  "input": {
+    "body": "saved model input",
+  },
+  "lookupPending": false,
+  "lookupUsed": false,
+  "pendingOperationId": null,
+  "repairCount": 0,
+  "toolResults": [],
+}
+
+ ❯ tests/environment-web-finalization.test.ts:71:44
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/16]⎯
+
+ FAIL  tests/environment-web-finalization.test.ts > legacy_expired-error_finalizes_checkpoint_and_retains_legacy_payload
+ FAIL  tests/environment-web-finalization.test.ts > legacy_expired-result_finalizes_checkpoint_and_retains_legacy_payload
+AssertionError: expected { formatVersion: 2, …(6) } to be null
+
+- Expected:
+null
+
++ Received:
+{
+  "formatVersion": 2,
+  "input": {
+    "body": "saved model input",
+  },
+  "lookupPending": false,
+  "lookupUsed": false,
+  "pendingOperationId": null,
+  "repairCount": 0,
+  "toolResults": [],
+}
+
+ ❯ tests/environment-web-finalization.test.ts:71:44
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/16]⎯
+
+ FAIL  tests/web-owner-finalization.test.ts > finalize_owner_waits_for_queued_operation_then_releases_cache
+AssertionError: expected 'undefined' to be 'function' // Object.is equality
+
+Expected: "function"
+Received: "undefined"
+
+ ❯ tests/web-owner-finalization.test.ts:16:35
+     14|  const ref=web.store.openStage('turn','owner','life','personal_life'),…
+     15|  try{
+     16|  expect(typeof web.finalizeOwner).toBe('function');
+       |                                   ^
+     17|  await read(session,'https://example.test/first');await read(other,'ht…
+     18|  const source=web.selfReadSources('owner'),first=read(session,'https:/…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/16]⎯
+
+ FAIL  tests/web-owner-finalization.test.ts > rejected_operation_does_not_block_cleanup_and_checkpoint_write_failure_is_retryable
+AssertionError: expected 'undefined' to be 'function' // Object.is equality
+
+Expected: "function"
+Received: "undefined"
+
+ ❯ tests/web-owner-finalization.test.ts:33:35
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/16]⎯
+
+
+ Test Files  4 failed | 1 passed (5)
+      Tests  16 failed | 19 passed (35)
+   Start at  10:20:11
+   Duration  2.68s (import 38%, tests 34%, transform 27%, worker 1%)
+
+    Isolate  5 workers spawned · ~125ms startup each (spawn + environment, per file)
+             at least ~501ms faster with isolate: false — reuses workers across files instead of one per file
+

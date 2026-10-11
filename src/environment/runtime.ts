@@ -24,10 +24,10 @@ export function resolveResult(d:Dependencies,result:EnvironmentModelResult,input
 }
 export async function runEnvironmentStep(d:Dependencies,stepId:string,generate:EnvironmentGenerator):Promise<void> {
  const selected=d.environmentStore.step(stepId)!;
- if(selected.preparationVersion===1){const preparation=new EnvironmentPreparation({...d,generateEnvironment:generate});if(selected.status!=='ready'){preparation.startOne(stepId,d.clock.now());await preparation.wait();const error=preparation.takeError();if(error)throw error;}preparation.applyReady(stepId,d.clock.now());return;}
+ if(selected.preparationVersion===1){const preparation=new EnvironmentPreparation({...d,generateEnvironment:generate});try{if(selected.status!=='ready'){preparation.startOne(stepId,d.clock.now());await preparation.wait();const error=preparation.takeError();if(error)throw error;}preparation.applyReady(stepId,d.clock.now());}finally{await preparation.wait();const error=preparation.takeError();if(error)throw error;}return;}
  let step=selected;const batch=d.environmentStore.batch(step.batchId)!;
- if(step.status==='committed'||step.status==='superseded')return;
- if(localDate(d.clock.now(),batch.timezone)!==batch.localDate){ensureEnvironmentBatch(d.storage,d.config,d.clock.now());return;}
+ if(step.status==='committed'||step.status==='superseded'){await d.web?.finalizeOwner('environment',step.id);return;}
+ if(localDate(d.clock.now(),batch.timezone)!==batch.localDate){ensureEnvironmentBatch(d.storage,d.config,d.clock.now());await d.web?.finalizeOwner('environment',step.id);return;}
  if(step.status!=='ready'){
   const isNew=step.status!=='running';
   if(isNew&&step.attempt>0&&d.web){const ref=d.web.store.openStage('environment',step.id,'generation',step.stage),cp=d.web.store.checkpoint(ref.runId);if(cp){cp.repairCount=0;delete cp.repair;d.web.store.saveCheckpoint(ref.runId,cp);}}
@@ -36,17 +36,16 @@ export async function runEnvironmentStep(d:Dependencies,stepId:string,generate:E
   let frozen:EnvironmentChangeSet;
   try{const input=step.inputSnapshot!,emptyWeek=input.stage==='school_week'&&input.modelContractVersion===1&&(input.context as import('../school/types').SchoolExpansionInput).requiredNoticeKeys.length===0;const raw:EnvironmentModelResult=emptyWeek?{stage:'school_week',noticeTexts:[],weekNotes:[]}:await generate(input);if(raw.stage!==step.stage)throw new ModelFormatError('environment result stage mismatch');frozen=resolveResult(d,raw,step.inputSnapshot!);}catch(error){
    if(!(error instanceof ModelFormatError||error instanceof ModelRequestError))throw error;
-   if(localDate(d.clock.now(),batch.timezone)!==batch.localDate){ensureEnvironmentBatch(d.storage,d.config,d.clock.now());return;}
+   if(localDate(d.clock.now(),batch.timezone)!==batch.localDate){ensureEnvironmentBatch(d.storage,d.config,d.clock.now());await d.web?.finalizeOwner('environment',step.id);return;}
    d.environmentStore.saveStep({...step,status:'pending',retryAt:addMs(d.clock.now(),d.config.environmentRetryMs),lastError:error.message});return;
   }
   step={...step,status:'ready',frozenResult:frozen};d.environmentStore.saveStep(step);
  }
- if(localDate(d.clock.now(),batch.timezone)!==batch.localDate){ensureEnvironmentBatch(d.storage,d.config,d.clock.now());d.web?.releaseOwner('environment',step.id);return;}
+ if(localDate(d.clock.now(),batch.timezone)!==batch.localDate){ensureEnvironmentBatch(d.storage,d.config,d.clock.now());await d.web?.finalizeOwner('environment',step.id);return;}
  d.storage.transaction(()=>{
   commitEnvironmentResult(d,step,d.clock.now());
  });
- d.web?.releaseOwner('environment',step.id);
- d.web?.compactOwnerCheckpoint('environment',step.id);
+ await d.web?.finalizeOwner('environment',step.id);
 }
 
 export function commitEnvironmentResult(d:Dependencies,step:EnvironmentStep,now:string):void {

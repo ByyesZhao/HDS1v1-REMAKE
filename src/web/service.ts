@@ -9,6 +9,7 @@ import { defaultWebSearchConfig } from './types';
 export class WebSearchService {
   private cache=new Map<string,Map<string,WebMaterial>>();
   private locks=new Map<string,Promise<unknown>>();
+  private finalizations=new Map<string,Promise<void>>();
   private provider:WebSearchProvider;
   readonly config:WebSearchConfig;
   constructor(public readonly store:WebSearchStore,provider:WebSearchProvider|undefined,private clock:Clock,config:Partial<WebSearchConfig>={}){
@@ -68,6 +69,14 @@ export class WebSearchService {
   providedUrls(runId:string):string[]{return this.store.materialMetadata(runId).filter(m=>m.provided).map(m=>m.url);}
   selfReadSources(turnId:string,runId?:string){return this.store.selfReadSources(turnId,runId);}
   releaseOwner(ownerType:ModelRunRef['ownerType'],ownerId:string):void {this.cache.delete(`${ownerType}:${ownerId}`);}
+  // The caller must settle the owner's entire execution before entering here.
+  // Web locks alone do not cover model checkpoint writes or cancellation finally blocks.
+  finalizeOwner(ownerType:ModelRunRef['ownerType'],ownerId:string):Promise<void> {
+    const key=`${ownerType}:${ownerId}`,existing=this.finalizations.get(key);if(existing)return existing;
+    const pending=this.store.ownerRunIds(ownerType,ownerId).flatMap(id=>{const lock=this.locks.get(id);return lock?[lock]:[];});
+    const finalization=Promise.allSettled(pending).then(()=>{this.releaseOwner(ownerType,ownerId);this.compactOwnerCheckpoint(ownerType,ownerId);}).finally(()=>{this.finalizations.delete(key);});
+    this.finalizations.set(key,finalization);return finalization;
+  }
   compactOwnerCheckpoint(ownerType:ModelRunRef['ownerType'],ownerId:string):void {this.store.compactOwnerCheckpoint(ownerType,ownerId);}
   statusSummary(currentOwners:readonly import('./types').WebOwnerRef[]){return {...this.store.statusSummary(currentOwners),enabled:this.config.enabled,limits:{successReads:this.config.maxSuccessReads,failures:this.config.maxFailures}};}
   status(){return this.store.operationalStatus();}

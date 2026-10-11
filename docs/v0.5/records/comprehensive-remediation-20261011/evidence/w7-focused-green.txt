@@ -1,0 +1,14 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/web-owner-finalization.test.ts tests/environment-web-finalization.test.ts tests/environment-async-host.test.ts tests/environment-async-recovery.test.ts tests/environment-async-boundaries.test.ts tests/environment-payload-compaction.test.ts tests/web-recovery.test.ts tests/environment-async-tools.test.ts tests/memory-payload-compaction.test.ts --maxWorkers=1
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+
+ Test Files  9 passed (9)
+      Tests  68 passed (68)
+   Start at  10:21:55
+   Duration  4.78s (tests 47%, import 37%, transform 15%, worker 1%)
+
+    Isolate  9 workers spawned · ~125ms startup each (spawn + environment, per file)
+             at least ~998ms faster with isolate: false — reuses workers across files instead of one per file
+

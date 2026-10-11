@@ -142,6 +142,13 @@ export class SerialHost {
     this.stopped = true;
     if (this.timer) { clearTimeout(this.timer); this.timer = null; }
     const environment=this.environment.stop(options),background=this.app.dependencies.maintenance?.stop(options);
-    await Promise.all([this.active,background,environment]);
+    // Shutdown must finish every drain before reporting a failure to the caller.
+    // Environment cleanup errors normally reach pump via onReady, but wake is
+    // disabled once stopped, so consume that queue explicitly at this boundary.
+    const settled=await Promise.allSettled([this.active,background,environment]);
+    const errors:unknown[]=settled.flatMap(result=>result.status==='rejected'?[result.reason]:[]);
+    for(let error=this.environment.takeError();error!==undefined;error=this.environment.takeError())errors.push(error);
+    if(errors.length===1)throw errors[0];
+    if(errors.length)throw new AggregateError(errors,'HDSI shutdown failed after draining work');
   }
 }

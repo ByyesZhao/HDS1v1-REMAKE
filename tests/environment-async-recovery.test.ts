@@ -41,9 +41,11 @@ it.each([ModelRequestError,ModelFormatError])('failure retries same snapshot wit
 });
 it('stop waits for noncooperative transport and discards late result; resume preserves attempt',async()=>{
  const {d,step}=asyncFixture();let finish!:(v:any)=>void,signal:AbortSignal|undefined;
+ const ref=d.web.store.openStage('environment',step.id,'generation',step.stage),checkpoint={formatVersion:2 as const,input:{body:'recoverable'},repairCount:0,lookupUsed:false,lookupPending:false,pendingOperationId:null,toolResults:[]};d.web.store.saveCheckpoint(ref.runId,checkpoint);
  d.generateEnvironment=async(input,execution)=>{signal=execution?.signal;return new Promise(resolve=>finish=resolve);};
  const p=new EnvironmentPreparation(d);p.startOne(step.id,NOW);const stopping=p.stop();expect(signal?.aborted).toBe(true);let stopped=false;void stopping.then(()=>stopped=true);await setImmediate();expect(stopped).toBe(false);
  finish({stage:'world',changes:[{action:'create',event}]});await stopping;expect(d.environmentStore.step(step.id)).toMatchObject({status:'running',attempt:1});expect(d.storage.all('events')).toEqual([]);
+ expect(d.web.store.checkpoint(ref.runId)).toEqual(checkpoint);
  d.generateEnvironment=async()=>({stage:'world',changes:[]});const next=new EnvironmentPreparation(d);next.startOne(step.id,NOW);await next.wait();expect(d.environmentStore.step(step.id)).toMatchObject({status:'ready',attempt:1});await next.stop();d.storage.close();
 });
 it('midnight cancels while paused; late result never revives terminal; in-flight has no now deadline',async()=>{

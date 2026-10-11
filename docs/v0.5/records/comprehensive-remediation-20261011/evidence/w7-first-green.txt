@@ -1,0 +1,33 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/web-owner-finalization.test.ts tests/environment-web-finalization.test.ts tests/environment-async-host.test.ts tests/environment-async-recovery.test.ts tests/environment-async-boundaries.test.ts --maxWorkers=1
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ❯ tests/environment-async-host.test.ts (3 tests | 1 failed) 83ms
+   × foreground_pump_does_not_wait_for_terminal_web_drain 25ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/environment-async-host.test.ts > foreground_pump_does_not_wait_for_terminal_web_drain
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/environment-async-host.test.ts:32:239
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 4 passed (5)
+      Tests  1 failed | 34 passed (35)
+   Start at  10:20:38
+   Duration  2.58s (import 38%, tests 35%, transform 26%, worker 1%)
+
+    Isolate  5 workers spawned · ~121ms startup each (spawn + environment, per file)
+             at least ~483ms faster with isolate: false — reuses workers across files instead of one per file
+

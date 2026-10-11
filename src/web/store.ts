@@ -71,6 +71,9 @@ export class WebSearchStore {
   compactOwnerCheckpoint(ownerType:ModelRunRef['ownerType'],ownerId:string):void {
     this.storage.prepare("UPDATE web_sessions SET data=json_set(data,'$.checkpoint',NULL) WHERE json_extract(data,'$.ref.ownerType')=? AND json_extract(data,'$.ref.ownerId')=? AND json_extract(data,'$.checkpoint') IS NOT NULL").run(ownerType,ownerId);
   }
+  ownerRunIds(ownerType:ModelRunRef['ownerType'],ownerId:string):string[] {
+    return this.storage.prepare("SELECT json_extract(data,'$.ref.runId') runId FROM web_sessions WHERE json_extract(data,'$.ref.ownerType')=? AND json_extract(data,'$.ref.ownerId')=?").all(ownerType,ownerId).map(row=>String(row.runId));
+  }
   private incrementCounter(runId:string,counter:keyof WebSearchCounters):void {this.incrementSessionNumber(runId,`$.counters.${counter}`);}
   private incrementSessionNumber(runId:string,path:string):void {const result=this.storage.prepare("UPDATE web_sessions SET data=json_set(data,?,json_extract(data,?)+1) WHERE id=?").run(path,path,runId);if(!result.changes)throw new Error('unknown web session');}
   incrementMetric(runId:string,metric:keyof WebSessionMetrics):void {if(!['cacheHits','providerSearchCalls','providerReadCalls'].includes(metric))throw new Error('unknown web metric');this.incrementSessionNumber(runId,`$.metrics.${metric}`);}

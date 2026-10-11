@@ -8,6 +8,13 @@ import {schoolPlan,schoolItem,expand} from './world-school-fixture';
 import {MemoryStore} from '../src/memory/store';import {MemoryRetrieval} from '../src/memory/retrieval';
 import {ModelClient} from '../src/model/client';import {generateEnvironmentStep} from '../src/directors/school';
 import {setImmediate} from 'node:timers/promises';
+it('already_superseded_applyReady_observes_its_explicit_step_and_schedules_cleanup',async()=>{
+ const {d,step}=asyncFixture(),snapshot=freezeEnvironmentSnapshot(d,step,NOW),ref=d.web.store.openStage('environment',step.id,'generation',step.stage);
+ d.environmentStore.saveStep({...step,status:'ready',inputSnapshot:snapshot.input,preparationSnapshot:snapshot,frozenResult:{stage:'world',changes:[]}});
+ d.web.store.saveCheckpoint(ref.runId,{formatVersion:2,input:{saved:true},repairCount:0,lookupUsed:false,lookupPending:false,pendingOperationId:null,toolResults:[]});
+ d.clock.advance(86400000);ensureEnvironmentBatch(d.storage,d.config,d.clock.now());const p=new EnvironmentPreparation(d);p.applyReady(step.id,d.clock.now());await p.wait();
+ expect(d.web.store.checkpoint(ref.runId)).toBeNull();expect(d.environmentStore.step(step.id)?.preparationSnapshot).toBeNull();await p.stop();d.storage.close();
+});
 it('unrelated new chat does not stale group; known membership does stale week',async()=>{
  const {d,step}=asyncFixture('school_group');d.generateEnvironment=async()=>({stage:'school_group',planChanges:[],itemChanges:[]});const p=new EnvironmentPreparation(d);p.startOne(step.id,NOW);await p.wait();
  d.storage.save('messages','unrelated',{id:'unrelated',content:'你好',receivedAt:NOW,direction:'incoming',platformMessageIds:[],seenTurnId:'t',turnId:null,outboxSeq:null,batchId:null});expect(p.applyReady(step.id,NOW)).toBe('applied');await p.stop();d.storage.close();

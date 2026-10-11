@@ -1,0 +1,42 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/plugin-runtime-finalization.test.ts --maxWorkers=1
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ❯ tests/plugin-runtime-finalization.test.ts (3 tests | 3 failed) 1000ms
+   × runtime_close_drains_media_then_browser_then_storage_after_host_cleanup_failure_and_logs_cause 361ms
+   × runtime_close_preserves_host_and_media_errors_without_closing_live_storage 317ms
+   × runtime_close_preserves_host_and_browser_errors_without_closing_live_storage 321ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/plugin-runtime-finalization.test.ts > runtime_close_drains_media_then_browser_then_storage_after_host_cleanup_failure_and_logs_cause
+AssertionError: expected [ 'generation.end' ] to deeply equal [ 'generation.end', 'media.start' ]
+
+- Expected
++ Received
+
+  [
+    "generation.end",
+-   "media.start",
+  ]
+
+ ❯ tests/plugin-runtime-finalization.test.ts:40:117
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/plugin-runtime-finalization.test.ts > runtime_close_preserves_host_and_media_errors_without_closing_live_storage
+ FAIL  tests/plugin-runtime-finalization.test.ts > runtime_close_preserves_host_and_browser_errors_without_closing_live_storage
+AssertionError: expected Error: owner shutdown cleanup failure { …(3) } to be an instance of AggregateError
+ ❯ tests/plugin-runtime-finalization.test.ts:49:16
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed (3)
+   Start at  10:28:14
+   Duration  2.14s (tests 50%, transform 31%, import 18%)
+

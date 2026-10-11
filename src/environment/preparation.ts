@@ -12,6 +12,8 @@ type Execution={stepId:string;batchId:string;generation:number;lease:symbol;cont
 export class EnvironmentPreparation {
  private active:Execution|null=null;
  private observedStepIds=new Set<string>();
+ private finalizations=new Set<Promise<void>>();
+ private finalizingStepIds=new Set<string>();
  private stopped=false;
  private draining=false;
  private errors:unknown[]=[];
@@ -26,7 +28,7 @@ export class EnvironmentPreparation {
  }
  reconcile(now:string):void{
  const existing=this.d.environmentStore.firstActiveBatch();
- if(existing)for(const step of this.d.environmentStore.stepMetadata(existing.id))this.observedStepIds.add(step.id);
+ if(existing)for(const step of this.d.environmentStore.stepMetadata(existing.id))if(step.status!=='committed'&&step.status!=='superseded')this.observedStepIds.add(step.id);
  if(existing&&(existing.timezone!==this.d.config.timezone||existing.localDate!==localDate(now,existing.timezone)))ensureEnvironmentBatch(this.d.storage,this.d.config,now);
  const active=this.active;if(active){
  const batch=this.d.environmentStore.batch(active.batchId);
@@ -35,7 +37,7 @@ export class EnvironmentPreparation {
  ensureEnvironmentBatch(this.d.storage,this.d.config,now);
  }
  }
- this.compactObservedTerminalPayloads(now);
+ this.scheduleObservedTerminalFinalizations();
  }
  private compactTerminalPayload(stepId:string,now:string):void{
  if(this.active?.stepId===stepId)return;
@@ -45,12 +47,32 @@ export class EnvironmentPreparation {
  if(compacted)this.d.environmentStore.saveStep(compacted);
  });
  }
- private compactObservedTerminalPayloads(now:string):void{
+ private async finalizeTerminalOwner(stepId:string):Promise<void>{
+ const step=this.d.environmentStore.step(stepId);
+ if(!step||this.active?.stepId===stepId||step.status!=='committed'&&step.status!=='superseded')return;
+ this.compactTerminalPayload(stepId,this.d.clock.now());
+ await this.d.web?.finalizeOwner('environment',stepId);
+ this.observedStepIds.delete(stepId);
+ }
+ private scheduleTerminalFinalization(stepId:string,settled?:Promise<void>):void{
+ if(this.finalizingStepIds.has(stepId))return;
+ this.finalizingStepIds.add(stepId);
+ const work=settled?settled.then(()=>this.finalizeTerminalOwner(stepId)):this.finalizeTerminalOwner(stepId);
+ const tracked=work.catch(error=>{this.errors.push(error);}).finally(()=>{
+ this.finalizations.delete(tracked);this.finalizingStepIds.delete(stepId);
+ try{this.options.onReady?.();}catch(error){this.errors.push(error);}
+ });
+ this.finalizations.add(tracked);
+ }
+ private scheduleObservedTerminalFinalizations(settled?:Promise<void>):void{
+ // A failed cleanup wakes the host to consume its error. Do not turn that wake
+ // into an automatic retry loop; keep its observed ID for explicit recovery.
+ if(this.errors.length)return;
  for(const id of this.observedStepIds){
  if(this.active?.stepId===id)continue;
  const step=this.d.environmentStore.step(id);
  if(!step){this.observedStepIds.delete(id);continue;}
- if(step.status==='committed'||step.status==='superseded'){this.compactTerminalPayload(id,now);this.observedStepIds.delete(id);}
+ if(step.status==='committed'||step.status==='superseded')this.scheduleTerminalFinalization(id,settled);
  }
  }
  nextMidnight():string|null{
@@ -95,7 +117,7 @@ export class EnvironmentPreparation {
  if(step.status!=='running')return false;
  this.observedStepIds.add(stepId);
  const execution:Execution={stepId,batchId:step.batchId,generation:step.preparationGeneration!,lease:Symbol(),controller:new AbortController(),promise:Promise.resolve()};
- this.active=execution;execution.promise=this.prepare(execution,step,d.generateEnvironment,retrieval).catch(error=>{if(!this.stopped&&!execution.controller.signal.aborted)this.errors.push(error);}).finally(()=>{if(this.active?.lease===execution.lease)this.active=null;try{this.compactObservedTerminalPayloads(d.clock.now());}catch(error){this.errors.push(error);}finally{this.options.onReady?.();}});
+ this.active=execution;execution.promise=this.prepare(execution,step,d.generateEnvironment,retrieval).catch(error=>{if(!this.stopped&&!execution.controller.signal.aborted)this.errors.push(error);}).finally(()=>{if(this.active?.lease===execution.lease)this.active=null;try{this.scheduleObservedTerminalFinalizations(execution.promise);}catch(error){this.errors.push(error);}finally{this.options.onReady?.();}});
  return true;
  }
  private async prepare(execution:Execution,step:EnvironmentStep,generate:EnvironmentGenerator,retrieval:import('../memory/retrieval').MemoryRetrieval):Promise<void>{
@@ -134,9 +156,10 @@ export class EnvironmentPreparation {
  applyReady(stepId:string,now:string):'applied'|'stale'|'none'{
  const d=this.d;
  const original=d.environmentStore.step(stepId),originalBatch=original?d.environmentStore.batch(original.batchId):null;
- if(originalBatch?.status==='active')for(const step of d.environmentStore.stepMetadata(originalBatch.id))this.observedStepIds.add(step.id);
+ if(original)this.observedStepIds.add(original.id);
+ if(originalBatch?.status==='active')for(const step of d.environmentStore.stepMetadata(originalBatch.id))if(step.status!=='committed'&&step.status!=='superseded')this.observedStepIds.add(step.id);
  if(originalBatch?.status==='active'&&(originalBatch.timezone!==d.config.timezone||originalBatch.localDate!==localDate(now,originalBatch.timezone))){this.reconcile(now);return 'stale';}
- this.compactObservedTerminalPayloads(now);
+ this.scheduleObservedTerminalFinalizations();
  if(this.active?.stepId===stepId)return 'none';
  let outcome:'applied'|'stale'|'none'='none';
  d.storage.transaction(()=>{
@@ -152,9 +175,9 @@ export class EnvironmentPreparation {
  if(reason){this.invalidate(step,now,reason);outcome='stale';return;}
  commitEnvironmentResult(d,step,now);outcome='applied';
  });
- if((outcome as string)==='applied'){this.observedStepIds.delete(stepId);d.web?.releaseOwner('environment',stepId);d.web?.compactOwnerCheckpoint('environment',stepId);}
+ this.scheduleObservedTerminalFinalizations();
  return outcome;
  }
- async wait():Promise<void>{await this.active?.promise;}
- async stop(options:{graceful?:boolean}={}):Promise<void>{this.draining=true;if(!options.graceful){this.stopped=true;this.active?.controller.abort(new DOMException('Environment stopped','AbortError'));}await this.active?.promise;this.stopped=true;}
+ async wait():Promise<void>{while(this.active||this.finalizations.size){await this.active?.promise;await Promise.all([...this.finalizations]);}}
+ async stop(options:{graceful?:boolean}={}):Promise<void>{this.draining=true;if(!options.graceful){this.stopped=true;this.active?.controller.abort(new DOMException('Environment stopped','AbortError'));}await this.wait();this.stopped=true;}
 }

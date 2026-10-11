@@ -1,0 +1,25 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/environment-async-host.test.ts --maxWorkers=1
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ❯ tests/environment-async-host.test.ts (5 tests | 2 failed) 104ms
+   × host_stop_reports_cleanup_failure_only_after_all_finalizers_settle (graceful=false) 14ms
+   × host_stop_reports_cleanup_failure_only_after_all_finalizers_settle (graceful=true) 10ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/environment-async-host.test.ts > host_stop_reports_cleanup_failure_only_after_all_finalizers_settle (graceful=false)
+ FAIL  tests/environment-async-host.test.ts > host_stop_reports_cleanup_failure_only_after_all_finalizers_settle (graceful=true)
+AssertionError: expected undefined to be an instance of AggregateError
+ ❯ tests/environment-async-host.test.ts:57:23
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 3 passed (5)
+   Start at  10:25:53
+   Duration  902ms (transform 59%, import 26%, tests 14%, worker 1%)
+

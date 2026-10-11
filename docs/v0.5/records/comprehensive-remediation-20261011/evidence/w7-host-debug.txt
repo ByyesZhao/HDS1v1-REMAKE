@@ -1,0 +1,30 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/environment-async-host.test.ts --maxWorkers=1
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ❯ tests/environment-async-host.test.ts (3 tests | 1 failed) 87ms
+   × foreground_pump_does_not_wait_for_terminal_web_drain 23ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/environment-async-host.test.ts > foreground_pump_does_not_wait_for_terminal_web_drain
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/environment-async-host.test.ts:32:266
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 2 passed (3)
+   Start at  10:21:19
+   Duration  856ms (transform 62%, import 26%, tests 12%, worker 1%)
+

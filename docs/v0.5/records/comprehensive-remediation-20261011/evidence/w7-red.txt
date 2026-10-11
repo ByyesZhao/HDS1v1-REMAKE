@@ -1,0 +1,236 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/web-owner-finalization.test.ts tests/environment-web-finalization.test.ts tests/environment-async-host.test.ts tests/environment-async-recovery.test.ts tests/environment-async-boundaries.test.ts --maxWorkers=1
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ❯ tests/environment-web-finalization.test.ts (12 tests | 11 failed) 95ms
+   × superseded_execution_cannot_repopulate_owner_after_finalization 31ms
+   × expired_ready_step_schedules_cleanup_before_stale_return 7ms
+   × reconcile_cleans_non_active_superseded_owners 6ms
+   × scheduler_supersede_is_observed_by_preparation 6ms
+   × failed_finalization_is_observable_and_retains_observed_id_for_explicit_retry 6ms
+   × one_shot_version_0_waits_for_cleanup_before_return 4ms
+   × one_shot_version_1_waits_for_cleanup_before_return 3ms
+   × legacy_already-terminal_finalizes_checkpoint_and_retains_legacy_payload 5ms
+   × legacy_expired-before_finalizes_checkpoint_and_retains_legacy_payload 6ms
+   × legacy_expired-error_finalizes_checkpoint_and_retains_legacy_payload 6ms
+   × legacy_expired-result_finalizes_checkpoint_and_retains_legacy_payload 6ms
+ ❯ tests/environment-async-host.test.ts (3 tests | 1 failed) 70ms
+   × host_stop_waits_for_finalizers_before_storage_close 4ms
+ ❯ tests/web-owner-finalization.test.ts (2 tests | 2 failed) 39ms
+   × finalize_owner_waits_for_queued_operation_then_releases_cache 28ms
+   × rejected_operation_does_not_block_cleanup_and_checkpoint_write_failure_is_retryable 11ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 14 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/environment-async-host.test.ts > host_stop_waits_for_finalizers_before_storage_close
+Error: The property "finalizeOwner" is not defined on the object.
+ ❯ tests/environment-async-host.test.ts:40:49
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/15]⎯
+
+ FAIL  tests/environment-web-finalization.test.ts > superseded_execution_cannot_repopulate_owner_after_finalization
+AssertionError: expected { formatVersion: 2, …(6) } to be null
+
+- Expected:
+null
+
++ Received:
+{
+  "formatVersion": 2,
+  "input": {
+    "body": "saved model input",
+  },
+  "lookupPending": false,
+  "lookupUsed": false,
+  "pendingOperationId": null,
+  "repairCount": 0,
+  "toolResults": [],
+}
+
+ ❯ tests/environment-web-finalization.test.ts:22:286
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/15]⎯
+
+ FAIL  tests/environment-web-finalization.test.ts > expired_ready_step_schedules_cleanup_before_stale_return
+ FAIL  tests/environment-web-finalization.test.ts > reconcile_cleans_non_active_superseded_owners
+ FAIL  tests/environment-web-finalization.test.ts > scheduler_supersede_is_observed_by_preparation
+AssertionError: expected { formatVersion: 2, …(6) } to be null
+
+- Expected:
+null
+
++ Received:
+{
+  "formatVersion": 2,
+  "input": {
+    "body": "saved model input",
+  },
+  "lookupPending": false,
+  "lookupUsed": false,
+  "pendingOperationId": null,
+  "repairCount": 0,
+  "toolResults": [],
+}
+
+ ❯ tests/environment-web-finalization.test.ts:31:59
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/15]⎯
+
+ FAIL  tests/environment-web-finalization.test.ts > failed_finalization_is_observable_and_retains_observed_id_for_explicit_retry
+AssertionError: expected undefined to match object { message: StringContaining{…} }
+
+- Expected:
+{
+  "message": StringContaining "cleanup failure",
+}
+
++ Received:
+undefined
+
+ ❯ tests/environment-web-finalization.test.ts:36:201
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/15]⎯
+
+ FAIL  tests/environment-web-finalization.test.ts > one_shot_version_0_waits_for_cleanup_before_return
+ FAIL  tests/environment-web-finalization.test.ts > one_shot_version_1_waits_for_cleanup_before_return
+Error: The property "finalizeOwner" is not defined on the object.
+ ❯ tests/environment-web-finalization.test.ts:42:53
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/15]⎯
+
+ FAIL  tests/environment-web-finalization.test.ts > legacy_already-terminal_finalizes_checkpoint_and_retains_legacy_payload
+ FAIL  tests/environment-web-finalization.test.ts > legacy_expired-before_finalizes_checkpoint_and_retains_legacy_payload
+AssertionError: expected { formatVersion: 2, …(6) } to be null
+
+- Expected:
+null
+
++ Received:
+{
+  "formatVersion": 2,
+  "input": {
+    "body": "saved model input",
+  },
+  "lookupPending": false,
+  "lookupUsed": false,
+  "pendingOperationId": null,
+  "repairCount": 0,
+  "toolResults": [],
+}
+
+ ❯ tests/environment-web-finalization.test.ts:50:44
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/15]⎯
+
+ FAIL  tests/environment-web-finalization.test.ts > legacy_expired-error_finalizes_checkpoint_and_retains_legacy_payload
+ FAIL  tests/environment-web-finalization.test.ts > legacy_expired-result_finalizes_checkpoint_and_retains_legacy_payload
+AssertionError: expected { formatVersion: 2, …(6) } to be null
+
+- Expected:
+null
+
++ Received:
+{
+  "formatVersion": 2,
+  "input": {
+    "body": "saved model input",
+  },
+  "lookupPending": false,
+  "lookupUsed": false,
+  "pendingOperationId": null,
+  "repairCount": 0,
+  "toolResults": [],
+}
+
+ ❯ tests/environment-web-finalization.test.ts:50:44
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/15]⎯
+
+ FAIL  tests/web-owner-finalization.test.ts > finalize_owner_waits_for_queued_operation_then_releases_cache
+TypeError: web.finalizeOwner is not a function
+ ❯ tests/web-owner-finalization.test.ts:18:22
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/15]⎯
+
+ FAIL  tests/web-owner-finalization.test.ts > rejected_operation_does_not_block_cleanup_and_checkpoint_write_failure_is_retryable
+TypeError: web.finalizeOwner is not a function
+ ❯ tests/web-owner-finalization.test.ts:32:161
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/15]⎯
+
+ FAIL  tests/web-owner-finalization.test.ts > rejected_operation_does_not_block_cleanup_and_checkpoint_write_failure_is_retryable
+Error: Promise returned by `expect(actual).rejects.toThrow()` was not awaited. This assertion is asynchronous and must be awaited; otherwise, it is not guaranteed to complete before the test finishes:
+
+await expect(actual).rejects.toThrow()
+
+ ❯ tests/web-owner-finalization.test.ts:32:101
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/15]⎯
+
+⎯⎯⎯⎯⎯⎯ Unhandled Errors ⎯⎯⎯⎯⎯⎯
+
+Vitest caught 2 unhandled errors during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+Error: database is not open
+ ❯ Storage.transaction src/storage.ts:75:13
+     73|   }
+     74|   transaction<T>(fn: () => T extends Promise<unknown> ? never : T): T {
+     75|     this.db.exec('BEGIN IMMEDIATE');
+       |             ^
+     76|     try { const result = fn(); this.db.exec('COMMIT'); return result a…
+     77|     catch (error) { this.db.exec('ROLLBACK'); throw error; }
+ ❯ WebSearchStore.commitStep src/web/store.ts:59:18
+ ❯ WebSearchService.execute src/web/service.ts:63:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: 'ERR_INVALID_STATE' }
+This error originated in "tests/web-owner-finalization.test.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The last test to run before this error was "rejected_operation_does_not_block_cleanup_and_checkpoint_write_failure_is_retryable". This means either:
+- the error was thrown while Vitest was running this test, or
+- the error was thrown after the test completed, and this was the most recent test at that point.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+Error: database is not open
+ ❯ Storage.prepare src/storage.ts:70:41
+     68|   hasTable(table:string):boolean {return !!this.db.prepare("SELECT 1 F…
+     69|   close(): void { this.db.close(); }
+     70|   prepare(sql: string) { return this.db.prepare(sql); }
+       |                                         ^
+     71|   pragmas(): { journalMode: string; synchronous: number } {
+     72|     return { journalMode: String(this.db.prepare('PRAGMA journal_mode'…
+ ❯ WebSearchStore.get src/web/store.ts:17:70
+ ❯ WebSearchStore.operationState src/web/store.ts:50:75
+ ❯ WebSearchService.execute src/web/service.ts:36:67
+ ❯ src/web/service.ts:20:178
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: 'ERR_INVALID_STATE' }
+This error originated in "tests/web-owner-finalization.test.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The last test to run before this error was "rejected_operation_does_not_block_cleanup_and_checkpoint_write_failure_is_retryable". This means either:
+- the error was thrown while Vitest was running this test, or
+- the error was thrown after the test completed, and this was the most recent test at that point.
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+
+ Test Files  3 failed | 2 passed (5)
+      Tests  14 failed | 17 passed (31)
+     Errors  2 errors
+   Start at  10:17:42
+   Duration  2.63s (import 38%, tests 34%, transform 27%, worker 1%)
+
+    Isolate  5 workers spawned · ~132ms startup each (spawn + environment, per file)
+             at least ~528ms faster with isolate: false — reuses workers across files instead of one per file
+

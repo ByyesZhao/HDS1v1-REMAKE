@@ -1,0 +1,35 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/plugin-runtime-finalization.test.ts tests/environment-async-host.test.ts tests/graceful-stop-host.test.ts tests/graceful-stop-process.test.ts tests/graceful-stop-control.test.ts tests/browser-graceful-stop-failure.test.ts tests/incoming-media-onebot-review.test.ts --maxWorkers=1
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ❯ tests/plugin-runtime-finalization.test.ts (6 tests | 2 failed) 1730ms
+   × stop_control_returns_failure_with_specific_runtime_logger_cause_after_resource_drain (browser=false) 313ms
+   × stop_control_returns_failure_with_specific_runtime_logger_cause_after_resource_drain (browser=true) 291ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/plugin-runtime-finalization.test.ts > stop_control_returns_failure_with_specific_runtime_logger_cause_after_resource_drain (browser=false)
+ FAIL  tests/plugin-runtime-finalization.test.ts > stop_control_returns_failure_with_specific_runtime_logger_cause_after_resource_drain (browser=true)
+AssertionError: expected 200 to be 500 // Object.is equality
+
+- Expected
++ Received
+
+- 500
++ 200
+
+ ❯ tests/plugin-runtime-finalization.test.ts:70:125
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed | 6 passed (7)
+      Tests  2 failed | 34 passed (36)
+   Start at  10:29:38
+   Duration  8.13s (tests 69%, import 21%, transform 10%)
+
+    Isolate  7 workers spawned · ~125ms startup each (spawn + environment, per file)
+             at least ~748ms faster with isolate: false — reuses workers across files instead of one per file
+

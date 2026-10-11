@@ -17,7 +17,7 @@ it('confirmed web reads and failed operations survive stale generations without 
  expect(p.takeError()).toBeUndefined();expect(d.environmentStore.step(step.id)?.status).toBe('ready');
  expect(d.web.store.snapshot(ref.runId).counters.successReads).toBe(1);
  d.config.worldSetting+=' 更新';expect(p.applyReady(step.id,NOW)).toBe('stale');d.clock.advance(d.config.environmentRetryMs);p.startOne(step.id,d.clock.now());await p.wait();
- expect(d.web.store.snapshot(ref.runId).counters).toEqual({successReads:1,failures:0});expect(searches).toBe(1);expect(reads).toBe(1);expect(d.web.store.snapshot(ref.runId).checkpoint).not.toBeNull();expect(p.applyReady(step.id,d.clock.now())).toBe('applied');expect(d.web.store.snapshot(ref.runId).checkpoint).toBeNull();await p.stop();d.storage.close();
+ expect(d.web.store.snapshot(ref.runId).counters).toEqual({successReads:1,failures:0});expect(searches).toBe(1);expect(reads).toBe(1);expect(d.web.store.snapshot(ref.runId).checkpoint).not.toBeNull();expect(p.applyReady(step.id,d.clock.now())).toBe('applied');await p.wait();expect(d.web.store.snapshot(ref.runId).checkpoint).toBeNull();await p.stop();d.storage.close();
 });
 it('interrupted web operation resumes same ID and confirms a page only once',async()=>{
  const {d,step}=asyncFixture();let reads=0,finish!:(v:any)=>void;
