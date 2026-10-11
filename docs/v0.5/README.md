@@ -75,6 +75,8 @@
 
 ## 目录与后续工作
 
+当前待实施：[个人导演任务合同修复V2](plans/personal-task-contract-20261011/PLAN_V2.md)及[细化实施文档](plans/personal-task-contract-20261011/EXECUTION_PLAN.md)，两份一并交接。[审核](reviews/personal-task-contract-20261011/REVIEW.md)保留收窄个人taskChanges为双方预约、程序统一消息检查的方向，修正1项P2恢复边界问题，补齐未尝试／已尝试／沉默候选与恢复角色切换的用例。[原方案](plans/personal-task-contract-20261011/README.md)和[设计与故障依据](plans/personal-task-contract-20261011/DESIGN.md)保留；6文件50项基线测试及合成探针通过仅为审核证据，尚未实施或恢复正式运行。
+
 此前已执行合同：[普通聊天回复跟进新消息](plans/chat-reply-freshness-20261010/README.md)及[细化方案 T1～T5](reviews/chat-reply-freshness-20261010/EXECUTION_PLAN.md)。新规则已实现；原诊断和审核探针保留旧基线，工程交付、独立复核及部署状态见[记录](records/chat-reply-freshness-20261010/README.md)。
 
 此前已执行合同：[查看消息资格与专注场景](plans/phone-access-20261010/README.md)。针对首次聊天中普通文献整理被设为无结束时间不可读状态的问题，已区分查看资格与回应意愿，并强制不可读活动指定结束时间；代码及正式停服修正已完成，实际状态和未验证范围见[交付](records/phone-access-20261010/DELIVERY.md)。
@@ -85,7 +87,7 @@
 | --- | --- |
 | `architecture/`、`subsystems/` | 当前架构及8份功能规则 |
 | `reference/` | 实现对应、配置和必要参考 |
-| [plans/](plans/README.md) | 最近已执行的功能合同；图片／搜索、查看资格、回复新鲜度及相关修复均已交付，原路径供追溯 |
+| [plans/](plans/README.md) | 当前待实施的个人任务合同修复，以及最近已执行的功能合同；各计划状态单列，原路径供追溯 |
 | [records/](records/README.md) | 最近交付、过程、最终日志及目录整理 |
 | [reviews/](reviews/README.md) | 本批独立报告、探针和原始证据 |
 | [../archive/](../archive/README.md) | 已完成计划、被替代交付、旧审核和早期红绿日志 |

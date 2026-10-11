@@ -2,6 +2,8 @@
 
 返回[版本索引](../README.md)。
 
+[个人导演任务合同方案审核](personal-task-contract-20261011/REVIEW.md)：2026-10-11，源码基线`9a14ea4`（0.5.1）。保留方案B，修正1项P2恢复边界问题，附[待实施V2方案](../plans/personal-task-contract-20261011/PLAN_V2.md)与[细化实施文档](../plans/personal-task-contract-20261011/EXECUTION_PLAN.md)；现有6文件50项回归及离线恢复时间／角色探针通过。仅审核、修订与执行细化，未修改产品、部署或解除暂停。
+
 [综合审核原报告](comprehensive-audit-20261011/README.md)：2026-10-11，源码／文档基线 `ce7e88e`；覆盖文档对应性、代码BUG及非安全方面的性能／流程／逻辑提升。其4项P2、1项P3代码发现及2类文档问题已完成整改，见[交付](../records/comprehensive-remediation-20261011/DELIVERY.md)与[逐项关闭矩阵](../records/comprehensive-remediation-20261011/evidence/closure-matrix.json)。原报告、失败探针与189文件1034项的原基线验收记录保留，不改写为修复后结果。
 
 最新整改的专项复核随[实施记录](../records/comprehensive-remediation-20261011/README.md)保存：[整分支静态复核](../records/comprehensive-remediation-20261011/reviews/FINAL.md)覆盖`9c20a97..f60afa6`，后续Q3工具由[独立复核](../records/comprehensive-remediation-20261011/reviews/Q3.md)覆盖，最终217文件1370项由实施者统一执行。语义工具通过不代表真实Embedding质量已验证，Q2结论仍为keep_current。

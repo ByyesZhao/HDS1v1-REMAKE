@@ -1,0 +1,62 @@
+{
+  "baseline": "9a14ea4b5191deda366bbe0c3d9fcdeb7dfd0e78",
+  "passed": true,
+  "scope": "Existing implementation; in-memory protocol-2 mixed input/school turn; fake transport and sender; web disabled; no network.",
+  "failedAt": "2026-10-07T02:00:15.000Z",
+  "recoveryAt": "2026-10-07T02:10:15.000Z",
+  "completedTurnAt": "2026-10-07T02:10:15.000Z",
+  "personalStageBefore": "personal_life",
+  "personalStageAfter": "personal_chat",
+  "sameStageRunId": true,
+  "repairCountAtRecoveredRequest": 2,
+  "oldRepairOriginalRetained": true,
+  "completed": true,
+  "fakeStorySends": 0,
+  "note": "Direct HdsiApp.resumeUnfinishedTurn probe; does not test Host pause/resume or disk reopen. A compatible response passes the current old contract; this is not validation of the proposed appointment-only contract.",
+  "attempts": [
+    {
+      "task": "narrative",
+      "at": "2026-10-07T02:00:15.000Z",
+      "repair": false
+    },
+    {
+      "task": "personal_life",
+      "at": "2026-10-07T02:00:15.000Z",
+      "repair": false,
+      "visibleIds": []
+    },
+    {
+      "task": "personal_life",
+      "at": "2026-10-07T02:00:15.000Z",
+      "repair": true,
+      "visibleIds": []
+    },
+    {
+      "task": "personal_life",
+      "at": "2026-10-07T02:00:15.000Z",
+      "repair": true,
+      "visibleIds": []
+    },
+    {
+      "task": "narrative",
+      "at": "2026-10-07T02:10:15.000Z",
+      "repair": false
+    },
+    {
+      "task": "personal_chat",
+      "at": "2026-10-07T02:10:15.000Z",
+      "repair": true,
+      "visibleIds": [
+        "synthetic-new"
+      ]
+    },
+    {
+      "task": "memory",
+      "at": "2026-10-07T02:10:15.000Z",
+      "repair": false,
+      "visibleIds": [
+        "synthetic-new"
+      ]
+    }
+  ]
+}

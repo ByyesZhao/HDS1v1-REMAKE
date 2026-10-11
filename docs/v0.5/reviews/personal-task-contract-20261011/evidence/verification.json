@@ -1,0 +1,153 @@
+{
+  "checkedAt": "2026-10-11T06:36:30.970Z",
+  "baseline": "9a14ea4b5191deda366bbe0c3d9fcdeb7dfd0e78",
+  "version": "0.5.1",
+  "scope": "Plan review and documentation revision only; existing-code regression evidence, not implementation acceptance.",
+  "testEnvironment": {
+    "TEMP": ".tmp/personal-task-plan-review-20261011",
+    "TMP": ".tmp/personal-task-plan-review-20261011",
+    "note": "Absolute workspace path supplied to each test process; isolated synthetic fixtures and fake transports."
+  },
+  "tests": {
+    "files": 6,
+    "total": 50,
+    "passed": 50,
+    "failed": 0,
+    "skipped": 0,
+    "runs": [
+      {
+        "command": "node node_modules/vitest/vitest.mjs run tests/recovery.test.ts tests/tasks.test.ts tests/review-fixes.test.ts tests/web-recovery.test.ts tests/personal-stage-preparation.test.ts --reporter=json --outputFile=.tmp/personal-task-plan-review-20261011/baseline-tests.json",
+        "exitCode": 0,
+        "reportSha256": "643035b86fdf36cc553d5d6297ffff6a325114d8bc2aa7d136d2f2f29c50a9f1",
+        "startedAt": "2026-10-11T06:23:59.176Z",
+        "fileCount": 5,
+        "totalTests": 39,
+        "passed": 39,
+        "failed": 0,
+        "skipped": 0,
+        "files": [
+          {
+            "file": "tests/personal-stage-preparation.test.ts",
+            "tests": 10,
+            "status": "passed"
+          },
+          {
+            "file": "tests/recovery.test.ts",
+            "tests": 6,
+            "status": "passed"
+          },
+          {
+            "file": "tests/review-fixes.test.ts",
+            "tests": 15,
+            "status": "passed"
+          },
+          {
+            "file": "tests/tasks.test.ts",
+            "tests": 6,
+            "status": "passed"
+          },
+          {
+            "file": "tests/web-recovery.test.ts",
+            "tests": 2,
+            "status": "passed"
+          }
+        ]
+      },
+      {
+        "command": "node node_modules/vitest/vitest.mjs run tests/reply-freshness-recovery.test.ts --reporter=json --outputFile=.tmp/personal-task-plan-review-20261011/freshness-tests.json",
+        "exitCode": 0,
+        "reportSha256": "ecfa31b8415f4d5535d2c9924335656e3cf0adf3a511c903596ce92dfa11bca6",
+        "startedAt": "2026-10-11T06:27:27.479Z",
+        "fileCount": 1,
+        "totalTests": 11,
+        "passed": 11,
+        "failed": 0,
+        "skipped": 0,
+        "files": [
+          {
+            "file": "tests/reply-freshness-recovery.test.ts",
+            "tests": 11,
+            "status": "passed"
+          }
+        ]
+      }
+    ]
+  },
+  "probe": {
+    "command": "node --import tsx docs/v0.5/reviews/personal-task-contract-20261011/evidence/recovery-time-probe.ts docs/v0.5/reviews/personal-task-contract-20261011/evidence/recovery-time-probe.json",
+    "exitCode": 0,
+    "passed": true,
+    "resultFile": "docs/v0.5/reviews/personal-task-contract-20261011/evidence/recovery-time-probe.json",
+    "resultSha256": "8ab48b83de509a8c2e9cfad149e8eed60d9247d23938023328633c662e654392",
+    "sourceSha256": "58b577adc056490d38f40d3ec971838078c047b459982487e42959d436b425a1",
+    "observation": "Recovery advances turn time and may switch personal_life to personal_chat while retaining the same non-reply personal run ID, repair count 2 and old repair original.",
+    "fixtureCorrection": "Initial draft used a school observation before actual notice release and failed before personal stage. Corrected synthetic observation time and asserted the precise failing stage; no product change.",
+    "limitations": [
+      "in-memory storage",
+      "direct HdsiApp resume, not Host resume",
+      "existing personal schema, not proposed new schema"
+    ]
+  },
+  "documents": {
+    "files": [
+      "docs/v0.5/plans/personal-task-contract-20261011/PLAN_V2.md",
+      "docs/v0.5/reviews/personal-task-contract-20261011/REVIEW.md",
+      "docs/v0.5/README.md",
+      "docs/v0.5/plans/README.md",
+      "docs/v0.5/reviews/README.md",
+      "docs/v0.5/plans/personal-task-contract-20261011/README.md",
+      "docs/v0.5/plans/personal-task-contract-20261011/DESIGN.md"
+    ],
+    "localLinks": 181,
+    "headingAnchors": 2,
+    "sourceLineLinks": 8,
+    "brokenLinks": 0,
+    "originalSources": [
+      {
+        "file": "docs/v0.5/plans/personal-task-contract-20261011/README.md",
+        "sha256": "5e2c8e7665322597546c9836845fbdd0ffad50359582a07848ad2ce3016c6977"
+      },
+      {
+        "file": "docs/v0.5/plans/personal-task-contract-20261011/DESIGN.md",
+        "sha256": "3e689aecf76cc0f5ea3b2b555c359365e082c208da0c869a564170ad40d0b526"
+      }
+    ],
+    "editedMarkdownSha256": [
+      {
+        "file": "docs/v0.5/plans/personal-task-contract-20261011/PLAN_V2.md",
+        "sha256": "5f22f1cef5aedd95aa041396b5d1775a5009478da4539a38c3ae0bbd96d22738"
+      },
+      {
+        "file": "docs/v0.5/reviews/personal-task-contract-20261011/REVIEW.md",
+        "sha256": "f7167fc6a8d30c12bb7ce842d98f13c4815b98565aad0bc85399c4946dbeb679"
+      },
+      {
+        "file": "docs/v0.5/README.md",
+        "sha256": "82751a4a4b4c9c780ae5edca280bc0036c55035772d5035c781dc1a6edf696ec"
+      },
+      {
+        "file": "docs/v0.5/plans/README.md",
+        "sha256": "43fd039f9843f6f9e074782634404e553ad8135dce3faf09208f4cb03fdebf38"
+      },
+      {
+        "file": "docs/v0.5/reviews/README.md",
+        "sha256": "441accc270447873db90975042483de9c867c75a1d846494b8627dbbb7d410f9"
+      }
+    ],
+    "trailingWhitespace": 0,
+    "conflictMarkers": 0,
+    "implementationCheckboxesAllUnchecked": true
+  },
+  "git": {
+    "diffCheckExitCode": 0,
+    "productDiffFromHeadExitCode": 0,
+    "commitCreated": false
+  },
+  "exclusions": [
+    "full suite",
+    "typecheck/build/demo",
+    "production database/config/log access",
+    "online model/search/QQ calls",
+    "service stop/start/deploy/resume"
+  ]
+}
