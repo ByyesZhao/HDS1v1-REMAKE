@@ -1,6 +1,6 @@
 # HDSI V0.5：总架构
 
-核对日期：2026-10-11。本文是当前已实现系统的逻辑总览，以此次核对的实际行为为准。版本0.5统一架构文档口径；不据文档新增模型、改动运行规则或升级数据。
+核对日期：2026-10-11，最近[交叉核对](../records/document-code-crosscheck-20261011/README.md)基线为`9f3c73f`。本文是当前已实现系统的逻辑总览，以此次核对的实际行为为准。版本0.5统一架构文档口径；不据文档新增模型、改动运行规则或升级数据。
 
 本文只说明系统职责、规则、机制和流程。源码、配置键、数据版本与验证证据集中在[实现对应与现状](../reference/V0.5_IMPLEMENTATION_MAP_20261009.md)，部署见[README](../../../README.md)。旧REMAKE_V0.2系列和历次方案、细化、执行计划保留为历史与技术追溯材料。
 
@@ -87,7 +87,7 @@ flowchart TD
 
 ## 5. 时间与优先级
 
-普通消息从最近一条输入起等待15秒，新输入刷新等待并合批。共同活动按独立时钟推进：公开开始后首节点立即，之后默认双方最近实际消息后60秒；无任何输出的轮从完成时刻计时。`【推进】`跳过活动等待。
+普通消息从最近一条输入起等待15秒，新输入刷新等待并合批。共同活动按独立时钟推进：公开开始确认后即按活动接收新输入，首节点要等开场轮完成提交后才立即具备推进资格；之后默认双方最近实际消息后60秒，无任何输出的轮从完成时刻计时。无图片／表情附件且去掉首尾空白后全文为`【推进】`的消息可跳过活动等待，仍须等待当前未完成轮处理妥当。
 
 成功完成一个实际角色故事轮后，从完成时刻重新抽取150～210分钟的自主生活等待。共同活动、普通合批、待处理前台和睡眠阻止另开自主轮；世界／学校更新与记忆维护不刷新自主周期。没有补跑几轮夜间或离线自主生活的规则。
 
@@ -132,7 +132,7 @@ flowchart TD
 | [网页搜索](../subsystems/REMAKE_V0.5_WEB_SEARCH.md) | 20／40独立计数、缓存、恢复与本人查阅 |
 | [报错与恢复](../subsystems/REMAKE_V0.5_RECOVERY.md) | 修补、暂停、生成／发送／提交及环境／后台恢复 |
 
-实现和验收限制见[对应清单](../reference/V0.5_IMPLEMENTATION_MAP_20261009.md)，完整阅读顺序见[当前索引](../README.md)。最新代码交付与复核见[综合整改](../records/comprehensive-remediation-20261011/README.md)，此前[导演联网软提示](../records/runtime-web-guidance-20261011/README.md)、[动作限定线下](../records/offline-action-only-20261010/README.md)、[安全停止R1](../records/graceful-stop-r1-20261010/DELIVERY.md)及[回复新鲜度](../records/chat-reply-freshness-20261010/DELIVERY.md)仍属当前能力。本次[文档核对](../records/document-post-remediation-sync-20261011/README.md)以5b92794为基线，只同步说明，不新增运行规则或产品验收，也未重跑此前测试。旧修订／检查记录在[历史归档](../../archive/README.md)，目录原则见[文档规范](../../DIRECTORY_POLICY.md)。
+实现和验收限制见[对应清单](../reference/V0.5_IMPLEMENTATION_MAP_20261009.md)，完整阅读顺序见[当前索引](../README.md)。最新代码交付与复核见[综合整改](../records/comprehensive-remediation-20261011/README.md)，此前[导演联网软提示](../records/runtime-web-guidance-20261011/README.md)、[动作限定线下](../records/offline-action-only-20261010/README.md)、[安全停止R1](../records/graceful-stop-r1-20261010/DELIVERY.md)及[回复新鲜度](../records/chat-reply-freshness-20261010/DELIVERY.md)仍属当前能力。上一轮[文档核对](../records/document-post-remediation-sync-20261011/README.md)以5b92794为基线；本轮[交叉核对](../records/document-code-crosscheck-20261011/README.md)以9f3c73f为基线，修订说明并执行类型检查及定向测试，不新增运行规则。旧修订／检查记录在[历史归档](../../archive/README.md)，目录原则见[文档规范](../../DIRECTORY_POLICY.md)。
 
 ## 安全停止规则
 

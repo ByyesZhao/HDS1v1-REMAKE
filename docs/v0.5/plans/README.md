@@ -10,7 +10,7 @@
 
 该计划的[审核结论](../reviews/phone-access-20261010/PLAN_REVIEW.md)为可沿原方案实施；当时提出的1处非阻断恢复措辞及当前协议回归／现场查询接点已纳入实施，原审核不改写为新验收。
 
-[图片输入理解与本地网页搜索](image-input-local-search-20261009/README.md)已按 I1～I6、S1～S5执行，见[图片交付](../records/image-input-20261009/DELIVERY.md)与[搜索交付](../records/local-browser-search-20261009/DELIVERY.md)。为保持本批送审链接稳定，此合同暂留原路径；交付复核关闭后按[目录原则](../../DIRECTORY_POLICY.md)归档。原任务勾选框、旧探针及“待实施”正文只代表计划编写时状态。
+[图片输入理解与本地网页搜索](image-input-local-search-20261009/README.md)已按 I1～I6、S1～S5执行，见[图片交付](../records/image-input-20261009/DELIVERY.md)与[搜索交付](../records/local-browser-search-20261009/DELIVERY.md)。后续交付复核发现项已[修复关闭](../records/image-search-post-review-fixes-20261010/REVIEW_CLOSURE.md)；为保持追溯链接稳定，此合同暂留原路径，后续目录整理时按[目录原则](../../DIRECTORY_POLICY.md)归档。原任务勾选框、旧探针及“待实施”正文只代表计划编写时状态。
 
 此前图片／搜索批次的修复来源为[图片／搜索交付后复核](../reviews/image-search-post-implementation-20261010/REVIEW.md)的4项P2与1项P3；已执行[随review附带的修复方案](../reviews/image-search-post-implementation-20261010/FIX_PLAN.md)，无需重做I1～I6／S1～S5。见[新交付](../records/image-search-post-review-fixes-20261010/DELIVERY.md)；保留合同原路径用于复核追溯，后续目录整理再归档。
 

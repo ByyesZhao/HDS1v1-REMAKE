@@ -1,6 +1,6 @@
 # 当前模型调用与网页搜索配置参考
 
-核对日期：2026-10-11，当前源码基线`5b92794`。返回[版本索引](../README.md)。本轮为[项目源码与既有证据的静态核对](../records/document-post-remediation-sync-20261011/README.md)，未读取私有配置、认证、原背景或正式数据库，也未运行测试、服务或模型／搜索请求。下列本地模型、搜索／图片开关与业务参数沿用2026-10-11、源码基线`65f0785`时解析的[配置白名单](../records/document-current-sync-20261011/evidence/effective-models.json)；同日10:43:28（上海时间）的[部署指纹](../records/comprehensive-remediation-20261011/evidence/deployment-postcheck.json)记录两份配置在该部署前后hash相同，不能把它称为本轮重新核验。[配置启用记录](../records/feature-enablement-20261010/README.md)保留启用经过。
+核对日期：2026-10-11，最近基线`9f3c73f`。返回[版本索引](../README.md)。本轮[交叉核对](../records/document-code-crosscheck-20261011/README.md)在上一轮[静态核对](../records/document-post-remediation-sync-20261011/README.md)基础上修正图片验收超时范围，通过类型检查及定向离线测试；未读取私有配置、认证、原背景或正式数据库，未运行服务或模型／搜索请求。下列本地模型、搜索／图片开关与业务参数沿用2026-10-11、源码基线`65f0785`时解析的[配置白名单](../records/document-current-sync-20261011/evidence/effective-models.json)；同日10:43:28（上海时间）的[部署指纹](../records/comprehensive-remediation-20261011/evidence/deployment-postcheck.json)记录两份配置在该部署前后hash相同，不能把它称为本轮重新核验。[配置启用记录](../records/feature-enablement-20261010/README.md)保留启用经过。
 
 ## 1. 本地部署配置的DeepSeek用途
 
@@ -53,7 +53,7 @@
 | `scripts/memory-capacity-online-acceptance.ts` | 整理／审核使用memory_consolidation，即Flash／high |
 | `scripts/stickers.ts`导入 | 新图描述使用sticker_description，即Flash／high；重建向量仅用Qwen |
 
-收到用户图片／表情不调用图库描述合同；角色可读且开启新识别，或恢复既有pending时使用独立`incoming_image`。`scripts/validate-incoming-media.ts`默认离线，显式online使用公开／合成fixture，单请求等待300秒；`scripts/validate-local-web.ts`不调用模型，仅验证浏览器。离线启动检查、demo及插件smoke不作为真实DeepSeek调用；迁移时核验连接配置也不等于已请求模型。
+收到用户图片／表情不调用图库描述合同；角色可读且开启新识别，或恢复既有pending时使用独立`incoming_image`。`scripts/validate-incoming-media.ts`默认离线，显式online使用公开／合成fixture，整次在线观察准备共用300秒超时，格式修补不重新计时；`scripts/validate-local-web.ts`不调用模型，仅验证浏览器。离线启动检查、demo及插件smoke不作为真实DeepSeek调用；迁移时核验连接配置也不等于已请求模型。
 
 ## 4. 已实现的网页搜索配置
 

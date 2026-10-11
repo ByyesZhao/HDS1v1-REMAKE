@@ -1,0 +1,31 @@
+{
+  "baseline": "9f3c73f8965d649e8b60a5a340314a7e490b1a2b",
+  "scope": "Inline local Markdown links and heading anchors in docs/v0.5 plus root and docs indexes; documentation-only changes; historical evidence unchanged.",
+  "markdownFiles": 139,
+  "linksChecked": 1101,
+  "errors": [],
+  "nonDocumentationChanges": [],
+  "changedHistoricalEvidence": [],
+  "changedFiles": [
+    "README.md",
+    "docs/README.md",
+    "docs/v0.5/README.md",
+    "docs/v0.5/architecture/REMAKE_V0.5.md",
+    "docs/v0.5/plans/README.md",
+    "docs/v0.5/records/README.md",
+    "docs/v0.5/records/document-code-crosscheck-20261011/README.md",
+    "docs/v0.5/records/document-code-crosscheck-20261011/evidence/document-verification.json",
+    "docs/v0.5/records/document-code-crosscheck-20261011/evidence/validation-results.json",
+    "docs/v0.5/records/document-code-crosscheck-20261011/evidence/verify-docs.cjs",
+    "docs/v0.5/reference/MODEL_CALLS_AND_WEB_OPTIONS_20261009.md",
+    "docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md",
+    "docs/v0.5/subsystems/REMAKE_V0.5_CONTEXT.md",
+    "docs/v0.5/subsystems/REMAKE_V0.5_MEMORY.md",
+    "docs/v0.5/subsystems/REMAKE_V0.5_RECOVERY.md",
+    "docs/v0.5/subsystems/REMAKE_V0.5_SHARED_ACTIVITY.md"
+  ],
+  "whitespaceCheck": {
+    "exitCode": 0,
+    "output": ""
+  }
+}

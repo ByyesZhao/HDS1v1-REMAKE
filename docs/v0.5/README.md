@@ -1,6 +1,6 @@
 # HDSI V0.5：当前文档与审核入口
 
-最新文档核对：[整改后当前说明复核](records/document-post-remediation-sync-20261011/README.md)，源码基线`5b92794`。本轮重新对照现行架构、8份子系统、3份参考与代码，更新遗漏规则及导航；下列产品测试、配置核对和部署结果仍按各自记录日期解释。
+最新文档核对：[当前代码交叉核对](records/document-code-crosscheck-20261011/README.md)，基线`9f3c73f`，产品代码与`d0a9963`相同。本轮复核现行架构、8份子系统、3份参考，补齐共同活动提交时序、验收超时范围和导航状态，并通过类型检查及4文件35项定向测试；下列历史产品测试、配置核对和部署结果仍按各自记录日期解释。上一轮见[整改后当前说明复核](records/document-post-remediation-sync-20261011/README.md)。
 
 最新：[综合审核整改交付](records/comprehensive-remediation-20261011/DELIVERY.md)。5项错误修复、流程／性能改进、离线检索工具与独立复核完成；最终217文件1370项及工程门通过。正式部署和最终服务状态以交付页为准；[实施包](plans/comprehensive-remediation-20261011/README.md)保留已完成步骤和未执行的条件在线实验。
 
@@ -39,6 +39,7 @@
 
 | 材料 | 状态 |
 | --- | --- |
+| [当前代码交叉核对](records/document-code-crosscheck-20261011/README.md) | 9f3c73f基线；修正文档边界与导航，类型检查及4文件35项定向测试通过；未重新核对私有配置或部署 |
 | [整改后当前文档核对](records/document-post-remediation-sync-20261011/README.md) | 5b92794基线；现行说明与源码及导航复核，纯文档更新，不重跑此前产品测试或部署 |
 | [综合审核整改交付](records/comprehensive-remediation-20261011/DELIVERY.md) | 217文件1370项、工程检查与独立复核通过；350合成样本成本比较、恢复矩阵及Q1/Q2完成，Q3工具完成而线上未执行；正式部署状态见交付 |
 | [此前同日文档同步](records/document-current-sync-20261011/README.md) | 65f0785基线；规则／配置／导航重新对照，只修当前说明与入口，历史证据保留 |

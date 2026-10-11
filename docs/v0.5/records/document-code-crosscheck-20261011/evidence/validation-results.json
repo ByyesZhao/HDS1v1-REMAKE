@@ -1,0 +1,47 @@
+{
+  "date": "2026-10-11",
+  "baseline": "9f3c73f8965d649e8b60a5a340314a7e490b1a2b",
+  "node": "v24.21.0",
+  "typecheck": {
+    "command": "npm run typecheck",
+    "exitCode": 0
+  },
+  "initialTestAttempt": {
+    "passedFiles": 1,
+    "passedTests": 17,
+    "failedFiles": 3,
+    "error": "ENOENT loading Vitest transformed modules from Windows sandbox TEMP"
+  },
+  "rerun": {
+    "temp": ".tmp/document-code-crosscheck-20261011",
+    "command": "node node_modules/vitest/vitest.mjs run tests/shared-v3-flow.test.ts tests/incoming-media-entry.test.ts tests/background-stage-views.test.ts tests/model-settings.test.ts --reporter=json --outputFile=.tmp/document-code-crosscheck-20261011/tests.json",
+    "exitCode": 0,
+    "success": true,
+    "passedTests": 35,
+    "failedTests": 0,
+    "pendingTests": 0,
+    "files": [
+      {
+        "file": "tests/background-stage-views.test.ts",
+        "status": "passed",
+        "tests": 3
+      },
+      {
+        "file": "tests/incoming-media-entry.test.ts",
+        "status": "passed",
+        "tests": 2
+      },
+      {
+        "file": "tests/model-settings.test.ts",
+        "status": "passed",
+        "tests": 13
+      },
+      {
+        "file": "tests/shared-v3-flow.test.ts",
+        "status": "passed",
+        "tests": 17
+      }
+    ]
+  },
+  "scope": "Existing targeted offline tests only; no new product code, full-suite run, build, deployment, formal database access, service control or online model/search calls."
+}
