@@ -1,0 +1,35 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/memory-capacity-upgrade.test.ts -t inspection sorts from one policy snapshot --maxWorkers=1 --no-isolate
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ❯ tests/memory-capacity-upgrade.test.ts (12 tests | 1 failed | 11 skipped) 258ms
+   × inspection sorts from one policy snapshot and one bounded awakening batch without owner payloads 257ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/memory-capacity-upgrade.test.ts > inspection sorts from one policy snapshot and one bounded awakening batch without owner payloads
+AssertionError: expected [ …(6) ] to have a length of 1 but got 6
+
+- Expected
++ Received
+
+- 1
++ 6
+
+ ❯ tests/memory-capacity-upgrade.test.ts:96:68
+     94|  expect(report.longCapacityExits.map(row=>row.id)).toEqual(['extra-3',…
+     95|  expect(reads.filter(sql=>sql.includes('AS hasContent FROM'))).toHaveL…
+     96|  expect(reads.filter(sql=>sql.includes('FROM memory_awakenings'))).toH…
+       |                                                                    ^
+     97|  expect(reads.filter(sql=>/^SELECT data FROM (memories|details|learned…
+     98|  expect(reads.find(sql=>sql.includes('FROM memory_awakenings'))).toMat…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 11 skipped (12)
+   Start at  09:52:02
+   Duration  623ms (tests 54%, transform 35%, import 9%, worker 1%)
+

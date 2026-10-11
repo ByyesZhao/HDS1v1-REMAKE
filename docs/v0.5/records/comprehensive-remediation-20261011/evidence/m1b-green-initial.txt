@@ -1,0 +1,11 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/memory-policy-order.test.ts tests/memory-capacity-work.test.ts --maxWorkers=1 --no-isolate
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+
+ Test Files  2 passed (2)
+      Tests  28 passed (28)
+   Start at  09:50:47
+   Duration  838ms (tests 73%, transform 21%, import 6%, worker 1%)
+

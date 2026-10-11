@@ -1,0 +1,12 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 typecheck
+npm notice run tsc --noEmit
+tests/memory-retrieval-vector-work.test.ts(8,65): error TS2305: Module '"../src/memory/retrieval"' has no exported member 'semanticPreflight'.
+tests/memory-retrieval-vector-work.test.ts(58,17): error TS2339: Property 'semanticCapability' does not exist on type 'MemoryRetrieval'.
+tests/memory-retrieval-vector-work.test.ts(59,38): error TS2339: Property 'semanticCapability' does not exist on type 'MemoryRetrieval'.
+tests/memory-retrieval-vector-work.test.ts(60,72): error TS2339: Property 'semanticCapability' does not exist on type 'MemoryRetrieval'.
+tests/memory-retrieval-vector-work.test.ts(64,40): error TS2339: Property 'semanticCapability' does not exist on type 'MemoryRetrieval'.
+tests/memory-retrieval-vector-work.test.ts(65,42): error TS2339: Property 'semanticCapability' does not exist on type 'MemoryRetrieval'.
+tests/memory-retrieval-vector-work.test.ts(66,80): error TS2339: Property 'semanticCapability' does not exist on type 'MemoryRetrieval'.
+tests/memory-retrieval-vector-work.test.ts(79,81): error TS2554: Expected 1 arguments, but got 2.
+tests/memory-retrieval-vector-work.test.ts(85,68): error TS2554: Expected 1 arguments, but got 2.
+tests/memory-retrieval-vector-work.test.ts(86,78): error TS2554: Expected 1 arguments, but got 2.

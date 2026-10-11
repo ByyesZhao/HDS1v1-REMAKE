@@ -7,7 +7,10 @@ import { MemoryStore } from '../src/memory/store';
 import { MemoryLifecycle } from '../src/memory/lifecycle';
 import { MemoryIndex } from '../src/memory/index';
 import { MemoryMaintenance } from '../src/memory/maintenance';
-import { TestClock,NOW } from './helpers';
+import { TestClock,NOW,setup,saveInput } from './helpers';
+import {HdsiApp} from '../src/app';
+import {MemoryCapacity} from '../src/memory/capacity';
+import {defaultMemoryCapacity} from '../src/memory/types';
 const stores:Storage[]=[];const dirs:string[]=[];afterEach(()=>{stores.splice(0).forEach(s=>s.close());dirs.splice(0).forEach(d=>rmSync(d,{recursive:true,force:true}));});
 function open(path:string){const storage=new Storage(path);stores.push(storage);const store=new MemoryStore(storage);store.migrate(NOW);const clock=new TestClock(),models:any={runModel:vi.fn()},index=new MemoryIndex(store,{model:'test',embed:async()=>[1,0]},{clock});const maintenance=new MemoryMaintenance(store,new MemoryLifecycle(store),index,models,{clock});return {storage,store,maintenance,models,index};}
 it('reopens ready without recomputing, rolls back owner and marker together, and skips completed units',()=>{
@@ -27,4 +30,17 @@ it('accepts an index after state-only change but rejects obsolete text revision 
 it('supersedes only one old-config pending index per apply call without issuing an incompatible remote request',()=>{
   const d=open(':memory:');for(const id of ['a','b']){const row=d.store.makeOwner({ownerType:'detail',ownerId:id},{content:'A'},NOW);d.store.saveOwner(row);d.store.queueIndex(row,NOW,'old-config');}
   expect(d.maintenance.applyOneReady(NOW)).toBe('stale');expect(d.store.jobs<any>('memory_index_jobs').filter(j=>j.configSignature==='old-config'&&j.status==='pending')).toHaveLength(1);expect(d.store.jobs<any>('memory_index_jobs').filter(j=>j.configSignature===d.index.configSignature)).toHaveLength(1);expect(d.models.runModel).not.toHaveBeenCalled();
+});
+it('ordinary story commit normalizes all short deltas without a finite background budget',async()=>{
+ const d=setup();stores.push(d.storage);saveInput(d.storage,'a','记录三个片段');
+ const store=new MemoryStore(d.storage);store.migrate(NOW);
+ const capacity=new MemoryCapacity(store,{...defaultMemoryCapacity,shortActiveLimit:1,longActiveLimit:2}),normalize=vi.spyOn(capacity,'normalize');
+ d.models.outputs.memory={schemaVersion:3,shortTermChanges:Array.from({length:3},(_,i)=>({action:'create',clientRef:`s-${i}`,content:`详情${i}`,eventSummary:`摘要${i}`,feelingSummary:'开心',topics:[],sourceIds:['a'],importance:'normal'})),longTermChanges:[],detailChanges:[]};
+ await new HdsiApp({...d,memoryStore:store,memoryLifecycle:new MemoryLifecycle(store,capacity),memoryCapacity:capacity}).runTurn({inputMessageIds:['a'],taskIds:[],triggerKinds:['input']});
+ expect(normalize).toHaveBeenCalledTimes(1);expect(normalize.mock.calls[0]).toEqual([NOW,[]]);
+ expect(normalize.mock.results[0].value.changedOwners).toHaveLength(4);
+ expect(capacity.counts(NOW)).toMatchObject({shortActive:1,longOccupied:3,protectedLong:1,longOverflow:1});
+ expect(store.allOwners().filter(row=>row.kind==='short'&&row.capacityExitedAt===NOW)).toHaveLength(2);
+ expect(d.storage.all('turns')[0]).toMatchObject({done:true,frozenResult:null});
+ normalize.mockRestore();
 });

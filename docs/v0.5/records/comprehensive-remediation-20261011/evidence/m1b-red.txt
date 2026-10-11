@@ -1,0 +1,225 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/memory-policy-order.test.ts tests/memory-capacity-work.test.ts --maxWorkers=1 --no-isolate
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ❯ tests/memory-policy-order.test.ts (0 test)
+ ❯ tests/memory-capacity-work.test.ts (10 tests | 10 failed) 688ms
+   × normalize_at_limits_hydrates_zero_owners (128 characters) 203ms
+   × normalize_at_limits_hydrates_zero_owners (4096 characters) 256ms
+   × normalize_single_overflow_bounds_sort_reads 195ms
+   × blocked_overflow_preserves_protected_and_missing_summary: references 6ms
+   × blocked_overflow_preserves_protected_and_missing_summary: temporary 4ms
+   × blocked_overflow_preserves_protected_and_missing_summary: missing 4ms
+   × blocked_overflow_preserves_protected_and_missing_summary: whitespace 4ms
+   × story_normalize_handles_multiple_deltas 5ms
+   × background_budget_one_keeps_short_long_pair_atomic 5ms
+   × changeBudget zero leaves overflow untouched and caller snapshot is reused 6ms
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/memory-policy-order.test.ts [ tests/memory-policy-order.test.ts ]
+Error: Cannot find module '../src/memory/policy-order' imported from D:/HDSI-remake/tests/memory-policy-order.test.ts
+ ❯ tests/memory-policy-order.test.ts:5:1
+      3| import {activeOrder,archiveOrder,capacityCounts,protectedCanonicalIds,…
+      4| import {readMemoryPolicySnapshot,policyCanonical} from '../src/memory/…
+      5| import {readLatestAwakeningTimes,memoryOrderKeys,activePolicyOrder,arc…
+       | ^
+      6| import {defaultMemoryCapacity,type MemoryCandidate} from '../src/memor…
+      7|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/11]⎯
+
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 10 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/memory-capacity-work.test.ts > normalize_at_limits_hydrates_zero_owners (128 characters)
+ FAIL  tests/memory-capacity-work.test.ts > normalize_at_limits_hydrates_zero_owners (4096 characters)
+AssertionError: expected { allOwners: 2, listAwakenings: +0 } to deeply equal { allOwners: +0, listAwakenings: +0 }
+
+- Expected
++ Received
+
+  {
+-   "allOwners": 0,
++   "allOwners": 2,
+    "listAwakenings": 0,
+  }
+
+ ❯ tests/memory-capacity-work.test.ts:46:18
+     44|  const result=new MemoryCapacity(d.store,defaultMemoryCapacity).normal…
+     45|  expect(result.changedOwners).toEqual([]);expect(result.counts).toEqua…
+     46|  expect(w.calls).toEqual({allOwners:0,listAwakenings:0});
+       |                  ^
+     47|  expect(w.tally).toEqual({snapshotLoads:1,metadataRows:1600,fullOwnerR…
+     48| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/11]⎯
+
+ FAIL  tests/memory-capacity-work.test.ts > normalize_single_overflow_bounds_sort_reads
+AssertionError: expected { allOwners: 2, listAwakenings: 3600 } to deeply equal { allOwners: +0, listAwakenings: +0 }
+
+- Expected
++ Received
+
+  {
+-   "allOwners": 0,
+-   "listAwakenings": 0,
++   "allOwners": 2,
++   "listAwakenings": 3600,
+  }
+
+ ❯ tests/memory-capacity-work.test.ts:52:18
+     50|  const d=fullPool(128,true),w=work(d),result=new MemoryCapacity(d.stor…
+     51|  expect(result.changedOwners.map(r=>r.ownerId)).toEqual(['l-0100']);ex…
+     52|  expect(w.calls).toEqual({allOwners:0,listAwakenings:0});
+       |                  ^
+     53|  expect(w.tally).toMatchObject({snapshotLoads:1,metadataRows:1601,full…
+     54|  expect(w.tally.awakeningIds).toHaveLength(901);expect(new Set(w.tally…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/11]⎯
+
+ FAIL  tests/memory-capacity-work.test.ts > blocked_overflow_preserves_protected_and_missing_summary: references
+AssertionError: expected { snapshotLoads: 2, …(7) } to match object { snapshotLoads: 1, …(5) }
+(2 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "awakeningQueries": 0,
+    "dirtyWrites": 0,
+-   "fullOwnerRows": 0,
++   "fullOwnerRows": 4,
+    "grantWrites": 0,
+    "ownerWrites": 0,
+-   "snapshotLoads": 1,
++   "snapshotLoads": 2,
+  }
+
+ ❯ tests/memory-capacity-work.test.ts:62:18
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/11]⎯
+
+ FAIL  tests/memory-capacity-work.test.ts > blocked_overflow_preserves_protected_and_missing_summary: temporary
+ FAIL  tests/memory-capacity-work.test.ts > blocked_overflow_preserves_protected_and_missing_summary: missing
+AssertionError: expected { snapshotLoads: 2, …(7) } to match object { snapshotLoads: 1, …(5) }
+(2 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "awakeningQueries": 0,
+    "dirtyWrites": 0,
+-   "fullOwnerRows": 0,
++   "fullOwnerRows": 2,
+    "grantWrites": 0,
+    "ownerWrites": 0,
+-   "snapshotLoads": 1,
++   "snapshotLoads": 2,
+  }
+
+ ❯ tests/memory-capacity-work.test.ts:62:18
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/11]⎯
+
+ FAIL  tests/memory-capacity-work.test.ts > blocked_overflow_preserves_protected_and_missing_summary: whitespace
+AssertionError: expected { snapshotLoads: 2, …(7) } to match object { snapshotLoads: 1, …(5) }
+(2 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "awakeningQueries": 0,
+    "dirtyWrites": 0,
+-   "fullOwnerRows": 0,
++   "fullOwnerRows": 5,
+    "grantWrites": 0,
+    "ownerWrites": 0,
+-   "snapshotLoads": 1,
++   "snapshotLoads": 2,
+  }
+
+ ❯ tests/memory-capacity-work.test.ts:62:18
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/11]⎯
+
+ FAIL  tests/memory-capacity-work.test.ts > story_normalize_handles_multiple_deltas
+AssertionError: expected "listGrants" to be called 2 times, but got 4 times
+ ❯ tests/memory-capacity-work.test.ts:81:17
+     79|  expect(result.changedOwners.map(r=>r.ownerId)).toEqual(['s-0','l-0','…
+     80|  expect(result.counts).toMatchObject({shortActive:1,longOccupied:3,lon…
+     81|  expect(grants).toHaveBeenCalledTimes(2);grants.mockRestore();expect(w…
+       |                 ^
+     82|  expect(d.store.canonical('l-0')).toMatchObject({retainedFrom:at,expir…
+     83|  expect(d.store.canonical('l-1')).toMatchObject({retainedFrom:at,expir…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/11]⎯
+
+ FAIL  tests/memory-capacity-work.test.ts > background_budget_one_keeps_short_long_pair_atomic
+AssertionError: expected { snapshotLoads: 2, …(7) } to match object { fullOwnerRows: 2, …(3) }
+(4 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "dirtyWrites": 2,
+-   "fullOwnerRows": 2,
++   "fullOwnerRows": 21,
+    "grantWrites": 1,
+    "ownerWrites": 2,
+  }
+
+ ❯ tests/memory-capacity-work.test.ts:91:18
+     89|  expect(d.store.listGrants('l-0').find(r=>r.kind==='initial')).toMatch…
+     90|  expect(d.store.canonical('l-1')).toMatchObject({retainedFrom:days(7),…
+     91|  expect(w.tally).toMatchObject({fullOwnerRows:2,ownerWrites:2,grantWri…
+       |                  ^
+     92| });
+     93| it('changeBudget zero leaves overflow untouched and caller snapshot is…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/11]⎯
+
+ FAIL  tests/memory-capacity-work.test.ts > changeBudget zero leaves overflow untouched and caller snapshot is reused
+AssertionError: expected { snapshotLoads: 2, …(7) } to match object { snapshotLoads: +0, …(6) }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "awakeningQueries": 0,
++   "awakeningQueries": 4,
+    "dirtyWrites": 0,
+-   "fullOwnerRows": 0,
++   "fullOwnerRows": 20,
+    "grantWrites": 0,
+-   "metadataRows": 0,
++   "metadataRows": 12,
+    "ownerWrites": 0,
+-   "snapshotLoads": 0,
++   "snapshotLoads": 2,
+  }
+
+ ❯ tests/memory-capacity-work.test.ts:97:18
+     95|  const result=new MemoryCapacity(d.store,pairConfig).normalize(at,[],0…
+     96|  expect(result.changedOwners).toEqual([]);expect(result.counts).toMatc…
+     97|  expect(w.tally).toMatchObject({snapshotLoads:0,metadataRows:0,fullOwn…
+       |                  ^
+     98| });
+     99|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/11]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  10 failed (10)
+   Start at  09:49:29
+   Duration  1.07s (tests 98%, transform 1%, worker 1%, import 1%)
+

@@ -1,4 +1,4 @@
-import {afterEach,expect,it} from 'vitest';
+import {afterEach,expect,it,vi} from 'vitest';
 import {mkdtempSync,readFileSync,rmSync,writeFileSync} from 'node:fs';
 import {spawnSync} from 'node:child_process';
 import {join} from 'node:path';
@@ -81,4 +81,32 @@ it('legacy_short_source_resolves_canonical_evidence_before_cleanup',()=>{
   const cleanup=new MemoryCleanup(store,new MemoryCapacity(store,defaultMemoryCapacity));while(cleanup.applyOne(days(100))==='applied'){}
   expect(store.owner(short)).toBeNull();expect(store.canonical('expired')).not.toBeNull();expect(store.owner({ownerType:'learned',ownerId:'u'})?.content).toBe('两个事件的稳定认识');
  }finally{s.close();}
+});
+it('inspection sorts from one policy snapshot and one bounded awakening batch without owner payloads',()=>{
+ const path=exitFile({shortExpiresAt:days(7)},'summary'),s=new Storage(path),store=new MemoryStore(s);
+ try{
+  for(let i=0;i<4;i++)store.saveOwner(store.makeOwner({ownerType:'long',ownerId:`extra-${i}`},{content:'private'.repeat(500),retainedFrom:at,expiresAt:days(90),lastEventUpdateAt:days(-i)},at));
+ }finally{s.close();}
+ const prepare=DatabaseSync.prototype.prepare,reads:string[]=[];
+ const spy=vi.spyOn(DatabaseSync.prototype,'prepare').mockImplementation(function(this:DatabaseSync,sql:string){reads.push(sql);return prepare.call(this,sql);});
+ let report:ReturnType<typeof inspectMemoryCapacity>;
+ try{report=inspectMemoryCapacity(path,at,{...defaultMemoryCapacity,longActiveLimit:1});}finally{spy.mockRestore();}
+ expect(report.longCapacityExits.map(row=>row.id)).toEqual(['extra-3','extra-2','extra-1','extra-0','other']);
+ expect(reads.filter(sql=>sql.includes('AS hasContent FROM'))).toHaveLength(3);
+ expect(reads.filter(sql=>sql.includes('FROM memory_awakenings'))).toHaveLength(1);
+ expect(reads.filter(sql=>/^SELECT data FROM (memories|details|learned_background)\b/.test(sql))).toEqual([]);
+ expect(reads.find(sql=>sql.includes('FROM memory_awakenings'))).toMatch(/^SELECT canonicalMemoryId,firstEffectiveAt FROM /);
+ expect(JSON.stringify(report)).not.toContain('private');
+});
+it('inspection of legacy database without awakenings preserves ordered exits and missing references',()=>{
+ const path=exitFile({shortExpiresAt:days(7)},'summary'),s=new Storage(path),store=new MemoryStore(s);
+ try{
+  store.saveOwner(store.makeOwner({ownerType:'short',ownerId:'missing'},{content:'detail',linkedLongId:'unknown',shortExpiresAt:days(7)},at));
+  // The inspector intentionally uses the historical metadata mode's later-table winner.
+  store.saveOwner(store.makeOwner({ownerType:'detail',ownerId:'l'},{content:'detail shadows same ID'},at));
+  s.prepare('DROP TABLE memory_awakenings').run();
+ }finally{s.close();}
+ const before=readFileSync(path),report=inspectMemoryCapacity(path,at,{...defaultMemoryCapacity,shortActiveLimit:0,longActiveLimit:1});
+ expect(readFileSync(path)).toEqual(before);expect(report.shortCapacityExits).toEqual([]);expect(report.longCapacityExits).toEqual([{id:'l',reason:'long_capacity'}]);
+ expect(report.missingReferences).toEqual([{id:'missing',targetId:'unknown'},{id:'s',targetId:'l'}]);
 });

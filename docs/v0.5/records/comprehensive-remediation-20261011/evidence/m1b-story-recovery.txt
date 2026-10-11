@@ -1,0 +1,11 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/memory-v3-recovery.test.ts -t ordinary story commit --maxWorkers=1 --no-isolate
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 4 skipped (5)
+   Start at  09:53:55
+   Duration  769ms (transform 65%, import 29%, tests 6%, worker 1%)
+
