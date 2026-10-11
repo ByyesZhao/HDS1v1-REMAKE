@@ -1,0 +1,145 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run tsx scripts/check-task-scheduling.ts --output docs/v0.5/records/comprehensive-remediation-20261011/evidence/task-scheduling-after.json
+{
+  "sourceRevision": "69147f9aebc9cdb8ee19fa17f6c50d726e93d5ae",
+  "cases": [
+    {
+      "history": 0,
+      "pending": 0,
+      "medianMs": 0.9578999999999951,
+      "taskQueries": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "materializedRows": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "history": 0,
+      "pending": 3,
+      "medianMs": 1.0149000000000115,
+      "taskQueries": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "materializedRows": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ]
+    },
+    {
+      "history": 1000,
+      "pending": 0,
+      "medianMs": 1.1613000000000397,
+      "taskQueries": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "materializedRows": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "history": 1000,
+      "pending": 3,
+      "medianMs": 1.1130999999999744,
+      "taskQueries": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "materializedRows": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ]
+    },
+    {
+      "history": 10000,
+      "pending": 0,
+      "medianMs": 1.1662000000000035,
+      "taskQueries": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "materializedRows": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "history": 10000,
+      "pending": 3,
+      "medianMs": 1.3191999999999098,
+      "taskQueries": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "materializedRows": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ]
+    }
+  ]
+}

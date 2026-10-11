@@ -1,0 +1,400 @@
+{
+  "schemaVersion": 1,
+  "sourceRoot": "D:\\HDSI-remake",
+  "sourceRevision": "69147f9aebc9cdb8ee19fa17f6c50d726e93d5ae",
+  "sourceIdentity": "current HEAD plus sourceHashes",
+  "sourceHashes": {
+    "src/storage.ts": "ed8558a25710dba6254bae59c27f8782b68a19becd42fbb1851042c8a4f01d7a",
+    "src/host/scheduler.ts": "ea3af95911abe3179d84a4bf1417a6c88384a4c382d6c0af8e7fdf54acdbf698",
+    "src/host/shared.ts": "286e02c85837940fd01726710c17d17127fb3d7dfc80fd950bcbfd8aa53027df",
+    "src/app.ts": "ad82d5035fb8be93ff857ad321d50fe6039967e686a73e37d7c52fe96bdbc1e5",
+    "src/environment/runtime.ts": "770defe2519a74dc2e101fb15dea2be8f2630c03d344f2e9614e3bb2511561e2",
+    "src/environment/snapshot.ts": "76e7fa8eedfb585858eaaf972ed03578a2df0c41dbc7ffae060c29b008b0e9da",
+    "src/dialogue/window-consistency.ts": "c7673bc8804c3e4264f94a80aa96a4584e2a61d4e7bc9b177115d78347307d8f",
+    "src/dialogue/episodes.ts": "3abcd89cb26548babb04fd3f9827f7cfd5b7a77e41bf40a15a48739e36d53c35"
+  },
+  "node": "v24.21.0",
+  "platform": "win32",
+  "measurement": "one collectReady + nextDeadline per fresh in-memory database; seeding excluded; no model/network calls",
+  "expectBudgets": true,
+  "cases": [
+    {
+      "history": 0,
+      "pending": 0,
+      "samples": [
+        {
+          "elapsedMs": 2.7036999999999978,
+          "taskQueries": 2,
+          "pendingQueries": 2,
+          "historyQueries": 0,
+          "materializedRows": 0,
+          "materializedHistoryRows": 0
+        },
+        {
+          "elapsedMs": 0.9578999999999951,
+          "taskQueries": 2,
+          "pendingQueries": 2,
+          "historyQueries": 0,
+          "materializedRows": 0,
+          "materializedHistoryRows": 0
+        },
+        {
+          "elapsedMs": 0.9251999999999896,
+          "taskQueries": 2,
+          "pendingQueries": 2,
+          "historyQueries": 0,
+          "materializedRows": 0,
+          "materializedHistoryRows": 0
+        },
+        {
+          "elapsedMs": 0.8600999999999885,
+          "taskQueries": 2,
+          "pendingQueries": 2,
+          "historyQueries": 0,
+          "materializedRows": 0,
+          "materializedHistoryRows": 0
+        },
+        {
+          "elapsedMs": 0.961100000000016,
+          "taskQueries": 2,
+          "pendingQueries": 2,
+          "historyQueries": 0,
+          "materializedRows": 0,
+          "materializedHistoryRows": 0
+        },
+        {
+          "elapsedMs": 0.9080000000000155,
+          "taskQueries": 2,
+          "pendingQueries": 2,
+          "historyQueries": 0,
+          "materializedRows": 0,
+          "materializedHistoryRows": 0
+        },
+        {
+          "elapsedMs": 1.176099999999991,
+          "taskQueries": 2,
+          "pendingQueries": 2,
+          "historyQueries": 0,
+          "materializedRows": 0,
+          "materializedHistoryRows": 0
+        }
+      ],
+      "medianMs": 0.9578999999999951
+    },
+    {
+      "history": 0,
+      "pending": 3,
+      "samples": [
+        {
+          "elapsedMs": 1.0150000000000148,
+          "taskQueries": 2,
+          "pendingQueries": 2,
+          "historyQueries": 0,
+          "materializedRows": 6,
+          "materializedHistoryRows": 0
+        },
+        {
+          "elapsedMs": 1.0149000000000115,
+          "taskQueries": 2,
+          "pendingQueries": 2,
+          "historyQueries": 0,
+          "materializedRows": 6,
+          "materializedHistoryRows": 0
+        },
+        {
+          "elapsedMs": 1.0748000000000104,
+          "taskQueries": 2,
+          "pendingQueries": 2,
+          "historyQueries": 0,
+          "materializedRows": 6,
+          "materializedHistoryRows": 0
+        },
+        {
+          "elapsedMs": 0.8592000000000155,
+          "taskQueries": 2,
+          "pendingQueries": 2,
+          "historyQueries": 0,
+          "materializedRows": 6,
+          "materializedHistoryRows": 0
+        },
+        {
+          "elapsedMs": 1.0278999999999883,
+          "taskQueries": 2,
+          "pendingQueries": 2,
+          "historyQueries": 0,
+          "materializedRows": 6,
+          "materializedHistoryRows": 0
+        },
+        {
+          "elapsedMs": 0.8362000000000194,
+          "taskQueries": 2,
+          "pendingQueries": 2,
+          "historyQueries": 0,
+          "materializedRows": 6,
+          "materializedHistoryRows": 0
+        },
+        {
+          "elapsedMs": 0.7927999999999997,
+          "taskQueries": 2,
+          "pendingQueries": 2,
+          "historyQueries": 0,
+          "materializedRows": 6,
+          "materializedHistoryRows": 0
+        }
+      ],
+      "medianMs": 1.0149000000000115
+    },
+    {
+      "history": 1000,
+      "pending": 0,
+      "samples": [
+        {
+          "elapsedMs": 1.092800000000011,
+          "taskQueries": 2,
+          "pendingQueries": 2,
+          "historyQueries": 0,
+          "materializedRows": 0,
+          "materializedHistoryRows": 0
+        },
+        {
+          "elapsedMs": 1.0523000000000025,
+          "taskQueries": 2,
+          "pendingQueries": 2,
+          "historyQueries": 0,
+          "materializedRows": 0,
+          "materializedHistoryRows": 0
+        },
+        {
+          "elapsedMs": 1.1613000000000397,
+          "taskQueries": 2,
+          "pendingQueries": 2,
+          "historyQueries": 0,
+          "materializedRows": 0,
+          "materializedHistoryRows": 0
+        },
+        {
+          "elapsedMs": 0.9886000000000195,
+          "taskQueries": 2,
+          "pendingQueries": 2,
+          "historyQueries": 0,
+          "materializedRows": 0,
+          "materializedHistoryRows": 0
+        },
+        {
+          "elapsedMs": 1.3308000000000106,
+          "taskQueries": 2,
+          "pendingQueries": 2,
+          "historyQueries": 0,
+          "materializedRows": 0,
+          "materializedHistoryRows": 0
+        },
+        {
+          "elapsedMs": 1.297399999999982,
+          "taskQueries": 2,
+          "pendingQueries": 2,
+          "historyQueries": 0,
+          "materializedRows": 0,
+          "materializedHistoryRows": 0
+        },
+        {
+          "elapsedMs": 1.2513000000000147,
+          "taskQueries": 2,
+          "pendingQueries": 2,
+          "historyQueries": 0,
+          "materializedRows": 0,
+          "materializedHistoryRows": 0
+        }
+      ],
+      "medianMs": 1.1613000000000397
+    },
+    {
+      "history": 1000,
+      "pending": 3,
+      "samples": [
+        {
+          "elapsedMs": 1.1130999999999744,
+          "taskQueries": 2,
+          "pendingQueries": 2,
+          "historyQueries": 0,
+          "materializedRows": 6,
+          "materializedHistoryRows": 0
+        },
+        {
+          "elapsedMs": 1.1152999999999906,
+          "taskQueries": 2,
+          "pendingQueries": 2,
+          "historyQueries": 0,
+          "materializedRows": 6,
+          "materializedHistoryRows": 0
+        },
+        {
+          "elapsedMs": 1.0670000000000073,
+          "taskQueries": 2,
+          "pendingQueries": 2,
+          "historyQueries": 0,
+          "materializedRows": 6,
+          "materializedHistoryRows": 0
+        },
+        {
+          "elapsedMs": 1.031499999999994,
+          "taskQueries": 2,
+          "pendingQueries": 2,
+          "historyQueries": 0,
+          "materializedRows": 6,
+          "materializedHistoryRows": 0
+        },
+        {
+          "elapsedMs": 1.191500000000019,
+          "taskQueries": 2,
+          "pendingQueries": 2,
+          "historyQueries": 0,
+          "materializedRows": 6,
+          "materializedHistoryRows": 0
+        },
+        {
+          "elapsedMs": 1.2685000000000173,
+          "taskQueries": 2,
+          "pendingQueries": 2,
+          "historyQueries": 0,
+          "materializedRows": 6,
+          "materializedHistoryRows": 0
+        },
+        {
+          "elapsedMs": 1.102200000000039,
+          "taskQueries": 2,
+          "pendingQueries": 2,
+          "historyQueries": 0,
+          "materializedRows": 6,
+          "materializedHistoryRows": 0
+        }
+      ],
+      "medianMs": 1.1130999999999744
+    },
+    {
+      "history": 10000,
+      "pending": 0,
+      "samples": [
+        {
+          "elapsedMs": 1.2160000000000082,
+          "taskQueries": 2,
+          "pendingQueries": 2,
+          "historyQueries": 0,
+          "materializedRows": 0,
+          "materializedHistoryRows": 0
+        },
+        {
+          "elapsedMs": 1.1415999999999258,
+          "taskQueries": 2,
+          "pendingQueries": 2,
+          "historyQueries": 0,
+          "materializedRows": 0,
+          "materializedHistoryRows": 0
+        },
+        {
+          "elapsedMs": 1.1662000000000035,
+          "taskQueries": 2,
+          "pendingQueries": 2,
+          "historyQueries": 0,
+          "materializedRows": 0,
+          "materializedHistoryRows": 0
+        },
+        {
+          "elapsedMs": 0.9554000000000542,
+          "taskQueries": 2,
+          "pendingQueries": 2,
+          "historyQueries": 0,
+          "materializedRows": 0,
+          "materializedHistoryRows": 0
+        },
+        {
+          "elapsedMs": 1.1584000000000287,
+          "taskQueries": 2,
+          "pendingQueries": 2,
+          "historyQueries": 0,
+          "materializedRows": 0,
+          "materializedHistoryRows": 0
+        },
+        {
+          "elapsedMs": 14.355999999999995,
+          "taskQueries": 2,
+          "pendingQueries": 2,
+          "historyQueries": 0,
+          "materializedRows": 0,
+          "materializedHistoryRows": 0
+        },
+        {
+          "elapsedMs": 1.2156999999999698,
+          "taskQueries": 2,
+          "pendingQueries": 2,
+          "historyQueries": 0,
+          "materializedRows": 0,
+          "materializedHistoryRows": 0
+        }
+      ],
+      "medianMs": 1.1662000000000035
+    },
+    {
+      "history": 10000,
+      "pending": 3,
+      "samples": [
+        {
+          "elapsedMs": 1.1110000000001037,
+          "taskQueries": 2,
+          "pendingQueries": 2,
+          "historyQueries": 0,
+          "materializedRows": 6,
+          "materializedHistoryRows": 0
+        },
+        {
+          "elapsedMs": 1.4415999999998803,
+          "taskQueries": 2,
+          "pendingQueries": 2,
+          "historyQueries": 0,
+          "materializedRows": 6,
+          "materializedHistoryRows": 0
+        },
+        {
+          "elapsedMs": 1.4187000000001717,
+          "taskQueries": 2,
+          "pendingQueries": 2,
+          "historyQueries": 0,
+          "materializedRows": 6,
+          "materializedHistoryRows": 0
+        },
+        {
+          "elapsedMs": 1.5527999999999338,
+          "taskQueries": 2,
+          "pendingQueries": 2,
+          "historyQueries": 0,
+          "materializedRows": 6,
+          "materializedHistoryRows": 0
+        },
+        {
+          "elapsedMs": 0.9504000000001724,
+          "taskQueries": 2,
+          "pendingQueries": 2,
+          "historyQueries": 0,
+          "materializedRows": 6,
+          "materializedHistoryRows": 0
+        },
+        {
+          "elapsedMs": 1.3191999999999098,
+          "taskQueries": 2,
+          "pendingQueries": 2,
+          "historyQueries": 0,
+          "materializedRows": 6,
+          "materializedHistoryRows": 0
+        },
+        {
+          "elapsedMs": 1.0511999999998807,
+          "taskQueries": 2,
+          "pendingQueries": 2,
+          "historyQueries": 0,
+          "materializedRows": 6,
+          "materializedHistoryRows": 0
+        }
+      ],
+      "medianMs": 1.3191999999999098
+    }
+  ]
+}

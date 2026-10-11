@@ -1,0 +1,16 @@
+{
+  "status": "pass",
+  "measuredAfterHead": "69147f9aebc9cdb8ee19fa17f6c50d726e93d5ae",
+  "baselineHead": "9c20a97f632d9eaf5781973fefab95619eb7dc3a",
+  "memoryCases": 12,
+  "schedulerCases": 6,
+  "imageCases": 3,
+  "webCases": 4,
+  "samplesPerCase": 7,
+  "outcomesEqual": true,
+  "workBudgetsPassed": true,
+  "notes": [
+    "Timings are synthetic same-host measurements, not production claims.",
+    "W7 finalization was implemented after this timing snapshot; final deterministic integration verification remains required."
+  ]
+}

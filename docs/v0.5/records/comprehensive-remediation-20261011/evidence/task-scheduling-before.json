@@ -1,0 +1,400 @@
+{
+  "schemaVersion": 1,
+  "sourceRoot": "D:\\HDSI-remake\\.tmp\\comprehensive-remediation-baseline",
+  "sourceRevision": "9c20a97f632d9eaf5781973fefab95619eb7dc3a",
+  "sourceIdentity": "archived source-revision.txt",
+  "sourceHashes": {
+    "src/storage.ts": "e0cdbd9dd0ccc505efdf5e2b2938e1f8e0b5834b835541b6c968c4d530208c2c",
+    "src/host/scheduler.ts": "876c8398a91c08adb4efd3c0e98af1655163e6cf8a3a14f71484b3eddf22275e",
+    "src/host/shared.ts": "305d771d2f46383ee634445ffbee0174009b87723dd5007ed87bd7e600bc8374",
+    "src/app.ts": "97b0abbe861eb4b421c4e8ef5bc2e40fa9c7871427f18207d9f1f3d56b6dc5f6",
+    "src/environment/runtime.ts": "bdf6f01faca1dbcb9b6084244d1d9b8ec85f4147aade96088ea50d00ccd54e22",
+    "src/environment/snapshot.ts": "0cf927072bf0438fd4df7aa561d94c3244283908b44b3d1d7d5ed15ad5318dd1",
+    "src/dialogue/window-consistency.ts": "d8090aa9e0180c4b41454df93919f11975dfb68a0e860516bf133af1869962d8",
+    "src/dialogue/episodes.ts": "41b1374b425bd950eb229308c5df02322b4970846d66045cf8ac6b54f3e1043c"
+  },
+  "node": "v24.21.0",
+  "platform": "win32",
+  "measurement": "one collectReady + nextDeadline per fresh in-memory database; seeding excluded; no model/network calls",
+  "expectBudgets": false,
+  "cases": [
+    {
+      "history": 0,
+      "pending": 0,
+      "samples": [
+        {
+          "elapsedMs": 2.8660999999999888,
+          "taskQueries": 4,
+          "pendingQueries": 0,
+          "historyQueries": 4,
+          "materializedRows": 0,
+          "materializedHistoryRows": 0
+        },
+        {
+          "elapsedMs": 1.022199999999998,
+          "taskQueries": 4,
+          "pendingQueries": 0,
+          "historyQueries": 4,
+          "materializedRows": 0,
+          "materializedHistoryRows": 0
+        },
+        {
+          "elapsedMs": 0.9788000000000068,
+          "taskQueries": 4,
+          "pendingQueries": 0,
+          "historyQueries": 4,
+          "materializedRows": 0,
+          "materializedHistoryRows": 0
+        },
+        {
+          "elapsedMs": 0.9235999999999933,
+          "taskQueries": 4,
+          "pendingQueries": 0,
+          "historyQueries": 4,
+          "materializedRows": 0,
+          "materializedHistoryRows": 0
+        },
+        {
+          "elapsedMs": 0.918200000000013,
+          "taskQueries": 4,
+          "pendingQueries": 0,
+          "historyQueries": 4,
+          "materializedRows": 0,
+          "materializedHistoryRows": 0
+        },
+        {
+          "elapsedMs": 0.9913999999999987,
+          "taskQueries": 4,
+          "pendingQueries": 0,
+          "historyQueries": 4,
+          "materializedRows": 0,
+          "materializedHistoryRows": 0
+        },
+        {
+          "elapsedMs": 0.8245999999999754,
+          "taskQueries": 4,
+          "pendingQueries": 0,
+          "historyQueries": 4,
+          "materializedRows": 0,
+          "materializedHistoryRows": 0
+        }
+      ],
+      "medianMs": 0.9788000000000068
+    },
+    {
+      "history": 0,
+      "pending": 3,
+      "samples": [
+        {
+          "elapsedMs": 1.230600000000038,
+          "taskQueries": 4,
+          "pendingQueries": 0,
+          "historyQueries": 4,
+          "materializedRows": 12,
+          "materializedHistoryRows": 0
+        },
+        {
+          "elapsedMs": 1.1610000000000014,
+          "taskQueries": 4,
+          "pendingQueries": 0,
+          "historyQueries": 4,
+          "materializedRows": 12,
+          "materializedHistoryRows": 0
+        },
+        {
+          "elapsedMs": 1.061399999999992,
+          "taskQueries": 4,
+          "pendingQueries": 0,
+          "historyQueries": 4,
+          "materializedRows": 12,
+          "materializedHistoryRows": 0
+        },
+        {
+          "elapsedMs": 0.8651999999999589,
+          "taskQueries": 4,
+          "pendingQueries": 0,
+          "historyQueries": 4,
+          "materializedRows": 12,
+          "materializedHistoryRows": 0
+        },
+        {
+          "elapsedMs": 0.890199999999993,
+          "taskQueries": 4,
+          "pendingQueries": 0,
+          "historyQueries": 4,
+          "materializedRows": 12,
+          "materializedHistoryRows": 0
+        },
+        {
+          "elapsedMs": 1.1976999999999975,
+          "taskQueries": 4,
+          "pendingQueries": 0,
+          "historyQueries": 4,
+          "materializedRows": 12,
+          "materializedHistoryRows": 0
+        },
+        {
+          "elapsedMs": 1.035600000000045,
+          "taskQueries": 4,
+          "pendingQueries": 0,
+          "historyQueries": 4,
+          "materializedRows": 12,
+          "materializedHistoryRows": 0
+        }
+      ],
+      "medianMs": 1.061399999999992
+    },
+    {
+      "history": 1000,
+      "pending": 0,
+      "samples": [
+        {
+          "elapsedMs": 4.435200000000009,
+          "taskQueries": 4,
+          "pendingQueries": 0,
+          "historyQueries": 4,
+          "materializedRows": 4000,
+          "materializedHistoryRows": 4000
+        },
+        {
+          "elapsedMs": 7.814099999999996,
+          "taskQueries": 4,
+          "pendingQueries": 0,
+          "historyQueries": 4,
+          "materializedRows": 4000,
+          "materializedHistoryRows": 4000
+        },
+        {
+          "elapsedMs": 4.480099999999993,
+          "taskQueries": 4,
+          "pendingQueries": 0,
+          "historyQueries": 4,
+          "materializedRows": 4000,
+          "materializedHistoryRows": 4000
+        },
+        {
+          "elapsedMs": 4.8829000000000065,
+          "taskQueries": 4,
+          "pendingQueries": 0,
+          "historyQueries": 4,
+          "materializedRows": 4000,
+          "materializedHistoryRows": 4000
+        },
+        {
+          "elapsedMs": 6.11930000000001,
+          "taskQueries": 4,
+          "pendingQueries": 0,
+          "historyQueries": 4,
+          "materializedRows": 4000,
+          "materializedHistoryRows": 4000
+        },
+        {
+          "elapsedMs": 4.419600000000003,
+          "taskQueries": 4,
+          "pendingQueries": 0,
+          "historyQueries": 4,
+          "materializedRows": 4000,
+          "materializedHistoryRows": 4000
+        },
+        {
+          "elapsedMs": 5.820100000000025,
+          "taskQueries": 4,
+          "pendingQueries": 0,
+          "historyQueries": 4,
+          "materializedRows": 4000,
+          "materializedHistoryRows": 4000
+        }
+      ],
+      "medianMs": 4.8829000000000065
+    },
+    {
+      "history": 1000,
+      "pending": 3,
+      "samples": [
+        {
+          "elapsedMs": 5.925099999999986,
+          "taskQueries": 4,
+          "pendingQueries": 0,
+          "historyQueries": 4,
+          "materializedRows": 4012,
+          "materializedHistoryRows": 4000
+        },
+        {
+          "elapsedMs": 4.2654,
+          "taskQueries": 4,
+          "pendingQueries": 0,
+          "historyQueries": 4,
+          "materializedRows": 4012,
+          "materializedHistoryRows": 4000
+        },
+        {
+          "elapsedMs": 6.127700000000004,
+          "taskQueries": 4,
+          "pendingQueries": 0,
+          "historyQueries": 4,
+          "materializedRows": 4012,
+          "materializedHistoryRows": 4000
+        },
+        {
+          "elapsedMs": 4.73150000000004,
+          "taskQueries": 4,
+          "pendingQueries": 0,
+          "historyQueries": 4,
+          "materializedRows": 4012,
+          "materializedHistoryRows": 4000
+        },
+        {
+          "elapsedMs": 4.679300000000069,
+          "taskQueries": 4,
+          "pendingQueries": 0,
+          "historyQueries": 4,
+          "materializedRows": 4012,
+          "materializedHistoryRows": 4000
+        },
+        {
+          "elapsedMs": 6.097300000000018,
+          "taskQueries": 4,
+          "pendingQueries": 0,
+          "historyQueries": 4,
+          "materializedRows": 4012,
+          "materializedHistoryRows": 4000
+        },
+        {
+          "elapsedMs": 5.191799999999944,
+          "taskQueries": 4,
+          "pendingQueries": 0,
+          "historyQueries": 4,
+          "materializedRows": 4012,
+          "materializedHistoryRows": 4000
+        }
+      ],
+      "medianMs": 5.191799999999944
+    },
+    {
+      "history": 10000,
+      "pending": 0,
+      "samples": [
+        {
+          "elapsedMs": 44.72630000000004,
+          "taskQueries": 4,
+          "pendingQueries": 0,
+          "historyQueries": 4,
+          "materializedRows": 40000,
+          "materializedHistoryRows": 40000
+        },
+        {
+          "elapsedMs": 35.242399999999975,
+          "taskQueries": 4,
+          "pendingQueries": 0,
+          "historyQueries": 4,
+          "materializedRows": 40000,
+          "materializedHistoryRows": 40000
+        },
+        {
+          "elapsedMs": 49.9242999999999,
+          "taskQueries": 4,
+          "pendingQueries": 0,
+          "historyQueries": 4,
+          "materializedRows": 40000,
+          "materializedHistoryRows": 40000
+        },
+        {
+          "elapsedMs": 48.164600000000064,
+          "taskQueries": 4,
+          "pendingQueries": 0,
+          "historyQueries": 4,
+          "materializedRows": 40000,
+          "materializedHistoryRows": 40000
+        },
+        {
+          "elapsedMs": 39.48530000000005,
+          "taskQueries": 4,
+          "pendingQueries": 0,
+          "historyQueries": 4,
+          "materializedRows": 40000,
+          "materializedHistoryRows": 40000
+        },
+        {
+          "elapsedMs": 49.77020000000016,
+          "taskQueries": 4,
+          "pendingQueries": 0,
+          "historyQueries": 4,
+          "materializedRows": 40000,
+          "materializedHistoryRows": 40000
+        },
+        {
+          "elapsedMs": 48.377300000000105,
+          "taskQueries": 4,
+          "pendingQueries": 0,
+          "historyQueries": 4,
+          "materializedRows": 40000,
+          "materializedHistoryRows": 40000
+        }
+      ],
+      "medianMs": 48.164600000000064
+    },
+    {
+      "history": 10000,
+      "pending": 3,
+      "samples": [
+        {
+          "elapsedMs": 42.126199999999926,
+          "taskQueries": 4,
+          "pendingQueries": 0,
+          "historyQueries": 4,
+          "materializedRows": 40012,
+          "materializedHistoryRows": 40000
+        },
+        {
+          "elapsedMs": 34.11550000000011,
+          "taskQueries": 4,
+          "pendingQueries": 0,
+          "historyQueries": 4,
+          "materializedRows": 40012,
+          "materializedHistoryRows": 40000
+        },
+        {
+          "elapsedMs": 47.05450000000019,
+          "taskQueries": 4,
+          "pendingQueries": 0,
+          "historyQueries": 4,
+          "materializedRows": 40012,
+          "materializedHistoryRows": 40000
+        },
+        {
+          "elapsedMs": 45.2479000000003,
+          "taskQueries": 4,
+          "pendingQueries": 0,
+          "historyQueries": 4,
+          "materializedRows": 40012,
+          "materializedHistoryRows": 40000
+        },
+        {
+          "elapsedMs": 45.441699999999855,
+          "taskQueries": 4,
+          "pendingQueries": 0,
+          "historyQueries": 4,
+          "materializedRows": 40012,
+          "materializedHistoryRows": 40000
+        },
+        {
+          "elapsedMs": 32.63740000000007,
+          "taskQueries": 4,
+          "pendingQueries": 0,
+          "historyQueries": 4,
+          "materializedRows": 40012,
+          "materializedHistoryRows": 40000
+        },
+        {
+          "elapsedMs": 39.95270000000028,
+          "taskQueries": 4,
+          "pendingQueries": 0,
+          "historyQueries": 4,
+          "materializedRows": 40012,
+          "materializedHistoryRows": 40000
+        }
+      ],
+      "medianMs": 42.126199999999926
+    }
+  ]
+}

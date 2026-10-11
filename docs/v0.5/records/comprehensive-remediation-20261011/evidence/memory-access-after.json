@@ -1,0 +1,2264 @@
+{
+  "head": "69147f9aebc9cdb8ee19fa17f6c50d726e93d5ae",
+  "sourceRoot": "D:\\HDSI-remake",
+  "sourceHashes": {
+    "app.ts": "ad82d5035fb8be93ff857ad321d50fe6039967e686a73e37d7c52fe96bdbc1e5",
+    "config.ts": "ebb76cd377ed2f21189a8940d87f5c7864fee06762456e39d496f7d1a40f8d49",
+    "deployment/browser-runtime.ts": "07d80572aaa37765cbab2ac68fb2762dac40317f794d14c072b88a8a24e1e3b0",
+    "deployment/character-background.ts": "512e2cb300b78db7e32774c75ca5e6139663e64fc73c54ad0c32b1766312712f",
+    "deployment/chat-upgrade.ts": "b7fb489f0fe20bb747cc0797427502d487403736961695fc89623d15dd82db4c",
+    "deployment/credentials.ts": "3d37a157a6c2363795d7f8a03a8ef3f857c635cabbfff85254d93a37c110641c",
+    "deployment/dialogue-upgrade.ts": "6f450cea1e336a833e3b109f107b0410fbb674f8a52c1ada83857a6d2b96b04c",
+    "deployment/environment-async-upgrade.ts": "3e140aa9e14380465ff45b16423ceced30d88ac2fd2aa48839189b979f9e52a8",
+    "deployment/environment-upgrade.ts": "6e62d99f52f95f6c8f1db369ed543e8d667ddee5cdf629e66ae13edbcc1e1990",
+    "deployment/memory-capacity-upgrade.ts": "b19977a5d9ef4e4b568d80bb005958e73e3a1afc76cc6f1a8dc6e311536acd88",
+    "deployment/memory-payload-compaction.ts": "56db1e3682433f41675dd466f87e779f1ee55dbe02312ecc4bf24efba43077e3",
+    "deployment/memory-runtime.ts": "8fd98ff732715abd6b7420960190ff79c5f1116b77e56ac20aaf8b64ac20e144",
+    "deployment/plugin-runtime.ts": "f01b20c50b1dfe95a4da85b974555ec400730c2cc8900119ae3c87dad85e8896",
+    "deployment/prompt-context-acceptance.ts": "995304e9758bbf874eb4d55ad5b62255fe53cd39581dfe13be984e1eba669883",
+    "deployment/prompt-quality-acceptance.ts": "377ef028002cd5ec25239cb2bd70e81b51fd15cdde34c63d438f780772ab1185",
+    "deployment/shared-upgrade.ts": "63ccc7d80ec5f819df0723b2e9d62ff418c53f49943065ab0f61a04c17703a9a",
+    "deployment/sticker-catalog.ts": "25839088a51dda57f73972f38acf1f775ffabd3f6c8290f092370c8b798c1f98",
+    "deployment/sticker-web-runtime.ts": "b5d674b233a9056a5d18c122a8f7695eb606d5538eec743b17a1f8ee6933c0f5",
+    "deployment/stop-control.ts": "2ca1d4c6bce9aa1fa759db772ea26f2fdbda8c3cb7340cb05b7e6390a336edce",
+    "deployment/web-payload-migration.ts": "6e93c2fd2c23f070c19fc71ba87f1f7a6a059c6f3de40732582805f02581947f",
+    "deployment/web-runtime.ts": "950e47096ab1964b278a1978d7bc9a5165940d299a1d392eedfe5daadd41fcae",
+    "dialogue/active-consistency.ts": "a3e58e212d18c43e7bdb6671442c0288cf39136176fc5f363a570e2acdd343ff",
+    "dialogue/activity-context.ts": "4a7799e5e2a69dd4295f17c60a29e2c7fdf3500c6559927122183f57069f223d",
+    "dialogue/chat-episodes.ts": "cc92e4ee22e696dc7d10216f78d7cf35033e89208fdd5354671ade1d22f4897b",
+    "dialogue/chat-sql.ts": "d3066713058ea9118b5cfae198a7cef7de51643c61971e5d5463339d8020822a",
+    "dialogue/chat-window.ts": "71ba5e7f00e0422057fb268dd4961340aff4d6da32afc9035b4ce4aaab6fdada",
+    "dialogue/episodes.ts": "3abcd89cb26548babb04fd3f9827f7cfd5b7a77e41bf40a15a48739e36d53c35",
+    "dialogue/errors.ts": "26e7ee661e769526c8e48f7da1bc38388a270cafcea773083f48be38a7c01c08",
+    "dialogue/store.ts": "4fd0fcfc29e9484b7cc7191ceeef68c7756667671f217c78ea74e4ed6025c173",
+    "dialogue/types.ts": "27dc6a129e3c632d8a6a923101f295e45da88e14eecf6b658a001d1c7476f326",
+    "dialogue/window-consistency.ts": "c7673bc8804c3e4264f94a80aa96a4584e2a61d4e7bc9b177115d78347307d8f",
+    "directors/narrative.ts": "a55238c5d1c1a2236b5023ea37f86abe06cdd7891f75c39e1194b639c182d1ed",
+    "directors/personal.ts": "b38c5dd5a9bb1c7730f433a27228b31879da7332f5c524f9bf47cc1aabbe42c9",
+    "directors/school.ts": "dcca36a65a26a84a692345ced9d94b4f60d97243fe669466b458c8e69732ff52",
+    "directors/world.ts": "0a9b5af4542892b450a0eabbfcc1ce57b804010648b6ab60593a16f6a1f41784",
+    "embedding.ts": "327bb8d87ed2f395a043e8c6c83bf82a5e970f1eb3bb2828678294f859e71648",
+    "environment/digest.ts": "6c5b7ded76a257e53d763ccfce9ce9470549f61e9f14ae27807bc100c66797bc",
+    "environment/payload-compaction.ts": "74d3c5037cd600a5781a0f4a80ad06a4bab3df052d1b8ab8ff29c26442f6061e",
+    "environment/preparation.ts": "c0a2318d0901ae1817dc1c6ed72f79f6c8d8895090eeb94d8070d21e0733a94b",
+    "environment/runtime.ts": "770defe2519a74dc2e101fb15dea2be8f2630c03d344f2e9614e3bb2511561e2",
+    "environment/scheduler.ts": "4515918ff545bed46f4329a2fd389f92892519fc72044812117ab39ff7245408",
+    "environment/snapshot.ts": "76e7fa8eedfb585858eaaf972ed03578a2df0c41dbc7ffae060c29b008b0e9da",
+    "environment/store.ts": "7a42e5ab4beae79e690e0db9c269272d5083afd4b87279868b8423411b2bf527",
+    "environment/types.ts": "16d263ea0c8007702a18a523a8b3dd8e055d6cc9cc971cd1de3a65862060b044",
+    "host/input.ts": "074c011a89d226f3dadcc7b1c5b90c1ffed63ebc9825fdbb49aa7e44a8b9e18d",
+    "host/probability.ts": "9f8842dc08486fa07237f3c33400bf8f24e23c73f6eafd7ee14507623a370b03",
+    "host/reply-freshness.ts": "15cfb262ef12f3bf4407dd22c8aeeee7e4ac0fe0846973b49c048bc0108dd7ca",
+    "host/runtime.ts": "145b371e68dd946c20f8ab417e8fb820ac5a7d905245966085db57d62b9fc0cb",
+    "host/scheduler.ts": "ea3af95911abe3179d84a4bf1417a6c88384a4c382d6c0af8e7fdf54acdbf698",
+    "host/shared.ts": "286e02c85837940fd01726710c17d17127fb3d7dfc80fd950bcbfd8aa53027df",
+    "host/state.ts": "20a929c7c534f4cfec1e725650768ede09be50f24e2fc580318d03d8d5df04e5",
+    "host/task-projection.ts": "cf595a8cdb7c50bf4ef6c044ee65d9ff4865c379145e285deb471b523070b673",
+    "index.ts": "7f599160f6214fd74ee2095863974afe12699074bd7df8b2edcbb8a9be05f8ce",
+    "input-media/assets.ts": "316b7cf546cdfea9d027fa05c82c055bc8187c0212f7eecf2cd2f740ee3f1e2c",
+    "input-media/context.ts": "3c436987490f3252c4327ae55795e5913041dc222a8297fcbfd48e20c50049cf",
+    "input-media/observe.ts": "beec33926acecb2ef104fa68caf7e1951537e4a5e535c39a9993c88e9a004f87",
+    "input-media/parse.ts": "05d3dbdaa86e9d0f025f234711c37de82e1fe59e8277bea1605760b4f009c655",
+    "input-media/qq-face.ts": "272b12e34f7758c5c6b2b8835ac195c610c5d4befac75faadac075b22b25d125",
+    "input-media/service.ts": "ed9debc68381f983d1052caeb977314fb86453cb2085e7fac34c828198b40dd9",
+    "input-media/store.ts": "0135ed0f7bbb31d818b48805706c52a61b93ea89a3403b77c9f8c270c81e0486",
+    "input-media/types.ts": "63eba031c59a5455f5de1579902c2bc3657ca6733aa8aed7d4eda6afb9bdaa5b",
+    "memory/batch-selection.ts": "1280760671a2629cf77064be088e798d36960826d6d62dcd651b7839815dfbb2",
+    "memory/capacity.ts": "b8cf463e694cf08315a96d3eda11e3da1aafe2493b216ea4661c5fa0f1cc044e",
+    "memory/cleanup.ts": "ef00bc9ab1a73878a3c48341369be5364c4a503e9a186f7b5dd9d86b9c815e0a",
+    "memory/context.ts": "296ed02d3ac631b97cbf63bd8363c967eb4051e299e43ebda80612808ea445ff",
+    "memory/idle.ts": "e18a1bfd201919e05235fc58b441590f036930e1384b28198f4fde587b8b732e",
+    "memory/index.ts": "ecddf16182bd4e0fe22f51115e115df95b8c0c49161509e0e3017886b3cb5f3f",
+    "memory/lexical.ts": "2e0db3fbf8d2c0e03897a400626cfbf8910894f1191ac09b4d3f9de3e1d8169e",
+    "memory/lifecycle.ts": "98f0a585fe7fa8c743656dde002c6413802379dd0bd5469fb75b3c579bf308e2",
+    "memory/maintenance.ts": "389f37312eca33a1c5a3cdea1646dff2c417d4b1e0a8cada1aeaf7a1d1bfe283",
+    "memory/metadata.ts": "7d9a69bbc616e248151223fe04ce44fda2f0bb4409e23d5becf632112279f22d",
+    "memory/organize.ts": "0d8e7f058ad33b67c13f7c98ea1af45ddbf607058b342698ff203a9dd1de3e13",
+    "memory/payload-compaction.ts": "18e2e84e27f04032275213ed633eed5d890ba93ba2948993dddf86cc94051495",
+    "memory/policy-order.ts": "8d06e04a107854d1f774b28466a05fe8a4500260e61535e8d923ff0406ada68b",
+    "memory/policy-snapshot.ts": "9e2d4b220c0870e3578b5745583797b984a3d24c7e9a69d1246e3916804e88ec",
+    "memory/retrieval.ts": "c5256de881ff2c12bde35b23ba083aab08eabe67542a19ffdabb15e98516406c",
+    "memory/store.ts": "f4ab94c47e1f52c9769c15490bba65c52d9ead6db17d6e02b983b6d05a98c5ed",
+    "memory/summary-repair.ts": "4781ebc3e4b158eb7a9bcd527a9ff9b222f47579a3fd322ce121fb6ab1a65f12",
+    "memory/types.ts": "0a05b390168f82a7f8bda470338d63d8fe5bbfac1787865b8d4754229f92affe",
+    "model/background-views.ts": "3c6c2097db5e37796b78cfb193aea0aec2d6f37b9c265aad79ecfbc57326200c",
+    "model/client.ts": "86dbb9db2f1e8f94e79c9a764c62e70618257365b00ecbdd9f7c666a90877e89",
+    "model/context-types.ts": "c688bf7798953a8ee820af506ed70daaee3ee5cbe65a62dcd5837cb6f5e29caa",
+    "model/context-views.ts": "164ae48903c8e352bfa7583bf33eeb64ae705be2d61541f0b2983535e0326523",
+    "model/contracts.ts": "f4f8f3ebca40b138a3b26ea8e2f544446c051b62728a16bddea854b80d217cdd",
+    "model/prompt-policy.ts": "7142d3c514beecaa8302f0843383891803187dea03f3cf4aad950913b1b83a07",
+    "model/prompts.ts": "53abf5b9f24760c8d4b05149641c271784a1deca836aca042258aafcddb57db1",
+    "model/reply-guidance.ts": "eaf8d7f9be9c1e3f3b9d3dc69dd80fa85184e047ef3c530d1e606852aa92100f",
+    "model/resource-pool.ts": "3f493de2e30822954e413f7ddda8dfced5e34831685c39a1e0111c2ffa4e12e3",
+    "output/expression.ts": "853d5ee697a11871097b98a3d3d5ab64553254b13740c84b830358453e1f4b13",
+    "output/qq.ts": "9572c579d320129947df8da82c4f0e0f0c46819c15e36eacac26785fe21e605f",
+    "output/sticker-description.ts": "178adfc1b9f77f6cfab488b0d1c1fe2e1c15e58891649098047c28ddf69a194b",
+    "output/stickers.ts": "a8679101fa33f54565854874690dc79f83a12df6eb3c03de9a720285dab2d5f5",
+    "recovery.ts": "4bd9debf72d8398f2e53c856020a0d72e2d48521654b2a5f60737a9742cbf3a6",
+    "school/calendar.ts": "e76d35a0b1021617f4f858da4a313a43824f97b97edaa67a0d62db640dd07d0c",
+    "school/changes.ts": "d652e43fb05d479875445838e1dabb20398944740c7eaf812009b125348be9f6",
+    "school/context.ts": "0047f30dc0dfe9f49c7b69fa99a9534d7eaa2290129939cb407136c95b4f7bbc",
+    "school/contracts.ts": "c6c7c71d1fbc7e37d34b3f7bcb48028e95bb4a208e5f5c48e0b79e78bf700168",
+    "school/knowledge.ts": "fa34878c675086b69f9c04ccf7d90916dc0a96729d52b680123d1fe37840d120",
+    "school/notices.ts": "911ed65abf52e9afe568ec40a027f1ed2026775b85ae1c9a22e37d3199c6aa8b",
+    "school/progress.ts": "94f2054ee183d8a2c32c9967f27fc5833a2149d33364088283a0c63e1051d0c0",
+    "school/read-view.ts": "cf27fc81a1727bcf3237e79fcad7f6ef889529ad855f054af10cf76a3fd24997",
+    "school/store.ts": "cf0f5e4e3676a17443ec0479ca987980f7dd17d5307f4bf2011da59f4cb64bc6",
+    "school/timing.ts": "5bf9d956a3736c959f3999d6473a5d134fc753eb207f9881320646a03e68c888",
+    "school/types.ts": "829821740af7d1154ccec0cd19ffb8e9f16349c52673a26aa77709432c979deb",
+    "settings.ts": "6f628293f64117e6ab29f5fa7c2d0f0df05691e1af18e885ac4d15571a13ec9c",
+    "storage.ts": "ed8558a25710dba6254bae59c27f8782b68a19becd42fbb1851042c8a4f01d7a",
+    "time.ts": "5d45159f846cd566eaa66a846808f4ba6964f47bfe6b7fac20b3d493e07d6487",
+    "types.ts": "171a77374c59176f595660283d199efe5759e662cbe997134dc4f36e2cf24ee5",
+    "web/browser/extract.ts": "42f4f529f96f9ff031364102f18857a1f141317f61ad79f3a69b0c4bada62bd8",
+    "web/browser/koishi-port.ts": "4f3b2f4cf80e7f44759c271ada17425eb58bd0523be5edac7939ed6d4a1b029e",
+    "web/browser/provider.ts": "2b77e194000ac8e847d5a242f3692fd11258af3dc4f5620f46c9b9185cb8f28b",
+    "web/browser/slots.ts": "75e5790a16d288b2d962497c97c194fe64582ac2dcd5541cc8f050c2491a02d8",
+    "web/browser/types.ts": "ebf6803fb0c281bf4c30b35f11eb447fa91b16aff2c63d6a08742d5d8e9aab19",
+    "web/browser/url.ts": "f36ed77b1a2bfe3b8af37a5cd1961b45b2fc51924a4b027f62345339b5af0231",
+    "web/content.ts": "42a94fadbb0b1a2072983a9a122d515d43d9a1321259cb898f5be7b3fb35b4a4",
+    "web/payload-migration.ts": "068847cdd14190af4011968e5b575dc7e18a3fc267973d0bca25a6ec94b3466b",
+    "web/persistence.ts": "ccabe2899fb1db76e47296bbdcdcbcdc266058d4415d19228eb205b9e63b7e99",
+    "web/phases.ts": "da7bd17a759f00225ef29ca4e5c3ee70183168c5d0553c4cdeb3fc0ab524ac68",
+    "web/provider.ts": "efeb3d4701a4306399c7a49d2bceebae32c693f1bb7ec67bb509e6285bbd3d32",
+    "web/service.ts": "209128d2e3b99276350e055f0841add90fb5a5125733847317bc5028d168e251",
+    "web/status.ts": "ba0fee13de7e812c7711cdc22758583b8a999c8c8a60476db7f36b2d91cd2ec5",
+    "web/store.ts": "2b30a2b7ee3e6d6ba62fb23cdd5e15d32797f4b857d16914bba5d4bed1cd4112",
+    "web/types.ts": "175dbc27a3ed206bee1cfd77916cbaaa185e87e1f2b4da91bd18b99ba590571d"
+  },
+  "probeHash": "82d20526397bca30aa46645c0f294c897d8c1105d7c451bdcdc0d8191e2fae5f",
+  "dirtyFiles": [
+    "M .gitattributes",
+    " M README.md",
+    " M docs/v0.5/plans/comprehensive-remediation-20261011/MEMORY_PLAN.md",
+    " M docs/v0.5/plans/comprehensive-remediation-20261011/RETRIEVAL_QUALITY_PLAN.md",
+    " M docs/v0.5/plans/comprehensive-remediation-20261011/RUNTIME_PLAN.md",
+    " M docs/v0.5/records/comprehensive-remediation-20261011/evidence/document-verification.json",
+    " M docs/v0.5/subsystems/REMAKE_V0.5_MEMORY.md",
+    " M docs/v0.5/subsystems/REMAKE_V0.5_RECOVERY.md",
+    " M docs/v0.5/subsystems/REMAKE_V0.5_WEB_SEARCH.md",
+    " M scripts/evaluate-memory-retrieval.ts",
+    " M scripts/lib/memory-retrieval-evaluation.ts",
+    " M tests/environment-async-boundaries.test.ts",
+    " M tests/environment-async-host.test.ts",
+    " M tests/environment-async-recovery.test.ts",
+    " M tests/memory-retrieval-evaluation.test.ts",
+    "?? docs/v0.5/records/comprehensive-remediation-20261011/BATCH_B.md",
+    "?? docs/v0.5/records/comprehensive-remediation-20261011/evidence/memory-access-after-run.txt",
+    "?? docs/v0.5/records/comprehensive-remediation-20261011/evidence/memory-access-before-run.txt",
+    "?? docs/v0.5/records/comprehensive-remediation-20261011/evidence/memory-access-before.json",
+    "?? docs/v0.5/records/comprehensive-remediation-20261011/evidence/q2-first-green.txt",
+    "?? docs/v0.5/records/comprehensive-remediation-20261011/evidence/q2-green.txt",
+    "?? docs/v0.5/records/comprehensive-remediation-20261011/evidence/q2-red.txt",
+    "?? docs/v0.5/records/comprehensive-remediation-20261011/evidence/q2-scoped-green.txt",
+    "?? docs/v0.5/records/comprehensive-remediation-20261011/evidence/q2-typecheck.txt",
+    "?? docs/v0.5/records/comprehensive-remediation-20261011/evidence/recovery-matrix.json",
+    "?? docs/v0.5/records/comprehensive-remediation-20261011/evidence/w7-red.txt",
+    "?? tests/environment-web-finalization.test.ts",
+    "?? tests/fixtures/memory-retrieval-semantic-v2.json",
+    "?? tests/memory-retrieval-calibration-split.test.ts",
+    "?? tests/web-owner-finalization.test.ts"
+  ],
+  "nodeVersion": "v24.21.0",
+  "platform": "win32",
+  "fixtureSeed": "memory-access-v1",
+  "warmups": 1,
+  "samples": 7,
+  "textCharacters": [
+    128,
+    4096
+  ],
+  "storagePaths": [
+    ":memory:"
+  ],
+  "modelCalls": 0,
+  "networkRequests": 0,
+  "cases": [
+    {
+      "scenario": "normalize",
+      "textCharacters": 128,
+      "pools": {
+        "shorts": 100,
+        "longs": 1000,
+        "archives": 500
+      },
+      "samples": [
+        {
+          "elapsedMs": 28.96569999999997,
+          "work": {
+            "snapshotLoads": 1,
+            "metadataRows": 1600,
+            "fullOwnerRows": 0,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 0,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 0,
+          "outcome": []
+        },
+        {
+          "elapsedMs": 24.66969999999992,
+          "work": {
+            "snapshotLoads": 1,
+            "metadataRows": 1600,
+            "fullOwnerRows": 0,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 0,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 0,
+          "outcome": []
+        },
+        {
+          "elapsedMs": 24.682700000000068,
+          "work": {
+            "snapshotLoads": 1,
+            "metadataRows": 1600,
+            "fullOwnerRows": 0,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 0,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 0,
+          "outcome": []
+        },
+        {
+          "elapsedMs": 23.851799999999912,
+          "work": {
+            "snapshotLoads": 1,
+            "metadataRows": 1600,
+            "fullOwnerRows": 0,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 0,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 0,
+          "outcome": []
+        },
+        {
+          "elapsedMs": 29.250400000000013,
+          "work": {
+            "snapshotLoads": 1,
+            "metadataRows": 1600,
+            "fullOwnerRows": 0,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 0,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 0,
+          "outcome": []
+        },
+        {
+          "elapsedMs": 24.32420000000002,
+          "work": {
+            "snapshotLoads": 1,
+            "metadataRows": 1600,
+            "fullOwnerRows": 0,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 0,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 0,
+          "outcome": []
+        },
+        {
+          "elapsedMs": 24.758899999999812,
+          "work": {
+            "snapshotLoads": 1,
+            "metadataRows": 1600,
+            "fullOwnerRows": 0,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 0,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 0,
+          "outcome": []
+        }
+      ],
+      "medianMs": 24.682700000000068,
+      "work": {
+        "snapshotLoads": 1,
+        "metadataRows": 1600,
+        "fullOwnerRows": 0,
+        "awakeningQueries": 0,
+        "awakeningRows": 0,
+        "awakeningParameters": 0,
+        "vectorBytes": 0,
+        "ownerWrites": 0,
+        "grantWrites": 0,
+        "dirtyWrites": 0,
+        "providerCalls": 0,
+        "queryCalls": 0
+      },
+      "vectorBytes": 0,
+      "snapshotBytes": 0
+    },
+    {
+      "scenario": "normalize_overflow",
+      "textCharacters": 128,
+      "pools": {
+        "shorts": 100,
+        "longs": 1001,
+        "archives": 500
+      },
+      "samples": [
+        {
+          "elapsedMs": 32.3741,
+          "work": {
+            "snapshotLoads": 1,
+            "metadataRows": 1601,
+            "fullOwnerRows": 1,
+            "awakeningQueries": 2,
+            "awakeningRows": 0,
+            "awakeningParameters": 901,
+            "vectorBytes": 0,
+            "ownerWrites": 1,
+            "grantWrites": 0,
+            "dirtyWrites": 1,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 0,
+          "outcome": [
+            "l-0100"
+          ]
+        },
+        {
+          "elapsedMs": 27.417500000000018,
+          "work": {
+            "snapshotLoads": 1,
+            "metadataRows": 1601,
+            "fullOwnerRows": 1,
+            "awakeningQueries": 2,
+            "awakeningRows": 0,
+            "awakeningParameters": 901,
+            "vectorBytes": 0,
+            "ownerWrites": 1,
+            "grantWrites": 0,
+            "dirtyWrites": 1,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 0,
+          "outcome": [
+            "l-0100"
+          ]
+        },
+        {
+          "elapsedMs": 28.676800000000185,
+          "work": {
+            "snapshotLoads": 1,
+            "metadataRows": 1601,
+            "fullOwnerRows": 1,
+            "awakeningQueries": 2,
+            "awakeningRows": 0,
+            "awakeningParameters": 901,
+            "vectorBytes": 0,
+            "ownerWrites": 1,
+            "grantWrites": 0,
+            "dirtyWrites": 1,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 0,
+          "outcome": [
+            "l-0100"
+          ]
+        },
+        {
+          "elapsedMs": 32.20119999999997,
+          "work": {
+            "snapshotLoads": 1,
+            "metadataRows": 1601,
+            "fullOwnerRows": 1,
+            "awakeningQueries": 2,
+            "awakeningRows": 0,
+            "awakeningParameters": 901,
+            "vectorBytes": 0,
+            "ownerWrites": 1,
+            "grantWrites": 0,
+            "dirtyWrites": 1,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 0,
+          "outcome": [
+            "l-0100"
+          ]
+        },
+        {
+          "elapsedMs": 33.03490000000011,
+          "work": {
+            "snapshotLoads": 1,
+            "metadataRows": 1601,
+            "fullOwnerRows": 1,
+            "awakeningQueries": 2,
+            "awakeningRows": 0,
+            "awakeningParameters": 901,
+            "vectorBytes": 0,
+            "ownerWrites": 1,
+            "grantWrites": 0,
+            "dirtyWrites": 1,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 0,
+          "outcome": [
+            "l-0100"
+          ]
+        },
+        {
+          "elapsedMs": 25.31179999999995,
+          "work": {
+            "snapshotLoads": 1,
+            "metadataRows": 1601,
+            "fullOwnerRows": 1,
+            "awakeningQueries": 2,
+            "awakeningRows": 0,
+            "awakeningParameters": 901,
+            "vectorBytes": 0,
+            "ownerWrites": 1,
+            "grantWrites": 0,
+            "dirtyWrites": 1,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 0,
+          "outcome": [
+            "l-0100"
+          ]
+        },
+        {
+          "elapsedMs": 25.930900000000065,
+          "work": {
+            "snapshotLoads": 1,
+            "metadataRows": 1601,
+            "fullOwnerRows": 1,
+            "awakeningQueries": 2,
+            "awakeningRows": 0,
+            "awakeningParameters": 901,
+            "vectorBytes": 0,
+            "ownerWrites": 1,
+            "grantWrites": 0,
+            "dirtyWrites": 1,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 0,
+          "outcome": [
+            "l-0100"
+          ]
+        }
+      ],
+      "medianMs": 28.676800000000185,
+      "work": {
+        "snapshotLoads": 1,
+        "metadataRows": 1601,
+        "fullOwnerRows": 1,
+        "awakeningQueries": 2,
+        "awakeningRows": 0,
+        "awakeningParameters": 901,
+        "vectorBytes": 0,
+        "ownerWrites": 1,
+        "grantWrites": 0,
+        "dirtyWrites": 1,
+        "providerCalls": 0,
+        "queryCalls": 0
+      },
+      "vectorBytes": 0,
+      "snapshotBytes": 0
+    },
+    {
+      "scenario": "next_deadline",
+      "textCharacters": 128,
+      "pools": {
+        "shorts": 100,
+        "longs": 1000,
+        "archives": 500
+      },
+      "samples": [
+        {
+          "elapsedMs": 28.304100000000062,
+          "work": {
+            "snapshotLoads": 1,
+            "metadataRows": 1600,
+            "fullOwnerRows": 0,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 0,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 0,
+          "outcome": "2026-10-09T02:00:00.000Z"
+        },
+        {
+          "elapsedMs": 26.30430000000024,
+          "work": {
+            "snapshotLoads": 1,
+            "metadataRows": 1600,
+            "fullOwnerRows": 0,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 0,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 0,
+          "outcome": "2026-10-09T02:00:00.000Z"
+        },
+        {
+          "elapsedMs": 33.67599999999993,
+          "work": {
+            "snapshotLoads": 1,
+            "metadataRows": 1600,
+            "fullOwnerRows": 0,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 0,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 0,
+          "outcome": "2026-10-09T02:00:00.000Z"
+        },
+        {
+          "elapsedMs": 25.210900000000038,
+          "work": {
+            "snapshotLoads": 1,
+            "metadataRows": 1600,
+            "fullOwnerRows": 0,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 0,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 0,
+          "outcome": "2026-10-09T02:00:00.000Z"
+        },
+        {
+          "elapsedMs": 29.32529999999997,
+          "work": {
+            "snapshotLoads": 1,
+            "metadataRows": 1600,
+            "fullOwnerRows": 0,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 0,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 0,
+          "outcome": "2026-10-09T02:00:00.000Z"
+        },
+        {
+          "elapsedMs": 26.58120000000008,
+          "work": {
+            "snapshotLoads": 1,
+            "metadataRows": 1600,
+            "fullOwnerRows": 0,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 0,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 0,
+          "outcome": "2026-10-09T02:00:00.000Z"
+        },
+        {
+          "elapsedMs": 25.715400000000045,
+          "work": {
+            "snapshotLoads": 1,
+            "metadataRows": 1600,
+            "fullOwnerRows": 0,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 0,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 0,
+          "outcome": "2026-10-09T02:00:00.000Z"
+        }
+      ],
+      "medianMs": 26.58120000000008,
+      "work": {
+        "snapshotLoads": 1,
+        "metadataRows": 1600,
+        "fullOwnerRows": 0,
+        "awakeningQueries": 0,
+        "awakeningRows": 0,
+        "awakeningParameters": 0,
+        "vectorBytes": 0,
+        "ownerWrites": 0,
+        "grantWrites": 0,
+        "dirtyWrites": 0,
+        "providerCalls": 0,
+        "queryCalls": 0
+      },
+      "vectorBytes": 0,
+      "snapshotBytes": 0
+    },
+    {
+      "scenario": "build_uncalibrated",
+      "textCharacters": 128,
+      "pools": {
+        "shorts": 0,
+        "longs": 1000,
+        "archives": 0
+      },
+      "samples": [
+        {
+          "elapsedMs": 16.314699999999903,
+          "work": {
+            "snapshotLoads": 0,
+            "metadataRows": 0,
+            "fullOwnerRows": 1000,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 0,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 0,
+          "outcome": {
+            "count": 1000,
+            "contextHash": "267792fd3ee28978cc206e2ac3375c0c24e763211fbf3086f0eeb9247aaa89ad"
+          }
+        },
+        {
+          "elapsedMs": 19.43139999999994,
+          "work": {
+            "snapshotLoads": 0,
+            "metadataRows": 0,
+            "fullOwnerRows": 1000,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 0,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 0,
+          "outcome": {
+            "count": 1000,
+            "contextHash": "267792fd3ee28978cc206e2ac3375c0c24e763211fbf3086f0eeb9247aaa89ad"
+          }
+        },
+        {
+          "elapsedMs": 20.340000000000146,
+          "work": {
+            "snapshotLoads": 0,
+            "metadataRows": 0,
+            "fullOwnerRows": 1000,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 0,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 0,
+          "outcome": {
+            "count": 1000,
+            "contextHash": "267792fd3ee28978cc206e2ac3375c0c24e763211fbf3086f0eeb9247aaa89ad"
+          }
+        },
+        {
+          "elapsedMs": 17.012700000000223,
+          "work": {
+            "snapshotLoads": 0,
+            "metadataRows": 0,
+            "fullOwnerRows": 1000,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 0,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 0,
+          "outcome": {
+            "count": 1000,
+            "contextHash": "267792fd3ee28978cc206e2ac3375c0c24e763211fbf3086f0eeb9247aaa89ad"
+          }
+        },
+        {
+          "elapsedMs": 20.696100000000115,
+          "work": {
+            "snapshotLoads": 0,
+            "metadataRows": 0,
+            "fullOwnerRows": 1000,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 0,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 0,
+          "outcome": {
+            "count": 1000,
+            "contextHash": "267792fd3ee28978cc206e2ac3375c0c24e763211fbf3086f0eeb9247aaa89ad"
+          }
+        },
+        {
+          "elapsedMs": 17.60149999999976,
+          "work": {
+            "snapshotLoads": 0,
+            "metadataRows": 0,
+            "fullOwnerRows": 1000,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 0,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 0,
+          "outcome": {
+            "count": 1000,
+            "contextHash": "267792fd3ee28978cc206e2ac3375c0c24e763211fbf3086f0eeb9247aaa89ad"
+          }
+        },
+        {
+          "elapsedMs": 16.457099999999627,
+          "work": {
+            "snapshotLoads": 0,
+            "metadataRows": 0,
+            "fullOwnerRows": 1000,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 0,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 0,
+          "outcome": {
+            "count": 1000,
+            "contextHash": "267792fd3ee28978cc206e2ac3375c0c24e763211fbf3086f0eeb9247aaa89ad"
+          }
+        }
+      ],
+      "medianMs": 17.60149999999976,
+      "work": {
+        "snapshotLoads": 0,
+        "metadataRows": 0,
+        "fullOwnerRows": 1000,
+        "awakeningQueries": 0,
+        "awakeningRows": 0,
+        "awakeningParameters": 0,
+        "vectorBytes": 0,
+        "ownerWrites": 0,
+        "grantWrites": 0,
+        "dirtyWrites": 0,
+        "providerCalls": 0,
+        "queryCalls": 0
+      },
+      "vectorBytes": 0,
+      "snapshotBytes": 0
+    },
+    {
+      "scenario": "freeze_uncalibrated",
+      "textCharacters": 128,
+      "pools": {
+        "shorts": 0,
+        "longs": 1000,
+        "archives": 0
+      },
+      "samples": [
+        {
+          "elapsedMs": 15.883800000000065,
+          "work": {
+            "snapshotLoads": 0,
+            "metadataRows": 0,
+            "fullOwnerRows": 1000,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 0,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 1042636,
+          "outcome": {
+            "count": 1000,
+            "publicOwnersHash": "c9b3461b434e2f2c7d2f52a17b9cafcc991c578a9f4c24006b10e82fa2f83167"
+          }
+        },
+        {
+          "elapsedMs": 19.686099999999897,
+          "work": {
+            "snapshotLoads": 0,
+            "metadataRows": 0,
+            "fullOwnerRows": 1000,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 0,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 1042636,
+          "outcome": {
+            "count": 1000,
+            "publicOwnersHash": "c9b3461b434e2f2c7d2f52a17b9cafcc991c578a9f4c24006b10e82fa2f83167"
+          }
+        },
+        {
+          "elapsedMs": 16.29449999999997,
+          "work": {
+            "snapshotLoads": 0,
+            "metadataRows": 0,
+            "fullOwnerRows": 1000,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 0,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 1042636,
+          "outcome": {
+            "count": 1000,
+            "publicOwnersHash": "c9b3461b434e2f2c7d2f52a17b9cafcc991c578a9f4c24006b10e82fa2f83167"
+          }
+        },
+        {
+          "elapsedMs": 20.889599999999973,
+          "work": {
+            "snapshotLoads": 0,
+            "metadataRows": 0,
+            "fullOwnerRows": 1000,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 0,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 1042636,
+          "outcome": {
+            "count": 1000,
+            "publicOwnersHash": "c9b3461b434e2f2c7d2f52a17b9cafcc991c578a9f4c24006b10e82fa2f83167"
+          }
+        },
+        {
+          "elapsedMs": 16.23129999999992,
+          "work": {
+            "snapshotLoads": 0,
+            "metadataRows": 0,
+            "fullOwnerRows": 1000,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 0,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 1042636,
+          "outcome": {
+            "count": 1000,
+            "publicOwnersHash": "c9b3461b434e2f2c7d2f52a17b9cafcc991c578a9f4c24006b10e82fa2f83167"
+          }
+        },
+        {
+          "elapsedMs": 16.402399999999943,
+          "work": {
+            "snapshotLoads": 0,
+            "metadataRows": 0,
+            "fullOwnerRows": 1000,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 0,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 1042636,
+          "outcome": {
+            "count": 1000,
+            "publicOwnersHash": "c9b3461b434e2f2c7d2f52a17b9cafcc991c578a9f4c24006b10e82fa2f83167"
+          }
+        },
+        {
+          "elapsedMs": 16.386799999999766,
+          "work": {
+            "snapshotLoads": 0,
+            "metadataRows": 0,
+            "fullOwnerRows": 1000,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 0,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 1042636,
+          "outcome": {
+            "count": 1000,
+            "publicOwnersHash": "c9b3461b434e2f2c7d2f52a17b9cafcc991c578a9f4c24006b10e82fa2f83167"
+          }
+        }
+      ],
+      "medianMs": 16.386799999999766,
+      "work": {
+        "snapshotLoads": 0,
+        "metadataRows": 0,
+        "fullOwnerRows": 1000,
+        "awakeningQueries": 0,
+        "awakeningRows": 0,
+        "awakeningParameters": 0,
+        "vectorBytes": 0,
+        "ownerWrites": 0,
+        "grantWrites": 0,
+        "dirtyWrites": 0,
+        "providerCalls": 0,
+        "queryCalls": 0
+      },
+      "vectorBytes": 0,
+      "snapshotBytes": 1042636
+    },
+    {
+      "scenario": "build_calibrated",
+      "textCharacters": 128,
+      "pools": {
+        "shorts": 0,
+        "longs": 1000,
+        "archives": 0
+      },
+      "samples": [
+        {
+          "elapsedMs": 33.96900000000005,
+          "work": {
+            "snapshotLoads": 0,
+            "metadataRows": 0,
+            "fullOwnerRows": 1000,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 4096000,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 1,
+            "queryCalls": 1
+          },
+          "snapshotBytes": 0,
+          "outcome": {
+            "count": 1000,
+            "contextHash": "267792fd3ee28978cc206e2ac3375c0c24e763211fbf3086f0eeb9247aaa89ad"
+          }
+        },
+        {
+          "elapsedMs": 45.29919999999993,
+          "work": {
+            "snapshotLoads": 0,
+            "metadataRows": 0,
+            "fullOwnerRows": 1000,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 4096000,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 1,
+            "queryCalls": 1
+          },
+          "snapshotBytes": 0,
+          "outcome": {
+            "count": 1000,
+            "contextHash": "267792fd3ee28978cc206e2ac3375c0c24e763211fbf3086f0eeb9247aaa89ad"
+          }
+        },
+        {
+          "elapsedMs": 33.91449999999986,
+          "work": {
+            "snapshotLoads": 0,
+            "metadataRows": 0,
+            "fullOwnerRows": 1000,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 4096000,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 1,
+            "queryCalls": 1
+          },
+          "snapshotBytes": 0,
+          "outcome": {
+            "count": 1000,
+            "contextHash": "267792fd3ee28978cc206e2ac3375c0c24e763211fbf3086f0eeb9247aaa89ad"
+          }
+        },
+        {
+          "elapsedMs": 38.297000000000025,
+          "work": {
+            "snapshotLoads": 0,
+            "metadataRows": 0,
+            "fullOwnerRows": 1000,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 4096000,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 1,
+            "queryCalls": 1
+          },
+          "snapshotBytes": 0,
+          "outcome": {
+            "count": 1000,
+            "contextHash": "267792fd3ee28978cc206e2ac3375c0c24e763211fbf3086f0eeb9247aaa89ad"
+          }
+        },
+        {
+          "elapsedMs": 35.230099999999766,
+          "work": {
+            "snapshotLoads": 0,
+            "metadataRows": 0,
+            "fullOwnerRows": 1000,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 4096000,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 1,
+            "queryCalls": 1
+          },
+          "snapshotBytes": 0,
+          "outcome": {
+            "count": 1000,
+            "contextHash": "267792fd3ee28978cc206e2ac3375c0c24e763211fbf3086f0eeb9247aaa89ad"
+          }
+        },
+        {
+          "elapsedMs": 37.977100000000064,
+          "work": {
+            "snapshotLoads": 0,
+            "metadataRows": 0,
+            "fullOwnerRows": 1000,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 4096000,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 1,
+            "queryCalls": 1
+          },
+          "snapshotBytes": 0,
+          "outcome": {
+            "count": 1000,
+            "contextHash": "267792fd3ee28978cc206e2ac3375c0c24e763211fbf3086f0eeb9247aaa89ad"
+          }
+        },
+        {
+          "elapsedMs": 30.708599999999933,
+          "work": {
+            "snapshotLoads": 0,
+            "metadataRows": 0,
+            "fullOwnerRows": 1000,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 4096000,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 1,
+            "queryCalls": 1
+          },
+          "snapshotBytes": 0,
+          "outcome": {
+            "count": 1000,
+            "contextHash": "267792fd3ee28978cc206e2ac3375c0c24e763211fbf3086f0eeb9247aaa89ad"
+          }
+        }
+      ],
+      "medianMs": 35.230099999999766,
+      "work": {
+        "snapshotLoads": 0,
+        "metadataRows": 0,
+        "fullOwnerRows": 1000,
+        "awakeningQueries": 0,
+        "awakeningRows": 0,
+        "awakeningParameters": 0,
+        "vectorBytes": 4096000,
+        "ownerWrites": 0,
+        "grantWrites": 0,
+        "dirtyWrites": 0,
+        "providerCalls": 1,
+        "queryCalls": 1
+      },
+      "vectorBytes": 4096000,
+      "snapshotBytes": 0
+    },
+    {
+      "scenario": "normalize",
+      "textCharacters": 4096,
+      "pools": {
+        "shorts": 100,
+        "longs": 1000,
+        "archives": 500
+      },
+      "samples": [
+        {
+          "elapsedMs": 27.562700000000405,
+          "work": {
+            "snapshotLoads": 1,
+            "metadataRows": 1600,
+            "fullOwnerRows": 0,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 0,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 0,
+          "outcome": []
+        },
+        {
+          "elapsedMs": 35.85159999999996,
+          "work": {
+            "snapshotLoads": 1,
+            "metadataRows": 1600,
+            "fullOwnerRows": 0,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 0,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 0,
+          "outcome": []
+        },
+        {
+          "elapsedMs": 28.80709999999999,
+          "work": {
+            "snapshotLoads": 1,
+            "metadataRows": 1600,
+            "fullOwnerRows": 0,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 0,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 0,
+          "outcome": []
+        },
+        {
+          "elapsedMs": 27.140300000000025,
+          "work": {
+            "snapshotLoads": 1,
+            "metadataRows": 1600,
+            "fullOwnerRows": 0,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 0,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 0,
+          "outcome": []
+        },
+        {
+          "elapsedMs": 32.91870000000017,
+          "work": {
+            "snapshotLoads": 1,
+            "metadataRows": 1600,
+            "fullOwnerRows": 0,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 0,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 0,
+          "outcome": []
+        },
+        {
+          "elapsedMs": 28.749899999999798,
+          "work": {
+            "snapshotLoads": 1,
+            "metadataRows": 1600,
+            "fullOwnerRows": 0,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 0,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 0,
+          "outcome": []
+        },
+        {
+          "elapsedMs": 27.9316000000008,
+          "work": {
+            "snapshotLoads": 1,
+            "metadataRows": 1600,
+            "fullOwnerRows": 0,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 0,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 0,
+          "outcome": []
+        }
+      ],
+      "medianMs": 28.749899999999798,
+      "work": {
+        "snapshotLoads": 1,
+        "metadataRows": 1600,
+        "fullOwnerRows": 0,
+        "awakeningQueries": 0,
+        "awakeningRows": 0,
+        "awakeningParameters": 0,
+        "vectorBytes": 0,
+        "ownerWrites": 0,
+        "grantWrites": 0,
+        "dirtyWrites": 0,
+        "providerCalls": 0,
+        "queryCalls": 0
+      },
+      "vectorBytes": 0,
+      "snapshotBytes": 0
+    },
+    {
+      "scenario": "normalize_overflow",
+      "textCharacters": 4096,
+      "pools": {
+        "shorts": 100,
+        "longs": 1001,
+        "archives": 500
+      },
+      "samples": [
+        {
+          "elapsedMs": 29.1191000000008,
+          "work": {
+            "snapshotLoads": 1,
+            "metadataRows": 1601,
+            "fullOwnerRows": 1,
+            "awakeningQueries": 2,
+            "awakeningRows": 0,
+            "awakeningParameters": 901,
+            "vectorBytes": 0,
+            "ownerWrites": 1,
+            "grantWrites": 0,
+            "dirtyWrites": 1,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 0,
+          "outcome": [
+            "l-0100"
+          ]
+        },
+        {
+          "elapsedMs": 30.519599999999627,
+          "work": {
+            "snapshotLoads": 1,
+            "metadataRows": 1601,
+            "fullOwnerRows": 1,
+            "awakeningQueries": 2,
+            "awakeningRows": 0,
+            "awakeningParameters": 901,
+            "vectorBytes": 0,
+            "ownerWrites": 1,
+            "grantWrites": 0,
+            "dirtyWrites": 1,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 0,
+          "outcome": [
+            "l-0100"
+          ]
+        },
+        {
+          "elapsedMs": 32.26730000000043,
+          "work": {
+            "snapshotLoads": 1,
+            "metadataRows": 1601,
+            "fullOwnerRows": 1,
+            "awakeningQueries": 2,
+            "awakeningRows": 0,
+            "awakeningParameters": 901,
+            "vectorBytes": 0,
+            "ownerWrites": 1,
+            "grantWrites": 0,
+            "dirtyWrites": 1,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 0,
+          "outcome": [
+            "l-0100"
+          ]
+        },
+        {
+          "elapsedMs": 36.324500000000626,
+          "work": {
+            "snapshotLoads": 1,
+            "metadataRows": 1601,
+            "fullOwnerRows": 1,
+            "awakeningQueries": 2,
+            "awakeningRows": 0,
+            "awakeningParameters": 901,
+            "vectorBytes": 0,
+            "ownerWrites": 1,
+            "grantWrites": 0,
+            "dirtyWrites": 1,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 0,
+          "outcome": [
+            "l-0100"
+          ]
+        },
+        {
+          "elapsedMs": 30.85069999999996,
+          "work": {
+            "snapshotLoads": 1,
+            "metadataRows": 1601,
+            "fullOwnerRows": 1,
+            "awakeningQueries": 2,
+            "awakeningRows": 0,
+            "awakeningParameters": 901,
+            "vectorBytes": 0,
+            "ownerWrites": 1,
+            "grantWrites": 0,
+            "dirtyWrites": 1,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 0,
+          "outcome": [
+            "l-0100"
+          ]
+        },
+        {
+          "elapsedMs": 31.282100000000355,
+          "work": {
+            "snapshotLoads": 1,
+            "metadataRows": 1601,
+            "fullOwnerRows": 1,
+            "awakeningQueries": 2,
+            "awakeningRows": 0,
+            "awakeningParameters": 901,
+            "vectorBytes": 0,
+            "ownerWrites": 1,
+            "grantWrites": 0,
+            "dirtyWrites": 1,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 0,
+          "outcome": [
+            "l-0100"
+          ]
+        },
+        {
+          "elapsedMs": 30.005700000000616,
+          "work": {
+            "snapshotLoads": 1,
+            "metadataRows": 1601,
+            "fullOwnerRows": 1,
+            "awakeningQueries": 2,
+            "awakeningRows": 0,
+            "awakeningParameters": 901,
+            "vectorBytes": 0,
+            "ownerWrites": 1,
+            "grantWrites": 0,
+            "dirtyWrites": 1,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 0,
+          "outcome": [
+            "l-0100"
+          ]
+        }
+      ],
+      "medianMs": 30.85069999999996,
+      "work": {
+        "snapshotLoads": 1,
+        "metadataRows": 1601,
+        "fullOwnerRows": 1,
+        "awakeningQueries": 2,
+        "awakeningRows": 0,
+        "awakeningParameters": 901,
+        "vectorBytes": 0,
+        "ownerWrites": 1,
+        "grantWrites": 0,
+        "dirtyWrites": 1,
+        "providerCalls": 0,
+        "queryCalls": 0
+      },
+      "vectorBytes": 0,
+      "snapshotBytes": 0
+    },
+    {
+      "scenario": "next_deadline",
+      "textCharacters": 4096,
+      "pools": {
+        "shorts": 100,
+        "longs": 1000,
+        "archives": 500
+      },
+      "samples": [
+        {
+          "elapsedMs": 30.602499999999964,
+          "work": {
+            "snapshotLoads": 1,
+            "metadataRows": 1600,
+            "fullOwnerRows": 0,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 0,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 0,
+          "outcome": "2026-10-09T02:00:00.000Z"
+        },
+        {
+          "elapsedMs": 30.416299999999865,
+          "work": {
+            "snapshotLoads": 1,
+            "metadataRows": 1600,
+            "fullOwnerRows": 0,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 0,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 0,
+          "outcome": "2026-10-09T02:00:00.000Z"
+        },
+        {
+          "elapsedMs": 35.048399999999674,
+          "work": {
+            "snapshotLoads": 1,
+            "metadataRows": 1600,
+            "fullOwnerRows": 0,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 0,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 0,
+          "outcome": "2026-10-09T02:00:00.000Z"
+        },
+        {
+          "elapsedMs": 31.584200000000237,
+          "work": {
+            "snapshotLoads": 1,
+            "metadataRows": 1600,
+            "fullOwnerRows": 0,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 0,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 0,
+          "outcome": "2026-10-09T02:00:00.000Z"
+        },
+        {
+          "elapsedMs": 33.2470000000003,
+          "work": {
+            "snapshotLoads": 1,
+            "metadataRows": 1600,
+            "fullOwnerRows": 0,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 0,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 0,
+          "outcome": "2026-10-09T02:00:00.000Z"
+        },
+        {
+          "elapsedMs": 31.3766999999998,
+          "work": {
+            "snapshotLoads": 1,
+            "metadataRows": 1600,
+            "fullOwnerRows": 0,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 0,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 0,
+          "outcome": "2026-10-09T02:00:00.000Z"
+        },
+        {
+          "elapsedMs": 32.090799999999945,
+          "work": {
+            "snapshotLoads": 1,
+            "metadataRows": 1600,
+            "fullOwnerRows": 0,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 0,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 0,
+          "outcome": "2026-10-09T02:00:00.000Z"
+        }
+      ],
+      "medianMs": 31.584200000000237,
+      "work": {
+        "snapshotLoads": 1,
+        "metadataRows": 1600,
+        "fullOwnerRows": 0,
+        "awakeningQueries": 0,
+        "awakeningRows": 0,
+        "awakeningParameters": 0,
+        "vectorBytes": 0,
+        "ownerWrites": 0,
+        "grantWrites": 0,
+        "dirtyWrites": 0,
+        "providerCalls": 0,
+        "queryCalls": 0
+      },
+      "vectorBytes": 0,
+      "snapshotBytes": 0
+    },
+    {
+      "scenario": "build_uncalibrated",
+      "textCharacters": 4096,
+      "pools": {
+        "shorts": 0,
+        "longs": 1000,
+        "archives": 0
+      },
+      "samples": [
+        {
+          "elapsedMs": 76.63389999999981,
+          "work": {
+            "snapshotLoads": 0,
+            "metadataRows": 0,
+            "fullOwnerRows": 1000,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 0,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 0,
+          "outcome": {
+            "count": 1000,
+            "contextHash": "cec9fe1430553b4900bc95081410e922fc760d36572a4008aaf4cd2854226c39"
+          }
+        },
+        {
+          "elapsedMs": 76.20539999999983,
+          "work": {
+            "snapshotLoads": 0,
+            "metadataRows": 0,
+            "fullOwnerRows": 1000,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 0,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 0,
+          "outcome": {
+            "count": 1000,
+            "contextHash": "cec9fe1430553b4900bc95081410e922fc760d36572a4008aaf4cd2854226c39"
+          }
+        },
+        {
+          "elapsedMs": 71.63639999999941,
+          "work": {
+            "snapshotLoads": 0,
+            "metadataRows": 0,
+            "fullOwnerRows": 1000,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 0,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 0,
+          "outcome": {
+            "count": 1000,
+            "contextHash": "cec9fe1430553b4900bc95081410e922fc760d36572a4008aaf4cd2854226c39"
+          }
+        },
+        {
+          "elapsedMs": 68.93289999999979,
+          "work": {
+            "snapshotLoads": 0,
+            "metadataRows": 0,
+            "fullOwnerRows": 1000,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 0,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 0,
+          "outcome": {
+            "count": 1000,
+            "contextHash": "cec9fe1430553b4900bc95081410e922fc760d36572a4008aaf4cd2854226c39"
+          }
+        },
+        {
+          "elapsedMs": 76.25979999999981,
+          "work": {
+            "snapshotLoads": 0,
+            "metadataRows": 0,
+            "fullOwnerRows": 1000,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 0,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 0,
+          "outcome": {
+            "count": 1000,
+            "contextHash": "cec9fe1430553b4900bc95081410e922fc760d36572a4008aaf4cd2854226c39"
+          }
+        },
+        {
+          "elapsedMs": 71.16899999999987,
+          "work": {
+            "snapshotLoads": 0,
+            "metadataRows": 0,
+            "fullOwnerRows": 1000,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 0,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 0,
+          "outcome": {
+            "count": 1000,
+            "contextHash": "cec9fe1430553b4900bc95081410e922fc760d36572a4008aaf4cd2854226c39"
+          }
+        },
+        {
+          "elapsedMs": 71.58890000000065,
+          "work": {
+            "snapshotLoads": 0,
+            "metadataRows": 0,
+            "fullOwnerRows": 1000,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 0,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 0,
+          "outcome": {
+            "count": 1000,
+            "contextHash": "cec9fe1430553b4900bc95081410e922fc760d36572a4008aaf4cd2854226c39"
+          }
+        }
+      ],
+      "medianMs": 71.63639999999941,
+      "work": {
+        "snapshotLoads": 0,
+        "metadataRows": 0,
+        "fullOwnerRows": 1000,
+        "awakeningQueries": 0,
+        "awakeningRows": 0,
+        "awakeningParameters": 0,
+        "vectorBytes": 0,
+        "ownerWrites": 0,
+        "grantWrites": 0,
+        "dirtyWrites": 0,
+        "providerCalls": 0,
+        "queryCalls": 0
+      },
+      "vectorBytes": 0,
+      "snapshotBytes": 0
+    },
+    {
+      "scenario": "freeze_uncalibrated",
+      "textCharacters": 4096,
+      "pools": {
+        "shorts": 0,
+        "longs": 1000,
+        "archives": 0
+      },
+      "samples": [
+        {
+          "elapsedMs": 80.39630000000034,
+          "work": {
+            "snapshotLoads": 0,
+            "metadataRows": 0,
+            "fullOwnerRows": 1000,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 0,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 8978636,
+          "outcome": {
+            "count": 1000,
+            "publicOwnersHash": "fd6e400475f02f986c34fb4f7193176eef3997ef0a28db587734d405484a79d6"
+          }
+        },
+        {
+          "elapsedMs": 80.41530000000057,
+          "work": {
+            "snapshotLoads": 0,
+            "metadataRows": 0,
+            "fullOwnerRows": 1000,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 0,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 8978636,
+          "outcome": {
+            "count": 1000,
+            "publicOwnersHash": "fd6e400475f02f986c34fb4f7193176eef3997ef0a28db587734d405484a79d6"
+          }
+        },
+        {
+          "elapsedMs": 77.64309999999932,
+          "work": {
+            "snapshotLoads": 0,
+            "metadataRows": 0,
+            "fullOwnerRows": 1000,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 0,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 8978636,
+          "outcome": {
+            "count": 1000,
+            "publicOwnersHash": "fd6e400475f02f986c34fb4f7193176eef3997ef0a28db587734d405484a79d6"
+          }
+        },
+        {
+          "elapsedMs": 81.86719999999877,
+          "work": {
+            "snapshotLoads": 0,
+            "metadataRows": 0,
+            "fullOwnerRows": 1000,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 0,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 8978636,
+          "outcome": {
+            "count": 1000,
+            "publicOwnersHash": "fd6e400475f02f986c34fb4f7193176eef3997ef0a28db587734d405484a79d6"
+          }
+        },
+        {
+          "elapsedMs": 81.09729999999945,
+          "work": {
+            "snapshotLoads": 0,
+            "metadataRows": 0,
+            "fullOwnerRows": 1000,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 0,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 8978636,
+          "outcome": {
+            "count": 1000,
+            "publicOwnersHash": "fd6e400475f02f986c34fb4f7193176eef3997ef0a28db587734d405484a79d6"
+          }
+        },
+        {
+          "elapsedMs": 74.99809999999889,
+          "work": {
+            "snapshotLoads": 0,
+            "metadataRows": 0,
+            "fullOwnerRows": 1000,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 0,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 8978636,
+          "outcome": {
+            "count": 1000,
+            "publicOwnersHash": "fd6e400475f02f986c34fb4f7193176eef3997ef0a28db587734d405484a79d6"
+          }
+        },
+        {
+          "elapsedMs": 76.37489999999889,
+          "work": {
+            "snapshotLoads": 0,
+            "metadataRows": 0,
+            "fullOwnerRows": 1000,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 0,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 0,
+            "queryCalls": 0
+          },
+          "snapshotBytes": 8978636,
+          "outcome": {
+            "count": 1000,
+            "publicOwnersHash": "fd6e400475f02f986c34fb4f7193176eef3997ef0a28db587734d405484a79d6"
+          }
+        }
+      ],
+      "medianMs": 80.39630000000034,
+      "work": {
+        "snapshotLoads": 0,
+        "metadataRows": 0,
+        "fullOwnerRows": 1000,
+        "awakeningQueries": 0,
+        "awakeningRows": 0,
+        "awakeningParameters": 0,
+        "vectorBytes": 0,
+        "ownerWrites": 0,
+        "grantWrites": 0,
+        "dirtyWrites": 0,
+        "providerCalls": 0,
+        "queryCalls": 0
+      },
+      "vectorBytes": 0,
+      "snapshotBytes": 8978636
+    },
+    {
+      "scenario": "build_calibrated",
+      "textCharacters": 4096,
+      "pools": {
+        "shorts": 0,
+        "longs": 1000,
+        "archives": 0
+      },
+      "samples": [
+        {
+          "elapsedMs": 84.97079999999914,
+          "work": {
+            "snapshotLoads": 0,
+            "metadataRows": 0,
+            "fullOwnerRows": 1000,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 4096000,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 1,
+            "queryCalls": 1
+          },
+          "snapshotBytes": 0,
+          "outcome": {
+            "count": 1000,
+            "contextHash": "cec9fe1430553b4900bc95081410e922fc760d36572a4008aaf4cd2854226c39"
+          }
+        },
+        {
+          "elapsedMs": 84.10429999999906,
+          "work": {
+            "snapshotLoads": 0,
+            "metadataRows": 0,
+            "fullOwnerRows": 1000,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 4096000,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 1,
+            "queryCalls": 1
+          },
+          "snapshotBytes": 0,
+          "outcome": {
+            "count": 1000,
+            "contextHash": "cec9fe1430553b4900bc95081410e922fc760d36572a4008aaf4cd2854226c39"
+          }
+        },
+        {
+          "elapsedMs": 90.86599999999999,
+          "work": {
+            "snapshotLoads": 0,
+            "metadataRows": 0,
+            "fullOwnerRows": 1000,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 4096000,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 1,
+            "queryCalls": 1
+          },
+          "snapshotBytes": 0,
+          "outcome": {
+            "count": 1000,
+            "contextHash": "cec9fe1430553b4900bc95081410e922fc760d36572a4008aaf4cd2854226c39"
+          }
+        },
+        {
+          "elapsedMs": 87.91680000000088,
+          "work": {
+            "snapshotLoads": 0,
+            "metadataRows": 0,
+            "fullOwnerRows": 1000,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 4096000,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 1,
+            "queryCalls": 1
+          },
+          "snapshotBytes": 0,
+          "outcome": {
+            "count": 1000,
+            "contextHash": "cec9fe1430553b4900bc95081410e922fc760d36572a4008aaf4cd2854226c39"
+          }
+        },
+        {
+          "elapsedMs": 78.82099999999991,
+          "work": {
+            "snapshotLoads": 0,
+            "metadataRows": 0,
+            "fullOwnerRows": 1000,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 4096000,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 1,
+            "queryCalls": 1
+          },
+          "snapshotBytes": 0,
+          "outcome": {
+            "count": 1000,
+            "contextHash": "cec9fe1430553b4900bc95081410e922fc760d36572a4008aaf4cd2854226c39"
+          }
+        },
+        {
+          "elapsedMs": 79.42540000000008,
+          "work": {
+            "snapshotLoads": 0,
+            "metadataRows": 0,
+            "fullOwnerRows": 1000,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 4096000,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 1,
+            "queryCalls": 1
+          },
+          "snapshotBytes": 0,
+          "outcome": {
+            "count": 1000,
+            "contextHash": "cec9fe1430553b4900bc95081410e922fc760d36572a4008aaf4cd2854226c39"
+          }
+        },
+        {
+          "elapsedMs": 81.03880000000026,
+          "work": {
+            "snapshotLoads": 0,
+            "metadataRows": 0,
+            "fullOwnerRows": 1000,
+            "awakeningQueries": 0,
+            "awakeningRows": 0,
+            "awakeningParameters": 0,
+            "vectorBytes": 4096000,
+            "ownerWrites": 0,
+            "grantWrites": 0,
+            "dirtyWrites": 0,
+            "providerCalls": 1,
+            "queryCalls": 1
+          },
+          "snapshotBytes": 0,
+          "outcome": {
+            "count": 1000,
+            "contextHash": "cec9fe1430553b4900bc95081410e922fc760d36572a4008aaf4cd2854226c39"
+          }
+        }
+      ],
+      "medianMs": 84.10429999999906,
+      "work": {
+        "snapshotLoads": 0,
+        "metadataRows": 0,
+        "fullOwnerRows": 1000,
+        "awakeningQueries": 0,
+        "awakeningRows": 0,
+        "awakeningParameters": 0,
+        "vectorBytes": 4096000,
+        "ownerWrites": 0,
+        "grantWrites": 0,
+        "dirtyWrites": 0,
+        "providerCalls": 1,
+        "queryCalls": 1
+      },
+      "vectorBytes": 4096000,
+      "snapshotBytes": 0
+    }
+  ]
+}

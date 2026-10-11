@@ -1,0 +1,145 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run tsx scripts/check-task-scheduling.ts --source-root .tmp/comprehensive-remediation-baseline --output docs/v0.5/records/comprehensive-remediation-20261011/evidence/task-scheduling-before.json
+{
+  "sourceRevision": "9c20a97f632d9eaf5781973fefab95619eb7dc3a",
+  "cases": [
+    {
+      "history": 0,
+      "pending": 0,
+      "medianMs": 0.9788000000000068,
+      "taskQueries": [
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "materializedRows": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "history": 0,
+      "pending": 3,
+      "medianMs": 1.061399999999992,
+      "taskQueries": [
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "materializedRows": [
+        12,
+        12,
+        12,
+        12,
+        12,
+        12,
+        12
+      ]
+    },
+    {
+      "history": 1000,
+      "pending": 0,
+      "medianMs": 4.8829000000000065,
+      "taskQueries": [
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "materializedRows": [
+        4000,
+        4000,
+        4000,
+        4000,
+        4000,
+        4000,
+        4000
+      ]
+    },
+    {
+      "history": 1000,
+      "pending": 3,
+      "medianMs": 5.191799999999944,
+      "taskQueries": [
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "materializedRows": [
+        4012,
+        4012,
+        4012,
+        4012,
+        4012,
+        4012,
+        4012
+      ]
+    },
+    {
+      "history": 10000,
+      "pending": 0,
+      "medianMs": 48.164600000000064,
+      "taskQueries": [
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "materializedRows": [
+        40000,
+        40000,
+        40000,
+        40000,
+        40000,
+        40000,
+        40000
+      ]
+    },
+    {
+      "history": 10000,
+      "pending": 3,
+      "medianMs": 42.126199999999926,
+      "taskQueries": [
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "materializedRows": [
+        40012,
+        40012,
+        40012,
+        40012,
+        40012,
+        40012,
+        40012
+      ]
+    }
+  ]
+}
