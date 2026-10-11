@@ -1,0 +1,3 @@
+# Retrieval artifacts are frozen by their exact byte hashes.
+tests/fixtures/memory-retrieval-v*.json text eol=lf
+docs/v0.5/records/comprehensive-remediation-20261011/evidence/*.json text eol=lf
