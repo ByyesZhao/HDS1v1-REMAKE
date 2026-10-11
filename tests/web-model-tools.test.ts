@@ -7,7 +7,7 @@ import {TestClock} from './helpers';
 import type {ModelTask} from '../src/types';
 const opened:Storage[]=[];afterEach(()=>opened.splice(0).forEach(s=>s.close()));
 const task:ModelTask<{answer:string}>={name:'personal_life',prompt:'fixture',schema:{type:'object',properties:{answer:{type:'string'}},required:['answer']},parse(v:any){if(typeof v?.answer!=='string')throw Error('answer required');return v;}};
-function setup(){const db=new Storage(':memory:');opened.push(db);const store=new WebSearchStore(db),provider={signature:'fixture',search:vi.fn(async()=>[{url:'https://example.test/a',title:'snippet'}]),read:vi.fn(async()=>({title:'Page',body:'公开正文'}))},service=new WebSearchService(store,provider,new TestClock(),{enabled:true});const web=service.openSession(store.openStage('turn','t','personal',task.name));return {db,store,provider,service,web};}
+function setup(){const db=new Storage(':memory:');opened.push(db);const store=new WebSearchStore(db),provider={signature:'fixture',search:vi.fn(async()=>[{url:'https://example.test/a',title:'snippet'}]),read:vi.fn(async()=>({bodyFormat:'text' as const,title:'Page',body:'公开正文'}))},service=new WebSearchService(store,provider,new TestClock(),{enabled:true});const web=service.openSession(store.openStage('turn','t','personal',task.name));return {db,store,provider,service,web};}
 it('loops web search, read and one private lookup without spending repair allowance; actual provided body creates a life source',async()=>{
  const d=setup(),requests:any[]=[],values=[{webSearch:{query:'课程'}},{webRead:{url:'https://example.test/b'}},{lookupDetails:'phone'},{bad:1},{answer:'done'}];const lookup=vi.fn(async()=>({phone:'local'}));
  const client=new ModelClient({complete:async r=>{requests.push(r);return values.shift();}});

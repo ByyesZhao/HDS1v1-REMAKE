@@ -10,12 +10,17 @@ export function parseWebTool(value:unknown):WebOperationRequest|null {
   if(value&&typeof value==='object'&&'webRead' in value){const parsed=webReadToolSchema.parse(value);return {kind:'read',url:normalizeWebUrl(parsed.webRead.url)};}
   return null;
 }
-export function normalizeMaterial(input:{id:string;url:string;title:string;body:string;readAt:string;selectionMode:'full_body'|'relevant_passages'}):WebMaterial {
+/** Explicit adapter for providers whose upstream payload is HTML. Call once. */
+export function htmlToWebText(html:string):string {
   const entities:Record<string,string>={amp:'&',lt:'<',gt:'>',quot:'"',apos:"'",nbsp:' '};
-  const body=input.body.replace(/<(script|style|nav|header|footer|aside)\b[^>]*>[\s\S]*?<\/\1>/gi,'')
+  return html.replace(/<(script|style|nav|header|footer|aside)\b[^>]*>[\s\S]*?<\/\1>/gi,'')
     .replace(/<!--[^]*?-->/g,'').replace(/<\/(p|div|section|article|main|li|h[1-6])\s*>|<br\s*\/?\s*>/gi,'\n')
     .replace(/<[^>]+>/g,'').replace(/&(#x[0-9a-f]+|#\d+|amp|lt|gt|quot|apos|nbsp);/gi,(_,entity:string)=>entity[0]==='#'?String.fromCodePoint(parseInt(entity.slice(entity[1]?.toLowerCase()==='x'?2:1),entity[1]?.toLowerCase()==='x'?16:10)):entities[entity.toLowerCase()])
     .replace(/[\t \r]+/g,' ').replace(/\n\s*\n+/g,'\n\n').trim();
+}
+/** Normalize already extracted text without treating visible text as markup. */
+export function normalizeMaterial(input:{id:string;url:string;title:string;body:string;readAt:string;selectionMode:'full_body'|'relevant_passages'}):WebMaterial {
+  const body=input.body.replace(/[\t \r]+/g,' ').replace(/\n\s*\n+/g,'\n\n').trim();
   if(!body)throw new Error('empty body');
   return {...input,url:normalizeWebUrl(input.url),body,bodyCharacters:[...body].length,sourceKind:'external_reference'};
 }

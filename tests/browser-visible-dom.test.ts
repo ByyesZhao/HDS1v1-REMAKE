@@ -4,6 +4,11 @@ const require=createRequire(resolve('package.json'));let browser:any,opened=0,cl
 beforeAll(async()=>{browser=await require('puppeteer-core').launch({executablePath:process.env.REVIEW_CHROME_PATH??'C:/Program Files/Google/Chrome/Application/chrome.exe',headless:true,args:['--disable-background-networking','--disable-component-update','--no-first-run']});},15000);
 afterAll(async()=>{try{expect(closed).toBe(opened);expect(network).toBe(0);}finally{await browser?.close();}});
 function fixture(html:string){return createKoishiBrowserPort(async()=>{const page=await browser.newPage();opened++;await page.setRequestInterception(true);page.on('request',(r:any)=>{network++;if(!r.isInterceptResolutionHandled())void r.abort();});return new Proxy(page,{get(target,property){if(property==='goto')return async()=>{await target.setContent(html,{waitUntil:'domcontentloaded'});return {status:()=>200};};if(property==='url')return ()=> 'https://synthetic.test/article';if(property==='close')return async()=>{await target.close();closed++;};const value=Reflect.get(target,property,target);return typeof value==='function'?value.bind(target):value;}});});}
+it('nested visible bodies occur once and sibling repeated paragraphs survive actual DOM cleaning',async()=>{
+ const html='<style>.hidden{display:none}</style><article><p>OUTER_VISIBLE</p><article><p>INNER_UNIQUE</p></article><article class="hidden">HIDDEN_NESTED</article></article><article><p>SIBLING_REPEAT</p></article><article><p>SIBLING_REPEAT</p></article><aside><p>LOGIN_NESTED</p><form><input type="password"></form></aside>';
+ const managed=createManagedBrowserProvider(fixture(html),{engine:'bing',navigationTimeoutMs:1500,maxConcurrentPages:1});
+ try{const body=(await managed.provider.read('https://synthetic.test/article')).body;expect(body.split('INNER_UNIQUE')).toHaveLength(2);expect(body.split('SIBLING_REPEAT')).toHaveLength(3);expect(body).not.toContain('HIDDEN_NESTED');expect(body).not.toContain('LOGIN_NESTED');}finally{await managed.dispose();}
+});
 it.each([
  ['sheet article','<style>.hidden{display:none}</style><article class="hidden">HIDDEN_STALE_TEMPLATE</article><main>VISIBLE_REAL_BODY</main>'],
  ['hidden ancestor','<div style="visibility:hidden"><article>HIDDEN_STALE_TEMPLATE</article></div><main>VISIBLE_REAL_BODY</main>'],

@@ -1,0 +1,7 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 typecheck
+npm notice run tsc --noEmit
+tests/appointment-update-host.test.ts(55,65): error TS2322: Type '{ schemaVersion: number; shortTermChanges: never[]; longTermChanges: never[]; detailChanges: never[]; }' is not assignable to type 'MemoryResultV3'.
+  Types of property 'schemaVersion' are incompatible.
+    Type 'number' is not assignable to type '3'.
+tests/task-projection.test.ts(2,36): error TS2307: Cannot find module '../src/host/task-projection' or its corresponding type declarations.
+tests/task-projection.test.ts(46,61): error TS7006: Parameter 't' implicitly has an 'any' type.

@@ -7,6 +7,7 @@ import {createKoishiBrowserPort} from '../src/web/browser/koishi-port';
 import {extractDomEvidence,extractReadablePage,BROWSER_EXTRACTOR_VERSION} from '../src/web/browser/extract';
 import {BrowserPageSlots} from '../src/web/browser/slots';
 import type {BrowserEngine,BrowserPort} from '../src/web/browser/types';
+import type {WebProviderPage} from '../src/web/provider';
 const localRequire=createRequire(resolve('package.json'));
 const browserConfig=(engine:BrowserEngine)=>({engine,navigationTimeoutMs:60000,maxConcurrentPages:1});
 export async function validateLocalWeb(options:{online?:boolean;probe?:boolean;engine?:BrowserEngine;report?:string;startupTimeoutMs?:number}={}):Promise<any>{
@@ -46,7 +47,7 @@ export async function validateLocalWeb(options:{online?:boolean;probe?:boolean;e
   report.searchMs=performance.now()-searchStart;report.candidateCount=links.length;report.candidates=links;
   if(!links.length)throw Error('no public candidates');
   const candidate=links.find((l:{url:string})=>l.url.includes('baike.baidu.com/item/'))??links.find((l:{url:string})=>new URL(l.url).pathname!=='/')??links[0];
-  report.selectedUrl=candidate.url;const bodyStart=performance.now(),article=await managed.provider.read(candidate.url);
+  report.selectedUrl=candidate.url;const bodyStart=performance.now(),article:WebProviderPage=await managed.provider.read(candidate.url);
   report.readMs=performance.now()-bodyStart;report.bodyCharacters=[...article.body].length;report.articleTitle=article.title;
   report.bodyHash=createHash('sha256').update(article.body).digest('hex');report.bodyPreview=article.body.slice(0,300);report.bodyTail=article.body.slice(-300);
   if(!article.body.trim())throw Error('no target body');

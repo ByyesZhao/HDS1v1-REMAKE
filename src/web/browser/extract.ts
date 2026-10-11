@@ -1,6 +1,7 @@
 import type {BrowserPageResult,BrowserEngine} from './types';
+import type {WebProviderPage} from '../provider';
 import {normalizePublicUrl} from './url';
-export const BROWSER_EXTRACTOR_VERSION='dom-v2/readability-0.6.0';
+export const BROWSER_EXTRACTOR_VERSION='dom-v3/readability-0.6.0';
 /** Self-contained function: the identical DOM algorithm runs in the browser and fixture tests. */
 export function extractDomEvidence(document:Document,finalUrl:string,engine:BrowserEngine|null=null,ReadabilityCtor?:new(doc:Document)=>{parse():{textContent:string;title:string}|null}):BrowserPageResult{
  const result:BrowserPageResult={finalUrl,title:document.title??'',access:'ok',search:null,main:null};
@@ -59,7 +60,12 @@ export function extractDomEvidence(document:Document,finalUrl:string,engine:Brow
   result.search={state:links.length?'results':empty&&visible(empty)?'empty':'unready',links,evidence:links.length?selectors:empty&&visible(empty)?'engine empty-result element':null};return result;
  }
  const clone=cleanPage();for(const region of loginRegions)copiesByNode.get(region)?.remove();
- for(const [selector,source] of [['article','article'],['main,[role="main"]','main']] as const){const nodes=Array.from(clone.querySelectorAll(selector));const contents=nodes.filter(hasBodyEvidence).map(text).filter(Boolean);if(contents.length){result.main={text:contents.join('\n\n'),source};return result;}}
+ for(const [selector,source] of [['article','article'],['main,[role="main"]','main']] as const){
+  const candidates=Array.from(clone.querySelectorAll(selector)).filter(hasBodyEvidence),valid=new Set(candidates);
+  // Keep the topmost valid subtree in this tier; identical sibling text is real content.
+  const roots=candidates.filter(node=>{for(let parent=node.parentElement;parent;parent=parent.parentElement)if(valid.has(parent))return false;return true;});
+  const contents=roots.map(text).filter(Boolean);if(contents.length){result.main={text:contents.join('\n\n'),source};return result;}
+ }
  const Ctor=ReadabilityCtor??(globalThis as unknown as {Readability?:typeof ReadabilityCtor}).Readability;
  if(Ctor&&clone.documentElement&&hasBodyEvidence(clone.documentElement)){try{const readable=new Ctor(clone).parse();if(readable?.textContent?.trim())result.main={text:readable.textContent.trim(),source:'readability'};}catch{}}
  if(passwords.length&&!result.main)result.access='login_wall';
@@ -78,9 +84,9 @@ export function extractSearchCandidates(page:BrowserPageResult,_engine:BrowserEn
  for(const link of page.search.links){const url=candidateUrl(link.url,page.finalUrl);if(url&&!seen.has(url)){seen.add(url);links.push({url,title:link.title});}}
  if(!links.length)throw Error('search candidate extraction produced no usable public links');return links;
 }
-export function extractReadablePage(page:BrowserPageResult){
+export function extractReadablePage(page:BrowserPageResult):WebProviderPage{
  if(page.access!=='ok')throw Error('web page blocked: '+page.access);
  if(page.search)throw Error('search results are not article body');
  if(!page.main?.text.trim())throw Error('page has no readable body');
- return {title:page.title,body:page.main.text};
+ return {title:page.title,body:page.main.text,bodyFormat:'text'};
 }

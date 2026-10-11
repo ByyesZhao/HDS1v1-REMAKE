@@ -1,0 +1,71 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/browser-page-extraction.test.ts tests/browser-visible-dom.test.ts
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ❯ tests/browser-visible-dom.test.ts (18 tests | 1 failed) 2593ms
+   × nested visible bodies occur once and sibling repeated paragraphs survive actual DOM cleaning 111ms
+ ❯ tests/browser-page-extraction.test.ts (9 tests | 2 failed) 25ms
+   × nested_articles_emit_descendant_text_once 10ms
+   × nested_main_role_main_emit_descendant_text_once 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/browser-page-extraction.test.ts > nested_articles_emit_descendant_text_once
+AssertionError: expected [ 'OUTER_BODY\n\n', '\n\n', '' ] to have a length of 2 but got 3
+
+- Expected
++ Received
+
+- 2
++ 3
+
+ ❯ tests/browser-page-extraction.test.ts:5:98
+      3| it('nested_articles_emit_descendant_text_once',()=>{
+      4|  const page=extract('<article><p>OUTER_BODY</p><article><p>INNER_ARTIC…
+      5|  expect(page.main?.source).toBe('article');expect(page.main!.text.spli…
+       |                                                                                                  ^
+      6| });
+      7| it('nested_main_role_main_emit_descendant_text_once',()=>{
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/browser-page-extraction.test.ts > nested_main_role_main_emit_descendant_text_once
+AssertionError: expected [ 'OUTER_MAIN_BODY\n\n', '\n\n', '' ] to have a length of 2 but got 3
+
+- Expected
++ Received
+
+- 2
++ 3
+
+ ❯ tests/browser-page-extraction.test.ts:9:92
+      7| it('nested_main_role_main_emit_descendant_text_once',()=>{
+      8|  const page=extract('<main><p>OUTER_MAIN_BODY</p><div role="main"><p>I…
+      9|  expect(page.main?.source).toBe('main');expect(page.main!.text.split('…
+       |                                                                                            ^
+     10| });
+     11| it('sibling_articles_keep_identical_paragraphs',()=>{
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  tests/browser-visible-dom.test.ts > nested visible bodies occur once and sibling repeated paragraphs survive actual DOM cleaning
+AssertionError: expected [ 'OUTER_VISIBLE', '\n\n', …(1) ] to have a length of 2 but got 3
+
+- Expected
++ Received
+
+- 2
++ 3
+
+ ❯ tests/browser-visible-dom.test.ts:10:121
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  3 failed | 24 passed (27)
+   Start at  09:29:10
+   Duration  3.17s (tests 89%, import 6%, transform 5%)
+

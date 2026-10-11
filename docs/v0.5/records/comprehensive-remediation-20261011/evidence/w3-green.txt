@@ -1,0 +1,14 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/browser-page-extraction.test.ts tests/browser-visible-dom.test.ts tests/browser-web-integration.test.ts tests/browser-koishi-port.test.ts
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+
+ Test Files  4 passed (4)
+      Tests  31 passed (31)
+   Start at  09:29:27
+   Duration  4.09s (tests 83%, import 11%, transform 6%)
+
+    Isolate  4 workers spawned · ~98ms startup each (spawn + environment, per file)
+             at least ~293ms faster with isolate: false — reuses workers across files instead of one per file
+

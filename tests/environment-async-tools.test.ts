@@ -9,7 +9,7 @@ import {schoolItem,expand} from './world-school-fixture';
 import {setImmediate} from 'node:timers/promises';
 it('confirmed web reads and failed operations survive stale generations without fresh quota',async()=>{
  const {d,step}=asyncFixture();let searches=0,reads=0;
- const provider={signature:'fixture',search:async()=>{searches++;return [{url:'https://example.test/a',title:'a'}];},read:async()=>{reads++;return {title:'a',body:'公开正文'};}};
+ const provider={signature:'fixture',search:async()=>{searches++;return [{url:'https://example.test/a',title:'a'}];},read:async()=>{reads++;return {bodyFormat:'text' as const,title:'a',body:'公开正文'};}};
  d.web=new WebSearchService(d.web.store,provider,d.clock,{enabled:true});
  const dep={...d,models:new ModelClient({complete:async request=>request.webMaterials?.length?{changes:[]}:{webSearch:{query:'公开资料',requestedPages:1}}})};
  dep.generateEnvironment=(input,options)=>generateEnvironmentStep(dep,input,options);
@@ -21,12 +21,12 @@ it('confirmed web reads and failed operations survive stale generations without 
 });
 it('interrupted web operation resumes same ID and confirms a page only once',async()=>{
  const {d,step}=asyncFixture();let reads=0,finish!:(v:any)=>void;
- const provider={signature:'fixture',search:async()=>[{url:'https://example.test/a',title:'a'}],read:async()=>{reads++;if(reads===1)return new Promise<any>(resolve=>finish=resolve);return {title:'a',body:'正文'};}};
+ const provider={signature:'fixture',search:async()=>[{url:'https://example.test/a',title:'a'}],read:async()=>{reads++;if(reads===1)return new Promise<any>(resolve=>finish=resolve);return {bodyFormat:'text' as const,title:'a',body:'正文'};}};
  d.web=new WebSearchService(d.web.store,provider,d.clock,{enabled:true});
  const dep={...d,models:new ModelClient({complete:async request=>request.webMaterials?.length?{changes:[]}:{webRead:{url:'https://example.test/a'}}})};
  dep.generateEnvironment=(input,options)=>generateEnvironmentStep(dep,input,options);
  const p=new EnvironmentPreparation(dep);p.startOne(step.id,NOW);await setImmediate();const ref=d.web.store.openStage('environment',step.id,'generation','world'),old=d.web.store.snapshot(ref.runId).checkpoint!;
- expect(old.pendingOperationId).toBeTruthy();const stopping=p.stop();finish({title:'late',body:'晚正文'});await stopping;
+ expect(old.pendingOperationId).toBeTruthy();const stopping=p.stop();finish({bodyFormat:'text' as const,title:'late',body:'晚正文'});await stopping;
  expect(d.web.store.snapshot(ref.runId).counters.successReads).toBe(0);const resumed=new EnvironmentPreparation(dep);resumed.startOne(step.id,NOW);await resumed.wait();
  const snapshot=d.web.store.snapshot(ref.runId);expect(snapshot.operations).toHaveLength(1);expect(snapshot.operations[0].operationId).toBe(old.pendingOperationId);expect(snapshot.counters.successReads).toBe(1);expect(d.environmentStore.step(step.id)?.attempt).toBe(1);await resumed.stop();d.storage.close();
 });

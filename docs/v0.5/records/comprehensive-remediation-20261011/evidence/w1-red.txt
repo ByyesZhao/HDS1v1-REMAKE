@@ -1,0 +1,45 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/web-content.test.ts tests/browser-web-integration.test.ts
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ❯ tests/browser-web-integration.test.ts (3 tests | 1 failed) 102ms
+   × browser_plain_text_survives_service_normalization 31ms
+ ❯ tests/web-content.test.ts (4 tests | 1 failed) 12ms
+   × plain_text_does_not_decode_entities_again 6ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/browser-web-integration.test.ts > browser_plain_text_survives_service_normalization
+AssertionError: expected '关系：a d。 List <' to be '关系：a < b && c > d。 List<String> <nav>…' // Object.is equality
+
+Expected: "关系：a < b && c > d。 List<String> <nav>示例</nav> &lt;"
+Received: "关系：a d。 List <"
+
+ ❯ tests/browser-web-integration.test.ts:11:36
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/web-content.test.ts > plain_text_does_not_decode_entities_again
+AssertionError: expected '关系：a d。 List <' to be '关系：a < b && c > d。 List<String> <nav>…' // Object.is equality
+
+Expected: "关系：a < b && c > d。 List<String> <nav>示例</nav> &lt;"
+Received: "关系：a d。 List <"
+
+ ❯ tests/web-content.test.ts:5:18
+      3| it('plain_text_does_not_decode_entities_again',()=>{
+      4|   const m=normalizeMaterial({id:'m',url:'https://example.test',title:'…
+      5|   expect(m.body).toBe('关系：a < b && c > d。 List<String> <nav>示例</nav> &…
+       |                  ^
+      6| });
+      7| it('removes navigation and scripts while retaining long body tail and …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  2 failed | 5 passed (7)
+   Start at  09:27:49
+   Duration  973ms (import 53%, transform 30%, tests 16%, worker 2%)
+

@@ -10,7 +10,7 @@ import {describeSticker} from '../src/output/sticker-description';
 import {makeSharedFixture} from './shared-v3-fixture';
 import {selectSharedMeta} from '../src/host/shared';
 const close:Array<()=>void>=[];afterEach(()=>close.splice(0).forEach(f=>f()));
-function fixture(){const d=setup();close.push(()=>d.storage.close());const store=new WebSearchStore(d.storage),provider={signature:'fixture',search:vi.fn(async()=>[{url:'https://example.test/page',title:'Snippet'}]),read:vi.fn(async()=>({title:'公开',body:'查阅了解到雨后空气清新。'}))},web=new WebSearchService(store,provider,d.clock,{enabled:true});return {...d,web,provider};}
+function fixture(){const d=setup();close.push(()=>d.storage.close());const store=new WebSearchStore(d.storage),provider={signature:'fixture',search:vi.fn(async()=>[{url:'https://example.test/page',title:'Snippet'}]),read:vi.fn(async()=>({bodyFormat:'text' as const,title:'公开',body:'查阅了解到雨后空气清新。'}))},web=new WebSearchService(store,provider,d.clock,{enabled:true});return {...d,web,provider};}
 it('runs narrative, life, expression and memory in independent sessions; memory receives actual reading body and grounded reaction',async()=>{
  const d=fixture(),requests:any[]=[];d.random.next=()=>0;const counts:Record<string,number>={};
  const models=new ModelClient({complete:async r=>{requests.push(r);const name=r.task.name;counts[name]=(counts[name]??0)+1;if(counts[name]===1)return {webSearch:{query:'雨后'}};
