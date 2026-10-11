@@ -1,0 +1,55 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/memory-cleanup-policy-work.test.ts --maxWorkers=1 --no-isolate
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ❯ tests/memory-cleanup-policy-work.test.ts (17 tests | 4 failed) 371ms
+   × missing_summary_repairs_only_changed_basis: empty 13ms
+   × missing_summary_repairs_only_changed_basis: whitespace 6ms
+   × missing_summary_repairs_only_changed_basis: durable 5ms
+   × missing_summary_repairs_only_changed_basis: long-source 4ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/memory-cleanup-policy-work.test.ts > missing_summary_repairs_only_changed_basis: empty
+ FAIL  tests/memory-cleanup-policy-work.test.ts > missing_summary_repairs_only_changed_basis: whitespace
+ FAIL  tests/memory-cleanup-policy-work.test.ts > missing_summary_repairs_only_changed_basis: durable
+ FAIL  tests/memory-cleanup-policy-work.test.ts > missing_summary_repairs_only_changed_basis: long-source
+AssertionError: expected { capacityExitedAt: null, …(32) } to deeply equal { id: 's', kind: 'short', …(27) }
+
+- Expected
++ Received
+
+@@ -1,11 +1,15 @@
+  {
++   "archiveEnteredAt": null,
++   "capacityExitReason": null,
++   "capacityExitedAt": null,
+    "consolidatedRevision": null,
+    "content": "real detail s",
+    "createdAt": "2026-10-08T02:00:00.000Z",
+    "evaluatedEvidenceVersion": null,
+    "eventSummary": "event tail",
++   "evidenceMemoryIds": [],
+    "expiresAt": null,
+    "feelingSummary": "feeling tail",
+    "happenedAt": "2026-10-08T02:00:00.000Z",
+    "happenedUntil": "2026-10-08T02:00:00.000Z",
+    "id": "s",
+
+ ❯ tests/memory-cleanup-policy-work.test.ts:68:50
+     66|  const w=work(d);expect(d.cleanup.applyOne(at)).toBe('applied');w.stop…
+     67|  expect(w.tally).toMatchObject({snapshotLoads:1,fullOwnerRows:2,ownerW…
+     68|  const updated=d.store.owner(s)!;expect(updated).toEqual({...s,stateVe…
+       |                                                  ^
+     69|  expect(d.store.owner(l)).toEqual(l);expect(d.store.dirtyOwners()).toM…
+     70|  expect(d.cleanup.nextDeadline(at)).toBe(mode==='durable'?null:days(18…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 13 passed (17)
+   Start at  09:59:19
+   Duration  734ms (tests 64%, transform 28%, import 7%, worker 1%)
+

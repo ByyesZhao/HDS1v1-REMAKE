@@ -1,0 +1,1 @@
+Owned TypeScript files: no trailing whitespace.

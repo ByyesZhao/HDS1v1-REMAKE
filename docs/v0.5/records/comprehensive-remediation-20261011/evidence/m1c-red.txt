@@ -1,0 +1,213 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/memory-cleanup-policy-work.test.ts --maxWorkers=1 --no-isolate
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ❯ tests/memory-cleanup-policy-work.test.ts (17 tests | 14 failed) 527ms
+   × next_deadline_reads_one_metadata_snapshot_without_sorting (128 characters) 195ms
+   × next_deadline_reads_one_metadata_snapshot_without_sorting (4096 characters) 209ms
+   × next_deadline_eligible_archive_needs_no_awakening_reads 59ms
+   × cleanup_projection_preserves_expired_and_old_reference_rules 5ms
+   × missing_summary_repairs_only_changed_basis: empty 5ms
+   × missing_summary_repairs_only_changed_basis: whitespace 4ms
+   × missing_summary_repairs_only_changed_basis: durable 5ms
+   × missing_summary_repairs_only_changed_basis: long-source 5ms
+   × missing_summary_ineligible_pair_stays_blocked: no-sources 6ms
+   × missing_summary_ineligible_pair_stays_blocked: blank-short 5ms
+   × missing_summary_ineligible_pair_stays_blocked: merged-short 5ms
+   × missing_summary_ineligible_pair_stays_blocked: same-basis 5ms
+   × apply_one_purges_only_first_eligible_and_keeps_archive_priority 5ms
+   × cleanup_capacity_fallback_reuses_snapshot 5ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 14 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/memory-cleanup-policy-work.test.ts > next_deadline_reads_one_metadata_snapshot_without_sorting (128 characters)
+ FAIL  tests/memory-cleanup-policy-work.test.ts > next_deadline_reads_one_metadata_snapshot_without_sorting (4096 characters)
+AssertionError: expected { snapshotLoads: 3, …(8) } to deeply equal { snapshotLoads: 1, …(8) }
+
+- Expected
++ Received
+
+@@ -2,10 +2,10 @@
+    "awakeningIds": [],
+    "awakeningSelects": 0,
+    "dirtyWrites": 0,
+    "fullOwnerRows": 0,
+    "grantWrites": 0,
+-   "metadataRows": 1600,
++   "metadataRows": 4800,
+    "ownerWrites": 0,
+    "purges": 0,
+-   "snapshotLoads": 1,
++   "snapshotLoads": 3,
+  }
+
+ ❯ tests/memory-cleanup-policy-work.test.ts:43:18
+     41|  const w=work(d),deadline=d.cleanup.nextDeadline(at),calls=w.stop();
+     42|  expect(deadline).toBe('2026-10-09T02:00:00.000Z');expect(calls).toEqu…
+     43|  expect(w.tally).toEqual({snapshotLoads:1,metadataRows:1600,fullOwnerR…
+       |                  ^
+     44| });
+     45| it('next_deadline_eligible_archive_needs_no_awakening_reads',()=>{
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/14]⎯
+
+ FAIL  tests/memory-cleanup-policy-work.test.ts > next_deadline_eligible_archive_needs_no_awakening_reads
+AssertionError: expected { snapshotLoads: 2, …(8) } to match object { snapshotLoads: 1, …(5) }
+(3 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "awakeningSelects": 0,
++   "awakeningSelects": 1000,
+    "fullOwnerRows": 0,
+-   "metadataRows": 501,
++   "metadataRows": 1002,
+    "ownerWrites": 0,
+    "purges": 0,
+-   "snapshotLoads": 1,
++   "snapshotLoads": 2,
+  }
+
+ ❯ tests/memory-cleanup-policy-work.test.ts:48:18
+     46|  const d=create();for(let i=0;i<501;i++)long(d.store,`a-${i}`,{archive…
+     47|  const w=work(d),deadline=d.cleanup.nextDeadline(at);w.stop();expect(d…
+     48|  expect(w.tally).toMatchObject({snapshotLoads:1,metadataRows:501,fullO…
+       |                  ^
+     49| });
+     50| it('cleanup_projection_preserves_expired_and_old_reference_rules',()=>{
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/14]⎯
+
+ FAIL  tests/memory-cleanup-policy-work.test.ts > cleanup_projection_preserves_expired_and_old_reference_rules
+AssertionError: expected { snapshotLoads: 1, …(8) } to match object { snapshotLoads: 1, …(2) }
+(6 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "fullOwnerRows": 0,
++   "fullOwnerRows": 10,
+    "purges": 1,
+    "snapshotLoads": 1,
+  }
+
+ ❯ tests/memory-cleanup-policy-work.test.ts:57:91
+     55|  d.store.saveOwner(d.store.makeOwner({ownerType:'learned',ownerId:'und…
+     56|  for(const id of ['a-exited','b-merged-active','delete-old']){
+     57|   const w=work(d);expect(d.cleanup.applyOne(at)).toBe('applied');w.sto…
+       |                                                                                           ^
+     58|   expect(d.store.owner({ownerType:id==='delete-old'?'long':'short',own…
+     59|  }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/14]⎯
+
+ FAIL  tests/memory-cleanup-policy-work.test.ts > missing_summary_repairs_only_changed_basis: empty
+ FAIL  tests/memory-cleanup-policy-work.test.ts > missing_summary_repairs_only_changed_basis: whitespace
+ FAIL  tests/memory-cleanup-policy-work.test.ts > missing_summary_repairs_only_changed_basis: durable
+ FAIL  tests/memory-cleanup-policy-work.test.ts > missing_summary_repairs_only_changed_basis: long-source
+AssertionError: expected { snapshotLoads: 1, …(8) } to match object { snapshotLoads: 1, …(4) }
+(4 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "dirtyWrites": 1,
+-   "fullOwnerRows": 2,
++   "fullOwnerRows": 5,
+    "ownerWrites": 1,
+    "purges": 0,
+    "snapshotLoads": 1,
+  }
+
+ ❯ tests/memory-cleanup-policy-work.test.ts:67:18
+     65|  expect(d.cleanup.nextDeadline(at)).toBe(at);expect(d.cleanup.status()…
+     66|  const w=work(d);expect(d.cleanup.applyOne(at)).toBe('applied');w.stop…
+     67|  expect(w.tally).toMatchObject({snapshotLoads:1,fullOwnerRows:2,ownerW…
+       |                  ^
+     68|  const updated=d.store.owner(s)!;expect(updated).toEqual({...s,stateVe…
+     69|  expect(d.store.owner(l)).toEqual(l);expect(d.store.dirtyOwners()).toM…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/14]⎯
+
+ FAIL  tests/memory-cleanup-policy-work.test.ts > missing_summary_ineligible_pair_stays_blocked: no-sources
+ FAIL  tests/memory-cleanup-policy-work.test.ts > missing_summary_ineligible_pair_stays_blocked: blank-short
+ FAIL  tests/memory-cleanup-policy-work.test.ts > missing_summary_ineligible_pair_stays_blocked: merged-short
+ FAIL  tests/memory-cleanup-policy-work.test.ts > missing_summary_ineligible_pair_stays_blocked: same-basis
+AssertionError: expected { snapshotLoads: 5, …(8) } to match object { fullOwnerRows: +0, …(3) }
+(5 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "dirtyWrites": 0,
+-   "fullOwnerRows": 0,
++   "fullOwnerRows": 4,
+    "ownerWrites": 0,
+    "purges": 0,
+  }
+
+ ❯ tests/memory-cleanup-policy-work.test.ts:78:121
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/14]⎯
+
+ FAIL  tests/memory-cleanup-policy-work.test.ts > apply_one_purges_only_first_eligible_and_keeps_archive_priority
+AssertionError: expected { snapshotLoads: 1, …(8) } to match object { snapshotLoads: 1, …(2) }
+(6 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "fullOwnerRows": 0,
++   "fullOwnerRows": 10,
+    "purges": 1,
+    "snapshotLoads": 1,
+  }
+
+ ❯ tests/memory-cleanup-policy-work.test.ts:84:91
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/14]⎯
+
+ FAIL  tests/memory-cleanup-policy-work.test.ts > cleanup_capacity_fallback_reuses_snapshot
+AssertionError: expected { snapshotLoads: 2, …(8) } to match object { snapshotLoads: 1, …(5) }
+(3 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "dirtyWrites": 1,
+-   "fullOwnerRows": 1,
+-   "metadataRows": 2,
++   "fullOwnerRows": 3,
++   "metadataRows": 4,
+    "ownerWrites": 1,
+    "purges": 0,
+-   "snapshotLoads": 1,
++   "snapshotLoads": 2,
+  }
+
+ ❯ tests/memory-cleanup-policy-work.test.ts:100:18
+     98|  const d=create({...defaultMemoryCapacity,longActiveLimit:1});long(d.s…
+     99|  const w=work(d);expect(d.cleanup.applyOne(at)).toBe('applied');w.stop…
+    100|  expect(w.tally).toMatchObject({snapshotLoads:1,metadataRows:2,fullOwn…
+       |                  ^
+    101|  expect(d.store.canonical('a')).toMatchObject({archiveEnteredAt:at,sta…
+    102| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/14]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  14 failed | 3 passed (17)
+   Start at  09:58:46
+   Duration  945ms (tests 72%, transform 21%, import 6%, worker 1%)
+
