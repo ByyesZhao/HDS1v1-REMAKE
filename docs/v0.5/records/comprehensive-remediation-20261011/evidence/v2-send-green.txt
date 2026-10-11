@@ -1,0 +1,20 @@
+Command: node node_modules/vitest/vitest.mjs run tests/review-recovery.test.ts --maxWorkers=1 --reporter=verbose
+TEMP/TMP: D:\HDSI-remake\.tmp\v2-send-tests
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ✓ tests/review-recovery.test.ts > freezes the complete ordered output and post job before any platform send 24ms
+ ✓ tests/review-recovery.test.ts > marks a silent frozen turn output complete and commits without sending 10ms
+ ✓ tests/review-recovery.test.ts > rolls back the turn and all output rows when freezing the post job fails 245ms
+ ✓ tests/review-recovery.test.ts > reopens a file database and retries sending while retaining confirmed output and frozen text 290ms
+ ✓ tests/review-recovery.test.ts > wakes without piggybacking ordinary inputs while a new batch is open 18ms
+ ✓ tests/review-recovery.test.ts > delivers all real closed batches and retires a due check: {"reason":"unread","status":"cancelled"} 16ms
+ ✓ tests/review-recovery.test.ts > delivers all real closed batches and retires a due check: {"reason":"deferred_reply","status":"completed"} 12ms
+ ✓ tests/review-recovery.test.ts > closes an expired batch while paused and leaves no repeated open-batch deadline 6ms
+
+ Test Files  1 passed (1)
+      Tests  8 passed (8)
+   Start at  10:15:11
+   Duration  1.35s (tests 51%, transform 34%, import 15%)
+
+Exit code: 0

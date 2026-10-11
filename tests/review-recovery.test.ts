@@ -1,4 +1,4 @@
-import { it, expect } from 'vitest';
+import { it, expect, vi } from 'vitest';
 import { mkdtempSync, rmSync } from 'node:fs';
 import { basename, dirname, join, resolve } from 'node:path';
 import { tmpdir } from 'node:os';
@@ -71,24 +71,60 @@ it('reopens a file database and retries sending while retaining confirmed output
   const dir = mkdtempSync(join(tmpdir(), 'hdsi-review-')); const path = join(dir, 'story.sqlite');
   const d = setup(); const initial = d.storage.character(); d.storage.close(); d.storage = new Storage(path); d.storage.set('runtime',{...d.storage.runtime(),dialogueContextVersion:1});
   try {
-    d.storage.set('character', initial); saveInput(d.storage, 'a', '你好'); output(d);
+    // An already chosen future sleep leaves autonomous interval selection as the only random draw.
+    d.storage.set('character', { ...initial, sleep: { sleepAt: '2026-10-07T23:00:00+08:00', wakeAt: '2026-10-08T08:00:00+08:00' } });
+    saveInput(d.storage, 'a', '你好'); output(d);
+    d.random.next = vi.fn().mockReturnValueOnce(0.5).mockReturnValue(0.9);
     const r = await generateTurn(d, { inputMessageIds: ['a'], taskIds: [], triggerKinds: ['input'] }, 'a');
     freezeTurn(d, turn(), r.candidate, r.items);
+    expect(d.random.next).toHaveBeenCalledTimes(1);
+    expect(d.storage.read('turns', 'a')!.autonomousIntervalMinutes).toBe(180);
+    expect(d.storage.read('turns', 'a')!.frozenResult!.autonomousIntervalMinutes).toBe(180);
     const items = d.storage.outbox('a');
     d.storage.saveOutbox({ ...items[0], status: 'confirmed', confirmedAt: NOW, platformMessageIds: ['already-sent'] });
     d.storage.save('messages', 'a:out:0', { id: 'a:out:0', direction: 'outgoing', content: '第一段', receivedAt: NOW, platformMessageIds: ['already-sent'], seenTurnId: null, batchId: null, turnId: 'a', outboxSeq: 0 });
     d.storage.saveOutbox({ ...items[1], status: 'sending' });
+    const oldTurn = d.storage.read('turns', 'a')!;
+    const oldFrozenJson = JSON.stringify(oldTurn.frozenResult);
+    const oldOutbox = d.storage.outbox('a');
+    const oldConfirmedMessage = d.storage.read('messages', 'a:out:0');
+    const episodeId = d.storage.read('messages', 'a')!.dialogueEpisodeId;
+    expect(episodeId).toBeTruthy();
+    d.clock.advance(60_000);
     d.storage.close(); d.storage = new Storage(path); d.storage.set('runtime',{...d.storage.runtime(),dialogueContextVersion:1});
-    const persistedStatuses: string[] = []; const save = d.storage.saveOutbox.bind(d.storage);
-    d.storage.saveOutbox = item => { save(item); persistedStatuses.push(d.storage.outbox('a')[1].status); };
+    expect(d.storage.read('turns', 'a')).toEqual(oldTurn);
+    expect(d.storage.outbox('a')).toEqual(oldOutbox);
+    const persistedStatuses: string[] = []; const saveOutbox = d.storage.saveOutbox.bind(d.storage);
+    d.storage.saveOutbox = item => {
+      saveOutbox(item); persistedStatuses.push(d.storage.outbox('a')[1].status);
+      expect(d.storage.outbox('a')[0]).toEqual(oldOutbox[0]);
+      expect(JSON.stringify(d.storage.read('turns', 'a')!.frozenResult)).toBe(oldFrozenJson);
+      expect(d.storage.read('turns', 'a')).toMatchObject({ at: NOW, autonomousIntervalMinutes: 180 });
+    };
+    const beforeCompletion: TurnRecord[] = []; const save = d.storage.save.bind(d.storage);
+    d.storage.save = ((...args: Parameters<typeof d.storage.save>) => {
+      const [table, id, row] = args;
+      // finishPostprocessing intentionally clears frozenResult in the terminal write.
+      if (table === 'turns' && 'done' in row && row.done) beforeCompletion.push(d.storage.read('turns', id)!);
+      save(...args);
+    }) as typeof d.storage.save;
     d.models.calls = []; d.models.outputs.expression = { parts: [{ kind: 'text', content: '不能重新生成' }] };
     const app = new HdsiApp(d); await app.resumeUnfinishedTurn(); await app.resumeUnfinishedTurn();
     expect(persistedStatuses).toEqual(['retry', 'sending', 'confirmed']);
     expect(d.sender.sent.map(i => i.payload)).toEqual(['第二段']);
     expect(d.models.calls.map(c => c.name)).toEqual(['memory']);
+    expect(d.random.next).toHaveBeenCalledTimes(1);
+    expect(beforeCompletion).toHaveLength(1);
+    expect(beforeCompletion[0]).toEqual({ ...oldTurn, outputComplete: true, dialogueBinding: { episodeId, holdReply: false } });
+    expect(JSON.stringify(beforeCompletion[0].frozenResult)).toBe(oldFrozenJson);
+    expect(d.storage.outbox('a')[0]).toEqual(oldOutbox[0]);
+    expect(d.storage.outbox('a')[1]).toEqual({ ...oldOutbox[1], status: 'confirmed', confirmedAt: d.clock.now(), platformMessageIds: ['qq-1'] });
+    expect(d.storage.read('messages', 'a:out:0')).toEqual(oldConfirmedMessage);
     expect(d.storage.outbox('a').map(i => i.platformMessageIds)).toEqual([['already-sent'], ['qq-1']]);
     expect(d.storage.read('messages', 'a')!.seenTurnId).toBe('a');
-    expect(d.storage.read('turns', 'a')).toMatchObject({ at: NOW, done: true });
+    expect(d.storage.read('turns', 'a')).toMatchObject({ at: NOW, autonomousIntervalMinutes: 180, outputComplete: true, done: true, completedAt: d.clock.now(), frozenResult: null });
+    expect(d.storage.character()).toEqual({ ...oldTurn.frozenResult!.nextState, nextAutonomousAt: '2026-10-07T05:01:00.000Z' });
+    expect(d.storage.read('post_jobs', 'a')!.result).toBeNull();
   } finally { d.storage.close(); cleanTemp(dir); }
 });
 
