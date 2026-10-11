@@ -1,0 +1,14 @@
+{
+  "dataset": "tests/fixtures/memory-retrieval-semantic-v2.json",
+  "sha256": "30a2c1920b7d7b84cf9d633fdb7c0c215d4f0bf3a723bd712472e4ff4d7b5652",
+  "frozenAt": "2026-10-11T02:23:14.5695627Z",
+  "labelReview": "reviews/Q3-labels.md",
+  "families": 60,
+  "queries": 360,
+  "retainedDevelopmentCalibrationFamilies": 48,
+  "newHoldoutFamilies": 12,
+  "newHoldoutQueries": 72,
+  "holdoutStatus": "sealed",
+  "collectionStatus": "not_executed_no_online_authorization",
+  "qualityStatus": "incomplete_without_real_vectors"
+}
