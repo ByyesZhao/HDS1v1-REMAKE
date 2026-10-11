@@ -1,0 +1,151 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/memory-retrieval-calibration-split.test.ts --reporter=verbose
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ × tests/memory-retrieval-calibration-split.test.ts > holdout_labels_cannot_change_selected_threshold 18ms
+   → detail effectiveAt must be nonempty text
+ × tests/memory-retrieval-calibration-split.test.ts > precision_constraint_beats_recall 3ms
+   → detail effectiveAt must be nonempty text
+ × tests/memory-retrieval-calibration-split.test.ts > ties_choose_higher_threshold 3ms
+   → detail effectiveAt must be nonempty text
+ × tests/memory-retrieval-calibration-split.test.ts > no_candidate_keeps_baseline 2ms
+   → detail effectiveAt must be nonempty text
+ × tests/memory-retrieval-calibration-split.test.ts > new negative false hits disqualify an otherwise precise candidate 2ms
+   → detail effectiveAt must be nonempty text
+ × tests/memory-retrieval-calibration-split.test.ts > candidate metrics reflect the actual SQL eligibility and direct-key pipeline 2ms
+   → detail effectiveAt must be nonempty text
+ ✓ tests/memory-retrieval-calibration-split.test.ts > recommendation requires both group precision, nonregression, ten recall points and defined candidate metrics 1ms
+ × tests/memory-retrieval-calibration-split.test.ts > CLI freezes candidate before paired holdout, records use, reports differences and refuses reuse 525ms
+   → expected 1 to be +0 // Object.is equality
+ ✓ tests/memory-retrieval-calibration-split.test.ts > CLI rejects output aliases before reading or changing inputs 916ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/memory-retrieval-calibration-split.test.ts > holdout_labels_cannot_change_selected_threshold
+Error: detail effectiveAt must be nonempty text
+ ❯ check scripts/lib/memory-retrieval-evaluation.ts:89:89
+     87| const ownerKey=(owner:Pick<MemoryCandidate,'ownerType'|'ownerId'>):Ret…
+     88| const unique=<T>(items:T[])=>[...new Set(items)];
+     89| function check(condition:unknown,message:string):asserts condition {if…
+       |                                                                                         ^
+     90| function text(value:unknown,label:string):asserts value is string {che…
+     91| function date(value:unknown,label:string):void {text(value,label);chec…
+ ❯ text scripts/lib/memory-retrieval-evaluation.ts:90:68
+ ❯ date scripts/lib/memory-retrieval-evaluation.ts:91:49
+ ❯ validateRetrievalDataset scripts/lib/memory-retrieval-evaluation.ts:206:124
+ ❯ Module.selectLexicalCalibration scripts/lib/memory-retrieval-evaluation.ts:319:3
+ ❯ tests/memory-retrieval-calibration-split.test.ts:29:32
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯
+
+ FAIL  tests/memory-retrieval-calibration-split.test.ts > precision_constraint_beats_recall
+Error: detail effectiveAt must be nonempty text
+ ❯ check scripts/lib/memory-retrieval-evaluation.ts:89:89
+     87| const ownerKey=(owner:Pick<MemoryCandidate,'ownerType'|'ownerId'>):Ret…
+     88| const unique=<T>(items:T[])=>[...new Set(items)];
+     89| function check(condition:unknown,message:string):asserts condition {if…
+       |                                                                                         ^
+     90| function text(value:unknown,label:string):asserts value is string {che…
+     91| function date(value:unknown,label:string):void {text(value,label);chec…
+ ❯ text scripts/lib/memory-retrieval-evaluation.ts:90:68
+ ❯ date scripts/lib/memory-retrieval-evaluation.ts:91:49
+ ❯ validateRetrievalDataset scripts/lib/memory-retrieval-evaluation.ts:206:124
+ ❯ Module.selectLexicalCalibration scripts/lib/memory-retrieval-evaluation.ts:319:3
+ ❯ tests/memory-retrieval-calibration-split.test.ts:38:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯
+
+ FAIL  tests/memory-retrieval-calibration-split.test.ts > ties_choose_higher_threshold
+Error: detail effectiveAt must be nonempty text
+ ❯ check scripts/lib/memory-retrieval-evaluation.ts:89:89
+     87| const ownerKey=(owner:Pick<MemoryCandidate,'ownerType'|'ownerId'>):Ret…
+     88| const unique=<T>(items:T[])=>[...new Set(items)];
+     89| function check(condition:unknown,message:string):asserts condition {if…
+       |                                                                                         ^
+     90| function text(value:unknown,label:string):asserts value is string {che…
+     91| function date(value:unknown,label:string):void {text(value,label);chec…
+ ❯ text scripts/lib/memory-retrieval-evaluation.ts:90:68
+ ❯ date scripts/lib/memory-retrieval-evaluation.ts:91:49
+ ❯ validateRetrievalDataset scripts/lib/memory-retrieval-evaluation.ts:206:124
+ ❯ Module.selectLexicalCalibration scripts/lib/memory-retrieval-evaluation.ts:319:3
+ ❯ tests/memory-retrieval-calibration-split.test.ts:44:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯
+
+ FAIL  tests/memory-retrieval-calibration-split.test.ts > no_candidate_keeps_baseline
+Error: detail effectiveAt must be nonempty text
+ ❯ check scripts/lib/memory-retrieval-evaluation.ts:89:89
+     87| const ownerKey=(owner:Pick<MemoryCandidate,'ownerType'|'ownerId'>):Ret…
+     88| const unique=<T>(items:T[])=>[...new Set(items)];
+     89| function check(condition:unknown,message:string):asserts condition {if…
+       |                                                                                         ^
+     90| function text(value:unknown,label:string):asserts value is string {che…
+     91| function date(value:unknown,label:string):void {text(value,label);chec…
+ ❯ text scripts/lib/memory-retrieval-evaluation.ts:90:68
+ ❯ date scripts/lib/memory-retrieval-evaluation.ts:91:49
+ ❯ validateRetrievalDataset scripts/lib/memory-retrieval-evaluation.ts:206:124
+ ❯ Module.selectLexicalCalibration scripts/lib/memory-retrieval-evaluation.ts:319:3
+ ❯ tests/memory-retrieval-calibration-split.test.ts:50:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/7]⎯
+
+ FAIL  tests/memory-retrieval-calibration-split.test.ts > new negative false hits disqualify an otherwise precise candidate
+Error: detail effectiveAt must be nonempty text
+ ❯ check scripts/lib/memory-retrieval-evaluation.ts:89:89
+     87| const ownerKey=(owner:Pick<MemoryCandidate,'ownerType'|'ownerId'>):Ret…
+     88| const unique=<T>(items:T[])=>[...new Set(items)];
+     89| function check(condition:unknown,message:string):asserts condition {if…
+       |                                                                                         ^
+     90| function text(value:unknown,label:string):asserts value is string {che…
+     91| function date(value:unknown,label:string):void {text(value,label);chec…
+ ❯ text scripts/lib/memory-retrieval-evaluation.ts:90:68
+ ❯ date scripts/lib/memory-retrieval-evaluation.ts:91:49
+ ❯ validateRetrievalDataset scripts/lib/memory-retrieval-evaluation.ts:206:124
+ ❯ Module.selectLexicalCalibration scripts/lib/memory-retrieval-evaluation.ts:319:3
+ ❯ tests/memory-retrieval-calibration-split.test.ts:56:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/7]⎯
+
+ FAIL  tests/memory-retrieval-calibration-split.test.ts > candidate metrics reflect the actual SQL eligibility and direct-key pipeline
+Error: detail effectiveAt must be nonempty text
+ ❯ check scripts/lib/memory-retrieval-evaluation.ts:89:89
+     87| const ownerKey=(owner:Pick<MemoryCandidate,'ownerType'|'ownerId'>):Ret…
+     88| const unique=<T>(items:T[])=>[...new Set(items)];
+     89| function check(condition:unknown,message:string):asserts condition {if…
+       |                                                                                         ^
+     90| function text(value:unknown,label:string):asserts value is string {che…
+     91| function date(value:unknown,label:string):void {text(value,label);chec…
+ ❯ text scripts/lib/memory-retrieval-evaluation.ts:90:68
+ ❯ date scripts/lib/memory-retrieval-evaluation.ts:91:49
+ ❯ validateRetrievalDataset scripts/lib/memory-retrieval-evaluation.ts:206:124
+ ❯ Module.selectLexicalCalibration scripts/lib/memory-retrieval-evaluation.ts:319:3
+ ❯ tests/memory-retrieval-calibration-split.test.ts:62:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/7]⎯
+
+ FAIL  tests/memory-retrieval-calibration-split.test.ts > CLI freezes candidate before paired holdout, records use, reports differences and refuses reuse
+AssertionError: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ tests/memory-retrieval-calibration-split.test.ts:97:89
+     95|   writeFileSync(dataset,JSON.stringify(cliDataset()));
+     96|   const args=['--dataset',dataset,'--report',report,'--candidate',cand…
+     97|   const first=run(args);expect(first.stderr).not.toMatch(/Error:/);exp…
+       |                                                                                         ^
+     98|   const output=JSON.parse(readFileSync(report,'utf8')),frozen=readFile…
+     99|   expect(output.candidateHash).toBe(hash(frozen));expect(output.datase…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/7]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  7 failed | 2 passed (9)
+   Start at  10:16:17
+   Duration  2.01s (tests 79%, transform 13%, import 8%)
+

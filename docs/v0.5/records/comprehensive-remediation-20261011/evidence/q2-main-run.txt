@@ -1,0 +1,13 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run tsx scripts/evaluate-memory-retrieval.ts --dataset tests/fixtures/memory-retrieval-v2.json --report docs/v0.5/records/comprehensive-remediation-20261011/evidence/q2-report.json --select-lexical --candidate docs/v0.5/records/comprehensive-remediation-20261011/evidence/q2-candidate.json --splits holdout
+{"candidate":"D:\\HDSI-remake\\docs\\v0.5\\records\\comprehensive-remediation-20261011\\evidence\\q2-candidate.json","candidateHash":"1e6af4bd1a422dd43ca8905bee13f7d0c81f346eb9583976a06a56fb687162be","datasetHash":"8abac8950e18ab379effe7231b04d5debebd654f6a758892a898c52caeae1366","calibration":{"lexical":{"fact":1,"experience":0.8125},"semantic":null}}
+{
+  "report": "D:\\HDSI-remake\\docs\\v0.5\\records\\comprehensive-remediation-20261011\\evidence\\q2-report.json",
+  "datasetHash": "8abac8950e18ab379effe7231b04d5debebd654f6a758892a898c52caeae1366",
+  "candidateHash": "1e6af4bd1a422dd43ca8905bee13f7d0c81f346eb9583976a06a56fb687162be",
+  "recommendation": "keep_current",
+  "reasons": [
+    "fact:precision_below_0.95"
+  ],
+  "recallGain": 0.09999999999999998
+}

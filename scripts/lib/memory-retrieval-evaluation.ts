@@ -5,10 +5,11 @@ import { initialCharacter } from '../../src/config';
 import { ChatEpisodes } from '../../src/dialogue/chat-episodes';
 import { DialogueStore } from '../../src/dialogue/store';
 import { assertFullWindow } from '../../src/dialogue/active-consistency';
-import { MemoryStore, type CandidateReadOptions } from '../../src/memory/store';
+import { MemoryStore, memoryIndexText, type CandidateReadOptions } from '../../src/memory/store';
+import { lexicalCoverage } from '../../src/memory/lexical';
 import { MemoryIndex } from '../../src/memory/index';
 import { ContextBuilder } from '../../src/memory/context';
-import { MemoryRetrieval, makeRetrievalRequest, resolveLookupRequest, type RetrievalCalibration } from '../../src/memory/retrieval';
+import { MemoryRetrieval, makeRetrievalRequest, resolveLookupRequest, defaultCalibration, type RetrievalCalibration } from '../../src/memory/retrieval';
 import type { MemoryCandidate, RetrievalRequest, RetrievalPermissions } from '../../src/memory/types';
 import type { Message, TurnRecord, DetailHistory } from '../../src/types';
 import { stageInput } from '../../src/model/context-views';
@@ -69,6 +70,14 @@ export interface FrozenRetrievalCandidate {
   calibration:RetrievalCalibration;
   selection:{datasetHash:string; split:'calibration'; [field:string]:unknown};
   [field:string]:unknown;
+}
+export interface LexicalSelection {
+  datasetHash:string; split:'calibration';
+  groups:Record<RetrievalGroup,{
+    baseline:EvaluationMetrics;
+    candidates:Array<{threshold:number;metrics:EvaluationMetrics;eligible:boolean;reasons:string[]}>;
+    selectedThreshold:number;
+  }>;
 }
 
 const splits:RetrievalSplit[]=['development','calibration','holdout'];
@@ -301,4 +310,78 @@ export async function evaluateRetrievalDataset(dataset:RetrievalDatasetV2,calibr
     bySplit:Object.fromEntries(options.splits.map(s=>[s,evaluationMetrics(results.filter(r=>r.split===s))])),
     alwaysInclude:{queryCount:results.filter(r=>r.alwaysIncludeOwnerKeys.length>0).length,injections:results.reduce((n,r)=>n+r.alwaysIncludeOwnerKeys.length,0),ownerKeys:unique(results.flatMap(r=>r.alwaysIncludeOwnerKeys)).sort()},
     negativeFalseHits:metrics.negativeFalseHits,materializedVectorBytes:results.reduce((n,r)=>n+r.materializedVectorBytes,0),remoteRequests:results.reduce((n,r)=>n+r.remoteRequests,0)};
+}
+
+/** Hash binds the complete frozen dataset; selection reads labels from calibration only. */
+export async function selectLexicalCalibration(dataset:RetrievalDatasetV2):Promise<{calibration:RetrievalCalibration;selection:LexicalSelection}> {
+  const families=dataset.families.filter(f=>f.split==='calibration'),ids=new Set(families.map(f=>f.id));
+  const subset={...dataset,families,queries:dataset.queries.filter(q=>ids.has(q.familyId))};
+  validateRetrievalDataset(subset,{benchmarkShape:false});
+  const calibration:RetrievalCalibration={lexical:{fact:1,experience:1},semantic:null};
+  const selection:LexicalSelection={datasetHash:retrievalDatasetHash(dataset),split:'calibration',groups:{} as LexicalSelection['groups']};
+  for(const group of groups){
+    const groupFamilies=families.filter(f=>f.group===group),groupIds=new Set(groupFamilies.map(f=>f.id));
+    const samples={...subset,families:groupFamilies,queries:subset.queries.filter(q=>groupIds.has(q.familyId))};
+    const baseline=(await evaluateRetrievalDataset(samples,defaultCalibration,{splits:['calibration']})).metrics;
+    const thresholds=new Set([1]);
+    for(const query of samples.queries){
+      const family=groupFamilies.find(f=>f.id===query.familyId)!;
+      for(const row of ownerClosure(family,query.candidateOwnerKeys)){
+        if((row.ownerType==='detail'?'fact':'experience')!==group)continue;
+        const content=row.kind==='learned'?memoryIndexText(row):`${row.content} ${row.topics.join(' ')} ${row.feelingSummary} ${row.key??''} ${row.aliases?.join(' ')??''}`;
+        const score=lexicalCoverage(query.text,content);if(score>0)thresholds.add(score);
+      }
+    }
+    const candidates:LexicalSelection['groups']['fact']['candidates']=[];
+    for(const threshold of [...thresholds].sort((a,b)=>b-a)){
+      const trial:RetrievalCalibration={lexical:{fact:1,experience:1,[group]:threshold},semantic:null};
+      const metrics=threshold===1?baseline:(await evaluateRetrievalDataset(samples,trial,{splits:['calibration']})).metrics;
+      const reasons:string[]=[];
+      if(metrics.precision===null||metrics.recall===null||metrics.F1===null)reasons.push('undefined_candidate_metrics');
+      if(metrics.precision!==null&&metrics.precision<0.95)reasons.push('precision_below_0.95');
+      if(metrics.negativeFalseHits>baseline.negativeFalseHits)reasons.push('negative_false_hits_increased');
+      candidates.push({threshold,metrics,eligible:reasons.length===0,reasons});
+    }
+    const eligible=candidates.filter(c=>c.eligible).sort((a,b)=>b.metrics.F1!-a.metrics.F1!||b.metrics.precision!-a.metrics.precision!||b.threshold-a.threshold);
+    calibration.lexical[group]=eligible[0]?.threshold??1;
+    selection.groups[group]={baseline,candidates,selectedThreshold:calibration.lexical[group]};
+  }
+  return {calibration,selection};
+}
+
+type RecommendationInput=Pick<RetrievalEvaluationReport,'metrics'|'groups'>;
+export function recommendLexicalCandidate(baseline:RecommendationInput,candidate:RecommendationInput):{recommendation:'recommend_candidate'|'keep_current';reasons:string[];recallGain:number|null} {
+  const reasons:string[]=[];
+  for(const group of groups){
+    const b=baseline.groups[group],c=candidate.groups[group];
+    if(c.precision===null||c.recall===null||c.F1===null)reasons.push(`${group}:undefined_candidate_metrics`);
+    if(c.precision!==null&&c.precision<0.95)reasons.push(`${group}:precision_below_0.95`);
+    if(b.precision!==null&&c.precision!==null&&c.precision<b.precision)reasons.push(`${group}:precision_regressed`);
+    if(c.negativeFalseHits>b.negativeFalseHits)reasons.push(`${group}:negative_false_hits_increased`);
+  }
+  if(candidate.metrics.precision===null||candidate.metrics.recall===null||candidate.metrics.F1===null)reasons.push('undefined_candidate_metrics');
+  if(candidate.metrics.negativeFalseHits>baseline.metrics.negativeFalseHits)reasons.push('negative_false_hits_increased');
+  const recallGain=baseline.metrics.recall===null||candidate.metrics.recall===null?null:candidate.metrics.recall-baseline.metrics.recall;
+  if(recallGain===null)reasons.push('undefined_recall_gain');
+  else if(recallGain+1e-12<0.10)reasons.push('recall_gain_below_0.10');
+  return {recommendation:reasons.length?'keep_current':'recommend_candidate',reasons,recallGain};
+}
+
+/** Caller must persist the frozen candidate and claim holdout use before entering this function. */
+export async function evaluatePairedHoldout(dataset:RetrievalDatasetV2,bytes:string|Buffer,candidateHash:string) {
+  const datasetHash=retrievalDatasetHash(dataset),frozen=validateFrozenCandidate(bytes,candidateHash,datasetHash);
+  check(frozen.calibration.semantic===null,'lexical candidate semantic must be null');
+  const baseline=await evaluateRetrievalDataset(dataset,defaultCalibration,{splits:['holdout']});
+  const candidate=await evaluateRetrievalDataset(dataset,frozen.calibration,{splits:['holdout']});
+  const queryDifferences=baseline.queries.map((before,i)=>{
+    const after=candidate.queries[i];
+    check(before.id===after.id&&JSON.stringify(before.request)===JSON.stringify(after.request)&&JSON.stringify(before.seededOwnerKeys)===JSON.stringify(after.seededOwnerKeys),'paired evaluation seed/request mismatch');
+    check(JSON.stringify(before.alwaysIncludeOwnerKeys)===JSON.stringify(after.alwaysIncludeOwnerKeys),'paired alwaysInclude mismatch');
+    return {id:before.id,familyId:before.familyId,group:before.group,
+      addedOwnerKeys:after.actualOwnerKeys.filter(k=>!before.actualOwnerKeys.includes(k)),removedOwnerKeys:before.actualOwnerKeys.filter(k=>!after.actualOwnerKeys.includes(k)),
+      baseline:{TP:before.TP,FP:before.FP,FN:before.FN,negativeFalseHit:before.negativeFalseHit},candidate:{TP:after.TP,FP:after.FP,FN:after.FN,negativeFalseHit:after.negativeFalseHit}};
+  });
+  return {version:2,datasetHash,candidateHash,splits:['holdout'] as const,calibration:frozen.calibration,selection:frozen.selection,
+    lexicalDifference:{fact:frozen.calibration.lexical.fact-1,experience:frozen.calibration.lexical.experience-1},
+    baseline,candidate,queryDifferences,...recommendLexicalCandidate(baseline,candidate)};
 }

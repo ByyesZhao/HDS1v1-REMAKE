@@ -1,0 +1,2 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run tsc --ignoreConfig --noEmit --target ES2022 --module Node16 --moduleResolution Node16 --strict --esModuleInterop --skipLibCheck --types node --ignoreDeprecations 6.0 tests/memory-retrieval-evaluation.test.ts tests/memory-retrieval-calibration-split.test.ts scripts/lib/memory-retrieval-evaluation.ts scripts/evaluate-memory-retrieval.ts

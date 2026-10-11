@@ -193,7 +193,7 @@ it('validates frozen candidate against exact candidate bytes and dataset hash',(
   expect(()=>validateFrozenCandidate(bytes,hash,'0'.repeat(64))).toThrow(/dataset hash/);
 });
 
-it('CLI requires explicit paths and refuses Q1 holdout before writing a report',()=>{
+it('CLI requires explicit paths and refuses unfrozen holdout before writing a report',()=>{
   const dir=mkdtempSync(join(tmpdir(),'q1-cli-')),report=join(dir,'report.json');
   const run=(args:string[])=>spawnSync(process.execPath,['--import','tsx',resolve('scripts/evaluate-memory-retrieval.ts'),...args],{encoding:'utf8'});
   expect(run([]).status).not.toBe(0);

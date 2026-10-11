@@ -1,0 +1,155 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/memory-retrieval-calibration-split.test.ts --reporter=verbose
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ × tests/memory-retrieval-calibration-split.test.ts > holdout_labels_cannot_change_selected_threshold 16ms
+   → selectLexicalCalibration is not a function
+ × tests/memory-retrieval-calibration-split.test.ts > precision_constraint_beats_recall 3ms
+   → selectLexicalCalibration is not a function
+ × tests/memory-retrieval-calibration-split.test.ts > ties_choose_higher_threshold 3ms
+   → selectLexicalCalibration is not a function
+ × tests/memory-retrieval-calibration-split.test.ts > no_candidate_keeps_baseline 2ms
+   → selectLexicalCalibration is not a function
+ × tests/memory-retrieval-calibration-split.test.ts > new negative false hits disqualify an otherwise precise candidate 2ms
+   → selectLexicalCalibration is not a function
+ × tests/memory-retrieval-calibration-split.test.ts > candidate metrics reflect the actual SQL eligibility and direct-key pipeline 2ms
+   → selectLexicalCalibration is not a function
+ × tests/memory-retrieval-calibration-split.test.ts > recommendation requires both group precision, nonregression, ten recall points and defined candidate metrics 0ms
+   → recommendLexicalCandidate is not a function
+ × tests/memory-retrieval-calibration-split.test.ts > CLI freezes candidate before paired holdout, records use, reports differences and refuses reuse 444ms
+   → expected 1 to be +0 // Object.is equality
+ × tests/memory-retrieval-calibration-split.test.ts > CLI rejects output aliases before reading or changing inputs 295ms
+   → expected 'invalid argument --select-lexical\n' to match /overwrite|alias/
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 9 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/memory-retrieval-calibration-split.test.ts > holdout_labels_cannot_change_selected_threshold
+TypeError: selectLexicalCalibration is not a function
+ ❯ tests/memory-retrieval-calibration-split.test.ts:29:32
+     27| it('holdout_labels_cannot_change_selected_threshold',async()=>{
+     28|   const d=merge(sample(),sample('experience'),sample('fact','holdout',…
+     29|   const first=await evaluation.selectLexicalCalibration(d);
+       |                                ^
+     30|   d.queries.find(q=>q.familyId==='hidden')!.expectedOwnerKeys=['detail…
+     31|   const second=await evaluation.selectLexicalCalibration(d);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/9]⎯
+
+ FAIL  tests/memory-retrieval-calibration-split.test.ts > precision_constraint_beats_recall
+TypeError: selectLexicalCalibration is not a function
+ ❯ tests/memory-retrieval-calibration-split.test.ts:38:33
+     36| it('precision_constraint_beats_recall',async()=>{
+     37|   const d=sample();d.families[0].owners[1].content='alpha beta imposto…
+     38|   const result=await evaluation.selectLexicalCalibration(d),low=result…
+       |                                 ^
+     39|   expect(low.metrics).toMatchObject({TP:1,FP:1,FN:0,precision:0.5,reca…
+     40|   expect(result.calibration.lexical.fact).toBe(1);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/9]⎯
+
+ FAIL  tests/memory-retrieval-calibration-split.test.ts > ties_choose_higher_threshold
+TypeError: selectLexicalCalibration is not a function
+ ❯ tests/memory-retrieval-calibration-split.test.ts:44:33
+     42| it('ties_choose_higher_threshold',async()=>{
+     43|   const d=sample();d.queries[0].text='key-fact-a alpha';
+     44|   const result=await evaluation.selectLexicalCalibration(d);
+       |                                 ^
+     45|   expect(result.selection.groups.fact.candidates.some(c=>c.threshold<1…
+     46|   expect(result.calibration.lexical.fact).toBe(1);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/9]⎯
+
+ FAIL  tests/memory-retrieval-calibration-split.test.ts > no_candidate_keeps_baseline
+TypeError: selectLexicalCalibration is not a function
+ ❯ tests/memory-retrieval-calibration-split.test.ts:50:33
+     48| it('no_candidate_keeps_baseline',async()=>{
+     49|   const d=sample();d.queries=d.queries.filter(q=>q.category==='negativ…
+     50|   const result=await evaluation.selectLexicalCalibration(d);
+       |                                 ^
+     51|   expect(result.calibration).toEqual(defaultCalibration);
+     52|   expect(result.selection.groups.fact.candidates[0]).toMatchObject({th…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/9]⎯
+
+ FAIL  tests/memory-retrieval-calibration-split.test.ts > new negative false hits disqualify an otherwise precise candidate
+TypeError: selectLexicalCalibration is not a function
+ ❯ tests/memory-retrieval-calibration-split.test.ts:56:33
+     54| it('new negative false hits disqualify an otherwise precise candidate'…
+     55|   const d=sample();d.queries=Array.from({length:30},(_,i)=>({...d.quer…
+     56|   const result=await evaluation.selectLexicalCalibration(d),low=result…
+       |                                 ^
+     57|   expect(low.metrics.precision).toBeGreaterThan(0.95);expect(low.metri…
+     58|   expect(result.calibration.lexical.fact).toBe(2/3);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/9]⎯
+
+ FAIL  tests/memory-retrieval-calibration-split.test.ts > candidate metrics reflect the actual SQL eligibility and direct-key pipeline
+TypeError: selectLexicalCalibration is not a function
+ ❯ tests/memory-retrieval-calibration-split.test.ts:62:33
+     60| it('candidate metrics reflect the actual SQL eligibility and direct-ke…
+     61|   const d=sample();d.families[0].owners[1].content='alpha beta';d.fami…
+     62|   const result=await evaluation.selectLexicalCalibration(d),report=awa…
+       |                                 ^
+     63|   expect(result.calibration.lexical.fact).toBe(2/3);expect(report.metr…
+     64|   expect(result.selection.groups.fact.candidates.find(c=>c.threshold==…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/9]⎯
+
+ FAIL  tests/memory-retrieval-calibration-split.test.ts > recommendation requires both group precision, nonregression, ten recall points and defined candidate metrics
+TypeError: recommendLexicalCandidate is not a function
+ ❯ tests/memory-retrieval-calibration-split.test.ts:71:21
+     69|   const base={metrics:metrics(1,0.5),groups:{fact:metrics(1,0.5),exper…
+     70|   const good={metrics:metrics(1,0.6),groups:{fact:metrics(1,0.6),exper…
+     71|   expect(evaluation.recommendLexicalCandidate(base,good).recommendatio…
+       |                     ^
+     72|   for(const bad of [
+     73|     {...good,groups:{...good.groups,experience:metrics(0.94,1)}},
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/9]⎯
+
+ FAIL  tests/memory-retrieval-calibration-split.test.ts > CLI freezes candidate before paired holdout, records use, reports differences and refuses reuse
+AssertionError: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ tests/memory-retrieval-calibration-split.test.ts:97:89
+     95|   writeFileSync(dataset,JSON.stringify(cliDataset()));
+     96|   const args=['--dataset',dataset,'--report',report,'--candidate',cand…
+     97|   const first=run(args);expect(first.stderr).not.toMatch(/Error:/);exp…
+       |                                                                                         ^
+     98|   const output=JSON.parse(readFileSync(report,'utf8')),frozen=readFile…
+     99|   expect(output.candidateHash).toBe(hash(frozen));expect(output.datase…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/9]⎯
+
+ FAIL  tests/memory-retrieval-calibration-split.test.ts > CLI rejects output aliases before reading or changing inputs
+AssertionError: expected 'invalid argument --select-lexical\n' to match /overwrite|alias/
+
+- Expected:
+/overwrite|alias/
+
++ Received:
+"invalid argument --select-lexical
+"
+
+ ❯ tests/memory-retrieval-calibration-split.test.ts:109:61
+    107|   for(const [candidate,report] of [[dataset,join(dir,'report.json')],[…
+    108|     const result=run(['--dataset',dataset,'--candidate',candidate,'--r…
+    109|     expect(result.status).not.toBe(0);expect(result.stderr).toMatch(/o…
+       |                                                             ^
+    110|   }
+    111| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/9]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  9 failed (9)
+   Start at  10:15:33
+   Duration  1.31s (tests 66%, transform 20%, import 13%)
+

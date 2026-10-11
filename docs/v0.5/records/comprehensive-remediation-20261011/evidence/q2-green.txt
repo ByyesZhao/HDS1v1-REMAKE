@@ -1,0 +1,20 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/memory-retrieval-calibration-split.test.ts --reporter=verbose
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ✓ tests/memory-retrieval-calibration-split.test.ts > holdout_labels_cannot_change_selected_threshold 82ms
+ ✓ tests/memory-retrieval-calibration-split.test.ts > precision_constraint_beats_recall 19ms
+ ✓ tests/memory-retrieval-calibration-split.test.ts > ties_choose_higher_threshold 18ms
+ ✓ tests/memory-retrieval-calibration-split.test.ts > no_candidate_keeps_baseline 6ms
+ ✓ tests/memory-retrieval-calibration-split.test.ts > new negative false hits disqualify an otherwise precise candidate 349ms
+ ✓ tests/memory-retrieval-calibration-split.test.ts > candidate metrics reflect the actual SQL eligibility and direct-key pipeline 25ms
+ ✓ tests/memory-retrieval-calibration-split.test.ts > recommendation requires both group precision, nonregression, ten recall points and defined candidate metrics 0ms
+ ✓ tests/memory-retrieval-calibration-split.test.ts > CLI freezes candidate before paired holdout, records use, reports differences and refuses reuse 3573ms
+ ✓ tests/memory-retrieval-calibration-split.test.ts > CLI rejects output aliases before reading or changing inputs 904ms
+
+ Test Files  1 passed (1)
+      Tests  9 passed (9)
+   Start at  10:16:51
+   Duration  5.49s (tests 93%, transform 4%, import 3%)
+

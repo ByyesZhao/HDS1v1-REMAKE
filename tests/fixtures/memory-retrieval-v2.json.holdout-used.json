@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "datasetHash": "8abac8950e18ab379effe7231b04d5debebd654f6a758892a898c52caeae1366",
+  "candidateHash": "1e6af4bd1a422dd43ca8905bee13f7d0c81f346eb9583976a06a56fb687162be",
+  "candidatePath": "D:\\HDSI-remake\\docs\\v0.5\\records\\comprehensive-remediation-20261011\\evidence\\q2-candidate.json",
+  "reportPath": "D:\\HDSI-remake\\docs\\v0.5\\records\\comprehensive-remediation-20261011\\evidence\\q2-report.json",
+  "holdoutFamilyIds": [
+    "fact-25",
+    "fact-26",
+    "fact-27",
+    "fact-28",
+    "fact-29",
+    "fact-30",
+    "experience-25",
+    "experience-26",
+    "experience-27",
+    "experience-28",
+    "experience-29",
+    "experience-30"
+  ],
+  "startedAt": "2026-10-11T02:24:11.089Z",
+  "status": "completed",
+  "completedAt": "2026-10-11T02:24:11.941Z"
+}
