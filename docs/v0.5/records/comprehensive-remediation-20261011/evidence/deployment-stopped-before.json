@@ -1,0 +1,22 @@
+{
+  "at": "2026-10-11T10:42:52.9858497+08:00",
+  "mode": "stopped-before",
+  "descriptorPresent": false,
+  "identity": {
+    "workerId": 21708,
+    "parentId": 4236,
+    "name": "node.exe",
+    "started": "2026-10-11T08:53:39.91053+08:00",
+    "stopPort": 62168
+  },
+  "processes": [],
+  "listeners": [
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 3001,
+      "OwningProcess": 26384
+    }
+  ],
+  "stopped": true,
+  "snowLumaUntouched": true
+}

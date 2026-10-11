@@ -18,6 +18,7 @@
     "docs/v0.5/records/comprehensive-remediation-20261011/PERFORMANCE_COMPARISON.md",
     "docs/v0.5/records/comprehensive-remediation-20261011/README.md",
     "docs/v0.5/records/comprehensive-remediation-20261011/RETRIEVAL_EVALUATION.md",
+    "docs/v0.5/records/comprehensive-remediation-20261011/reviews/D1-final.md",
     "docs/v0.5/records/comprehensive-remediation-20261011/reviews/DELIVERY-readiness.md",
     "docs/v0.5/records/comprehensive-remediation-20261011/reviews/FINAL.md",
     "docs/v0.5/records/comprehensive-remediation-20261011/reviews/M-D.md",
@@ -49,9 +50,8 @@
     "docs/v0.5/subsystems/REMAKE_V0.5_MEMORY.md",
     "docs/v0.5/subsystems/REMAKE_V0.5_RECOVERY.md",
     "docs/v0.5/subsystems/REMAKE_V0.5_SCHEDULING.md",
-    "docs/v0.5/subsystems/REMAKE_V0.5_WEB_SEARCH.md",
-    "docs/v0.5/records/comprehensive-remediation-20261011/reviews/D1-final.md"
+    "docs/v0.5/subsystems/REMAKE_V0.5_WEB_SEARCH.md"
   ],
-  "linksChecked": 406,
+  "linksChecked": 415,
   "errors": []
 }

@@ -1,0 +1,78 @@
+{
+  "at": "2026-10-11T02:43:28.008Z",
+  "mainDatabaseAndConfigsUnchanged": true,
+  "files": [
+    {
+      "file": "runtime/data/hdsi-remake.sqlite",
+      "before": {
+        "file": "runtime/data/hdsi-remake.sqlite",
+        "exists": true,
+        "bytes": 9949184,
+        "sha256": "d48035b7719d1248478e987a4bf625d1190a94f3f8fe0ef17e7b24717972d71e"
+      },
+      "after": {
+        "exists": true,
+        "bytes": 9949184,
+        "sha256": "d48035b7719d1248478e987a4bf625d1190a94f3f8fe0ef17e7b24717972d71e"
+      },
+      "identical": true
+    },
+    {
+      "file": "runtime/data/hdsi-remake.sqlite-wal",
+      "before": {
+        "file": "runtime/data/hdsi-remake.sqlite-wal",
+        "exists": false
+      },
+      "after": {
+        "exists": true,
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "identical": false
+    },
+    {
+      "file": "runtime/data/hdsi-remake.sqlite-shm",
+      "before": {
+        "file": "runtime/data/hdsi-remake.sqlite-shm",
+        "exists": false
+      },
+      "after": {
+        "exists": true,
+        "bytes": 32768,
+        "sha256": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb"
+      },
+      "identical": false
+    },
+    {
+      "file": "config.local.json",
+      "before": {
+        "file": "config.local.json",
+        "exists": true,
+        "bytes": 10452,
+        "sha256": "358b1d9a4cf7d1341550f25e29532edc96df1c7b989f2441eb38747e221c22f7"
+      },
+      "after": {
+        "exists": true,
+        "bytes": 10452,
+        "sha256": "358b1d9a4cf7d1341550f25e29532edc96df1c7b989f2441eb38747e221c22f7"
+      },
+      "identical": true
+    },
+    {
+      "file": "runtime/koishi.yml",
+      "before": {
+        "file": "runtime/koishi.yml",
+        "exists": true,
+        "bytes": 649,
+        "sha256": "9c9d932103879723b8bf44e78f34174394413379fd80c92aaefa3d48f141f019"
+      },
+      "after": {
+        "exists": true,
+        "bytes": 649,
+        "sha256": "9c9d932103879723b8bf44e78f34174394413379fd80c92aaefa3d48f141f019"
+      },
+      "identical": true
+    }
+  ],
+  "qualification": "Read-only SQLite may create or change WAL/SHM reader helpers; no sidecars were deleted."
+}

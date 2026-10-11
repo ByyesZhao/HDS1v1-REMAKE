@@ -1,0 +1,9 @@
+{
+  "mode": "dry-run",
+  "database": "D:\\HDSI-remake\\runtime\\data\\hdsi-remake.sqlite",
+  "indexJobs": 0,
+  "maintenanceJobs": 0,
+  "postJobs": 0,
+  "webSessions": 0,
+  "environmentSteps": 8
+}

@@ -1,0 +1,36 @@
+{
+  "at": "2026-10-11T02:42:54.666Z",
+  "backupPath": "runtime/archive/batches/comprehensive-remediation-2026-10-11T02-42-54-444Z",
+  "sourceHead": "3abbc31b56ff32dd24e0fe63c772e3365d55b2c0",
+  "libFiles": 228,
+  "libManifestSha256": "6df31aa6972eb2243011ee142d4549ad04281e8cf27044adfd23875f564c9a1f",
+  "copiesVerified": true,
+  "files": [
+    {
+      "file": "runtime/data/hdsi-remake.sqlite",
+      "exists": true,
+      "bytes": 9949184,
+      "sha256": "d48035b7719d1248478e987a4bf625d1190a94f3f8fe0ef17e7b24717972d71e"
+    },
+    {
+      "file": "runtime/data/hdsi-remake.sqlite-wal",
+      "exists": false
+    },
+    {
+      "file": "runtime/data/hdsi-remake.sqlite-shm",
+      "exists": false
+    },
+    {
+      "file": "config.local.json",
+      "exists": true,
+      "bytes": 10452,
+      "sha256": "358b1d9a4cf7d1341550f25e29532edc96df1c7b989f2441eb38747e221c22f7"
+    },
+    {
+      "file": "runtime/koishi.yml",
+      "exists": true,
+      "bytes": 649,
+      "sha256": "9c9d932103879723b8bf44e78f34174394413379fd80c92aaefa3d48f141f019"
+    }
+  ]
+}

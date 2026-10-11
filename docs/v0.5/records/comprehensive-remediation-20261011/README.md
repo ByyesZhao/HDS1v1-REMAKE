@@ -1,6 +1,6 @@
 # 综合审核整改实施记录
 
-日期：2026-10-11。状态：**代码与整批工程验收通过，正式部署待执行**。最终服务状态与本地Git交付在部署后记录。
+日期：2026-10-11。状态：**实施、工程验收、独立复核、本地main集成及正式部署完成；HDSI保持停止。** 详细备份、兼容、未执行范围及手动启动见[交付](DELIVERY.md)。
 
 来源：[综合审核](../../reviews/comprehensive-audit-20261011/README.md)与[细化实施方案](../../plans/comprehensive-remediation-20261011/README.md)。审核源码基线`ce7e88e`，方案保存提交`9c20a97`；实施分支`codex/comprehensive-remediation-20261011`。
 

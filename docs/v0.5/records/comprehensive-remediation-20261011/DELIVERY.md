@@ -1,6 +1,6 @@
 # 综合审核整改交付
 
-日期：2026-10-11。当前阶段：**离线代码、专项复核、整分支复核与工程验收完成，部署尚待执行**。用户已授权本地Git交付及安全停止后部署，最终由用户手动启动。
+日期：2026-10-11。状态：**实施、独立复核、本地Git集成、正式构建部署及只读检查完成；HDSI保持停止，等待用户手动启动。**
 
 ## 实现与效果
 
@@ -32,7 +32,13 @@
 
 副本[回退演练](evidence/rollback-drill.json)已证实：旧构建读取新网页引用失败；恢复匹配的旧数据库副本与旧构建后，完整输入、材料和计数一致。因此实际回退须停止服务并恢复配套旧构建、完整DB／WAL／SHM文件组及匹配配置，不能只切回Git代码，且会放弃备份后的业务。
 
-正式停止、备份、构建、只读检查及最终进程状态待执行后补入本节。当前未运行正式bulk apply、压缩或VACUUM。实现期间只改源码与合成数据，正式运行的旧lib保持到安全停止之后再替换。
+2026-10-11 10:42安全停止成功，原HDSI父子进程、5141及62168端口退出；SnowLuma的3001保持。完整旧lib（228文件）、正式主库及配置已复制到私有目录 `runtime/archive/batches/comprehensive-remediation-2026-10-11T02-42-54-444Z`，逐文件hash核对通过；停止后WAL／SHM原本不存在，备份包含全部实际存在文件，见[备份清单](evidence/deployment-backup.json)。
+
+整改分支快进合入本地main至 `3abbc31`，重新构建成功。全部246个部署产物与已通过测试的隔离构建逐字节相同；runtime实际解析到根lib。[正式只读检查](evidence/deployment-readonly-check.txt)退出0，67项图库就绪且网络被禁止。正式数据库主文件及两份配置hash保持；只读SQLite检查创建0字节WAL和32768字节SHM，未删除或伪称这些辅助文件也相同，见[指纹比较](evidence/deployment-postcheck.json)。
+
+[网页dry-run](evidence/deployment-web-dry-run.json)旧session／operation均为0；[载荷dry-run](evidence/deployment-payload-dry-run.json)默认四类残余均0，明确启用environment检查后为8。这8条历史终态载荷保留，属于可选存量优化，非本次构建兼容所需；未运行正式apply、压缩或VACUUM。新代码将在后续业务中按新协议写入，不能把部署称为历史全库迁移。
+
+10:43:46再次确认HDSI停止描述符不存在、原进程和端口退出，SnowLuma未受影响；[最终状态](evidence/deployment-stopped-final.json)、[部署汇总](evidence/deployment-summary.json)与[逐项关闭矩阵](evidence/closure-matrix.json)均保存。部署后的证据另有本地文档提交；未执行远端push。
 
 ## 未执行范围
 

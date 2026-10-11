@@ -1,0 +1,7 @@
+{
+  "mode": "dry-run",
+  "database": "D:\\HDSI-remake\\runtime\\data\\hdsi-remake.sqlite",
+  "legacySessions": 0,
+  "legacyOperations": 0,
+  "invalidReferences": []
+}

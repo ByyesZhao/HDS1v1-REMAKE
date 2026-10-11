@@ -1,0 +1,46 @@
+{
+  "status": "deployed_left_stopped",
+  "sourceCommit": "3abbc31b56ff32dd24e0fe63c772e3365d55b2c0",
+  "productCodeCommit": "d0a9963fd206a5d882d92c73914ee7f28ea9d316",
+  "branch": "main",
+  "localIntegration": "fast_forward",
+  "remotePush": "not_requested_not_performed",
+  "stopExitCode": 0,
+  "buildExitCode": 0,
+  "readonlyCheckExitCode": 0,
+  "noNetworkDuringCheck": true,
+  "stickersReady": 67,
+  "buildFilesIdenticalToTestedIsolatedBuild": 246,
+  "backupDirectory": "runtime/archive/batches/comprehensive-remediation-2026-10-11T02-42-54-444Z",
+  "backupVerified": true,
+  "mainDatabaseAndConfigsUnchanged": true,
+  "sqliteReaderHelpers": {
+    "walBytes": 0,
+    "shmBytes": 32768,
+    "createdByReadonlyInspection": true,
+    "deleted": false
+  },
+  "dryRuns": {
+    "web": {
+      "mode": "dry-run",
+      "database": "D:\\HDSI-remake\\runtime\\data\\hdsi-remake.sqlite",
+      "legacySessions": 0,
+      "legacyOperations": 0,
+      "invalidReferences": []
+    },
+    "payload": {
+      "mode": "dry-run",
+      "database": "D:\\HDSI-remake\\runtime\\data\\hdsi-remake.sqlite",
+      "indexJobs": 0,
+      "maintenanceJobs": 0,
+      "postJobs": 0,
+      "webSessions": 0,
+      "environmentSteps": 8
+    }
+  },
+  "formalApply": false,
+  "serviceState": "stopped",
+  "stateCheckedAt": "2026-10-11T10:43:46.8304261+08:00",
+  "snowLumaPreserved": true,
+  "userStartup": "start-hdsi.cmd"
+}

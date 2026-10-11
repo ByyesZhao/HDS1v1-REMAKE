@@ -1,14 +1,15 @@
 {
   "schemaVersion": 1,
   "date": "2026-10-11",
-  "status": "code_and_engineering_complete_deployment_pending",
+  "status": "delivered_locally_deployed_left_stopped",
   "sourceIdentity": {
     "auditBaseline": "ce7e88e9c8e4940ec17ae4b5dae2392fd6ddb57c",
     "preservedAuditAndPlanCommit": "9c20a97f632d9eaf5781973fefab95619eb7dc3a",
     "recordedImplementationHead": "d0a9963fd206a5d882d92c73914ee7f28ea9d316",
     "branch": "codex/comprehensive-remediation-20261011",
     "workspace": "D:/HDSI-remake",
-    "commitIdentitySource": "Root verified Git HEAD and exact final-gate source manifest; later documentation/deployment evidence commits contain no product changes."
+    "commitIdentitySource": "Root verified Git HEAD and exact final-gate source manifest; later documentation/deployment evidence commits contain no product changes.",
+    "deploymentSourceCommit": "3abbc31b56ff32dd24e0fe63c772e3365d55b2c0"
   },
   "references": {
     "audit": "docs/v0.5/reviews/comprehensive-audit-20261011/README.md",
@@ -37,7 +38,7 @@
       ],
       "implementationStatus": "implemented_and_reviewed",
       "verificationStatus": "targeted_and_final_integration_pass",
-      "deploymentStatus": "pending",
+      "deploymentStatus": "deployed_build_service_stopped",
       "testFiles": [
         "tests/task-projection.test.ts",
         "tests/appointment-update-host.test.ts",
@@ -72,7 +73,7 @@
       ],
       "implementationStatus": "implemented_and_reviewed",
       "verificationStatus": "targeted_and_final_integration_pass",
-      "deploymentStatus": "pending",
+      "deploymentStatus": "deployed_build_service_stopped",
       "testFiles": [
         "tests/web-content.test.ts",
         "tests/browser-web-integration.test.ts"
@@ -103,7 +104,7 @@
       ],
       "implementationStatus": "implemented_and_reviewed",
       "verificationStatus": "targeted_and_final_integration_pass",
-      "deploymentStatus": "pending",
+      "deploymentStatus": "deployed_build_service_stopped",
       "testFiles": [
         "tests/stickers-cli.test.ts",
         "tests/sticker-web-runtime.test.ts"
@@ -140,7 +141,7 @@
       ],
       "implementationStatus": "implemented_and_reviewed",
       "verificationStatus": "targeted_and_final_integration_pass",
-      "deploymentStatus": "pending",
+      "deploymentStatus": "deployed_build_service_stopped",
       "testFiles": [
         "tests/host-pause-selection.test.ts",
         "tests/reply-freshness-host.test.ts",
@@ -172,7 +173,7 @@
       ],
       "implementationStatus": "implemented_and_reviewed",
       "verificationStatus": "targeted_and_final_integration_pass",
-      "deploymentStatus": "pending",
+      "deploymentStatus": "deployed_build_service_stopped",
       "testFiles": [
         "tests/browser-page-extraction.test.ts",
         "tests/browser-visible-dom.test.ts"
@@ -206,7 +207,8 @@
       "commits": [
         "a8fb72d",
         "6253da0",
-        "edd7184"
+        "edd7184",
+        "3abbc31"
       ],
       "implementationStatus": "documentation_updated",
       "verificationStatus": "document_gate_pass",
@@ -247,7 +249,8 @@
         "D1"
       ],
       "commits": [
-        "a8fb72d"
+        "a8fb72d",
+        "3abbc31"
       ],
       "implementationStatus": "documentation_updated",
       "verificationStatus": "document_gate_pass",
@@ -282,7 +285,7 @@
       ],
       "implementationStatus": "implemented_and_reviewed",
       "verificationStatus": "targeted_and_final_integration_pass",
-      "deploymentStatus": "pending",
+      "deploymentStatus": "deployed_build_service_stopped",
       "testFiles": [
         "tests/task-queries.test.ts",
         "tests/scheduler-task-workset.test.ts",
@@ -320,7 +323,7 @@
       ],
       "implementationStatus": "implemented_and_reviewed",
       "verificationStatus": "targeted_and_final_integration_pass",
-      "deploymentStatus": "pending",
+      "deploymentStatus": "deployed_build_service_stopped",
       "testFiles": [
         "tests/environment-payload-compaction.test.ts",
         "tests/environment-async-recovery.test.ts",
@@ -369,7 +372,7 @@
       ],
       "implementationStatus": "implemented_and_reviewed",
       "verificationStatus": "targeted_and_final_integration_pass",
-      "deploymentStatus": "pending",
+      "deploymentStatus": "deployed_build_service_stopped",
       "testFiles": [
         "tests/web-light-state.test.ts",
         "tests/web-persistence-v2.test.ts",
@@ -422,7 +425,7 @@
       ],
       "implementationStatus": "implemented_and_reviewed",
       "verificationStatus": "targeted_and_final_integration_pass",
-      "deploymentStatus": "pending",
+      "deploymentStatus": "deployed_build_service_stopped",
       "testFiles": [
         "tests/incoming-media-asset-lease.test.ts",
         "tests/incoming-media-assets.test.ts",
@@ -461,7 +464,7 @@
       ],
       "implementationStatus": "implemented_and_reviewed",
       "verificationStatus": "targeted_and_final_integration_pass",
-      "deploymentStatus": "pending",
+      "deploymentStatus": "deployed_build_service_stopped",
       "testFiles": [
         "tests/web-owner-finalization.test.ts",
         "tests/environment-web-finalization.test.ts",
@@ -506,7 +509,7 @@
       ],
       "implementationStatus": "implemented_and_reviewed",
       "verificationStatus": "targeted_and_final_integration_pass",
-      "deploymentStatus": "pending",
+      "deploymentStatus": "deployed_build_service_stopped",
       "testFiles": [
         "tests/memory-policy-snapshot.test.ts",
         "tests/memory-policy-order.test.ts",
@@ -556,7 +559,7 @@
       ],
       "implementationStatus": "implemented_and_reviewed",
       "verificationStatus": "targeted_and_final_integration_pass",
-      "deploymentStatus": "pending",
+      "deploymentStatus": "deployed_build_service_stopped",
       "testFiles": [
         "tests/memory-retrieval-vector-work.test.ts",
         "tests/environment-retrieval-vector-snapshot.test.ts",
@@ -810,7 +813,7 @@
       }
     },
     "V4": {
-      "status": "delivery_and_deployment_pending",
+      "status": "complete",
       "branchIntegrationReview": {
         "status": "passed_scoped",
         "reviewEvidence": [
@@ -830,33 +833,44 @@
         "qualification": "合成已关闭数据库副本；不是正式库回退。"
       },
       "localGitIntegration": {
-        "status": "pending",
+        "status": "fast_forward_completed",
         "targetBranch": "main",
-        "integratedCommit": null,
-        "remotePush": "not_requested"
+        "integratedCommit": "3abbc31b56ff32dd24e0fe63c772e3365d55b2c0",
+        "remotePush": "not_requested_not_performed",
+        "qualification": "A following local documentation commit records final deployment evidence; product content is unchanged."
       },
-      "remaining": [
-        "本地Git最终集成",
-        "实际安全停止、配套备份、构建部署、只读检查",
-        "确认服务保持停止供用户手动启动"
-      ]
+      "remaining": []
     }
   },
   "deployment": {
-    "status": "pending",
+    "status": "deployed_left_stopped",
     "authorization": "User authorized plan implementation, local Git delivery, safe HDSI stop and redeployment if required, and requested manual startup after completion.",
-    "serviceState": "not_checked_by_matrix_author",
+    "serviceState": "stopped",
     "finalRequiredServiceState": "stopped_for_user_manual_start",
-    "deployedCommit": null,
-    "backupDirectory": null,
-    "backupEvidence": [],
-    "deploymentEvidence": [],
+    "deployedCommit": "3abbc31b56ff32dd24e0fe63c772e3365d55b2c0",
+    "backupDirectory": "runtime/archive/batches/comprehensive-remediation-2026-10-11T02-42-54-444Z",
+    "backupEvidence": [
+      "docs/v0.5/records/comprehensive-remediation-20261011/evidence/deployment-backup.json"
+    ],
+    "deploymentEvidence": [
+      "docs/v0.5/records/comprehensive-remediation-20261011/evidence/deployment-stop.txt",
+      "docs/v0.5/records/comprehensive-remediation-20261011/evidence/deployment-stopped-before.json",
+      "docs/v0.5/records/comprehensive-remediation-20261011/evidence/deployment-build.txt",
+      "docs/v0.5/records/comprehensive-remediation-20261011/evidence/deployment-readonly-check.txt",
+      "docs/v0.5/records/comprehensive-remediation-20261011/evidence/deployment-web-dry-run.json",
+      "docs/v0.5/records/comprehensive-remediation-20261011/evidence/deployment-payload-dry-run.json",
+      "docs/v0.5/records/comprehensive-remediation-20261011/evidence/deployment-postcheck.json",
+      "docs/v0.5/records/comprehensive-remediation-20261011/evidence/deployment-artifacts.json",
+      "docs/v0.5/records/comprehensive-remediation-20261011/evidence/deployment-stopped-final.json",
+      "docs/v0.5/records/comprehensive-remediation-20261011/evidence/deployment-summary.json"
+    ],
     "formalDataActions": {
-      "webReferenceMigration": "not_executed",
-      "environmentPayloadCompaction": "not_executed",
+      "webReferenceMigration": "not_needed_zero_legacy_refs",
+      "environmentPayloadCompaction": "not_executed_optional_8_residual_steps",
       "vacuum": "not_executed",
       "calibrationChange": "not_executed"
     },
-    "rollbackRequirement": "After new web v2 writes or terminal payload compaction, pair old code/build with its complete matching pre-deployment DB/WAL/SHM and configuration backup. Restoring backup discards later business changes."
+    "rollbackRequirement": "After new web v2 writes or terminal payload compaction, pair old code/build with its complete matching pre-deployment DB/WAL/SHM and configuration backup. Restoring backup discards later business changes.",
+    "historicalEnvironmentPayloadsLeftIntact": 8
   }
 }
