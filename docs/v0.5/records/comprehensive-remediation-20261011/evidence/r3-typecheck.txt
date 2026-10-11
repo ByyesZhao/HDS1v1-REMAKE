@@ -1,0 +1,4 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run tsc --noEmit
+scripts/check-task-scheduling.ts(71,21): error TS1470: The 'import.meta' meta-property is not allowed in files which will build into CommonJS output.
+tests/memory-capacity-work.test.ts(19,28): error TS18046: 'result' is of type 'unknown'.

@@ -1,0 +1,184 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/scheduler-task-workset.test.ts
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ❯ tests/scheduler-task-workset.test.ts (15 tests | 15 failed) 486ms
+   × idle H=0 P=0 only materializes pending once per public evaluation 17ms
+   × idle H=0 P=3 only materializes pending once per public evaluation 4ms
+   × idle H=1000 P=0 only materializes pending once per public evaluation 18ms
+   × idle H=1000 P=3 only materializes pending once per public evaluation 20ms
+   × idle H=10000 P=0 only materializes pending once per public evaluation 164ms
+   × idle H=10000 P=3 only materializes pending once per public evaluation 155ms
+   × deadline and due selection compare epochs and preserve ties in insertion order 5ms
+   × input and sleep keep foreground priority and task history is never read 5ms
+   × stash write invalidates its evaluation and subsequent deadlines see the new check 4ms
+   × shared refresh replaces stale scenes once and the evaluation sees the replacement 4ms
+   × quiet waiting reuses tasks and a write between public calls is visible 10ms
+   × waiting events-only evaluation does not refresh a shared clock early 5ms
+   × school notice and true Host dispatch preserve notification selection 19ms
+   × personal director receives all pending future appointments 33ms
+   × week input remains frozen while business basis independently detects appointment changes 22ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 15 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/scheduler-task-workset.test.ts > idle H=0 P=0 only materializes pending once per public evaluation
+ FAIL  tests/scheduler-task-workset.test.ts > idle H=0 P=3 only materializes pending once per public evaluation
+ FAIL  tests/scheduler-task-workset.test.ts > idle H=1000 P=0 only materializes pending once per public evaluation
+ FAIL  tests/scheduler-task-workset.test.ts > idle H=1000 P=3 only materializes pending once per public evaluation
+ FAIL  tests/scheduler-task-workset.test.ts > idle H=10000 P=0 only materializes pending once per public evaluation
+ FAIL  tests/scheduler-task-workset.test.ts > idle H=10000 P=3 only materializes pending once per public evaluation
+AssertionError: expected [ [ 'tasks' ], [ 'tasks' ] ] to have a length of +0 but got 2
+
+- Expected
++ Received
+
+- 0
++ 2
+
+ ❯ bounded tests/scheduler-task-workset.test.ts:16:114
+
+ ❯ tests/scheduler-task-workset.test.ts:20:47
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/15]⎯
+
+ FAIL  tests/scheduler-task-workset.test.ts > deadline and due selection compare epochs and preserve ties in insertion order
+AssertionError: expected [ [ 'tasks' ] ] to have a length of +0 but got 1
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ bounded tests/scheduler-task-workset.test.ts:16:114
+
+ ❯ tests/scheduler-task-workset.test.ts:26:156
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/15]⎯
+
+ FAIL  tests/scheduler-task-workset.test.ts > input and sleep keep foreground priority and task history is never read
+AssertionError: expected [ [ 'tasks' ] ] to have a length of +0 but got 1
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ bounded tests/scheduler-task-workset.test.ts:16:114
+
+ ❯ tests/scheduler-task-workset.test.ts:32:98
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/15]⎯
+
+ FAIL  tests/scheduler-task-workset.test.ts > stash write invalidates its evaluation and subsequent deadlines see the new check
+AssertionError: expected [ [ 'tasks' ], [ 'tasks' ], …(1) ] to have a length of +0 but got 3
+
+- Expected
++ Received
+
+- 0
++ 3
+
+ ❯ bounded tests/scheduler-task-workset.test.ts:16:114
+
+ ❯ tests/scheduler-task-workset.test.ts:39:96
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/15]⎯
+
+ FAIL  tests/scheduler-task-workset.test.ts > shared refresh replaces stale scenes once and the evaluation sees the replacement
+AssertionError: expected [ [ 'tasks' ] ] to have a length of +0 but got 1
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ bounded tests/scheduler-task-workset.test.ts:16:114
+
+ ❯ tests/scheduler-task-workset.test.ts:46:113
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/15]⎯
+
+ FAIL  tests/scheduler-task-workset.test.ts > quiet waiting reuses tasks and a write between public calls is visible
+AssertionError: expected [ [ 'tasks' ], [ 'tasks' ], …(1) ] to have a length of +0 but got 3
+
+- Expected
++ Received
+
+- 0
++ 3
+
+ ❯ bounded tests/scheduler-task-workset.test.ts:16:114
+
+ ❯ tests/scheduler-task-workset.test.ts:53:179
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/15]⎯
+
+ FAIL  tests/scheduler-task-workset.test.ts > waiting events-only evaluation does not refresh a shared clock early
+AssertionError: expected [ [ 'tasks' ], [ 'tasks' ], …(1) ] to have a length of +0 but got 3
+
+- Expected
++ Received
+
+- 0
++ 3
+
+ ❯ bounded tests/scheduler-task-workset.test.ts:16:114
+
+ ❯ tests/scheduler-task-workset.test.ts:58:298
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/15]⎯
+
+ FAIL  tests/scheduler-task-workset.test.ts > school notice and true Host dispatch preserve notification selection
+AssertionError: expected [ [ 'tasks' ] ] to have a length of +0 but got 1
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ bounded tests/scheduler-task-workset.test.ts:16:114
+
+ ❯ tests/scheduler-task-workset.test.ts:62:304
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/15]⎯
+
+ FAIL  tests/scheduler-task-workset.test.ts > personal director receives all pending future appointments
+AssertionError: expected [ [ 'tasks' ] ] to have a length of +0 but got 1
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ tests/scheduler-task-workset.test.ts:67:477
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/15]⎯
+
+ FAIL  tests/scheduler-task-workset.test.ts > week input remains frozen while business basis independently detects appointment changes
+AssertionError: expected [ [ 'tasks' ], [ 'tasks' ], …(1) ] to have a length of +0 but got 3
+
+- Expected
++ Received
+
+- 0
++ 3
+
+ ❯ bounded tests/scheduler-task-workset.test.ts:16:114
+
+ ❯ tests/scheduler-task-workset.test.ts:71:505
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/15]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  15 failed (15)
+   Start at  09:48:47
+   Duration  1.31s (tests 43%, transform 40%, import 16%)
+

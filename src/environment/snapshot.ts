@@ -32,7 +32,7 @@ export function environmentBusinessBasis(d:Dependencies,stage:EnvironmentStage):
  const owner=stage==='school_campus'?'campus':'group';
  const school=stage==='world'?{}:stage==='school_week'?{
  items:sorted(d.schoolStore.items()),instances:sorted(d.schoolStore.instances()),weeks:sorted(d.storage.all('school_weeks')),
- known:sorted(d.storage.all('school_knowledge')),appointments:sorted(d.storage.all('tasks').filter(t=>t.kind==='appointment'&&t.status==='pending')),
+ known:sorted(d.storage.all('school_knowledge')),appointments:sorted(d.storage.pendingTasks().filter(t=>t.kind==='appointment')),
  notices:sorted(d.schoolStore.notices()).map(noticeBasis)
  }:{plans:sorted(d.schoolStore.plans().filter(p=>p.owner===owner)),items:sorted(d.schoolStore.items().filter(i=>i.owner===owner)),...(stage==='school_group'?{progress:sorted(d.schoolStore.progress()),campusTiming:sorted(d.schoolStore.items().filter(i=>i.owner==='campus')).map(i=>({id:i.id,title:i.title,timing:i.timing}))}:{})};
  return digest({events:stage==='school_week'?undefined:sorted(events),school,background:d.config.background,backgroundViews:d.config.backgroundViews,worldSetting:d.config.worldSetting,schoolSetting:d.config.schoolSetting,timezone:d.config.timezone});

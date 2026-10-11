@@ -6,7 +6,7 @@ import type {Message} from '../types';
 export interface WindowAuditSnapshot {messages:Message[];episodes:import('./types').ChatEpisode[];turns:import('../types').TurnRecord[];legacyIds:Set<string>;protectedSourceIds:string[];active?:boolean}
 export function checkWindowConsistency(storage:Storage,options:{idleMinutes:number;recentSegments:number}):WindowConsistencyReport {
  const store=new DialogueStore(storage),protectedSourceIds:string[]=[];
- for(const task of storage.all('tasks').filter(t=>t.status==='pending'))protectedSourceIds.push(...task.messageIds??[]);
+ for(const task of storage.pendingTasks())protectedSourceIds.push(...task.messageIds??[]);
  for(const table of ['memories','details','learned_background'] as const)if(storage.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name=?").get(table))for(const row of storage.prepare(`SELECT data FROM ${table}`).all())protectedSourceIds.push(...JSON.parse(String(row.data)).sourceIds??[]);
  return auditWindowSnapshot(storage,options,{messages:storage.messages(),episodes:store.chatEpisodes(),turns:storage.all('turns'),legacyIds:new Set(store.episodes().map(e=>e.id)),protectedSourceIds});
 }

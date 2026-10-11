@@ -1,0 +1,13 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run tsx scripts/check-task-scheduling.ts --invalid
+Error: unknown option --invalid
+    at main (D:\HDSI-remake\scripts\check-task-scheduling.ts:66:136)
+    at <anonymous> (D:\HDSI-remake\scripts\check-task-scheduling.ts:71:26)
+    at Object.<anonymous> (D:\HDSI-remake\scripts\check-task-scheduling.ts:71:88)
+    at Module._compile (node:internal/modules/cjs/loader:1929:14)
+    at Object.transformer (D:\HDSI-remake\node_modules\tsx\dist\register-B1c7OH6V.cjs:22:2188)
+    at Module.load (node:internal/modules/cjs/loader:1651:32)
+    at Module._load (node:internal/modules/cjs/loader:1443:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+    at loadCJSModuleWithModuleLoad (node:internal/modules/esm/translators:372:15)
+    at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:244:9)

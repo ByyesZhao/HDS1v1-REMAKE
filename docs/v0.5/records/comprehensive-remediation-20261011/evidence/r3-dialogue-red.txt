@@ -1,0 +1,30 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/scheduler-task-workset.test.ts -t school notice and true Host
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ❯ tests/scheduler-task-workset.test.ts (17 tests | 1 failed | 16 skipped) 51ms
+   × school notice and true Host dispatch preserve notification selection 49ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/scheduler-task-workset.test.ts > school notice and true Host dispatch preserve notification selection
+AssertionError: expected [ [ 'tasks' ] ] to have a length of +0 but got 1
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ tests/scheduler-task-workset.test.ts:63:249
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 16 skipped (17)
+   Start at  09:51:56
+   Duration  866ms (transform 66%, import 26%, tests 7%, worker 1%)
+

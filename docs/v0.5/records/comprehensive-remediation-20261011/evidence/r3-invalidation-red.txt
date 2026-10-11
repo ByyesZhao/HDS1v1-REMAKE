@@ -1,0 +1,55 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/scheduler-task-workset.test.ts -t invalidation|invalidated
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ❯ tests/scheduler-task-workset.test.ts (17 tests | 2 failed | 15 skipped) 30ms
+   × stash invalidation makes a reused internal evaluation observe the new check 17ms
+   × waiting event read is invalidated when ordinary shared selection refreshes its scene 12ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/scheduler-task-workset.test.ts > stash invalidation makes a reused internal evaluation observe the new check
+AssertionError: expected [] to match object [ { kind: 'check_messages', …(2) } ]
+
+- Expected
++ Received
+
+- [
+-   {
+-     "at": "2026-10-07T03:00:00Z",
+-     "kind": "check_messages",
+-     "messageIds": [
+-       "a",
+-     ],
+-   },
+- ]
++ []
+
+ ❯ tests/scheduler-task-workset.test.ts:67:427
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/scheduler-task-workset.test.ts > waiting event read is invalidated when ordinary shared selection refreshes its scene
+AssertionError: expected [ '2026-10-07T03:00:00Z' ] to deeply equal [ '2026-10-07T03:00:00Z', …(1) ]
+
+- Expected
++ Received
+
+  [
+    "2026-10-07T03:00:00Z",
+-   "2026-10-07T02:01:00.000Z",
+  ]
+
+ ❯ tests/scheduler-task-workset.test.ts:71:376
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 15 skipped (17)
+   Start at  09:49:55
+   Duration  810ms (transform 67%, import 28%, tests 4%, worker 1%)
+

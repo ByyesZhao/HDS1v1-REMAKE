@@ -1,0 +1,33 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/task-queries.test.ts tests/scheduler-task-workset.test.ts tests/scheduler.test.ts tests/shared-v3-scheduler.test.ts tests/reply-freshness-scheduler.test.ts tests/tasks.test.ts tests/world-school-batch.test.ts
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ❯ tests/scheduler-task-workset.test.ts (15 tests | 1 failed) 466ms
+   × school notice and true Host dispatch preserve notification selection 41ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/scheduler-task-workset.test.ts > school notice and true Host dispatch preserve notification selection
+AssertionError: expected [ [ 'tasks' ] ] to have a length of +0 but got 1
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ tests/scheduler-task-workset.test.ts:63:249
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 6 passed (7)
+      Tests  1 failed | 46 passed (47)
+   Start at  09:49:22
+   Duration  3.16s (tests 44%, import 33%, transform 22%, worker 1%)
+
+    Isolate  7 workers spawned · ~124ms startup each (spawn + environment, per file)
+             at least ~743ms faster with isolate: false — reuses workers across files instead of one per file
+

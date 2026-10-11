@@ -90,6 +90,12 @@ export class Storage {
   all<K extends keyof Tables>(table: K): Tables[K][] {
     return this.db.prepare(`SELECT data FROM ${table} ORDER BY rowid`).all().map(row => JSON.parse(String(row.data)) as Tables[K]);
   }
+  pendingTasks(): ScheduledTask[] {
+    return this.db.prepare("SELECT data FROM tasks WHERE json_extract(data,'$.status')='pending' ORDER BY rowid").all().map(row=>JSON.parse(String(row.data)) as ScheduledTask);
+  }
+  sceneTasksForActivity(activityId:string):ScheduledTask[] {
+    return this.db.prepare("SELECT data FROM tasks WHERE json_extract(data,'$.kind')='scene_step' AND (id=? OR json_extract(data,'$.sharedActivityId')=?) ORDER BY rowid").all(`scene:${activityId}`,activityId).map(row=>JSON.parse(String(row.data)) as ScheduledTask);
+  }
   save<K extends keyof Tables>(table: K, id: string, value: Tables[K]): void {
     this.db.prepare(`INSERT INTO ${table}(id, data) VALUES (?, ?) ON CONFLICT(id) DO UPDATE SET data = excluded.data`).run(id, JSON.stringify(value));
   }

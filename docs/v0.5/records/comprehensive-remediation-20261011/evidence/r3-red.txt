@@ -1,0 +1,58 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/task-queries.test.ts tests/scheduler-task-workset.test.ts
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ❯ tests/scheduler-task-workset.test.ts (0 test)
+ ❯ tests/task-queries.test.ts (2 tests | 2 failed) 169ms
+   × pending query uses the status index and preserves row order without changing history 165ms
+   × activity scene query includes terminal matching scenes and excludes appointments and other activities 3ms
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/scheduler-task-workset.test.ts [ tests/scheduler-task-workset.test.ts ]
+Error: Transform failed with 1 error:
+
+[PARSE_ERROR] Identifier `hydrateResult` has already been declared
+   ╭─[ src/web/service.ts:1:9 ]
+   │
+ 1 │ import {hydrateResult} from './persistence';
+   │         ──────┬──────  
+   │               ╰──────── `hydrateResult` has already been declared here
+ 2 │ import {hydrateResult} from './persistence';
+   │         ──────┬──────  
+   │               ╰──────── It can not be redeclared here
+───╯
+
+  Plugin: vite:oxc
+  File: D:/HDSI-remake/src/web/service.ts
+ ❯ transformWithOxc node_modules/vite/dist/node/chunks/node.js:7581:19
+ ❯ TransformPluginContext.transform node_modules/vite/dist/node/chunks/node.js:7653:26
+ ❯ EnvironmentPluginContainer.transform node_modules/vite/dist/node/chunks/node.js:8545:51
+ ❯ loadAndTransform node_modules/vite/dist/node/chunks/node.js:20157:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/task-queries.test.ts > pending query uses the status index and preserves row order without changing history
+TypeError: storage.pendingTasks is not a function
+ ❯ tests/task-queries.test.ts:10:18
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  tests/task-queries.test.ts > activity scene query includes terminal matching scenes and excludes appointments and other activities
+TypeError: storage.sceneTasksForActivity is not a function
+ ❯ tests/task-queries.test.ts:23:18
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  2 failed (2)
+   Start at  09:48:34
+   Duration  1.11s (tests 83%, import 10%, worker 5%, transform 2%)
+

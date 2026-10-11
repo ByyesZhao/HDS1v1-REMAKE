@@ -59,7 +59,7 @@ export class DialogueEpisodes {
   if(report.currentConflict)report.blockingIssues.push('active dialogue episode conflict');
   const recentEpisodes=episodes.sort((a,b)=>time(b.lastInteractionAt)-time(a.lastInteractionAt)).slice(0,4),cutoff=Math.min(...recentEpisodes.map(e=>time(e.openedAt)));
   const protectedMessages=new Set(s.all('turns').filter(isUnfinishedTurn).flatMap(t=>t.inputMessageIds));
-  for(const task of s.all('tasks').filter(t=>t.status==='pending'))for(const id of task.messageIds??[])protectedMessages.add(id);
+  for(const task of s.pendingTasks())for(const id of task.messageIds??[])protectedMessages.add(id);
   for(const memory of s.all('memories'))for(const id of memory.sourceIds??[])protectedMessages.add(id);
   const historical=(m:Message)=>m.direction==='outgoing'||m.seenTurnId!==null;
   for(const m of messages){if(m.dialogueEpisodeId&&ids.has(m.dialogueEpisodeId))continue;

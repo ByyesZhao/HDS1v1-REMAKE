@@ -40,20 +40,23 @@ export function sharedDeadline(shared: NonNullable<Scene['shared']>, clock: Shar
 }
 
 /** The caller owns the surrounding SQLite transaction. */
-export function refreshSharedStep(storage: Storage, _now: string): void {
+export function refreshSharedStep(storage: Storage, _now: string): boolean {
   // Projection is anchored to confirmed events, never to a status/scheduler read.
   const state = storage.character(); const s = state.scene.shared; const clock = storage.runtime().sharedClock;
-  if (!hasValidSharedScene(state) || !s || !clock || clock.status !== 'active' || clock.activityId !== s.activityId) return;
+  if (!hasValidSharedScene(state) || !s || !clock || clock.status !== 'active' || clock.activityId !== s.activityId) return false;
   const id = `scene:${s.activityId}`;
+  let wrote=false;
   if (s.completedSteps >= s.maxSteps) {
     s.nextStepAt = null;
-    const old = storage.read('tasks', id); if (old) storage.save('tasks', id, { ...old, status: 'cancelled' });
+    const old = storage.read('tasks', id); if (old) {storage.save('tasks', id, { ...old, status: 'cancelled' });wrote=true;}
   } else {
     s.nextStepAt = sharedDeadline(s, clock);
     storage.save('tasks', id, { id, kind: 'scene_step', at: s.nextStepAt, description: s.title,
       sharedActivityId: s.activityId, status: 'pending' });
+    wrote=true;
   }
   storage.set('character', state);
+  return wrote;
 }
 
 /** Called only after a real send confirmation, within its transaction. */
@@ -101,7 +104,7 @@ export function finishSharedTurn(storage: Storage, turn: TurnRecord, completedAt
     }
   }
   if (change?.action === 'end') {
-    for (const t of storage.all('tasks').filter(t => t.kind === 'scene_step' && (t.id === `scene:${activityId}` || t.sharedActivityId === activityId))) storage.save('tasks', t.id, { ...t, status: 'cancelled' });
+    for (const t of storage.sceneTasksForActivity(activityId)) storage.save('tasks', t.id, { ...t, status: 'cancelled' });
     for (const c of storage.all('control_requests').filter(c => c.activityId === activityId && c.status === 'pending')) storage.save('control_requests', c.id, { ...c, status: 'cancelled' });
     const transferred = storage.messages().filter(m => m.direction === 'incoming' && m.seenTurnId === null && m.sharedActivityId === activityId && m.batchId === null);
     if (transferred.length) {

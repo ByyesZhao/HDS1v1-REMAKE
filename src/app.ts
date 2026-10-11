@@ -143,7 +143,7 @@ export async function generateTurn(d: Dependencies, request: TurnRequest, turnId
   const activityContext=dialogueWindowVersion===2?(savedTurn?.activityContext!==undefined?savedTurn.activityContext:selectActivityContext(d.storage,{id:turnId,at,inputMessageIds:request.inputMessageIds,entryMode,sharedMeta:request.sharedMeta} as TurnRecord)):null;
   assertActiveWindow(d.storage,{requiredMessageIds:request.inputMessageIds});
   const messages = request.inputMessageIds.map(id => d.storage.read('messages', id)!);
-  const allTasks = d.storage.all('tasks').filter(t => t.status === 'pending');
+  const allTasks = d.storage.pendingTasks();
   const tasks = allTasks.filter(t => request.taskIds.includes(t.id));
   const events = d.storage.all('events').filter(e => e.status === 'active'&&e.kind==='world');
   const schoolTurn={id:turnId,at,schoolNoticeRefs:request.schoolNoticeRefs??[]} as TurnRecord;
