@@ -1,0 +1,11 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/environment-async-boundaries.test.ts tests/environment-retrieval-vector-snapshot.test.ts
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+
+ Test Files  2 passed (2)
+      Tests  21 passed (21)
+   Start at  10:02:45
+   Duration  1.20s (transform 37%, import 35%, tests 27%, worker 1%)
+

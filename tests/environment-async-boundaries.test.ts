@@ -20,12 +20,12 @@ it('freeze before issue, commit after issue cannot hide a published item in the 
  const p=new EnvironmentPreparation(d);p.startOne(step.id,d.clock.now());await p.wait();expect(d.environmentStore.step(step.id)?.status).toBe('ready');d.clock.advance(120000);
  expect(p.applyReady(step.id,d.clock.now())).toBe('stale');expect(d.storage.read('school_plan_items',item.id)?.issuedAt).toBe(NOW);await p.stop();d.storage.close();
 });
-it('frozen candidates/vectors and recent remain independent of live mutations and use no remote vector when uncalibrated',async()=>{
+it('uncalibrated frozen candidates omit vectors and remain independent of live mutations',async()=>{
  const {d,step}=asyncFixture();const store=new MemoryStore(d.storage);store.migrate(NOW);
  const row=store.makeOwner({ownerType:'detail',ownerId:'phone'},{key:'phone',aliases:['手机'],value:'旧手机',content:'旧手机',sourceIds:[]},NOW);store.saveOwner(row);
  const index:any={configSignature:'fixture',dimensions:2,query:vi.fn(),stats:{}};d.storage.set('memory_embedding_signature','fixture');store.saveVector(row,'fixture',Float32Array.from([1,0]));
  const retrieval=new MemoryRetrieval(store,index),snapshot=freezeEnvironmentSnapshot({...d,retrieval,memoryStore:store},step,NOW),roundtrip=JSON.parse(JSON.stringify(snapshot));
- store.saveOwner({...row,value:'新手机',revision:2});const result=await lookupFrozenEnvironment(roundtrip,'手机',retrieval);expect(result.context.details[0].value).toBe('旧手机');expect(roundtrip.retrieval.candidates[0].normalizedVector).toEqual([1,0]);expect(index.query).not.toHaveBeenCalled();
+ store.saveOwner({...row,value:'新手机',revision:2});const result=await lookupFrozenEnvironment(roundtrip,'手机',retrieval);expect(result.context.details[0].value).toBe('旧手机');expect(roundtrip.retrieval.candidates[0]).not.toHaveProperty('normalizedVector');expect(roundtrip.retrieval.semanticPolicy).toMatchObject({capability:{reason:'uncalibrated'},vectorsIncluded:false});expect(index.query).not.toHaveBeenCalled();
  expect((await lookupFrozenEnvironment(roundtrip,'不存在',retrieval)).context.details).toEqual([]);d.storage.close();
 });
 it('lookup abort while pending is resumable and late results cannot overwrite checkpoint',async()=>{
