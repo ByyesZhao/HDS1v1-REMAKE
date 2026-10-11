@@ -12,14 +12,14 @@ it.each([
   { action: 'update', id: 'check', task: { at: '2026-10-07T09:59:00+08:00' } },
   { action: 'update', id: 'check', task: { at: NOW } },
   { action: 'update', id: 'check', task: { description: '仍检查' } },
-])('rejects a personal check change whose merged deadline is not future: %j', change => {
-  expect(() => personalTask('chat', NOW, [oldCheck], 'chat', ['a']).parse({ ...silent, taskChanges: [change] })).toThrow(/taskChanges.*at/);
+])('rejects personal changes to a program-owned check: %j', change => {
+  expect(() => personalTask('chat', NOW, [oldCheck], 'chat', ['a']).parse({ ...silent, taskChanges: [change] })).toThrow();
 });
-it('allows future check changes and cancellation of an existing due check', () => {
+it('rejects future check changes and cancellation of an existing due check', () => {
   const task = personalTask('chat', NOW, [oldCheck], 'chat', ['a']);
-  expect(() => task.parse({ ...silent, taskChanges: [{ action: 'create', task: { ...oldCheck, at: '2026-10-07T10:01:00+08:00' } }] })).not.toThrow();
-  expect(() => task.parse({ ...silent, taskChanges: [{ action: 'update', id: 'check', task: { at: '2026-10-07T10:01:00+08:00' } }] })).not.toThrow();
-  expect(() => task.parse({ ...silent, taskChanges: [{ action: 'cancel', id: 'check' }] })).not.toThrow();
+  expect(() => task.parse({ ...silent, taskChanges: [{ action: 'create', task: { kind: 'check_messages', description: oldCheck.description, checkReason: 'unread', messageIds: ['a'], at: '2026-10-07T10:01:00+08:00' } }] })).toThrow();
+  expect(() => task.parse({ ...silent, taskChanges: [{ action: 'update', id: 'check', task: { at: '2026-10-07T10:01:00+08:00' } }] })).toThrow();
+  expect(() => task.parse({ ...silent, taskChanges: [{ action: 'cancel', id: 'check' }] })).toThrow();
 });
 it('does not apply the personal check deadline rule to appointments', () => {
   for (const kind of ['appointment'] as const) {

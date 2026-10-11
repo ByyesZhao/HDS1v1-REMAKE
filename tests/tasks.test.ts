@@ -3,7 +3,7 @@ import { HdsiApp, generateTurn } from '../src/app';
 import { Scheduler } from '../src/host/scheduler';
 import { setup, saveInput, NOW, narrative } from './helpers';
 
-it('shortens existing sleep for an explicit future check_messages to appointment rescheduling', async () => {
+it('rejects personal conversion of a program check to an appointment', async () => {
   const d = setup();
   try {
     saveInput(d.storage, 'a', '先前的问题');
@@ -11,7 +11,17 @@ it('shortens existing sleep for an explicit future check_messages to appointment
     d.storage.set('character', { ...d.storage.character(), sleep: { sleepAt: '2026-10-07T23:30:00+08:00', wakeAt: '2026-10-08T08:30:00+08:00' } });
     d.storage.save('tasks', 'check', { id: 'check', kind: 'check_messages', at: NOW, description: '稍后回应', checkReason: 'deferred_reply', messageIds: ['a'], status: 'pending' });
     d.models.outputs.personal_chat = { emotions: [], reply: { decision: 'none' }, taskChanges: [{ action: 'update', id: 'check', task: { kind: 'appointment', at: '2026-10-08T08:00:00+08:00' } }] };
-    const generated = await generateTurn(d, { inputMessageIds: [], taskIds: ['check'], triggerKinds: ['check_messages'] }, 'kind-projection');
+    await expect(generateTurn(d, { inputMessageIds: [], taskIds: ['check'], triggerKinds: ['check_messages'] }, 'kind-projection')).rejects.toThrow();
+  } finally { d.storage.close(); }
+});
+
+it('shortens existing sleep for a new confirmed appointment', async () => {
+  const d = setup();
+  try {
+    saveInput(d.storage, 'a', '明早八点见');
+    d.storage.set('character', { ...d.storage.character(), sleep: { sleepAt: '2026-10-07T23:30:00+08:00', wakeAt: '2026-10-08T08:30:00+08:00' } });
+    d.models.outputs.personal_chat = { emotions: [], reply: { decision: 'none' }, taskChanges: [{ action: 'create', task: { kind: 'appointment', at: '2026-10-08T08:00:00+08:00', description: '双方约定明早见面' } }] };
+    const generated = await generateTurn(d, { inputMessageIds: ['a'], taskIds: [], triggerKinds: ['input'] }, 'new-appointment');
     expect(Date.parse(generated.candidate.nextState.sleep!.wakeAt)).toBe(Date.parse('2026-10-08T07:00:00+08:00'));
   } finally { d.storage.close(); }
 });

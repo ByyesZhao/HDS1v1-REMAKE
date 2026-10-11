@@ -24,15 +24,27 @@ const sharedNarrative = narrative.extend({ publicNarration: text.nullable(), pro
 const intent = { intention: text, draft: text, actions: z.array(text).optional() };
 const reply = z.discriminatedUnion('decision', [z.object({ decision: z.literal('now'), ...intent }), z.object({ decision: z.literal('later'), reconsiderAt: time, intention: text }), z.object({ decision: z.literal('none') })]);
 const contact = z.discriminatedUnion('willing', [z.object({ willing: z.literal(true), ...intent }), z.object({ willing: z.literal(false) })]);
-const taskDetails = z.object({ kind: z.enum(['appointment', 'check_messages', 'scene_step']), at: time, description: text, checkReason: z.enum(['unread', 'deferred_reply']).optional(), messageIds: z.array(text).optional() });
-const taskChange = z.discriminatedUnion('action', [z.object({ action: z.literal('create'), task: taskDetails }), z.object({ action: z.literal('update'), id: text, task: taskDetails.partial() }), z.object({ action: z.literal('cancel'), id: text })]);
+function personalTaskChangeContract(tasks: readonly ScheduledTask[]): {
+  schema: z.ZodType; appointments: ReadonlyMap<string, ScheduledTask>;
+} {
+  const appointments = new Map(structuredClone(tasks.filter(t => t.kind === 'appointment' && t.status === 'pending')).map(t => [t.id, t]));
+  const details = z.object({ kind: z.literal('appointment'), at: time, description: text }).strict();
+  const create = z.object({ action: z.literal('create'), task: details }).strict();
+  const ids = [...appointments.keys()];
+  if (!ids.length) return { schema: create, appointments };
+  const id = z.enum(ids as [string, ...string[]]);
+  return { schema: z.discriminatedUnion('action', [create,
+    z.object({ action: z.literal('update'), id, task: details.partial() }).strict(),
+    z.object({ action: z.literal('cancel'), id }).strict(),
+  ]), appointments };
+}
 const options = {
   nextPlan: text.nullable().optional(), stickerIntent: text.optional(),
   sleepPreference: z.object({ reason: text, sleepAt: time.nullable(), wakeAt: time.nullable() }).optional(),
   sharedChange: z.discriminatedUnion('action', [z.object({ action: z.literal('start'), mode: z.enum(['shared_online', 'shared_offline']), title: text }), z.object({ action: z.literal('end') })]).optional(),
 };
-const chat = z.object({ emotions: z.array(emotion), reply, taskChanges: z.array(taskChange), ...options });
-const life = z.object({ innerThought: text, emotions: z.array(emotion), contact, taskChanges: z.array(taskChange).optional(), ...options });
+const chat = z.object({ emotions: z.array(emotion), reply, ...options });
+const life = z.object({ innerThought: text, emotions: z.array(emotion), contact, ...options });
 const hasActionMarker = (value: string) => /【动作[：:][^】]*】/u.test(value);
 const summary = {content:text,eventSummary:text,feelingSummary:text,topics:z.array(text),sourceIds:z.array(text).min(1)};
 const eventTimes={happenedAt:time.optional(),happenedUntil:time.optional()};
@@ -96,7 +108,9 @@ export function narrativeTask(shared: boolean, from: string, at: string, eventId
 
 export function personalTask(kind: 'chat' | 'life' | 'shared', at: string, tasks: ScheduledTask[], mode: string, messageIds: string[], sharedMeta?: SharedTurnMeta | null, publicNarration?: string | null, eligibility:{contactEligible?:boolean;hasVisualInput?:boolean}={}): ModelTask<PersonalResult> {
   sharedMeta=sharedMeta?structuredClone(sharedMeta):sharedMeta;
-  const schema=kind==='life'?(eligibility.contactEligible===false?life.extend({contact:z.object({willing:z.literal(false)})}):life):chat;
+  const contract=personalTaskChangeContract(tasks),changes=z.array(contract.schema);
+  const lifeSchema=life.extend({taskChanges:changes.optional()});
+  const schema=kind==='life'?(eligibility.contactEligible===false?lifeSchema.extend({contact:z.object({willing:z.literal(false)})}):lifeSchema):chat.extend({taskChanges:changes});
   const task=modelTask(`personal_${kind}`,schema, (r: PersonalResult) => {
     if (kind === 'shared') {
       requireControl(!!sharedMeta, 'sharedMeta', 'shared calls require fixed selection metadata');
@@ -106,20 +120,11 @@ export function personalTask(kind: 'chat' | 'life' | 'shared', at: string, tasks
     if ('reply' in r && r.reply.decision === 'later') requireControl(milliseconds(r.reply.reconsiderAt) > milliseconds(at), 'reply.reconsiderAt', 'must be later than at');
     const touched = new Set<string>();
     for (const [i, change] of (r.taskChanges ?? []).entries()) {
-      let final;
       if (change.action !== 'create') {
-        const old = tasks.find(t => t.id === change.id);
-        requireControl(!!old, `taskChanges.${i}.id`, 'unknown task ID');
-        requireControl(old?.kind !== 'scene_step', `taskChanges.${i}`, 'scene_step is program-owned');
+        const old = contract.appointments.get(change.id);
+        requireControl(!!old, `taskChanges.${i}.id`, 'unknown pending appointment ID');
         requireControl(!touched.has(change.id), `taskChanges.${i}.id`, 'duplicate change');
         touched.add(change.id);
-        if (change.action === 'update') final = { ...old!, ...change.task };
-      } else final = change.task;
-      requireControl(final?.kind !== 'scene_step', `taskChanges.${i}`, 'scene_step is program-owned');
-      if (final?.kind === 'check_messages') {
-        requireControl(milliseconds(final.at) > milliseconds(at), `taskChanges.${i}.task.at`, 'must be later than at');
-        requireControl(!!final.checkReason && Array.isArray(final.messageIds), `taskChanges.${i}.task`, 'check_messages requires checkReason and messageIds');
-        requireControl(final.messageIds!.every(id => messageIds.includes(id)), `taskChanges.${i}.task.messageIds`, 'unknown visible message ID');
       }
     }
     const s = r.sleepPreference;
