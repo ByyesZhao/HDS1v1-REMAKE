@@ -1,0 +1,265 @@
+{
+  "timingsOmitted": true,
+  "runs": [
+    {
+      "mode": "current",
+      "pages": 1,
+      "bodyCharacters": 100000,
+      "bodyParseCharacters": 100253,
+      "bodyParseCalls": 1,
+      "parseCharacters": 104681,
+      "stringifyCharacters": 204023,
+      "controlBodyParseCharacters": 0,
+      "snapshotCalls": 0,
+      "materialReads": 2,
+      "recovery": {
+        "bodyParseCharacters": 100253,
+        "materialReads": 1,
+        "providerCalls": 0
+      },
+      "bytes": {
+        "web_operations": 596,
+        "web_sessions": 639,
+        "web_materials": 100392
+      },
+      "envelopeCharacters": 100884,
+      "envelopeHashes": [
+        "8072cedde868587287f4a179b19347e654d02cf0b218c97054444e356512fbff",
+        "8292d6dea7e78007ddc63d833881cabcef0c85d5c901a3da072e5dacd56dec64"
+      ],
+      "materialHashes": [
+        "afc167905e4ddecda7fabd5d999875fc401e8a7ad1fe4b3e114a24622e568a72"
+      ],
+      "materialLengths": [
+        100000
+      ],
+      "counters": {
+        "successReads": 1,
+        "failures": 0
+      },
+      "providerCalls": 1,
+      "modelCalls": 2,
+      "operationBodyFields": 0,
+      "checkpointBodyFields": 0
+    },
+    {
+      "mode": "current",
+      "pages": 5,
+      "bodyCharacters": 500000,
+      "bodyParseCharacters": 501265,
+      "bodyParseCalls": 5,
+      "parseCharacters": 526867,
+      "stringifyCharacters": 2027329,
+      "controlBodyParseCharacters": 0,
+      "snapshotCalls": 0,
+      "materialReads": 6,
+      "recovery": {
+        "bodyParseCharacters": 501265,
+        "materialReads": 1,
+        "providerCalls": 0
+      },
+      "bytes": {
+        "web_operations": 2980,
+        "web_sessions": 1455,
+        "web_materials": 501960
+      },
+      "envelopeCharacters": 1508144,
+      "envelopeHashes": [
+        "8072cedde868587287f4a179b19347e654d02cf0b218c97054444e356512fbff",
+        "8292d6dea7e78007ddc63d833881cabcef0c85d5c901a3da072e5dacd56dec64",
+        "84ce4c993fbcf4a84daee10b36e737fa6eb8036e866ccde84d85e6af8d7c6acd",
+        "89f7c787b9c185aca1fedb92f79b8758e87b817e280a117014e30fd8c4df493b",
+        "67a1994204eb401daf60119c8311c02c4d8964d193feaeca6d654dfdac7b3c31",
+        "2e6568f352331966ca4915392eae299dc24ca8c69a919667435cdbd6a750a561"
+      ],
+      "materialHashes": [
+        "afc167905e4ddecda7fabd5d999875fc401e8a7ad1fe4b3e114a24622e568a72",
+        "6c16c8a3c7fe0d16b7287290c1ce4ec3a2bb4c659067f88946d0a797b354e05f",
+        "c0cb68fbcef029eba811912f3e5039443bdcd03f7467614db3ebe521a1d13f91",
+        "5656fdeac175a86e036fa64290ba3a153662e5a305017d9734d7f53425b1d9fe",
+        "5af5c3bda87cc81e8af72d1d0d42102ea8364a52efbc50ba40979f70a4a262cb"
+      ],
+      "materialLengths": [
+        100000,
+        100000,
+        100000,
+        100000,
+        100000
+      ],
+      "counters": {
+        "successReads": 5,
+        "failures": 0
+      },
+      "providerCalls": 5,
+      "modelCalls": 6,
+      "operationBodyFields": 0,
+      "checkpointBodyFields": 0
+    },
+    {
+      "mode": "current",
+      "pages": 10,
+      "bodyCharacters": 1000000,
+      "bodyParseCharacters": 1002530,
+      "bodyParseCalls": 10,
+      "parseCharacters": 1064530,
+      "stringifyCharacters": 6575968,
+      "controlBodyParseCharacters": 0,
+      "snapshotCalls": 0,
+      "materialReads": 11,
+      "recovery": {
+        "bodyParseCharacters": 1002530,
+        "materialReads": 1,
+        "providerCalls": 0
+      },
+      "bytes": {
+        "web_operations": 5961,
+        "web_sessions": 2479,
+        "web_materials": 1003920
+      },
+      "envelopeCharacters": 5527526,
+      "envelopeHashes": [
+        "8072cedde868587287f4a179b19347e654d02cf0b218c97054444e356512fbff",
+        "8292d6dea7e78007ddc63d833881cabcef0c85d5c901a3da072e5dacd56dec64",
+        "84ce4c993fbcf4a84daee10b36e737fa6eb8036e866ccde84d85e6af8d7c6acd",
+        "89f7c787b9c185aca1fedb92f79b8758e87b817e280a117014e30fd8c4df493b",
+        "67a1994204eb401daf60119c8311c02c4d8964d193feaeca6d654dfdac7b3c31",
+        "2e6568f352331966ca4915392eae299dc24ca8c69a919667435cdbd6a750a561",
+        "c2cbde34180bc9affb00605f53b2ca4e230735b56a7d8e0e8a573694c3507dab",
+        "a065a19f8a2f19ee38b73786afe5fffc3a05517086cbaf4a1bdfdd3b81c011c2",
+        "ab9563bd60ac0c42fd39d672e8c68df124013d9d1c0081c1836da47f01f40a0f",
+        "115bd6c7587ea80836694df51543f7eb1678f5b9a20082f6d47bcf619fb10637",
+        "164963cdafe1c4473a3e94e7474c3b77aeb707422b65e504ba986ff599cbc44b"
+      ],
+      "materialHashes": [
+        "afc167905e4ddecda7fabd5d999875fc401e8a7ad1fe4b3e114a24622e568a72",
+        "6c16c8a3c7fe0d16b7287290c1ce4ec3a2bb4c659067f88946d0a797b354e05f",
+        "c0cb68fbcef029eba811912f3e5039443bdcd03f7467614db3ebe521a1d13f91",
+        "5656fdeac175a86e036fa64290ba3a153662e5a305017d9734d7f53425b1d9fe",
+        "5af5c3bda87cc81e8af72d1d0d42102ea8364a52efbc50ba40979f70a4a262cb",
+        "9a0d1c3ce34f9276887076cc347738251628999474c38d00729895fb9bc10a9d",
+        "c2a0ed0795130b4ba12bbb359299cbae7af27f7f8cce11e91f1241a7bde01231",
+        "02405246a70dd08fbc42ed306d439692a8b9c2f14ea3dd945c242d8f8e0f243e",
+        "2f949b8321b14e730499db188aa2d6d0112c933262760b93de6b5512af7ff3a2",
+        "84c7a7a9c9fc3c26d4ff67f6c8ce9b0a4577cac0d64568c0e22c83c6da67ce80"
+      ],
+      "materialLengths": [
+        100000,
+        100000,
+        100000,
+        100000,
+        100000,
+        100000,
+        100000,
+        100000,
+        100000,
+        100000
+      ],
+      "counters": {
+        "successReads": 10,
+        "failures": 0
+      },
+      "providerCalls": 10,
+      "modelCalls": 11,
+      "operationBodyFields": 0,
+      "checkpointBodyFields": 0
+    },
+    {
+      "mode": "current",
+      "pages": 20,
+      "bodyCharacters": 2000000,
+      "bodyParseCharacters": 2005080,
+      "bodyParseCalls": 20,
+      "parseCharacters": 2173375,
+      "stringifyCharacters": 23238674,
+      "controlBodyParseCharacters": 0,
+      "snapshotCalls": 0,
+      "materialReads": 21,
+      "recovery": {
+        "bodyParseCharacters": 2005080,
+        "materialReads": 1,
+        "providerCalls": 0
+      },
+      "bytes": {
+        "web_operations": 11957,
+        "web_sessions": 4525,
+        "web_materials": 2007870
+      },
+      "envelopeCharacters": 21100820,
+      "envelopeHashes": [
+        "8072cedde868587287f4a179b19347e654d02cf0b218c97054444e356512fbff",
+        "8292d6dea7e78007ddc63d833881cabcef0c85d5c901a3da072e5dacd56dec64",
+        "84ce4c993fbcf4a84daee10b36e737fa6eb8036e866ccde84d85e6af8d7c6acd",
+        "89f7c787b9c185aca1fedb92f79b8758e87b817e280a117014e30fd8c4df493b",
+        "67a1994204eb401daf60119c8311c02c4d8964d193feaeca6d654dfdac7b3c31",
+        "2e6568f352331966ca4915392eae299dc24ca8c69a919667435cdbd6a750a561",
+        "c2cbde34180bc9affb00605f53b2ca4e230735b56a7d8e0e8a573694c3507dab",
+        "a065a19f8a2f19ee38b73786afe5fffc3a05517086cbaf4a1bdfdd3b81c011c2",
+        "ab9563bd60ac0c42fd39d672e8c68df124013d9d1c0081c1836da47f01f40a0f",
+        "115bd6c7587ea80836694df51543f7eb1678f5b9a20082f6d47bcf619fb10637",
+        "164963cdafe1c4473a3e94e7474c3b77aeb707422b65e504ba986ff599cbc44b",
+        "187564817c439eb156171137523d76a17a42cb3cb991937506895a5acc0120e4",
+        "663c2539ac430e3c295e67c964d57b5dd021924bb52d745726bc91792cc3ea28",
+        "a7a7290fbc131929a860a047f561229d7cf8bdeea79eba8fd7758b66b76f3e65",
+        "b406f1947f56875522076b11931ada28b861b09bc0e7dc50db412decedd1448e",
+        "f79894b28d433902090b2145fdfac059c355aa86d1506668ac5875f07b5f1336",
+        "03ed87a282f822142cfd7a66a195fda4febd065edd62dd8cf1779578a745127e",
+        "18739fc9984e84611bcfa95e6aec0120ca064254bd7591cbc85fd8bda0f189dc",
+        "bb30ea6624bee76ff1bc707a29b23e6eea70f7df490165b514cb9fa26e780328",
+        "48c57084bb8b37b60a528b661ce75fb0eff719f993e1ae8acefd5edd45c6befc",
+        "e8df65737dbe6981f16a938d0f69334736ca4f0ab715fc755215548a61e5e39b"
+      ],
+      "materialHashes": [
+        "afc167905e4ddecda7fabd5d999875fc401e8a7ad1fe4b3e114a24622e568a72",
+        "6c16c8a3c7fe0d16b7287290c1ce4ec3a2bb4c659067f88946d0a797b354e05f",
+        "c0cb68fbcef029eba811912f3e5039443bdcd03f7467614db3ebe521a1d13f91",
+        "5656fdeac175a86e036fa64290ba3a153662e5a305017d9734d7f53425b1d9fe",
+        "5af5c3bda87cc81e8af72d1d0d42102ea8364a52efbc50ba40979f70a4a262cb",
+        "9a0d1c3ce34f9276887076cc347738251628999474c38d00729895fb9bc10a9d",
+        "c2a0ed0795130b4ba12bbb359299cbae7af27f7f8cce11e91f1241a7bde01231",
+        "02405246a70dd08fbc42ed306d439692a8b9c2f14ea3dd945c242d8f8e0f243e",
+        "2f949b8321b14e730499db188aa2d6d0112c933262760b93de6b5512af7ff3a2",
+        "84c7a7a9c9fc3c26d4ff67f6c8ce9b0a4577cac0d64568c0e22c83c6da67ce80",
+        "796515e63d84d4934771eb0e8d869fe0d657642b1105ec89b42c971a3b634e53",
+        "981d9d0574ca39e8f60c39b00d03663d5c024d4eb9a8181cfc56e7e1a70446f5",
+        "be76aca956c7fc4c9c8859716e8712c3a3f9911629539cb150b947379d1418f7",
+        "a7680543945d967716cac0988f00b8f37968c0401d8b8adc6c13dc99a8d680ed",
+        "4a5f5acce392b9a626e02ab6e27734c6d7af78d901d295258083449151d7a3ab",
+        "40f34ff967e8ec897e9fc254b11465f8e9b1adb46cb6a38c35c420d74d348a02",
+        "f5e67026059794f19d71215bce13ced3ed295c188838789a196daa0598289e03",
+        "e45270d7ec0cdd7583c47c811663d4046f9a9c1afe8c570c676e76317c4a7287",
+        "3c74cd8c350b8289afc1f74d9ad6aa27c5a673b70b56e9381a374fa7c5bc57e4",
+        "266864de7dc03fb8a7121b178f2dd21e30bfce5c1177b7fa4303fe065d5f1c81"
+      ],
+      "materialLengths": [
+        100000,
+        100000,
+        100000,
+        100000,
+        100000,
+        100000,
+        100000,
+        100000,
+        100000,
+        100000,
+        100000,
+        100000,
+        100000,
+        100000,
+        100000,
+        100000,
+        100000,
+        100000,
+        100000,
+        100000
+      ],
+      "counters": {
+        "successReads": 20,
+        "failures": 0
+      },
+      "providerCalls": 20,
+      "modelCalls": 21,
+      "operationBodyFields": 0,
+      "checkpointBodyFields": 0
+    }
+  ]
+}

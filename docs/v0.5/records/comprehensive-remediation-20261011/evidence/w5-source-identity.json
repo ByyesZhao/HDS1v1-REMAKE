@@ -1,0 +1,131 @@
+{
+  "head": "a8fb72dadf2fe65633af8b5c0ac41917cab5df1d",
+  "baselineRevision": "9c20a97f632d9eaf5781973fefab95619eb7dc3a",
+  "dirty": [
+    " M package.json",
+    " M scripts/memory-capacity-acceptance.ts",
+    " M src/app.ts",
+    " M src/deployment/memory-capacity-upgrade.ts",
+    " M src/deployment/memory-runtime.ts",
+    " M src/dialogue/episodes.ts",
+    " M src/dialogue/window-consistency.ts",
+    " M src/environment/runtime.ts",
+    " M src/environment/snapshot.ts",
+    " M src/host/scheduler.ts",
+    " M src/host/shared.ts",
+    " M src/memory/capacity.ts",
+    " M src/memory/retrieval.ts",
+    " M src/memory/store.ts",
+    " M src/model/client.ts",
+    " M src/storage.ts",
+    " M src/web/service.ts",
+    " M src/web/store.ts",
+    " M src/web/types.ts",
+    " M tests/environment-async-recovery.test.ts",
+    " M tests/memory-capacity-prune-race.test.ts",
+    " M tests/memory-capacity-upgrade.test.ts",
+    " M tests/memory-payload-compaction.test.ts",
+    " M tests/memory-payload-recovery-matrix.test.ts",
+    " M tests/web-light-state.test.ts",
+    " M tests/web-model-tools.test.ts",
+    " M tests/world-school-models.test.ts",
+    " M tests/world-school-review14-contracts.test.ts",
+    "?? docs/v0.5/records/comprehensive-remediation-20261011/evidence/m1b-diff-check.txt",
+    "?? docs/v0.5/records/comprehensive-remediation-20261011/evidence/m1b-focused-final.txt",
+    "?? docs/v0.5/records/comprehensive-remediation-20261011/evidence/m1b-focused-initial.txt",
+    "?? docs/v0.5/records/comprehensive-remediation-20261011/evidence/m1b-green-initial.txt",
+    "?? docs/v0.5/records/comprehensive-remediation-20261011/evidence/m1b-inspector-red.txt",
+    "?? docs/v0.5/records/comprehensive-remediation-20261011/evidence/m1b-red.txt",
+    "?? docs/v0.5/records/comprehensive-remediation-20261011/evidence/m1b-typecheck-final.txt",
+    "?? docs/v0.5/records/comprehensive-remediation-20261011/evidence/m1b-typecheck-initial.txt",
+    "?? docs/v0.5/records/comprehensive-remediation-20261011/evidence/m1b-typecheck.txt",
+    "?? docs/v0.5/records/comprehensive-remediation-20261011/evidence/m1b-work-red.txt",
+    "?? docs/v0.5/records/comprehensive-remediation-20261011/evidence/m2a-green.txt",
+    "?? docs/v0.5/records/comprehensive-remediation-20261011/evidence/m2a-red.txt",
+    "?? docs/v0.5/records/comprehensive-remediation-20261011/evidence/m2a-typecheck.txt",
+    "?? docs/v0.5/records/comprehensive-remediation-20261011/evidence/r3-dialogue-red.txt",
+    "?? docs/v0.5/records/comprehensive-remediation-20261011/evidence/r3-final-green.txt",
+    "?? docs/v0.5/records/comprehensive-remediation-20261011/evidence/r3-green-initial.txt",
+    "?? docs/v0.5/records/comprehensive-remediation-20261011/evidence/r3-green.txt",
+    "?? docs/v0.5/records/comprehensive-remediation-20261011/evidence/r3-invalidation-red.txt",
+    "?? docs/v0.5/records/comprehensive-remediation-20261011/evidence/r3-probe-cli-invalid.txt",
+    "?? docs/v0.5/records/comprehensive-remediation-20261011/evidence/r3-red.txt",
+    "?? docs/v0.5/records/comprehensive-remediation-20261011/evidence/r3-typecheck-final.txt",
+    "?? docs/v0.5/records/comprehensive-remediation-20261011/evidence/r3-typecheck.txt",
+    "?? docs/v0.5/records/comprehensive-remediation-20261011/evidence/r3-workset-red.txt",
+    "?? docs/v0.5/records/comprehensive-remediation-20261011/evidence/w5-1-green.txt",
+    "?? docs/v0.5/records/comprehensive-remediation-20261011/evidence/w5-1-red.txt",
+    "?? docs/v0.5/records/comprehensive-remediation-20261011/evidence/w5-1-typecheck.txt",
+    "?? docs/v0.5/records/comprehensive-remediation-20261011/evidence/w5-2-green.txt",
+    "?? docs/v0.5/records/comprehensive-remediation-20261011/evidence/w5-2-red.txt",
+    "?? docs/v0.5/records/comprehensive-remediation-20261011/evidence/w5-2-typecheck.txt",
+    "?? docs/v0.5/records/comprehensive-remediation-20261011/evidence/w5-3-green.txt",
+    "?? docs/v0.5/records/comprehensive-remediation-20261011/evidence/w5-3-red-baseline.txt",
+    "?? docs/v0.5/records/comprehensive-remediation-20261011/evidence/w5-checkpoint-callers.txt",
+    "?? docs/v0.5/records/comprehensive-remediation-20261011/evidence/w5-cli-apply-first.txt",
+    "?? docs/v0.5/records/comprehensive-remediation-20261011/evidence/w5-cli-apply-idempotent.txt",
+    "?? docs/v0.5/records/comprehensive-remediation-20261011/evidence/w5-cli-apply-resume.txt",
+    "?? docs/v0.5/records/comprehensive-remediation-20261011/evidence/w5-cli-dry-run.txt",
+    "?? docs/v0.5/records/comprehensive-remediation-20261011/evidence/w5-final-additional.txt",
+    "?? docs/v0.5/records/comprehensive-remediation-20261011/evidence/w5-final-focused.txt",
+    "?? docs/v0.5/records/comprehensive-remediation-20261011/evidence/w5-final-typecheck.txt",
+    "?? scripts/check-task-scheduling.ts",
+    "?? scripts/measure-web-payloads.ts",
+    "?? scripts/migrate-web-payloads.ts",
+    "?? src/deployment/web-payload-migration.ts",
+    "?? src/memory/policy-order.ts",
+    "?? src/web/payload-migration.ts",
+    "?? src/web/persistence.ts",
+    "?? tests/memory-capacity-work.test.ts",
+    "?? tests/memory-policy-order.test.ts",
+    "?? tests/memory-retrieval-vector-work.test.ts",
+    "?? tests/scheduler-task-workset.test.ts",
+    "?? tests/task-queries.test.ts",
+    "?? tests/web-payload-cost.test.ts",
+    "?? tests/web-payload-migration-cli.test.ts",
+    "?? tests/web-payload-migration.test.ts",
+    "?? tests/web-persistence-v2.test.ts"
+  ],
+  "files": [
+    {
+      "path": "src/web/types.ts",
+      "sha256": "3A2890D8CB6682641E26CD26A936DD0B98DB8478095F5430D9A75E284AF65A6E"
+    },
+    {
+      "path": "src/web/store.ts",
+      "sha256": "2B30A2B7EE3E6D6BA62FB23CDD5E15D32797F4B857D16914BBA5D4BED1CD4112"
+    },
+    {
+      "path": "src/web/service.ts",
+      "sha256": "0D70D3BED4E365401A7652873622633E3E0ECEB8594B2AB58C0B4C10D48FD9B6"
+    },
+    {
+      "path": "src/web/persistence.ts",
+      "sha256": "CCABE2899FB1DB76E47296BBDCDCBCDC266058D4415D19228EB205B9E63B7E99"
+    },
+    {
+      "path": "src/web/payload-migration.ts",
+      "sha256": "068847CDD14190AF4011968E5B575DC7E18A3FC267973D0BCA25A6EC94B3466B"
+    },
+    {
+      "path": "src/model/client.ts",
+      "sha256": "9CEF88FC0EDC8AD0DFC6F750576130CB8957EE423605A9035A934F73A608598D"
+    },
+    {
+      "path": "src/deployment/web-payload-migration.ts",
+      "sha256": "6E93C2FD2C23F070C19FC71BA87F1F7A6A059C6F3DE40732582805F02581947F"
+    },
+    {
+      "path": "scripts/migrate-web-payloads.ts",
+      "sha256": "97611714E9E0B6552C43634056127EBAD9058F5B4E98BACA57C80B05BC4CBFD6"
+    },
+    {
+      "path": "scripts/measure-web-payloads.ts",
+      "sha256": "045FE86248A52D9A763DCE5C579E7C8D286B0EE22FD053153ECCC16BD038ECB6"
+    },
+    {
+      "path": "package.json",
+      "sha256": "2F4DA4BA9261FE0241A571BB2FED05474B1A4FC8E37227287E3D84A5B8D7E6CD"
+    }
+  ]
+}
