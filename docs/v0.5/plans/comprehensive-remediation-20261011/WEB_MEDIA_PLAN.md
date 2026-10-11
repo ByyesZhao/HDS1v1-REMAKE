@@ -1,6 +1,6 @@
 # Web 与媒体整改 Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** 修复 B2、B3、B5，并在不改变网页额度、材料可见性与中断恢复的前提下落实 WM-O1、WM-O2、WM-O3。
 
@@ -159,14 +159,14 @@ materials(runId: string, ids?: readonly string[]): WebMaterial[];
 
 旧checkpoint没有formatVersion，toolResults每项是上述legacy response。session外层仍含ref/counters/metrics/nextOperationOrdinal/checkpoint；不另改runId或ordinal。`web_materials`保持 `{runId,material,firstOperationId,provided}`，主键仍`${runId}:${material.id}`，它是该阶段网页正文唯一结构化持久位置；B缓存跨阶段仍允许各阶段独立材料行，不新建全局共享正文表。operation与checkpoint中不存网页body副本。业务input、lookup、repair.original如果本身含业务引用或模型文字，不做字符串替换／删减，不能把“任意同文字只存一次”当承诺。
 
-- [ ] **写v1/v2互操作测试。** `legacy_checkpoint_preserves_pending_lookup_repair_and_results`、`v2_operation_and_checkpoint_store_refs_only`、`mixed_v1_v2_stage_reopens_without_provider_replay`。直接插入基线JSON夹具（不是先经新save接口造“旧数据”）；重开文件库，断言所有状态字段相同、op/step ID不变、已有正文0次新provider读取，原始web_operations与checkpoint.toolResults无materials/body字段，web_materials正文逐字相同。
-- [ ] **写崩溃窗口测试。** `done_operation_pending_checkpoint_replays_once_after_reopen`：op已done而cp.pending仍指向它，恢复只追加一次toolResult、pending清空、计数不变；`partial_operation_reopens_at_first_unconfirmed_candidate`沿原2成功/1失败夹具，只读余下候选；`pending_lookup_is_reexecuted_but_confirmed_lookup_is_not`断言未确认补查1次、已确认0次；`repair_budget_survives_v1_upgrade`保留repairCount=1/原error/lookupUsed。
-- [ ] **写权限与模型等价测试。** `v2_completion_envelope_matches_legacy_material_pool`对相同输入比较完整envelope；materialIds顺序、结果不足/message、requested/obtained、当时toolResults counters保持旧值；旧done操作直接重放的外层counters继续使用当前值。`failed_transport_never_marks_refs_provided`及成功但格式错误路径保持W4合同；冻结发送恢复0次模型/搜索。
-- [ ] **跑红。** `npx vitest run tests/web-persistence-v2.test.ts tests/web-recovery.test.ts tests/web-model-tools.test.ts`，新format和引用断言失败；不把未知版本类型报错作为唯一回归。
-- [ ] **实现编解码与轻量模型状态。** 新写只v2，读取v1可转换但只在checkpoint/operation显式读取时，state等轻量接口不触发转换/hydrate/落库。ModelClient单次run启动载入该阶段materials一次到局部Map；每次工具响应把新材料合入；checkpoint只保留refs，transport前用同一个Map装配完整webResults/webMaterials，无重复SQL载入旧正文。run结束或异常Map自然释放，不跨run缓存私有lookup；同一run内格式修补和lookup复用该Map。
-- [ ] **实现新旧使用方接线。** 环境repair重置只改新checkpoint对应字段；generation invalidation继续保留网页操作及toolResults，清原private lookup并设lookupPending的逻辑不变。hydrate缺失ID以具体run/ID错误停止恢复，不重新搜网页补“同一”事实；合法基线通过下节迁移预检保证不产生该情况。已有诊断snapshot输出新cp类型，更新明确深等旧cp的测试预期。
-- [ ] **跑绿。** 上述测试＋`npx vitest run tests/web-store.test.ts tests/web-session.test.ts tests/web-memory-sources.test.ts tests/environment-async-tools.test.ts tests/environment-async-provenance.test.ts tests/incoming-image-model.test.ts tests/memory-payload-compaction.test.ts`、`npm run typecheck`。再用`rg -n 'toolResults|saveCheckpoint|snapshot\(' src scripts tests`完成所有读写者清点。
-- [ ] **提交。** `perf: persist web tool bodies by material reference`；该提交可离线审阅，但生产发布必须与W5.2的备份回退说明一起交付。
+- [x] **写v1/v2互操作测试。** `legacy_checkpoint_preserves_pending_lookup_repair_and_results`、`v2_operation_and_checkpoint_store_refs_only`、`mixed_v1_v2_stage_reopens_without_provider_replay`。直接插入基线JSON夹具（不是先经新save接口造“旧数据”）；重开文件库，断言所有状态字段相同、op/step ID不变、已有正文0次新provider读取，原始web_operations与checkpoint.toolResults无materials/body字段，web_materials正文逐字相同。
+- [x] **写崩溃窗口测试。** `done_operation_pending_checkpoint_replays_once_after_reopen`：op已done而cp.pending仍指向它，恢复只追加一次toolResult、pending清空、计数不变；`partial_operation_reopens_at_first_unconfirmed_candidate`沿原2成功/1失败夹具，只读余下候选；`pending_lookup_is_reexecuted_but_confirmed_lookup_is_not`断言未确认补查1次、已确认0次；`repair_budget_survives_v1_upgrade`保留repairCount=1/原error/lookupUsed。
+- [x] **写权限与模型等价测试。** `v2_completion_envelope_matches_legacy_material_pool`对相同输入比较完整envelope；materialIds顺序、结果不足/message、requested/obtained、当时toolResults counters保持旧值；旧done操作直接重放的外层counters继续使用当前值。`failed_transport_never_marks_refs_provided`及成功但格式错误路径保持W4合同；冻结发送恢复0次模型/搜索。
+- [x] **跑红。** `npx vitest run tests/web-persistence-v2.test.ts tests/web-recovery.test.ts tests/web-model-tools.test.ts`，新format和引用断言失败；不把未知版本类型报错作为唯一回归。
+- [x] **实现编解码与轻量模型状态。** 新写只v2，读取v1可转换但只在checkpoint/operation显式读取时，state等轻量接口不触发转换/hydrate/落库。ModelClient单次run启动载入该阶段materials一次到局部Map；每次工具响应把新材料合入；checkpoint只保留refs，transport前用同一个Map装配完整webResults/webMaterials，无重复SQL载入旧正文。run结束或异常Map自然释放，不跨run缓存私有lookup；同一run内格式修补和lookup复用该Map。
+- [x] **实现新旧使用方接线。** 环境repair重置只改新checkpoint对应字段；generation invalidation继续保留网页操作及toolResults，清原private lookup并设lookupPending的逻辑不变。hydrate缺失ID以具体run/ID错误停止恢复，不重新搜网页补“同一”事实；合法基线通过下节迁移预检保证不产生该情况。已有诊断snapshot输出新cp类型，更新明确深等旧cp的测试预期。
+- [x] **跑绿。** 上述测试＋`npx vitest run tests/web-store.test.ts tests/web-session.test.ts tests/web-memory-sources.test.ts tests/environment-async-tools.test.ts tests/environment-async-provenance.test.ts tests/incoming-image-model.test.ts tests/memory-payload-compaction.test.ts`、`npm run typecheck`。再用`rg -n 'toolResults|saveCheckpoint|snapshot\(' src scripts tests`完成所有读写者清点。
+- [x] **提交。** `perf: persist web tool bodies by material reference`；该提交可离线审阅，但生产发布必须与W5.2的备份回退说明一起交付。
 
 ### W5.2 存量格式迁移、回收与回退
 
@@ -176,22 +176,22 @@ materials(runId: string, ids?: readonly string[]): WebMaterial[];
 
 选择残留条件是operation缺formatVersion或非空checkpoint缺formatVersion（空checkpoint不算）。每个run在事务内验证其op/cp的materialIds存在于同run材料表，先比较旧embedded material与表内相应material全部字段，再写v2；不匹配就回滚并报runId，不猜正文、不改counters。复制工具结果时保持精确metadata和顺序。每批事务由deployment包装；批中任何失败回滚本批，早前批可复跑，第二次完成后updated=0/hasMore=false。无schema version强制跃迁，不启动时全库扫描，也不在只读inspect安装索引。
 
-- [ ] **写迁移回归。** `migration_preserves_all_owner_states_and_material_bytes`含turn/maintenance/asset/environment及pending/running/done混合；对材料、来源、counter、op位置、lookup/repair做迁移前后深比较。`migration_interruption_resumes_by_residual_format`注入第二批中途异常，第一批保留、第二批全回滚，重跑不重复计数。`migration_dry_run_has_zero_writes`用只读连接/触发器检查0写。`migration_ref_mismatch_rolls_back_whole_batch`验证明确错误，不改变原记录。
-- [ ] **跑红。** `npx vitest run tests/web-payload-migration.test.ts tests/web-payload-migration-cli.test.ts`。
-- [ ] **实现显式停服工具。** 只接受显式db路径；默认dry-run，`--apply`必须`--stopped`；沿已有部署工具在首次写前备份db/-wal/-shm到唯一目录并返回backupPath，不覆盖原备份。正整数校验、`--batch-size 50 --max-batches 20 --backup-dir <path>`、非法组合exit1；不自动停服、不访问模型／browser。只有输出hasMore=false且复检legacy counts=0才表示迁移完成。
-- [ ] **验证命令。** 对新建合成库运行 `npm run web:migrate-payloads -- .tmp/web-remediation/legacy.sqlite --dry-run`，然后 `npm run web:migrate-payloads -- .tmp/web-remediation/legacy.sqlite --apply --stopped --batch-size 2 --max-batches 1 --backup-dir .tmp/web-remediation/backups`，持续复跑到hasMore=false；测试证明源备份可重开且包含原v1、正文/计数不变、二次完整apply更新0条。只跑本任务生成的fixture路径。
-- [ ] **记录回收边界。** v1→v2仅去operation/checkpoint网页副本，不清web_materials。终态checkpoint的整体清除仍走现有 `memory:compact-payloads`；pending/running/ready待提交与failed/stopped可恢复任务不清。asset没有可靠终态行，禁止按ownerType或时间推断旧import已结束；当前W2成功／失败finally可收尾自己的owner，历史asset checkpoint只能保留或另行用户明确选定，不在此自动删除。
-- [ ] **记录部署／回退。** 先停故事并备份，部署能读v1/v2的新代码，按显式路径迁移，离线恢复夹具验证后才由外层部署流程启用；即使未执行全库迁移，新代码运行新写也会出现v2。旧二进制不认识v2，回退必须恢复配套停服备份与旧代码，不能只git checkout旧代码继续写升级库；恢复备份会舍弃备份后的新业务，交接必须说明，不做自动逆向重构。
-- [ ] **跑绿并提交。** 两个新测试文件＋W5.1恢复文件通过；`npm run typecheck`；提交 `feat: migrate legacy web payload references offline`。
+- [x] **写迁移回归。** `migration_preserves_all_owner_states_and_material_bytes`含turn/maintenance/asset/environment及pending/running/done混合；对材料、来源、counter、op位置、lookup/repair做迁移前后深比较。`migration_interruption_resumes_by_residual_format`注入第二批中途异常，第一批保留、第二批全回滚，重跑不重复计数。`migration_dry_run_has_zero_writes`用只读连接/触发器检查0写。`migration_ref_mismatch_rolls_back_whole_batch`验证明确错误，不改变原记录。
+- [x] **跑红。** `npx vitest run tests/web-payload-migration.test.ts tests/web-payload-migration-cli.test.ts`。
+- [x] **实现显式停服工具。** 只接受显式db路径；默认dry-run，`--apply`必须`--stopped`；沿已有部署工具在首次写前备份db/-wal/-shm到唯一目录并返回backupPath，不覆盖原备份。正整数校验、`--batch-size 50 --max-batches 20 --backup-dir <path>`、非法组合exit1；不自动停服、不访问模型／browser。只有输出hasMore=false且复检legacy counts=0才表示迁移完成。
+- [x] **验证命令。** 对新建合成库运行 `npm run web:migrate-payloads -- .tmp/web-remediation/legacy.sqlite --dry-run`，然后 `npm run web:migrate-payloads -- .tmp/web-remediation/legacy.sqlite --apply --stopped --batch-size 2 --max-batches 1 --backup-dir .tmp/web-remediation/backups`，持续复跑到hasMore=false；测试证明源备份可重开且包含原v1、正文/计数不变、二次完整apply更新0条。只跑本任务生成的fixture路径。
+- [x] **记录回收边界。** v1→v2仅去operation/checkpoint网页副本，不清web_materials。终态checkpoint的整体清除仍走现有 `memory:compact-payloads`；pending/running/ready待提交与failed/stopped可恢复任务不清。asset没有可靠终态行，禁止按ownerType或时间推断旧import已结束；当前W2成功／失败finally可收尾自己的owner，历史asset checkpoint只能保留或另行用户明确选定，不在此自动删除。
+- [x] **记录部署／回退。** 先停故事并备份，部署能读v1/v2的新代码，按显式路径迁移，离线恢复夹具验证后才由外层部署流程启用；即使未执行全库迁移，新代码运行新写也会出现v2。旧二进制不认识v2，回退必须恢复配套停服备份与旧代码，不能只git checkout旧代码继续写升级库；恢复备份会舍弃备份后的新业务，交接必须说明，不做自动逆向重构。
+- [x] **跑绿并提交。** 两个新测试文件＋W5.1恢复文件通过；`npm run typecheck`；提交 `feat: migrate legacy web payload references offline`。
 
 ### W5.3 成本与整体合同验收
 
 **Files:** 新 `tests/web-payload-cost.test.ts`、`scripts/measure-web-payloads.ts`；输出未来交付目录（不覆盖审核evidence）的 `web-payload-cost.json`。
 
-- [ ] **写可确定的成本断言。** 固定1/5/10/20页，每页100000 ASCII字符＋专用唯一标记，假模型依次read再final。`fresh_tool_loop_parses_each_saved_body_at_most_once`断言热路径snapshot=0、控制方法正文parse=0、整个新会话正文JSON.parse输入字符不超过唯一正文的2倍＋每页4096字符元数据余量；该阈值是待验证预算，不是声称已测得。20页原2M正文场景，operation.response和checkpoint.toolResults中body字段数=0，web_materials共20份完整正文。同run恢复只从材料表读一遍；provider不会重读已确认页。
-- [ ] **跑红后完成必要修正。** `npx vitest run tests/web-payload-cost.test.ts`；只修仍重复物化的路径，不通过减少tool调用、截短输入或少给模型资料达标。记录JSON.parse/body reads/stringify字符、operation/session/material各表UTF-8 bytes、模型envelope累计字符和耗时；JS字符与SQLite UTF-8 bytes分列。
-- [ ] **对比语义和成本。** 同fixture跑基线代码副本与新代码，materials hash、counters、provider calls、模型调用数、完整envelope逐请求等价（新增持久化版本字段不进入模型）；仅持久化与本地重复解析变化。将观测值写报告，耗时无硬毫秒门限，不能用单次抖动宣称倍数。
-- [ ] **提交。** `test: bound web payload work without changing model context`；W5三节全绿后才能报告WM-O1已完成。
+- [x] **写可确定的成本断言。** 固定1/5/10/20页，每页100000 ASCII字符＋专用唯一标记，假模型依次read再final。`fresh_tool_loop_parses_each_saved_body_at_most_once`断言热路径snapshot=0、控制方法正文parse=0、整个新会话正文JSON.parse输入字符不超过唯一正文的2倍＋每页4096字符元数据余量；该阈值是待验证预算，不是声称已测得。20页原2M正文场景，operation.response和checkpoint.toolResults中body字段数=0，web_materials共20份完整正文。同run恢复只从材料表读一遍；provider不会重读已确认页。
+- [x] **跑红后完成必要修正。** `npx vitest run tests/web-payload-cost.test.ts`；只修仍重复物化的路径，不通过减少tool调用、截短输入或少给模型资料达标。记录JSON.parse/body reads/stringify字符、operation/session/material各表UTF-8 bytes、模型envelope累计字符和耗时；JS字符与SQLite UTF-8 bytes分列。
+- [x] **对比语义和成本。** 同fixture跑基线代码副本与新代码，materials hash、counters、provider calls、模型调用数、完整envelope逐请求等价（新增持久化版本字段不进入模型）；仅持久化与本地重复解析变化。将观测值写报告，耗时无硬毫秒门限，不能用单次抖动宣称倍数。
+- [x] **提交。** `test: bound web payload work without changing model context`；W5三节全绿后才能报告WM-O1已完成。
 
 ## W6：观察范围共享图片读取与惰性编码
 
@@ -230,18 +230,18 @@ service按 `store.ownerRunIds` 收集已入队locks，等待allSettled后 `relea
 
 `finalizeTerminalOwner`重读step，只接收committed/superseded且同step不再active；同步调用运行时的compactTerminalPayload，再await web.finalizeOwner。`scheduleTerminalFinalization`记录Promise到Set，catch进入已有errors队列，finally移除并onReady；不能无人观察reject。reconcile/applyReady前台只schedule，不await该Promise；wait/stop以及 `runEnvironmentStep` 内临时preparation的退出显式排空Set，不能在cleanup未结束时关闭Storage。
 
-- [ ] **写service级测试。** `finalize_owner_waits_for_queued_operation_then_releases_cache`暂停provider read，先finalize后resolve；结算前checkpoint保留，完成后cache owner不存在、checkpoint=null，materials/operations/counters/来源全保留；重复finalize不增加UPDATE（已NULL不写）。另一owner缓存仍可命中，保证隔离。
-- [ ] **写跨日迟到测试。** `superseded_execution_cannot_repopulate_owner_after_finalization`：旧step取得一页后第二操作挂起，跨日reconcile使superseded；active未settle前准备载荷和checkpoint保留；迟到provider返回受signal/guard拒绝，旧execute/catch/finally结算后清cache和checkpoint，计数不加迟到页，新batch状态未被旧任务覆盖。
-- [ ] **写所有入口测试。** `expired_ready_step_schedules_cleanup_before_stale_return`覆盖applyReady的过期早退；`reconcile_cleans_non_active_superseded_owners`覆盖没有active执行的旧ready/pending owner；`committed_owner_uses_same_finalizer`覆盖正常提交；`scheduler_supersede_is_observed_by_preparation`覆盖调度已先将batch标terminal的顺序，不能只依赖firstActiveBatch还能查到旧批次。
-- [ ] **写非终态和前台时序测试。** `stop_retry_and_generation_invalidation_preserve_recovery`断言pending/retry/stopped/current generation继续保留；`foreground_pump_does_not_wait_for_terminal_web_drain`挂起旧provider、输入新前台消息，前台selection/模型调用可继续；`host_stop_waits_for_finalizers_before_storage_close`断言终态cleanup写在close前，无unhandled rejection。
-- [ ] **跑红。** `npx vitest run tests/web-owner-finalization.test.ts tests/environment-web-finalization.test.ts tests/environment-async-host.test.ts tests/environment-async-recovery.test.ts tests/environment-async-boundaries.test.ts`；当前跨日owner cache/checkpoint留存的断言失败。
-- [ ] **实现终态发现与结算。** 复用R4a的 `observedStepIds`（startOne、reconcile/applyReady见过的active批次step IDs），不新建第二份集合；每次reconcile检查这些ID的终态，这覆盖scheduler先supersede，不扫描全历史。R4a原“压缩后删除ID”改为成功finalize后才删除，失败仍保留待显式恢复，集合不能变成历史墓碑。旧execution.finally先清active再schedule，它本身不await包含自身的cleanup集合，避免自等；正常applyReady成功和两种stale早退都schedule相应terminal IDs。running旧任务必须等其promise结算才压缩，不能abort时立即清正文。旧v0串行runtime在明确terminal返回处await web.finalizeOwner，但不调用v1正文压缩。
-- [ ] **实现wait/stop与存量边界。** `wait()`等待已在途execution后再循环drain cleanup Set，包含finally新入队工作；`stop()`同理，pending abort本身不触发finalize。临时preparation在applyReady后await wait。冷启动进程无旧cache，历史terminal checkpoint由显式停服compactor处理；不在启动追加全历史正文扫描，不自动清未完成checkpoint。
-- [ ] **跑绿并提交。** 同命令＋`npx vitest run tests/environment-payload-compaction.test.ts tests/web-recovery.test.ts tests/environment-async-tools.test.ts tests/memory-payload-compaction.test.ts`，`npm run typecheck`；提交 `fix: finalize terminal environment web owners after settlement`。
+- [x] **写service级测试。** `finalize_owner_waits_for_queued_operation_then_releases_cache`暂停provider read，先finalize后resolve；结算前checkpoint保留，完成后cache owner不存在、checkpoint=null，materials/operations/counters/来源全保留；重复finalize不增加UPDATE（已NULL不写）。另一owner缓存仍可命中，保证隔离。
+- [x] **写跨日迟到测试。** `superseded_execution_cannot_repopulate_owner_after_finalization`：旧step取得一页后第二操作挂起，跨日reconcile使superseded；active未settle前准备载荷和checkpoint保留；迟到provider返回受signal/guard拒绝，旧execute/catch/finally结算后清cache和checkpoint，计数不加迟到页，新batch状态未被旧任务覆盖。
+- [x] **写所有入口测试。** `expired_ready_step_schedules_cleanup_before_stale_return`覆盖applyReady的过期早退；`reconcile_cleans_non_active_superseded_owners`覆盖没有active执行的旧ready/pending owner；`committed_owner_uses_same_finalizer`覆盖正常提交；`scheduler_supersede_is_observed_by_preparation`覆盖调度已先将batch标terminal的顺序，不能只依赖firstActiveBatch还能查到旧批次。
+- [x] **写非终态和前台时序测试。** `stop_retry_and_generation_invalidation_preserve_recovery`断言pending/retry/stopped/current generation继续保留；`foreground_pump_does_not_wait_for_terminal_web_drain`挂起旧provider、输入新前台消息，前台selection/模型调用可继续；`host_stop_waits_for_finalizers_before_storage_close`断言终态cleanup写在close前，无unhandled rejection。
+- [x] **跑红。** `npx vitest run tests/web-owner-finalization.test.ts tests/environment-web-finalization.test.ts tests/environment-async-host.test.ts tests/environment-async-recovery.test.ts tests/environment-async-boundaries.test.ts`；当前跨日owner cache/checkpoint留存的断言失败。
+- [x] **实现终态发现与结算。** 复用R4a的 `observedStepIds`（startOne、reconcile/applyReady见过的active批次step IDs），不新建第二份集合；每次reconcile检查这些ID的终态，这覆盖scheduler先supersede，不扫描全历史。R4a原“压缩后删除ID”改为成功finalize后才删除，失败仍保留待显式恢复，集合不能变成历史墓碑。旧execution.finally先清active再schedule，它本身不await包含自身的cleanup集合，避免自等；正常applyReady成功和两种stale早退都schedule相应terminal IDs。running旧任务必须等其promise结算才压缩，不能abort时立即清正文。旧v0串行runtime在明确terminal返回处await web.finalizeOwner，但不调用v1正文压缩。
+- [x] **实现wait/stop与存量边界。** `wait()`等待已在途execution后再循环drain cleanup Set，包含finally新入队工作；`stop()`同理，pending abort本身不触发finalize。临时preparation在applyReady后await wait。冷启动进程无旧cache，历史terminal checkpoint由显式停服compactor处理；不在启动追加全历史正文扫描，不自动清未完成checkpoint。
+- [x] **跑绿并提交。** 同命令＋`npx vitest run tests/environment-payload-compaction.test.ts tests/web-recovery.test.ts tests/environment-async-tools.test.ts tests/memory-payload-compaction.test.ts`，`npm run typecheck`；提交 `fix: finalize terminal environment web owners after settlement`。
 
 ## 本分计划交付门
 
-- [ ] W1～W7各任务均有修复前失败、修复后通过和实际提交；checkbox只能由执行证据更新，本次不预勾。
-- [ ] 在工作区创建独立TEMP/TMP目录后运行本计划定向测试和 `npm run typecheck`，集成阶段再按主计划跑一次全量、隔离outDir构建及demo。浏览器仅合成页面、CLI仅fake供应商；受权限限制的skip/失败单列，不能改成产品全绿。
-- [ ] `git diff --check`通过；交付记录逐项映射B2/B3/B5/WM-O1/WM-O2/WM-O3到测试与变更，明确旧损坏网页未自动恢复、迁移新旧代码回退配对、真实网页／视觉质量未在线验收。
-- [ ] 文档同步网页v2引用、恢复／迁移命令和图库CLI能力；历史审核证据保持原样，交付测量写新目录。未执行正式迁移／服务启停时明确写“未执行”。
+- [x] W1～W7各任务均有修复前失败、修复后通过和实际提交；checkbox只能由执行证据更新，本次不预勾。
+- [x] 在工作区创建独立TEMP/TMP目录后运行本计划定向测试和 `npm run typecheck`，集成阶段再按主计划跑一次全量、隔离outDir构建及demo。浏览器仅合成页面、CLI仅fake供应商；受权限限制的skip/失败单列，不能改成产品全绿。
+- [x] `git diff --check`通过；交付记录逐项映射B2/B3/B5/WM-O1/WM-O2/WM-O3到测试与变更，明确旧损坏网页未自动恢复、迁移新旧代码回退配对、真实网页／视觉质量未在线验收。
+- [x] 文档同步网页v2引用、恢复／迁移命令和图库CLI能力；历史审核证据保持原样，交付测量写新目录。未执行正式迁移／服务启停时明确写“未执行”。

@@ -1,0 +1,77 @@
+{
+  "status": "pass",
+  "scope": "Synthetic stopped closed-database copies only; no formal data or network.",
+  "baselineSourceRevision": "9c20a97f632d9eaf5781973fefab95619eb7dc3a",
+  "baselineCompiled": "D:\\HDSI-remake\\.tmp\\comprehensive-remediation-baseline-build",
+  "fixtureRoot": "D:\\HDSI-remake\\.tmp\\rollback-copy-ZQ0Tb5",
+  "backup": [
+    {
+      "suffix": "",
+      "bytes": 438272,
+      "sha256": "ff21d73336a76e04c4edb6fe97eb7f053f7f9fa4147837f04f8b151ab9dcfb20"
+    }
+  ],
+  "restored": [
+    {
+      "suffix": "",
+      "bytes": 438272,
+      "sha256": "ff21d73336a76e04c4edb6fe97eb7f053f7f9fa4147837f04f8b151ab9dcfb20"
+    }
+  ],
+  "seeded": {
+    "error": null,
+    "providerCalls": 1,
+    "completeCalls": 2,
+    "envelopes": [
+      "b5f6cc731cff9d8b024af82b0625f2b83795d292b3d2dc03f3ab6812c910efb7",
+      "3c4018f0f48e82897d08f5d6140e29b77965a75364b91c9a831a45a637f9b910"
+    ],
+    "checkpointVersion": 1,
+    "counters": {
+      "successReads": 1,
+      "failures": 0
+    },
+    "materialHash": "6493d52cb80f45de086c8f67458e40a5e59145c88a6f5eeb7a8e8840996117c7"
+  },
+  "upgraded": {
+    "error": null,
+    "providerCalls": 0,
+    "completeCalls": 1,
+    "envelopes": [
+      "3c4018f0f48e82897d08f5d6140e29b77965a75364b91c9a831a45a637f9b910"
+    ],
+    "checkpointVersion": 2,
+    "counters": {
+      "successReads": 1,
+      "failures": 0
+    },
+    "materialHash": "6493d52cb80f45de086c8f67458e40a5e59145c88a6f5eeb7a8e8840996117c7"
+  },
+  "oldCodeWithNewDatabase": {
+    "error": "TypeError: materials is not iterable",
+    "providerCalls": 0,
+    "completeCalls": 1,
+    "envelopes": [],
+    "checkpointVersion": 2,
+    "counters": {
+      "successReads": 1,
+      "failures": 0
+    },
+    "materialHash": "6493d52cb80f45de086c8f67458e40a5e59145c88a6f5eeb7a8e8840996117c7"
+  },
+  "pairedRollback": {
+    "error": null,
+    "providerCalls": 0,
+    "completeCalls": 1,
+    "envelopes": [
+      "3c4018f0f48e82897d08f5d6140e29b77965a75364b91c9a831a45a637f9b910"
+    ],
+    "checkpointVersion": 1,
+    "counters": {
+      "successReads": 1,
+      "failures": 0
+    },
+    "materialHash": "6493d52cb80f45de086c8f67458e40a5e59145c88a6f5eeb7a8e8840996117c7"
+  },
+  "conclusion": "Old binary cannot consume the v2 checkpoint in this real completion-envelope path; old binary plus its matched pre-change database backup restores the full envelope and counters without rereading the page."
+}

@@ -1,0 +1,862 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-11",
+  "status": "code_and_engineering_complete_deployment_pending",
+  "sourceIdentity": {
+    "auditBaseline": "ce7e88e9c8e4940ec17ae4b5dae2392fd6ddb57c",
+    "preservedAuditAndPlanCommit": "9c20a97f632d9eaf5781973fefab95619eb7dc3a",
+    "recordedImplementationHead": "d0a9963fd206a5d882d92c73914ee7f28ea9d316",
+    "branch": "codex/comprehensive-remediation-20261011",
+    "workspace": "D:/HDSI-remake",
+    "commitIdentitySource": "Root verified Git HEAD and exact final-gate source manifest; later documentation/deployment evidence commits contain no product changes."
+  },
+  "references": {
+    "audit": "docs/v0.5/reviews/comprehensive-audit-20261011/README.md",
+    "plan": "docs/v0.5/plans/comprehensive-remediation-20261011/README.md",
+    "record": "docs/v0.5/records/comprehensive-remediation-20261011/README.md",
+    "batchA": "docs/v0.5/records/comprehensive-remediation-20261011/BATCH_A.md",
+    "batchB": "docs/v0.5/records/comprehensive-remediation-20261011/BATCH_B.md",
+    "retrievalEvaluation": "docs/v0.5/records/comprehensive-remediation-20261011/RETRIEVAL_EVALUATION.md"
+  },
+  "interpretation": {
+    "implementedAndReviewed": "Accepted task implementation and resolved independent review findings; not a claim of final-source full-suite success, deployment or online quality.",
+    "targetedEvidence": "Saved RED/GREEN and passing task logs are historical executions at their recorded source identities. Tests overlap across tasks and must not be summed as repository totals.",
+    "documentationFindings": "D2/D3 concern repository documentation. Their runtime deploymentStatus is not_applicable; current-document closure still requires D1 final verification.",
+    "qualityFinding": "M3 is closed only as an evaluation/tool-delivery task. Q2 keep_current is an accepted result, not an achieved retrieval-quality improvement. Q3 collection, quality gate and production enablement remain separate.",
+    "method": "Read-only plan/review/source/evidence inspection and JSON/path validation only. No product edits, Git actions, test execution, main retrieval queries, formal-data access or online requests by the matrix author."
+  },
+  "findings": [
+    {
+      "id": "B1",
+      "title": "已消费预约的元数据更新触发重复执行",
+      "tasks": [
+        "R1"
+      ],
+      "commits": [
+        "026b400"
+      ],
+      "implementationStatus": "implemented_and_reviewed",
+      "verificationStatus": "targeted_and_final_integration_pass",
+      "deploymentStatus": "pending",
+      "testFiles": [
+        "tests/task-projection.test.ts",
+        "tests/appointment-update-host.test.ts",
+        "tests/tasks.test.ts",
+        "tests/review-recovery.test.ts"
+      ],
+      "testEvidence": [
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/r1-green.txt",
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/v2-send-green.txt"
+      ],
+      "reviewEvidence": [
+        "docs/v0.5/records/comprehensive-remediation-20261011/reviews/R1-R2.md",
+        "docs/v0.5/records/comprehensive-remediation-20261011/reviews/V2-send.md"
+      ],
+      "aliases": [
+        "RT-2"
+      ],
+      "outcome": "睡眠规划与事务提交共用投影；仅显式不同epoch且晚于冻结turn.at的改期重新pending。旧冻结输出、时间、抽样及已确认发送保留。",
+      "limitations": [
+        "恢复旧未完成轮使用修复后的任务生命周期裁决，不重新规划旧冻结nextState。",
+        "最终全量/部署按V1和deployment门分别确认。"
+      ]
+    },
+    {
+      "id": "B2",
+      "title": "提取后的纯文本被再次按HTML清理",
+      "tasks": [
+        "W1"
+      ],
+      "commits": [
+        "1034540"
+      ],
+      "implementationStatus": "implemented_and_reviewed",
+      "verificationStatus": "targeted_and_final_integration_pass",
+      "deploymentStatus": "pending",
+      "testFiles": [
+        "tests/web-content.test.ts",
+        "tests/browser-web-integration.test.ts"
+      ],
+      "testEvidence": [
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/w1-green-final.txt"
+      ],
+      "reviewEvidence": [
+        "docs/v0.5/records/comprehensive-remediation-20261011/reviews/W1-W3.md"
+      ],
+      "aliases": [
+        "WM-B1"
+      ],
+      "outcome": "provider显式返回text，真实标签清理仅在HTML适配边界执行；比较符、泛型、字面标签、实体与Unicode保真。",
+      "limitations": [
+        "已存储的旧损坏正文不自动恢复。",
+        "离线浏览器/模型信封回归不等于所有真实网页可读性验收。"
+      ]
+    },
+    {
+      "id": "B3",
+      "title": "图库CLI在启用browser搜索时依赖装配错误",
+      "tasks": [
+        "W2"
+      ],
+      "commits": [
+        "e7b834e"
+      ],
+      "implementationStatus": "implemented_and_reviewed",
+      "verificationStatus": "targeted_and_final_integration_pass",
+      "deploymentStatus": "pending",
+      "testFiles": [
+        "tests/stickers-cli.test.ts",
+        "tests/sticker-web-runtime.test.ts"
+      ],
+      "testEvidence": [
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/w2-review-fix-order-green.txt"
+      ],
+      "reviewEvidence": [
+        "docs/v0.5/records/comprehensive-remediation-20261011/reviews/W2.md"
+      ],
+      "aliases": [
+        "WM-B2",
+        "original-document-D1"
+      ],
+      "outcome": "import独立装配browser并保留工具资格，rebuild仅使用Embedding；完整启动预算与实际canvas/browser关闭次序已验证。",
+      "documentationEvidence": [
+        "README.md",
+        "docs/v0.5/subsystems/REMAKE_V0.5_EXPRESSION_STICKERS.md"
+      ],
+      "limitations": [
+        "没有真实模型/图库导入质量验收；合成CLI不读取正式配置或数据库。",
+        "原文档D1与B3同根因，只计一次发现。"
+      ]
+    },
+    {
+      "id": "B4",
+      "title": "pause在异步选择窗口到达后仍启动新工作",
+      "tasks": [
+        "R2"
+      ],
+      "commits": [
+        "f7c7a01",
+        "946584b"
+      ],
+      "implementationStatus": "implemented_and_reviewed",
+      "verificationStatus": "targeted_and_final_integration_pass",
+      "deploymentStatus": "pending",
+      "testFiles": [
+        "tests/host-pause-selection.test.ts",
+        "tests/reply-freshness-host.test.ts",
+        "tests/graceful-stop-host.test.ts"
+      ],
+      "testEvidence": [
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/r2-green.txt",
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/r2-review-fix-targeted.txt"
+      ],
+      "reviewEvidence": [
+        "docs/v0.5/records/comprehensive-remediation-20261011/reviews/R1-R2.md"
+      ],
+      "aliases": [
+        "RT-1"
+      ],
+      "outcome": "普通选择和waiting接管await返回后复查pause/stop；已进入轮继续完成生成、实际两段发送和后处理。",
+      "limitations": [
+        "验证Host API微任务交错，不声称真实QQ命令窗口已在线复现。"
+      ]
+    },
+    {
+      "id": "B5",
+      "title": "嵌套正文容器重复输出后代文字",
+      "tasks": [
+        "W3"
+      ],
+      "commits": [
+        "1034540"
+      ],
+      "implementationStatus": "implemented_and_reviewed",
+      "verificationStatus": "targeted_and_final_integration_pass",
+      "deploymentStatus": "pending",
+      "testFiles": [
+        "tests/browser-page-extraction.test.ts",
+        "tests/browser-visible-dom.test.ts"
+      ],
+      "testEvidence": [
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/w3-green.txt"
+      ],
+      "reviewEvidence": [
+        "docs/v0.5/records/comprehensive-remediation-20261011/reviews/W1-W3.md"
+      ],
+      "aliases": [
+        "WM-B3"
+      ],
+      "outcome": "按DOM顺序保留同档顶层有效正文容器，嵌套后代不重复，兄弟真实重复段落保留；提取器dom-v3/readability-0.6.0。",
+      "documentationEvidence": [
+        "docs/v0.5/subsystems/REMAKE_V0.5_WEB_SEARCH.md",
+        "docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md"
+      ],
+      "limitations": [
+        "与W1共享一个提交，但发现和验证单列。"
+      ]
+    },
+    {
+      "id": "D2",
+      "title": "当前文档缺少载荷回收命令与续跑备份说明",
+      "tasks": [
+        "D1",
+        "R4b",
+        "W5.2"
+      ],
+      "commits": [
+        "a8fb72d",
+        "6253da0",
+        "edd7184"
+      ],
+      "implementationStatus": "documentation_updated",
+      "verificationStatus": "document_gate_pass",
+      "deploymentStatus": "not_applicable",
+      "testFiles": [
+        "tests/memory-payload-compaction-cli.test.ts",
+        "tests/web-payload-migration-cli.test.ts"
+      ],
+      "testEvidence": [
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/r4b-final-green.txt",
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/r4b-cli-dry-run.txt",
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/r4b-cli-apply-first.txt",
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/r4b-cli-resume.txt",
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/r4b-cli-noop.txt",
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/w5-cli-dry-run.txt",
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/w5-cli-apply-resume.txt",
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/w5-cli-apply-idempotent.txt"
+      ],
+      "reviewEvidence": [
+        "docs/v0.5/records/comprehensive-remediation-20261011/reviews/R4b.md",
+        "docs/v0.5/records/comprehensive-remediation-20261011/reviews/W5.md",
+        "docs/v0.5/records/comprehensive-remediation-20261011/reviews/DELIVERY-readiness.md"
+      ],
+      "documentationEvidence": [
+        "README.md",
+        "docs/v0.5/subsystems/REMAKE_V0.5_RECOVERY.md",
+        "docs/v0.5/subsystems/REMAKE_V0.5_WEB_SEARCH.md"
+      ],
+      "outcome": "明确默认dry-run、apply/stopped、50/20批量默认、hasMore、唯一目录DB/WAL/SHM备份、无残余不备份；环境opt-in和网页v2转换分开。",
+      "limitations": [
+        "CLI通过证明合成库操作合同，正式apply状态单列。"
+      ]
+    },
+    {
+      "id": "D3",
+      "title": "根README无时间限定的旧最新批次与升级状态",
+      "tasks": [
+        "D1"
+      ],
+      "commits": [
+        "a8fb72d"
+      ],
+      "implementationStatus": "documentation_updated",
+      "verificationStatus": "document_gate_pass",
+      "deploymentStatus": "not_applicable",
+      "testFiles": [],
+      "testEvidence": [],
+      "reviewEvidence": [
+        "docs/v0.5/records/comprehensive-remediation-20261011/reviews/DELIVERY-readiness.md"
+      ],
+      "documentationEvidence": [
+        "README.md",
+        "docs/v0.5/README.md",
+        "docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md",
+        "docs/v0.5/records/comprehensive-remediation-20261011/BATCH_A.md",
+        "docs/v0.5/records/comprehensive-remediation-20261011/BATCH_B.md"
+      ],
+      "outcome": "175/920等数字保留原批次含义，历史只升级夹具说明需带原日期；当前最新入口、交付及部署状态由root最终同步。",
+      "limitations": [
+        "纯文字修正不新增镜像产品测试。",
+        "原审核和历史交付不能改写为当前全量验收。"
+      ]
+    },
+    {
+      "id": "RT-O1",
+      "title": "调度重复物化全部任务历史",
+      "tasks": [
+        "R3"
+      ],
+      "commits": [
+        "fb96eb6",
+        "fff41ba"
+      ],
+      "implementationStatus": "implemented_and_reviewed",
+      "verificationStatus": "targeted_and_final_integration_pass",
+      "deploymentStatus": "pending",
+      "testFiles": [
+        "tests/task-queries.test.ts",
+        "tests/scheduler-task-workset.test.ts",
+        "tests/tasks.test.ts",
+        "tests/world-school-batch.test.ts"
+      ],
+      "testEvidence": [
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/r3-final-green.txt"
+      ],
+      "reviewEvidence": [
+        "docs/v0.5/records/comprehensive-remediation-20261011/reviews/R3.md",
+        "docs/v0.5/records/comprehensive-remediation-20261011/reviews/V3.md"
+      ],
+      "outcome": "任务查询限定pending，工作集仅在一次同步评价复用，任务写入后失效；scene收尾保留原终态匹配行为。",
+      "performanceEvidence": [
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/task-scheduling-before.json",
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/task-scheduling-after.json",
+        "docs/v0.5/records/comprehensive-remediation-20261011/PERFORMANCE_COMPARISON.md"
+      ],
+      "limitations": [
+        "collectReady+nextDeadline最多两次pending查询的预算不等于完整Host启动/status总查询数。",
+        "同机合成计时after为69147f9，不外推生产长尾。"
+      ]
+    },
+    {
+      "id": "RT-O2",
+      "title": "环境终态准备正文长期保留",
+      "tasks": [
+        "R4a",
+        "R4b"
+      ],
+      "commits": [
+        "5e77e04",
+        "6253da0"
+      ],
+      "implementationStatus": "implemented_and_reviewed",
+      "verificationStatus": "targeted_and_final_integration_pass",
+      "deploymentStatus": "pending",
+      "testFiles": [
+        "tests/environment-payload-compaction.test.ts",
+        "tests/environment-async-recovery.test.ts",
+        "tests/memory-payload-compaction-cli.test.ts",
+        "tests/memory-payload-recovery-matrix.test.ts"
+      ],
+      "testEvidence": [
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/r4a-focused-green.txt",
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/r4b-final-green.txt",
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/r4b-cli-dry-run.txt",
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/r4b-cli-apply-first.txt",
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/r4b-cli-resume.txt",
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/r4b-cli-noop.txt"
+      ],
+      "reviewEvidence": [
+        "docs/v0.5/records/comprehensive-remediation-20261011/reviews/R4a.md",
+        "docs/v0.5/records/comprehensive-remediation-20261011/reviews/R4b.md"
+      ],
+      "outcome": "仅准备版本1的committed/superseded生成terminalAudit并清三正文；正常提交原子，旧执行结算后再清。历史全文由显式include-environment分批工具处理。",
+      "documentationEvidence": [
+        "README.md",
+        "docs/v0.5/subsystems/REMAKE_V0.5_RECOVERY.md"
+      ],
+      "dataProcessingStatus": "formal_compaction_not_executed",
+      "limitations": [
+        "准备版本0/缺省和未完成步骤保留原正文。",
+        "默认memory:compact-payloads范围不扩大，默认环境计数0不等于无环境残余。",
+        "不运行VACUUM，不承诺正式SQLite文件立即缩小。"
+      ]
+    },
+    {
+      "id": "WM-O1",
+      "title": "网页控制读取和持久化正文副本放大",
+      "tasks": [
+        "W4",
+        "W5.1",
+        "W5.2",
+        "W5.3"
+      ],
+      "commits": [
+        "78fc936",
+        "4333e83",
+        "edd7184",
+        "305db52",
+        "fff41ba"
+      ],
+      "implementationStatus": "implemented_and_reviewed",
+      "verificationStatus": "targeted_and_final_integration_pass",
+      "deploymentStatus": "pending",
+      "testFiles": [
+        "tests/web-light-state.test.ts",
+        "tests/web-persistence-v2.test.ts",
+        "tests/web-payload-migration.test.ts",
+        "tests/web-payload-migration-cli.test.ts",
+        "tests/web-payload-cost.test.ts",
+        "tests/web-recovery.test.ts"
+      ],
+      "testEvidence": [
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/w4-green-final.txt",
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/w4-recovery-green.txt",
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/w5-independent-review-green.txt",
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/w5-cli-apply-first.txt",
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/w5-cli-apply-resume.txt",
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/w5-cli-apply-idempotent.txt"
+      ],
+      "reviewEvidence": [
+        "docs/v0.5/records/comprehensive-remediation-20261011/reviews/W4.md",
+        "docs/v0.5/records/comprehensive-remediation-20261011/reviews/W5.md",
+        "docs/v0.5/records/comprehensive-remediation-20261011/reviews/V3.md"
+      ],
+      "outcome": "控制路径只投影元数据，操作/checkpoint新写v2材料引用，完整正文仍保留在材料表并完整提供模型；旧v1兼容读，缺引用在首写前失败并保留旧checkpoint。",
+      "performanceEvidence": [
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/web-payload-cost.json",
+        "docs/v0.5/records/comprehensive-remediation-20261011/PERFORMANCE_COMPARISON.md"
+      ],
+      "dataProcessingStatus": "formal_legacy_reference_migration_not_executed",
+      "formatStatus": {
+        "newWriteFormatVersion": 2,
+        "legacyReadSupported": true,
+        "startupBulkMigration": false,
+        "formalDatabaseFormatInventory": "not_checked_by_matrix_author"
+      },
+      "limitations": [
+        "逻辑JSON字节下降不是SQLite物理文件缩小。",
+        "即使未批量迁移，新运行写入也会产生v2，旧二进制回退必须配套旧库备份。",
+        "20/40额度和完整模型输入未缩减。"
+      ]
+    },
+    {
+      "id": "WM-O2",
+      "title": "同次图片观察重复读盘与base64编码",
+      "tasks": [
+        "W6"
+      ],
+      "commits": [
+        "c1ae83d",
+        "aee37f4",
+        "fff41ba"
+      ],
+      "implementationStatus": "implemented_and_reviewed",
+      "verificationStatus": "targeted_and_final_integration_pass",
+      "deploymentStatus": "pending",
+      "testFiles": [
+        "tests/incoming-media-asset-lease.test.ts",
+        "tests/incoming-media-assets.test.ts",
+        "tests/incoming-media-turn.test.ts",
+        "tests/incoming-image-model.test.ts",
+        "tests/incoming-media-cleanup.test.ts"
+      ],
+      "testEvidence": [
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/w6-review-green.txt"
+      ],
+      "reviewEvidence": [
+        "docs/v0.5/records/comprehensive-remediation-20261011/reviews/W6.md",
+        "docs/v0.5/records/comprehensive-remediation-20261011/reviews/V3.md"
+      ],
+      "outcome": "观察范围租约共享字节及惰性data URL，完整accepted preparation纳入stop排空；已有同版本观察仍验证pending文件但不重复编码/识别。",
+      "performanceEvidence": [
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/image-payload-before.json",
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/image-payload-after.json",
+        "docs/v0.5/records/comprehensive-remediation-20261011/PERFORMANCE_COMPARISON.md"
+      ],
+      "limitations": [
+        "真实视觉模型质量未新增在线验收。",
+        "待恢复原图缺失仍失败，不通过缓存或新URL放宽资格。"
+      ]
+    },
+    {
+      "id": "WM-O3",
+      "title": "废弃环境owner异步结算后缓存与checkpoint残留",
+      "tasks": [
+        "R4a",
+        "W7"
+      ],
+      "commits": [
+        "5e77e04",
+        "f60afa6"
+      ],
+      "implementationStatus": "implemented_and_reviewed",
+      "verificationStatus": "targeted_and_final_integration_pass",
+      "deploymentStatus": "pending",
+      "testFiles": [
+        "tests/web-owner-finalization.test.ts",
+        "tests/environment-web-finalization.test.ts",
+        "tests/environment-async-host.test.ts",
+        "tests/plugin-runtime-finalization.test.ts",
+        "tests/browser-graceful-stop-failure.test.ts",
+        "tests/graceful-stop-control.test.ts"
+      ],
+      "testEvidence": [
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/w7-independent-final-green.txt",
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/w7-independent-compat-green.txt"
+      ],
+      "reviewEvidence": [
+        "docs/v0.5/records/comprehensive-remediation-20261011/reviews/W7.md"
+      ],
+      "outcome": "终态owner等待同一步骤execution及网页锁结算后释放缓存和checkpoint，前台只schedule；wait/stop排空，Host在全部drain后暴露错误，runtime安全释放后仍报告失败。",
+      "documentationEvidence": [
+        "docs/v0.5/subsystems/REMAKE_V0.5_RECOVERY.md",
+        "docs/v0.5/subsystems/REMAKE_V0.5_WEB_SEARCH.md"
+      ],
+      "limitations": [
+        "pending/retry/普通停止不等于终态，不清待恢复正文。",
+        "不冷启动扫描全部历史终态，旧历史由显式工具处理。",
+        "W7在V3计时快照之后，依最终确定性联测验收后续集成。"
+      ]
+    },
+    {
+      "id": "M1",
+      "title": "容量归一和清理重复全文/唤醒历史读取",
+      "tasks": [
+        "M1-A",
+        "M1-B",
+        "M1-C",
+        "M-D"
+      ],
+      "commits": [
+        "f0bf56c",
+        "4ba66c8",
+        "f33de81",
+        "5b8373e",
+        "fff41ba"
+      ],
+      "implementationStatus": "implemented_and_reviewed",
+      "verificationStatus": "targeted_and_final_integration_pass",
+      "deploymentStatus": "pending",
+      "testFiles": [
+        "tests/memory-policy-snapshot.test.ts",
+        "tests/memory-policy-order.test.ts",
+        "tests/memory-capacity-work.test.ts",
+        "tests/memory-cleanup-policy-work.test.ts",
+        "tests/memory-access-work-probe.test.ts"
+      ],
+      "testEvidence": [
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/m1a-review.txt",
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/m1b-focused-final.txt",
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/m1c-focused-final.txt",
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/md-review-green.txt"
+      ],
+      "reviewEvidence": [
+        "docs/v0.5/records/comprehensive-remediation-20261011/reviews/M1-A.md",
+        "docs/v0.5/records/comprehensive-remediation-20261011/reviews/M1-B.md",
+        "docs/v0.5/records/comprehensive-remediation-20261011/reviews/M1-C.md",
+        "docs/v0.5/records/comprehensive-remediation-20261011/reviews/M-D.md",
+        "docs/v0.5/records/comprehensive-remediation-20261011/reviews/V3.md"
+      ],
+      "outcome": "一次同步元数据快照、canonical索引和预计算排序键；实际变更才水合全文；保护/排序/短长配对原子单元保持。",
+      "performanceEvidence": [
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/memory-access-before.json",
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/memory-access-after.json",
+        "docs/v0.5/records/comprehensive-remediation-20261011/MEMORY_ACCESS_COMPARISON.md"
+      ],
+      "limitations": [
+        "无变化归一/到期检查1600元数据行、全文/唤醒/写入0；单long溢出901个canonical只查2批历史、全文1。",
+        "SQLite仍读取JSON页，不能声称与正文长度无关或主循环恒定时间。",
+        "前台Infinity与后台一个退出单元不互换。"
+      ]
+    },
+    {
+      "id": "M2",
+      "title": "不可用语义通道仍读取向量并放大环境冻结",
+      "tasks": [
+        "M2-A",
+        "M2-B",
+        "M-D"
+      ],
+      "commits": [
+        "11e67ab",
+        "4ce15f6",
+        "b062d06",
+        "5b8373e",
+        "fff41ba"
+      ],
+      "implementationStatus": "implemented_and_reviewed",
+      "verificationStatus": "targeted_and_final_integration_pass",
+      "deploymentStatus": "pending",
+      "testFiles": [
+        "tests/memory-retrieval-vector-work.test.ts",
+        "tests/environment-retrieval-vector-snapshot.test.ts",
+        "tests/environment-preparation-snapshot.test.ts",
+        "tests/environment-async-boundaries.test.ts",
+        "tests/memory-access-work-probe.test.ts"
+      ],
+      "testEvidence": [
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/m2a-green.txt",
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/m2b-green.txt",
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/m2b-boundary-compatibility.txt",
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/md-review-green.txt"
+      ],
+      "reviewEvidence": [
+        "docs/v0.5/records/comprehensive-remediation-20261011/reviews/M2-A.md",
+        "docs/v0.5/records/comprehensive-remediation-20261011/reviews/M2-B.md",
+        "docs/v0.5/records/comprehensive-remediation-20261011/reviews/M-D.md",
+        "docs/v0.5/records/comprehensive-remediation-20261011/reviews/V3.md"
+      ],
+      "outcome": "current检索前判定实际query gate，冻结保存与query无关的能力；可用空基础query仍保留向量，旧快照兼容且原配置摘要不变。",
+      "performanceEvidence": [
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/memory-access-before.json",
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/memory-access-after.json",
+        "docs/v0.5/records/comprehensive-remediation-20261011/MEMORY_ACCESS_COMPARISON.md"
+      ],
+      "limitations": [
+        "不可用1000x1024向量返回字节0；可用路径仍4,096,000字节/1查询并保持排序。",
+        "不从live回补冻结正文/向量，不改默认词法1/1或semantic null。"
+      ]
+    },
+    {
+      "id": "M3",
+      "title": "自然问句检索质量缺少独立评估与标定证据",
+      "tasks": [
+        "Q1",
+        "Q2",
+        "Q3"
+      ],
+      "commits": [
+        "c03319f",
+        "b76118b",
+        "00512e1",
+        "f2cde49",
+        "d0a9963"
+      ],
+      "implementationStatus": "q1_q2_and_q3_offline_tooling_complete",
+      "verificationStatus": "q1_q2_evaluation_complete_keep_current",
+      "deploymentStatus": "no_calibration_change",
+      "testFiles": [
+        "tests/memory-retrieval-evaluation.test.ts",
+        "tests/memory-retrieval-calibration-split.test.ts",
+        "tests/memory-retrieval-semantic-evaluation.test.ts"
+      ],
+      "testEvidence": [
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/q1-review-fixes-green.txt",
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/q2-scoped-green.txt",
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/q2-main-run.txt",
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/q3-independent-mini-tests.txt"
+      ],
+      "reviewEvidence": [
+        "docs/v0.5/records/comprehensive-remediation-20261011/reviews/Q1-labels.md",
+        "docs/v0.5/records/comprehensive-remediation-20261011/reviews/Q1.md",
+        "docs/v0.5/records/comprehensive-remediation-20261011/reviews/Q2.md",
+        "docs/v0.5/records/comprehensive-remediation-20261011/reviews/Q3-labels.md",
+        "docs/v0.5/records/comprehensive-remediation-20261011/reviews/Q3.md"
+      ],
+      "evaluationEvidence": [
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/q1-dataset-freeze.json",
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/q1-baseline.json",
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/q2-candidate.json",
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/q2-report.json",
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/q3-dataset-freeze.json",
+        "tests/fixtures/memory-retrieval-v2.json.holdout-used.json",
+        "docs/v0.5/records/comprehensive-remediation-20261011/RETRIEVAL_EVALUATION.md"
+      ],
+      "outcome": "60 family/360问真实检索评估；Q1只看288条开发/标定，Q2候选冻结后一次成对72条holdout。召回增加10个百分点，但fact precision .8未达.95，因此keep_current。",
+      "qualityImprovementStatus": "not_demonstrated_for_production",
+      "recommendation": "keep_current",
+      "formalDefaults": {
+        "lexical": {
+          "fact": 1,
+          "experience": 1
+        },
+        "semantic": null
+      },
+      "q3Gate": "gates.Q3",
+      "limitations": [
+        "不能据工具完成宣称实际聊天记忆质量已提升。",
+        "Q2主holdout已使用，不可重跑或据结果继续调参；Q3另用12个全新holdout family。",
+        "Q3离线工具独立复核已通过，真实Embedding采集/主语义评分/正式启用均未执行。",
+        "小型已知向量测试不是真实供应商质量证据。"
+      ]
+    }
+  ],
+  "gates": {
+    "V0": {
+      "status": "passed",
+      "commits": [
+        "705f220"
+      ],
+      "testEvidence": [
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/v0-green.txt",
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/v0-isolated-integration.txt"
+      ],
+      "reviewEvidence": [
+        "docs/v0.5/records/comprehensive-remediation-20261011/reviews/V0.md"
+      ],
+      "meaning": "验收脚本显式加载HDSI_TEST_LIB_DIR且不fallback；正式启动默认lib路径不变。"
+    },
+    "D1": {
+      "status": "pass",
+      "commits": [
+        "a8fb72d"
+      ],
+      "documentationEvidence": [
+        "README.md",
+        "docs/v0.5/README.md",
+        "docs/v0.5/subsystems/REMAKE_V0.5_MEMORY.md",
+        "docs/v0.5/subsystems/REMAKE_V0.5_RECOVERY.md",
+        "docs/v0.5/subsystems/REMAKE_V0.5_WEB_SEARCH.md",
+        "docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md"
+      ],
+      "priorEvidence": [
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/document-verification.json"
+      ],
+      "remaining": [],
+      "qualification": "Current facts, maintenance CLI parameters, version table, lifecycle behavior and local links checked; final deployment status updated separately.",
+      "reviewEvidence": [
+        "docs/v0.5/records/comprehensive-remediation-20261011/reviews/D1-final.md"
+      ]
+    },
+    "V1": {
+      "status": "pass",
+      "finalSourceIdentity": "d0a9963fd206a5d882d92c73914ee7f28ea9d316",
+      "batchA": {
+        "status": "passed_across_distinct_runs",
+        "evidence": [
+          "docs/v0.5/records/comprehensive-remediation-20261011/BATCH_A.md",
+          "docs/v0.5/records/comprehensive-remediation-20261011/evidence/batch-a-full.txt",
+          "docs/v0.5/records/comprehensive-remediation-20261011/evidence/batch-a-permission-recheck.txt"
+        ],
+        "qualification": "193文件1072项通过，加无重叠的2文件20项权限复验；不是一次195文件1092项全绿。"
+      },
+      "batchB": {
+        "status": "pass",
+        "verifiedSourceCommit": "d0a9963fd206a5d882d92c73914ee7f28ea9d316",
+        "sourceManifest": "docs/v0.5/records/comprehensive-remediation-20261011/evidence/batch-b-source-manifest.json",
+        "sourceContentUnchangedSinceTests": true,
+        "typecheck": {
+          "exitCode": 0,
+          "evidence": "docs/v0.5/records/comprehensive-remediation-20261011/evidence/batch-b-typecheck.txt"
+        },
+        "isolatedBuild": {
+          "exitCode": 0,
+          "evidence": "docs/v0.5/records/comprehensive-remediation-20261011/evidence/batch-b-isolated-build.txt"
+        },
+        "fullSuite": {
+          "exitCode": 0,
+          "filesPassed": 217,
+          "testsPassed": 1370,
+          "skipped": 0,
+          "durationSeconds": 195.98,
+          "evidence": "docs/v0.5/records/comprehensive-remediation-20261011/evidence/batch-b-full-suite.txt"
+        },
+        "demo": {
+          "exitCode": 0,
+          "evidence": "docs/v0.5/records/comprehensive-remediation-20261011/evidence/batch-b-demo.txt"
+        },
+        "pluginSmoke": {
+          "exitCode": 0,
+          "cases": [
+            "empty_week",
+            "required_notice"
+          ],
+          "evidence": "docs/v0.5/records/comprehensive-remediation-20261011/evidence/batch-b-plugin-smoke.txt"
+        }
+      },
+      "remaining": []
+    },
+    "V2": {
+      "status": "pass",
+      "evidence": [
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/recovery-matrix.json",
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/engineering-gates.json"
+      ],
+      "fixedScenarioCount": 8,
+      "targetedScenariosPassed": 8,
+      "qualification": "映射49项、跨行48个唯一file+testName；所有引用测试名存在，不是49项独立测试总数。最终全量证据由root另记。"
+    },
+    "V3": {
+      "status": "passed_recorded_measurement",
+      "commits": [
+        "fff41ba"
+      ],
+      "baselineHead": "9c20a97f632d9eaf5781973fefab95619eb7dc3a",
+      "measuredAfterHead": "69147f9aebc9cdb8ee19fa17f6c50d726e93d5ae",
+      "sampleCount": 350,
+      "casePairs": 25,
+      "samplesPerVersionPerCase": 7,
+      "evidence": [
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/performance-validation.json",
+        "docs/v0.5/records/comprehensive-remediation-20261011/MEMORY_ACCESS_COMPARISON.md",
+        "docs/v0.5/records/comprehensive-remediation-20261011/PERFORMANCE_COMPARISON.md"
+      ],
+      "reviewEvidence": [
+        "docs/v0.5/records/comprehensive-remediation-20261011/reviews/V3.md"
+      ],
+      "qualification": "同机合成测量、结果等价和工作预算通过；W7后续修改未计时，最终确定性联测仍归V1。"
+    },
+    "Q3": {
+      "tooling": {
+        "status": "complete_independently_reviewed",
+        "commits": [
+          "d0a9963"
+        ],
+        "testEvidence": [
+          "docs/v0.5/records/comprehensive-remediation-20261011/evidence/q3-scoped-green.txt",
+          "docs/v0.5/records/comprehensive-remediation-20261011/evidence/q3-independent-mini-tests.txt"
+        ],
+        "reviewEvidence": [
+          "docs/v0.5/records/comprehensive-remediation-20261011/reviews/Q3.md"
+        ],
+        "dryPlanEvidence": [
+          "docs/v0.5/records/comprehensive-remediation-20261011/evidence/q3-vector-plan.json",
+          "docs/v0.5/records/comprehensive-remediation-20261011/evidence/q3-dry-plan-status.json"
+        ],
+        "qualification": "Synthetic config planned 600 unique texts, zero network requests, no vector output or main holdout use."
+      },
+      "dataset": {
+        "status": "independently_reviewed_and_frozen",
+        "commits": [
+          "f2cde49"
+        ],
+        "dataset": "tests/fixtures/memory-retrieval-semantic-v2.json",
+        "freezeEvidence": "docs/v0.5/records/comprehensive-remediation-20261011/evidence/q3-dataset-freeze.json",
+        "reviewEvidence": "docs/v0.5/records/comprehensive-remediation-20261011/reviews/Q3-labels.md",
+        "newHoldoutFamilies": 12,
+        "newHoldoutQueries": 72
+      },
+      "providerCollection": {
+        "status": "not_executed",
+        "reason": "No explicit online experiment authorization; no real vectors collected."
+      },
+      "qualityGate": {
+        "status": "incomplete",
+        "reason": "No complete real-provider vector pack and no main semantic holdout evaluation."
+      },
+      "productionEnablement": {
+        "status": "not_enabled",
+        "calibrationChanged": false
+      }
+    },
+    "V4": {
+      "status": "delivery_and_deployment_pending",
+      "branchIntegrationReview": {
+        "status": "passed_scoped",
+        "reviewEvidence": [
+          "docs/v0.5/records/comprehensive-remediation-20261011/reviews/FINAL.md"
+        ],
+        "reviewedRange": "9c20a97..f60afa622543f126c9d25919989b11b37dc6b48c",
+        "qualification": "Committed product integration static review; Q3 independently accepted in reviews/Q3.md; final engineering-gates.json covers identical source content."
+      },
+      "rollbackDrill": {
+        "status": "passed_synthetic_copies",
+        "evidence": [
+          "docs/v0.5/records/comprehensive-remediation-20261011/evidence/rollback-drill.json",
+          "docs/v0.5/records/comprehensive-remediation-20261011/evidence/rollback-drill-run.txt",
+          "docs/v0.5/records/comprehensive-remediation-20261011/evidence/rollback-drill-source.ts.txt"
+        ],
+        "outcome": "旧构建不能读取新v2 checkpoint；恢复配套旧数据库备份与旧构建后完整信封/材料/计数一致。",
+        "qualification": "合成已关闭数据库副本；不是正式库回退。"
+      },
+      "localGitIntegration": {
+        "status": "pending",
+        "targetBranch": "main",
+        "integratedCommit": null,
+        "remotePush": "not_requested"
+      },
+      "remaining": [
+        "本地Git最终集成",
+        "实际安全停止、配套备份、构建部署、只读检查",
+        "确认服务保持停止供用户手动启动"
+      ]
+    }
+  },
+  "deployment": {
+    "status": "pending",
+    "authorization": "User authorized plan implementation, local Git delivery, safe HDSI stop and redeployment if required, and requested manual startup after completion.",
+    "serviceState": "not_checked_by_matrix_author",
+    "finalRequiredServiceState": "stopped_for_user_manual_start",
+    "deployedCommit": null,
+    "backupDirectory": null,
+    "backupEvidence": [],
+    "deploymentEvidence": [],
+    "formalDataActions": {
+      "webReferenceMigration": "not_executed",
+      "environmentPayloadCompaction": "not_executed",
+      "vacuum": "not_executed",
+      "calibrationChange": "not_executed"
+    },
+    "rollbackRequirement": "After new web v2 writes or terminal payload compaction, pair old code/build with its complete matching pre-deployment DB/WAL/SHM and configuration backup. Restoring backup discards later business changes."
+  }
+}

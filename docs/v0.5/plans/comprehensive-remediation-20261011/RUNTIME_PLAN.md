@@ -10,7 +10,7 @@
 
 **Spec:** [综合审核](../../reviews/comprehensive-audit-20261011/README.md)、[运行时审核 RT-1/RT-2/RT-O1/RT-O2](../../reviews/comprehensive-audit-20261011/RUNTIME_AUDIT.md)、[本批总计划](README.md)。当前业务规则仍以 [V0.5 入口](../../README.md) 链接的调度、恢复和环境说明为准；本页显式列出的状态裁决是拟实施变更。
 
-日期：2026-10-11。状态：**未实施**。审核及本页源码复核基线均为 `ce7e88e9c8e4940ec17ae4b5dae2392fd6ddb57c`，编写时没有产品源码漂移；工作区已有审核报告和导航文档变更，不属于本页实现。编写本页仅静态读源码，没有运行产品测试、访问正式库或启动服务。
+日期：2026-10-11。原方案编写时状态：**未实施**；随后用户已授权执行，当前进度见[实施记录](../../records/comprehensive-remediation-20261011/README.md)。审核及本页源码复核基线均为 `ce7e88e9c8e4940ec17ae4b5dae2392fd6ddb57c`，编写时没有产品源码漂移；工作区已有审核报告和导航文档变更，不属于本页实现。编写本页仅静态读源码，没有运行产品测试、访问正式库或启动服务。
 
 ## Global Constraints
 
@@ -161,14 +161,14 @@ type TaskEvaluation = {
 
 `autonomousEligible` 使用本次已得到的前台判定，不再重新调用 `foreground`。`stashPending` 和 `refreshSharedStep` 如写任务，随后 `invalidate()`，下次读取再查一次；同一评价内共享时钟刷新只执行原分支实际需要的一次，不能为复用而把 eventsOnly路径提前刷新。保留 Runtime／character 的原来重读点，不能让 task缓存掩盖状态变化。`app.generateTurn` 的 pending行只在该次生成起点读取，环境 week输入和 businessBasis各在其既有冻结／验证点读取，二者不共享跨阶段缓存。
 
-- [ ] **Step 1 — 写 SQL与时区失败回归。** `task-queries.test.ts` 放10000个completed/cancelled任务和3个pending（含不同offset同epoch）；断言只返回3个、顺序同原 `all(...).filter(...)`、原历史数据完全不变。`EXPLAIN QUERY PLAN` 应含使用 `task_due` 搜索status；不要把SQLite完整计划文本写死。scene query只返回对应activity的scene任务，包含终态但排除同activity预约。
-- [ ] **Step 2 — 写调度差异与工作量失败回归。** `scheduler-task-workset.test.ts` spy `all('tasks')` 和 `pendingTasks`，基线 H=0/1000/10000、P=0/3；普通无写评价要求 `all('tasks')===0`、每公开评价pending查询≤1，H增长不增加返回历史行数。加入前台输入／预约／sleep／共享场景／不可读活动／quiet等待／学校通知，逐项断言 request、taskIds、deadline与既有合同一致。deadline按epoch比较，专门用 `'2026-10-07T10:00:00+08:00'` 与 `'2026-10-07T03:00:00Z'` 防止字典序错误。
-- [ ] **Step 3 — 写写后失效回归。** 不可读输入触发 `stashPending` 后，同一评价的deadline可见新check；共同活动的 `refreshSharedStep` 替换scene任务后，结果使用更新值且刷新不重复；两次公开方法之间写入新预约，第二次必见。app传给个人导演的tasks仍包含全部pending未来预约，不能只传due任务；week冻结和businessBasis仍能检测预约改变。
-- [ ] **Step 4 — 跑红。** `npx vitest run tests/task-queries.test.ts tests/scheduler-task-workset.test.ts`；旧路径应因缺方法／历史物化计数失败。
-- [ ] **Step 5 — 实现查询与局部复用。** 按接口加入Storage查询，替换限定的 pending读取；把shared收尾改成activity查询。保留全历史API；不缓存到Scheduler实例字段，不在Node进程内建立长期task镜像。检索 `rg -n "all\('tasks'\)" src`，逐个说明剩余调用者是否确需历史，而非盲目替换。
-- [ ] **Step 6 — 跑绿及写确定性成本证据。** `npx vitest run tests/task-queries.test.ts tests/scheduler-task-workset.test.ts tests/scheduler.test.ts tests/shared-v3-scheduler.test.ts tests/reply-freshness-scheduler.test.ts tests/tasks.test.ts tests/world-school-batch.test.ts`。新增离线 `scripts/check-task-scheduling.ts`，支持 `--output <json>`，使用内存库、H=0/1000/10000、P=0/3，每档7次；记录待办查询次数、物化行数、7次原始耗时、median，任何模型／网络调用即失败。
-- [ ] **Step 7 — 运行成本探针。** `npx tsx scripts/check-task-scheduling.ts --output docs/v0.5/records/comprehensive-remediation-20261011/evidence/task-scheduling.json`。硬验收为 H=10000/P=0 的 `collectReady + nextDeadline` 不物化历史任务、查询≤2，P固定时物化量不随H变化；时间只与同机相同夹具基线比较并披露原始样本，不承诺0.0175ms或固定倍率。
-- [ ] **Step 8 — 单独提交。** 暂存本任务查询、调用点、测试及探针，`git commit -m "perf: reuse pending task worksets during scheduling"`；保留R1投影和R2门禁回归通过证据。
+- [x] **Step 1 — 写 SQL与时区失败回归。** `task-queries.test.ts` 放10000个completed/cancelled任务和3个pending（含不同offset同epoch）；断言只返回3个、顺序同原 `all(...).filter(...)`、原历史数据完全不变。`EXPLAIN QUERY PLAN` 应含使用 `task_due` 搜索status；不要把SQLite完整计划文本写死。scene query只返回对应activity的scene任务，包含终态但排除同activity预约。
+- [x] **Step 2 — 写调度差异与工作量失败回归。** `scheduler-task-workset.test.ts` spy `all('tasks')` 和 `pendingTasks`，基线 H=0/1000/10000、P=0/3；普通无写评价要求 `all('tasks')===0`、每公开评价pending查询≤1，H增长不增加返回历史行数。加入前台输入／预约／sleep／共享场景／不可读活动／quiet等待／学校通知，逐项断言 request、taskIds、deadline与既有合同一致。deadline按epoch比较，专门用 `'2026-10-07T10:00:00+08:00'` 与 `'2026-10-07T03:00:00Z'` 防止字典序错误。
+- [x] **Step 3 — 写写后失效回归。** 不可读输入触发 `stashPending` 后，同一评价的deadline可见新check；共同活动的 `refreshSharedStep` 替换scene任务后，结果使用更新值且刷新不重复；两次公开方法之间写入新预约，第二次必见。app传给个人导演的tasks仍包含全部pending未来预约，不能只传due任务；week冻结和businessBasis仍能检测预约改变。
+- [x] **Step 4 — 跑红。** `npx vitest run tests/task-queries.test.ts tests/scheduler-task-workset.test.ts`；旧路径应因缺方法／历史物化计数失败。
+- [x] **Step 5 — 实现查询与局部复用。** 按接口加入Storage查询，替换限定的 pending读取；把shared收尾改成activity查询。保留全历史API；不缓存到Scheduler实例字段，不在Node进程内建立长期task镜像。检索 `rg -n "all\('tasks'\)" src`，逐个说明剩余调用者是否确需历史，而非盲目替换。
+- [x] **Step 6 — 跑绿及写确定性成本证据。** `npx vitest run tests/task-queries.test.ts tests/scheduler-task-workset.test.ts tests/scheduler.test.ts tests/shared-v3-scheduler.test.ts tests/reply-freshness-scheduler.test.ts tests/tasks.test.ts tests/world-school-batch.test.ts`。新增离线 `scripts/check-task-scheduling.ts`，支持 `--output <json>`，使用内存库、H=0/1000/10000、P=0/3，每档7次；记录待办查询次数、物化行数、7次原始耗时、median，任何模型／网络调用即失败。
+- [x] **Step 7 — 运行成本探针。** `npx tsx scripts/check-task-scheduling.ts --output docs/v0.5/records/comprehensive-remediation-20261011/evidence/task-scheduling.json`。硬验收为 H=10000/P=0 的 `collectReady + nextDeadline` 不物化历史任务、查询≤2，P固定时物化量不随H变化；时间只与同机相同夹具基线比较并披露原始样本，不承诺0.0175ms或固定倍率。
+- [x] **Step 8 — 单独提交。** 暂存本任务查询、调用点、测试及探针，`git commit -m "perf: reuse pending task worksets during scheduling"`；保留R1投影和R2门禁回归通过证据。
 
 ## R4a：新协议环境终态审计摘要与在线压缩
 
@@ -225,14 +225,14 @@ private compactTerminalPayload(stepId: string, now: string): void;
 3. `applyReady` 跨日early return也需执行上述收尾；不要只覆盖正常commit路径。R4a的同步压缩在`runEnvironmentStep` v1分支原有`await preparation.wait()`之后完成，不引入未观察异步任务。W7增加异步网页收尾时，由W7在临时preparation的`applyReady`后及finally显式等待工作／收尾排空，避免实例返回后丢失promise错误。
 4. W7/WM-O3后续将这些点统一成 `private finalizeTerminalOwner(stepId:string):Promise<void>`：确认仍为terminal且无同step active；先调用本页 `compactTerminalPayload(stepId,d.clock.now())`，再 `await d.web?.finalizeOwner('environment',stepId)`。其公开网页接口为 `finalizeOwner(ownerType: ModelRunRef['ownerType'], ownerId: string): Promise<void>`；tracked promise队列、web锁与stop/wait排空由网页计划实现。普通pause/stop/重试不能误终结仍可恢复owner。R4a的测试只要求持久正文安全压缩，网页cache/checkpoint最终收尾是W7交付断言。
 
-- [ ] **Step 1 — 写helper矩阵失败回归。** `environment-payload-compaction.test.ts` 覆盖所有stage×terminal状态，固定100条4KiB detail和向量的合法snapshot；断言三正文null、审计ID/计数/指纹准确、业务身份字段深等、未知附加审计字段不被抹去。重复调用返回null。pending/running/ready、版本0、缺省版本的JSON逐字不变；注意modelContractVersion1不等于preparationVersion1。
-- [ ] **Step 2 — 写原子性／在途／磁盘恢复失败回归。** 在正式world event或school提交注入写异常，断言step仍ready、完整冻结结果仍在、无半提交摘要；移除异常恢复时模型0额外调用、实体ID恰好一次。注入ready已保存而active promise尚未settle的边界，直接`applyReady`返回none且保留正文，settle后再调才提交。跨日supersede时用deferred模型和网页stub卡住旧execution，断言其settle前正文保留、旧响应不得重新ready／写正式表，settle后终态三正文被清。中途进程结束留下旧superseded全文可安全保留并由R4b续处理，不在启动自动扫描。
-- [ ] **Step 3 — 逐个标记终态读者并写新断言。** `environment-async-phases.test.ts` 的本阶段输入关系在applyReady前读取断言，提交后断言摘要和正式表；`environment-async-recovery.test.ts` 的ready重启先断言冻结结果保留，applyReady后断言resultDigest等于重启前结果、模型没有再次调用。旧协议测试仍读原input/frozen正文，不能一刀切改为允许null。
-- [ ] **Step 4 — 适配插件验收。** 先合入DELIVERY_PLAN的V0（`HDSI_TEST_LIB_DIR`路径分派），本步骤只更新业务断言。`runtime/plugin-smoke.cjs` 对v1终态要求terminalAudit.version1、input.modelContractVersion1；empty_week要求requiredNoticeIds=[]且result.counts.notices===0；required_notice比较summary.requiredNoticeIds与捕获的模型输入keys，并继续 `validatePersistedNotices(keys, school_notices)`，校验正式school_instances。新增断言摘要notice IDs和实际表ID一致；不能以“压缩了”为由删掉业务验收。
-- [ ] **Step 5 — 跑红。** `npx vitest run tests/environment-payload-compaction.test.ts tests/environment-async-phases.test.ts tests/environment-async-recovery.test.ts`；新压缩／摘要断言应失败，记录原因，不修改旧审核探针。
-- [ ] **Step 6 — 实现摘要、纯helper及生命周期接线。** 增加可选字段与独立digest模块；按上述事务和settle边界接线。只清明确列出的三字段，保留旧字段其余值；纯helper不持有service，不读取live资料。`compactTerminalPayload`再次读取最新行，并确认step不是同ID在途执行，然后以事务保存helper返回值。
-- [ ] **Step 7 — 跑绿并检查全部读者。** `npx vitest run tests/environment-payload-compaction.test.ts tests/environment-async-phases.test.ts tests/environment-async-recovery.test.ts tests/environment-async-host-gates.test.ts tests/environment-async-boundaries.test.ts tests/school-week-contract-recovery.test.ts tests/world-school-batch.test.ts tests/world-school-review14-contracts.test.ts tests/world-school-review14-calendar.test.ts`。再运行 `rg -n "inputSnapshot|preparationSnapshot|frozenResult" src/environment src/deployment scripts runtime tests -g '*.ts' -g '*.cjs'`，把终态消费者逐项归为已适配／旧协议／提交前，留下清单。
-- [ ] **Step 8 — 单独提交。** 提交本任务helper、生命周期接线、smoke适配和测试，`git commit -m "perf: compact terminal environment preparation payloads"`。隔离构建后的插件双场景smoke由总计划主验收执行，不能直接require已部署lib来代表本commit。
+- [x] **Step 1 — 写helper矩阵失败回归。** `environment-payload-compaction.test.ts` 覆盖所有stage×terminal状态，固定100条4KiB detail和向量的合法snapshot；断言三正文null、审计ID/计数/指纹准确、业务身份字段深等、未知附加审计字段不被抹去。重复调用返回null。pending/running/ready、版本0、缺省版本的JSON逐字不变；注意modelContractVersion1不等于preparationVersion1。
+- [x] **Step 2 — 写原子性／在途／磁盘恢复失败回归。** 在正式world event或school提交注入写异常，断言step仍ready、完整冻结结果仍在、无半提交摘要；移除异常恢复时模型0额外调用、实体ID恰好一次。注入ready已保存而active promise尚未settle的边界，直接`applyReady`返回none且保留正文，settle后再调才提交。跨日supersede时用deferred模型和网页stub卡住旧execution，断言其settle前正文保留、旧响应不得重新ready／写正式表，settle后终态三正文被清。中途进程结束留下旧superseded全文可安全保留并由R4b续处理，不在启动自动扫描。
+- [x] **Step 3 — 逐个标记终态读者并写新断言。** `environment-async-phases.test.ts` 的本阶段输入关系在applyReady前读取断言，提交后断言摘要和正式表；`environment-async-recovery.test.ts` 的ready重启先断言冻结结果保留，applyReady后断言resultDigest等于重启前结果、模型没有再次调用。旧协议测试仍读原input/frozen正文，不能一刀切改为允许null。
+- [x] **Step 4 — 适配插件验收。** 先合入DELIVERY_PLAN的V0（`HDSI_TEST_LIB_DIR`路径分派），本步骤只更新业务断言。`runtime/plugin-smoke.cjs` 对v1终态要求terminalAudit.version1、input.modelContractVersion1；empty_week要求requiredNoticeIds=[]且result.counts.notices===0；required_notice比较summary.requiredNoticeIds与捕获的模型输入keys，并继续 `validatePersistedNotices(keys, school_notices)`，校验正式school_instances。新增断言摘要notice IDs和实际表ID一致；不能以“压缩了”为由删掉业务验收。
+- [x] **Step 5 — 跑红。** `npx vitest run tests/environment-payload-compaction.test.ts tests/environment-async-phases.test.ts tests/environment-async-recovery.test.ts`；新压缩／摘要断言应失败，记录原因，不修改旧审核探针。
+- [x] **Step 6 — 实现摘要、纯helper及生命周期接线。** 增加可选字段与独立digest模块；按上述事务和settle边界接线。只清明确列出的三字段，保留旧字段其余值；纯helper不持有service，不读取live资料。`compactTerminalPayload`再次读取最新行，并确认step不是同ID在途执行，然后以事务保存helper返回值。
+- [x] **Step 7 — 跑绿并检查全部读者。** `npx vitest run tests/environment-payload-compaction.test.ts tests/environment-async-phases.test.ts tests/environment-async-recovery.test.ts tests/environment-async-host-gates.test.ts tests/environment-async-boundaries.test.ts tests/school-week-contract-recovery.test.ts tests/world-school-batch.test.ts tests/world-school-review14-contracts.test.ts tests/world-school-review14-calendar.test.ts`。再运行 `rg -n "inputSnapshot|preparationSnapshot|frozenResult" src/environment src/deployment scripts runtime tests -g '*.ts' -g '*.cjs'`，把终态消费者逐项归为已适配／旧协议／提交前，留下清单。
+- [x] **Step 8 — 单独提交。** 提交本任务helper、生命周期接线、smoke适配和测试，`git commit -m "perf: compact terminal environment preparation payloads"`。隔离构建后的插件双场景smoke由总计划主验收执行，不能直接require已部署lib来代表本commit。
 
 **R4a验收指标：** 固定100条4KiB正文＋向量夹具，v1终态JSON字节下降≥95%，且追加检索候选正文／向量不再增加压缩后行大小；摘要ID增长可以随实际业务变更数增长。测试同时验证正式事件／school行数和内容一致、0重复模型调用、0重复提交；不是正式库压缩率承诺。
 
@@ -265,12 +265,12 @@ compactMemoryPayloads(path: string, options: {
 
 原四类处理和environment处理共用一个batchSize预算；前类用完额度后下一批再处理environment，`hasMore`检查包含已选择的全部类。为避免每批重扫已压缩历史，可在显式apply的 `installPayloadIndexes` 增加 `environment_payload_residual` partial index（仅当includeEnvironment=true且表存在）；dry-run不建索引。MemoryStore启动／capacity迁移原调用默认不包含environment，不能因此变成自动旧载荷清理。
 
-- [ ] **Step 1 — 写工具失败回归。** 夹具混合7个v1 terminal、版本0/缺省terminal、pending/running/ready、非环境memory残余和无environment表旧库。默认dry-run不改字节、不含环境eligible计数；加选项计数准确，apply无`--stopped`拒绝；batchSize3/maxBatches2的总更新≤6，hasMore正确；第二次续跑处理剩余，第三次0更新且不新建备份。
-- [ ] **Step 2 — 写恢复和审计断言。** apply前备份包含原database/WAL/SHM存在的全部文件；从备份只读可见完整正文；旧协议／在途行的JSON字节不变，摘要指纹等于原冻结内容，正式school/events/tasks/messages表一致。第二批触发SQL异常，断言本批完全rollback、首批仍保留；移除故障再次运行正常续跑，不重复改compactedAt。现有memory/web压缩矩阵继续通过。
-- [ ] **Step 3 — 跑红。** `npx vitest run tests/memory-payload-compaction.test.ts tests/memory-payload-compaction-cli.test.ts tests/memory-payload-recovery-matrix.test.ts`，新增选项／计数／环境压缩断言应失败。
-- [ ] **Step 4 — 扩展CLI和分批逻辑。** 仅按新签名和显式选项扩展，不重命名既有工具；备份创建成功后才打开写库，每批BEGIN IMMEDIATE/COMMIT，异常ROLLBACK。每一环境行原子写terminalAudit与清三正文，不用SQL直接置null而跳过摘要。index只在显式apply安装。
-- [ ] **Step 5 — 跑绿。** 同Step3命令及 `npx vitest run tests/environment-payload-compaction.test.ts`；检查所有 report解构／精确相等测试已包含environmentSteps且没有削弱原断言。
-- [ ] **Step 6 — 在隔离合成库实际跑CLI。** 先用正式测试同构夹具写 `.tmp/comprehensive-remediation-20261011/environment-payloads.sqlite`，关闭所有连接，再执行下方三个命令；保存JSON到本批records，确认exit0、分批和no-op结果。
+- [x] **Step 1 — 写工具失败回归。** 夹具混合7个v1 terminal、版本0/缺省terminal、pending/running/ready、非环境memory残余和无environment表旧库。默认dry-run不改字节、不含环境eligible计数；加选项计数准确，apply无`--stopped`拒绝；batchSize3/maxBatches2的总更新≤6，hasMore正确；第二次续跑处理剩余，第三次0更新且不新建备份。
+- [x] **Step 2 — 写恢复和审计断言。** apply前备份包含原database/WAL/SHM存在的全部文件；从备份只读可见完整正文；旧协议／在途行的JSON字节不变，摘要指纹等于原冻结内容，正式school/events/tasks/messages表一致。第二批触发SQL异常，断言本批完全rollback、首批仍保留；移除故障再次运行正常续跑，不重复改compactedAt。现有memory/web压缩矩阵继续通过。
+- [x] **Step 3 — 跑红。** `npx vitest run tests/memory-payload-compaction.test.ts tests/memory-payload-compaction-cli.test.ts tests/memory-payload-recovery-matrix.test.ts`，新增选项／计数／环境压缩断言应失败。
+- [x] **Step 4 — 扩展CLI和分批逻辑。** 仅按新签名和显式选项扩展，不重命名既有工具；备份创建成功后才打开写库，每批BEGIN IMMEDIATE/COMMIT，异常ROLLBACK。每一环境行原子写terminalAudit与清三正文，不用SQL直接置null而跳过摘要。index只在显式apply安装。
+- [x] **Step 5 — 跑绿。** 同Step3命令及 `npx vitest run tests/environment-payload-compaction.test.ts`；检查所有 report解构／精确相等测试已包含environmentSteps且没有削弱原断言。
+- [x] **Step 6 — 在隔离合成库实际跑CLI。** 先用正式测试同构夹具写 `.tmp/comprehensive-remediation-20261011/environment-payloads.sqlite`，关闭所有连接，再执行下方三个命令；保存JSON到本批records，确认exit0、分批和no-op结果。
 
 ```powershell
 npm run memory:compact-payloads -- .tmp/comprehensive-remediation-20261011/environment-payloads.sqlite --dry-run --include-environment
@@ -278,7 +278,7 @@ npm run memory:compact-payloads -- .tmp/comprehensive-remediation-20261011/envir
 npm run memory:compact-payloads -- .tmp/comprehensive-remediation-20261011/environment-payloads.sqlite --dry-run --include-environment
 ```
 
-- [ ] **Step 7 — 单独提交。** `git commit -m "feat: add explicit batched environment payload compaction"`，只提交本任务源码与测试，不提交合成库、完整备份或正式数据。向DELIVERY_PLAN的D1交接参数、备份、hasMore续跑和恢复说明。
+- [x] **Step 7 — 单独提交。** `git commit -m "feat: add explicit batched environment payload compaction"`，只提交本任务源码与测试，不提交合成库、完整备份或正式数据。向DELIVERY_PLAN的D1交接参数、备份、hasMore续跑和恢复说明。
 
 ### 新库、旧库与恢复的交付要求
 

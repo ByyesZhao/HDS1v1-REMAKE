@@ -8,6 +8,8 @@ V0.5整理当前实现：普通最近4个完整对话段、活动完整授权原
 
 ## 1. 当前状态
 
+最新为[综合审核整改交付](docs/v0.5/records/comprehensive-remediation-20261011/DELIVERY.md)：5项代码问题及流程／性能改进已完成，217文件1370项全量、工程门与独立复核通过。Q2保持原检索参数，Q3仅交付离线工具。正式部署和最终服务状态以交付页记录为准。
+
 前批交付为[当前审核改进T1～T9](docs/archive/records/current-audit-improvements-20261009/DELIVERY.md)。此前REVIEW26的107／620、ASTRA T1～T13的121／681和R1的122／693保留各批历史含义。ASTRA随后已独立重跑137文件776项并[确认关闭](docs/archive/reviews/post-t1-t9-20261009/REVIEW.md)。环境异步E1～E5及交付后R1／R2、只读启动检查修复均已完成，最终148文件826项及离线验收通过，该批见[修复与正式升级交付](docs/v0.5/records/environment-post-delivery-fixes-20261009/DELIVERY.md)；初批过程见[本批记录](docs/v0.5/records/environment-async-20261009/README.md)。旧证据仍按原批次解释。
 
 此前加入三条固定回复规则及程序选择的图片／表情分支，纯附件可落库、收尾可已读不回，该批150文件840项见[回复规则交付](docs/v0.5/records/reply-guidance-20261009/DELIVERY.md)。后续图片输入／本地搜索及复核修复已交付，该批验收为175文件920项，见[交付](docs/v0.5/records/image-search-post-review-fixes-20261010/DELIVERY.md)。各批最新状态以[版本索引](docs/v0.5/README.md)为准，配置启用不作为新增在线验收。
@@ -147,7 +149,29 @@ npm run memory:compact-payloads -- runtime/data/hdsi-remake.sqlite --apply --sto
 
 默认每批50条、每次最多20批；`hasMore:true`表示仍有残余，可按相同参数续跑，已清行不会重复修改。每批事务提交，中断只回滚当前批。`--stopped`是操作者确认，不会替你检测或停止进程。无可回收项时不创建备份；有残余时首次写入前将数据库及实际存在的WAL／SHM一起保存到数据库旁`backups/memory-payloads/<uuid>/`。可传`--backup-dir <目录>`，工具仍在其下新建唯一uuid子目录，并返回`backupPath`。
 
-回退需停服并恢复同一备份组的DB/WAL/SHM及配套代码，不能将旧主DB和新WAL混用；恢复会舍弃备份后的业务。命令不执行VACUUM，逻辑载荷减少不保证磁盘文件立刻缩小。环境准备载荷和其他格式处理以各自显式工具范围为准，不因这项回收自动迁移。
+环境步骤正文需显式增加 `--include-environment`，默认统计为0不代表环境没有残余：
+
+```powershell
+npm run memory:compact-payloads -- runtime/data/hdsi-remake.sqlite --dry-run --include-environment
+npm run memory:compact-payloads -- runtime/data/hdsi-remake.sqlite --apply --stopped --include-environment --batch-size 50 --max-batches 20
+```
+
+该选项只回收准备版本1且已committed／superseded的三份恢复正文，先写入身份、结果指纹和计数审计摘要，再清正文；旧版本0／缺省和pending／running／ready原样保留。所有类别共用每批上限，缺少环境表的旧库不会因此建表。新完成的版本1步骤由运行时收尾，普通启动不扫描压缩历史全文。
+
+回退需停服并恢复同一备份组的DB/WAL/SHM及配套代码，不能将旧主DB和新WAL混用；恢复会舍弃备份后的业务。摘要不能重建原模型输入，旧二进制也不能假定读取已清正文。命令不执行VACUUM，逻辑载荷减少不保证磁盘文件立刻缩小；这项回收不转换网页正文引用格式。
+
+### 网页正文引用格式转换
+
+新代码兼容读取旧内嵌正文与v2材料引用，新写入统一为v2；完整正文仍在网页材料表，模型输入保持完整。历史转换为可选运维动作，不是启动时全库迁移：
+
+```powershell
+npm run web:migrate-payloads -- runtime/data/hdsi-remake.sqlite --dry-run
+npm run web:migrate-payloads -- runtime/data/hdsi-remake.sqlite --apply --stopped --batch-size 50 --max-batches 20
+```
+
+数据库路径必须显式给出，不带apply时为只读。先安全停止HDSI，再声明 `--stopped`；工具不会代为停服。每批最多50个残余run，默认最多20批；`hasMore=true`时可续跑，完成需同时确认旧格式session／operation为0。写入前备份到数据库旁 `backups/web-payloads/<uuid>/`；`--backup-dir <目录>`也会创建唯一子目录，复制主库及实际存在的WAL／SHM。没有残余不创建备份；失败批整体回滚，先前成功批保留。此工具不删除网页材料或终结任务。
+
+旧二进制不能读取v2。即使不做批量转换，新代码运行后也可能已写入v2，因此回退必须使用配套代码和同一完整停服备份，不能只回退Git；恢复备份会丢失备份后的业务。详见[网页恢复合同](docs/v0.5/subsystems/REMAKE_V0.5_WEB_SEARCH.md#7-中断与恢复)。
 
 ## 6. 图库维护
 

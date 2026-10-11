@@ -1,0 +1,98 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 test
+npm notice run vitest run --reporter=dot --maxWorkers=1
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+D:\HDSI-remake\src\deployment\memory-payload-compaction.ts:8
+ if(options.stopped!==true)throw Error('Stop HDSI and supply --stopped before payload compaction');
+                                 ^
+
+Error: Stop HDSI and supply --stopped before payload compaction
+    at compactMemoryPayloads (D:\HDSI-remake\src\deployment\memory-payload-compaction.ts:8:34)
+    at <anonymous> (D:\HDSI-remake\scripts\compact-memory-payloads.ts:10:39)
+    at Object.<anonymous> (D:\HDSI-remake\scripts\compact-memory-payloads.ts:11:104)
+    at Module._compile (node:internal/modules/cjs/loader:1929:14)
+    at Object.transformer (D:\HDSI-remake\node_modules\tsx\dist\register-B1c7OH6V.cjs:22:2188)
+    at Module.load (node:internal/modules/cjs/loader:1651:32)
+    at Module._load (node:internal/modules/cjs/loader:1443:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+    at loadCJSModuleWithModuleLoad (node:internal/modules/esm/translators:372:15)
+    at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:244:9)
+
+Node.js v24.21.0
+······················································································································································································································································stdout | tests/local-web-validation-startup.test.ts > standalone validation settles and writes report on browser reject
+[E] app Error: SYNTHETIC_BROWSER_START_FAILURE
+        at Browser.start (D:/HDSI-remake/tests/local-web-validation-startup.test.ts:6:149)
+        at D:\HDSI-remake\node_modules\@cordisjs\core\lib\index.cjs:1213:18
+        at processTicksAndRejections (node:internal/process/task_queues:104:5)
+
+·······················stdout | tests/sticker-web-runtime.test.ts > import browser reject settles and closes isolated context
+[E] app Error: SYNTHETIC_BROWSER_START_FAILURE
+        at Browser.start (D:/HDSI-remake/tests/sticker-web-runtime.test.ts:16:149)
+        at D:\HDSI-remake\node_modules\@cordisjs\core\lib\index.cjs:1213:18
+        at processTicksAndRejections (node:internal/process/task_queues:104:5)
+        at wrapped (D:/HDSI-remake/src/deployment/sticker-web-runtime.ts:60:9)
+
+··stdout | tests/sticker-web-runtime.test.ts > cleanup failure still stops Context and retains startup error (true)
+[E] app Error: ORIGINAL_START_FAILURE
+        at D:/HDSI-remake/tests/sticker-web-runtime.test.ts:36:21
+        at file:///D:/HDSI-remake/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:2869:63
+        at file:///D:/HDSI-remake/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:1628:35
+        at file:///D:/HDSI-remake/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:2783:26
+        at file:///D:/HDSI-remake/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:3321:20
+        at new Promise (<anonymous>)
+        at runWithCancel (file:///D:/HDSI-remake/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:3316:10)
+        at file:///D:/HDSI-remake/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:3301:20
+        at new Promise (<anonymous>)
+        at runWithTimeout (file:///D:/HDSI-remake/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:3259:10)
+
+······stdout | tests/sticker-web-runtime.test.ts > startup budget and errors cover ready Puppeteer with reject injected canvas start
+[E] app Error: SUBORDINATE_START_FAILURE
+        at Canvas.start (D:/HDSI-remake/tests/sticker-web-runtime.test.ts:52:238)
+        at D:\HDSI-remake\node_modules\@cordisjs\core\lib\index.cjs:1213:7
+        at wrapped (D:/HDSI-remake/src/deployment/sticker-web-runtime.ts:60:9)
+        at async Promise.all (index 0)
+        at Proxy.flush (D:\HDSI-remake\node_modules\@cordisjs\core\lib\index.cjs:497:7)
+        at Proxy.start (D:\HDSI-remake\node_modules\@cordisjs\core\lib\index.cjs:571:5)
+        at async Promise.all (index 0)
+        at createStickerWebRuntime (D:/HDSI-remake/src/deployment/sticker-web-runtime.ts:86:17)
+        at D:/HDSI-remake/tests/sticker-web-runtime.test.ts:56:130
+        at file:///D:/HDSI-remake/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:2783:20
+
+····stdout | tests/sticker-web-runtime.test.ts > installed Puppeteer plugin closes actual canvas owner before browser despite traceable ctx rebinding
+[I] puppeteer chrome executable found at /synthetic/chrome
+
+···········································································stdout | tests/dialogue-upgrade.test.ts > legacy_30_maps_to_four_episodes and explicit settings win without activating budgets
+HDSI: recentMessagesLimit 已替换为完整对话段窗口，缺省4段／15分钟。
+HDSI: recentMessagesLimit 已替换为完整对话段窗口，缺省4段／15分钟。
+
+······························································································································································································································································································································································································································································································································································································································································stdout | tests/browser-web-plugin-extra.test.ts > failed HDSI startup is reported and acquired instance closes exactly once
+[E] hdsi-browser Error: synthetic host startup failure
+        at Object.start (D:/HDSI-remake/tests/browser-web-plugin-extra.test.ts:9:110)
+        at D:/HDSI-remake/src/deployment/browser-runtime.ts:22:24
+        at processTicksAndRejections (node:internal/process/task_queues:104:5)
+        at D:/HDSI-remake/src/deployment/browser-runtime.ts:12:91
+
+stdout | tests/browser-web-plugin-extra.test.ts > rejecting browser service preserves original Koishi error and never opens a story runtime
+[E] app Error: synthetic browser startup failure
+        at D:/HDSI-remake/tests/browser-web-plugin-extra.test.ts:13:55
+        at file:///D:/HDSI-remake/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:1628:35
+        at file:///D:/HDSI-remake/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:2783:26
+        at file:///D:/HDSI-remake/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:3321:20
+        at new Promise (<anonymous>)
+        at runWithCancel (file:///D:/HDSI-remake/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:3316:10)
+        at file:///D:/HDSI-remake/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:3301:20
+        at new Promise (<anonymous>)
+        at runWithTimeout (file:///D:/HDSI-remake/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:3259:10)
+        at file:///D:/HDSI-remake/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:3882:64
+
+························································································································································································································································································································································································
+
+ Test Files  217 passed (217)
+      Tests  1370 passed (1370)
+   Start at  10:34:47
+   Duration  195.98s (tests 88%, import 11%, transform 1%)
+
+    Isolate  217 workers spawned · ~94ms startup each (spawn + environment, per file)
+             at least ~20.35s faster with isolate: false — reuses workers across files instead of one per file
+

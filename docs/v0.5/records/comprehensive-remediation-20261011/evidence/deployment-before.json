@@ -1,0 +1,45 @@
+{
+  "at": "2026-10-11T10:41:14.0064536+08:00",
+  "mode": "before",
+  "descriptorPresent": true,
+  "identity": {
+    "workerId": 21708,
+    "parentId": 4236,
+    "name": "node.exe",
+    "started": "2026-10-11T08:53:39.91053+08:00",
+    "stopPort": 62168
+  },
+  "processes": [
+    {
+      "ProcessId": 4236,
+      "ParentProcessId": 26104,
+      "Name": "node.exe",
+      "CreationDate": "2026-10-11T08:53:39.846265+08:00"
+    },
+    {
+      "ProcessId": 21708,
+      "ParentProcessId": 4236,
+      "Name": "node.exe",
+      "CreationDate": "2026-10-11T08:53:39.91053+08:00"
+    }
+  ],
+  "listeners": [
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 62168,
+      "OwningProcess": 21708
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 5141,
+      "OwningProcess": 21708
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 3001,
+      "OwningProcess": 26384
+    }
+  ],
+  "stopped": false,
+  "snowLumaUntouched": true
+}

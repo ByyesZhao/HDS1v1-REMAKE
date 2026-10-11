@@ -1,0 +1,837 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-11",
+  "sourceIdentity": {
+    "planBaseline": "ce7e88e",
+    "preservedAuditAndPlanCommit": "9c20a97f632d9eaf5781973fefab95619eb7dc3a",
+    "inspectedHead": "5e77e04aadc6029357926750f886ab14902c1402",
+    "workspace": "D:/HDSI-remake",
+    "note": "HEAD captured at start of read-only inspection. Concurrent root work may advance HEAD or edit tests. Existing logs are historical runs, not reruns at this HEAD; no source-at-HEAD success is claimed.",
+    "updatedHead": "f60afa622543f126c9d25919989b11b37dc6b48c"
+  },
+  "plan": "docs/v0.5/plans/comprehensive-remediation-20261011/DELIVERY_PLAN.md#v2持久恢复与兼容总矩阵",
+  "method": {
+    "newTestRuns": false,
+    "sourceEdits": false,
+    "formalDatabaseAccess": false,
+    "networkAccess": false,
+    "buildRuns": false,
+    "timingRuns": false,
+    "scope": "Synthetic test sources, saved task logs and independent reviews; root updated completed gaps after the initial read-only mapping.",
+    "passMeaning": "Each stated assertion has mapped existing fixture assertions and saved passing evidence, possibly across complementary fixtures. This is evidence coverage, not current-HEAD integration, live provider quality, formal migration or deployment acceptance.",
+    "pendingMeaning": "A required assertion or implementation/verification gate remains unproved; passing companion tests do not close it.",
+    "ledgerCaution": "Task ledger is supplementary. Dated reviews and saved passing logs govern claims; final source integration is recorded separately."
+  },
+  "evidence": {
+    "r1": {
+      "file": "docs/v0.5/records/comprehensive-remediation-20261011/evidence/r1-green.txt",
+      "command": "npx vitest run tests/task-projection.test.ts tests/appointment-update-host.test.ts tests/tasks.test.ts tests/review-fixes.test.ts tests/review-recovery.test.ts tests/chat-active-consistency.test.ts",
+      "savedResult": "6 files / 65 tests passed",
+      "review": "docs/v0.5/records/comprehensive-remediation-20261011/reviews/R1-R2.md"
+    },
+    "r2": {
+      "file": "docs/v0.5/records/comprehensive-remediation-20261011/evidence/r2-green.txt",
+      "command": "npx vitest run tests/host-pause-selection.test.ts tests/reply-freshness-host.test.ts tests/environment-async-host-gates.test.ts tests/graceful-stop-host.test.ts tests/appointment-update-host.test.ts --reporter=dot",
+      "savedResult": "5 files / 27 tests passed",
+      "review": "docs/v0.5/records/comprehensive-remediation-20261011/reviews/R1-R2.md"
+    },
+    "r2Strengthened": {
+      "file": "docs/v0.5/records/comprehensive-remediation-20261011/evidence/r2-review-fix-targeted.txt",
+      "command": "npx vitest run tests/host-pause-selection.test.ts",
+      "savedResult": "1 file / 6 tests passed",
+      "review": "docs/v0.5/records/comprehensive-remediation-20261011/reviews/R1-R2.md"
+    },
+    "batchA": {
+      "file": "docs/v0.5/records/comprehensive-remediation-20261011/evidence/batch-a-full.txt",
+      "command": "npm test -- --reporter=dot",
+      "savedResult": "193 files / 1072 tests passed; 2 files failed; 2 tests failed and 18 skipped (195 files / 1092 tests total)",
+      "qualification": "Failures were browser-visible-dom and runtime-check-readonly. The ordinary fixture files cited here were outside those failures. This older aggregate log does not print every passed test name or bind each current test source to a revision.",
+      "record": "docs/v0.5/records/comprehensive-remediation-20261011/BATCH_A.md",
+      "permissionRecheck": "docs/v0.5/records/comprehensive-remediation-20261011/evidence/batch-a-permission-recheck.txt"
+    },
+    "m1a": {
+      "file": "docs/v0.5/records/comprehensive-remediation-20261011/evidence/m1a-green-final.txt",
+      "command": "npx vitest run tests/memory-policy-snapshot.test.ts tests/memory-pending-refresh.test.ts tests/memory-batch-characters.test.ts --maxWorkers=1 --no-isolate",
+      "savedResult": "3 files / 23 tests passed",
+      "review": "docs/v0.5/records/comprehensive-remediation-20261011/reviews/M1-A.md"
+    },
+    "m1b": {
+      "file": "docs/v0.5/records/comprehensive-remediation-20261011/evidence/m1b-focused-final.txt",
+      "command": "npx vitest run tests/memory-policy-order.test.ts tests/memory-capacity-work.test.ts tests/review17-capacity-cost.test.ts tests/memory-capacity-lifecycle.test.ts tests/memory-capacity-upgrade.test.ts tests/memory-v3-recovery.test.ts --maxWorkers=1 --no-isolate",
+      "savedResult": "6 files / 54 tests passed",
+      "review": "docs/v0.5/records/comprehensive-remediation-20261011/reviews/M1-B.md"
+    },
+    "m2b": {
+      "file": "docs/v0.5/records/comprehensive-remediation-20261011/evidence/m2b-green.txt",
+      "savedResult": "5 files / 30 tests passed",
+      "review": "docs/v0.5/records/comprehensive-remediation-20261011/reviews/M2-B.md"
+    },
+    "r4a": {
+      "file": "docs/v0.5/records/comprehensive-remediation-20261011/evidence/r4a-focused-green.txt",
+      "command": "npx vitest run tests/environment-payload-compaction.test.ts tests/environment-async-phases.test.ts tests/environment-async-recovery.test.ts tests/environment-async-host-gates.test.ts tests/environment-async-boundaries.test.ts tests/school-week-contract-recovery.test.ts tests/world-school-batch.test.ts tests/world-school-review14-contracts.test.ts tests/world-school-review14-calendar.test.ts",
+      "savedResult": "9 files / 81 tests passed",
+      "review": "docs/v0.5/records/comprehensive-remediation-20261011/reviews/R4a.md",
+      "qualification": "R4a independent reviewer reports a separate 10-file/84-test exit-0 run including M-D's 3 tests. That review result is not substituted for a new parent-owned full-suite/build/smoke run."
+    },
+    "w5Focused": {
+      "file": "docs/v0.5/records/comprehensive-remediation-20261011/evidence/w5-final-focused.txt",
+      "savedResult": "20 files / 117 tests passed",
+      "qualification": "Before W5 independent corrections and before current R4b additions to memory-payload-compaction tests.",
+      "review": "docs/v0.5/records/comprehensive-remediation-20261011/reviews/W5.md"
+    },
+    "w5Final": {
+      "file": "docs/v0.5/records/comprehensive-remediation-20261011/evidence/w5-independent-review-green.txt",
+      "command": "npx vitest run tests/web-persistence-v2.test.ts tests/web-payload-migration.test.ts tests/web-payload-migration-cli.test.ts tests/web-payload-cost.test.ts tests/web-model-tools.test.ts tests/web-recovery.test.ts tests/web-session.test.ts tests/web-light-state.test.ts tests/environment-async-tools.test.ts tests/environment-async-provenance.test.ts",
+      "savedResult": "10 files / 58 tests passed",
+      "review": "docs/v0.5/records/comprehensive-remediation-20261011/reviews/W5.md"
+    },
+    "w6": {
+      "file": "docs/v0.5/records/comprehensive-remediation-20261011/evidence/w6-review-green.txt",
+      "command": "npx vitest run tests/incoming-media-asset-lease.test.ts tests/incoming-media-assets.test.ts tests/incoming-media-turn.test.ts tests/incoming-image-model.test.ts tests/incoming-media-cleanup.test.ts tests/incoming-media-onebot-review.test.ts tests/graceful-stop-host.test.ts tests/stop-control.test.ts --reporter=dot",
+      "savedResult": "7 files / 36 tests passed",
+      "review": "docs/v0.5/records/comprehensive-remediation-20261011/reviews/W6.md"
+    },
+    "r4bRed": {
+      "file": "docs/v0.5/records/comprehensive-remediation-20261011/evidence/r4b-red.txt",
+      "savedResult": "1 file failed; 2 failed / 3 passed tests",
+      "qualification": "Intended pre-implementation red for the two new environment opt-in tests. No R4b green/independent approval was available at inspection."
+    },
+    "v2Send": {
+      "file": "docs/v0.5/records/comprehensive-remediation-20261011/evidence/v2-send-green.txt",
+      "savedResult": "1 file / 8 tests passed",
+      "review": "docs/v0.5/records/comprehensive-remediation-20261011/reviews/V2-send.md"
+    },
+    "r4b": {
+      "file": "docs/v0.5/records/comprehensive-remediation-20261011/evidence/r4b-review-green.txt",
+      "savedResult": "4 files / 49 tests passed",
+      "review": "docs/v0.5/records/comprehensive-remediation-20261011/reviews/R4b.md",
+      "manualCli": [
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/r4b-cli-dry-run.txt",
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/r4b-cli-apply-first.txt",
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/r4b-cli-after-first.txt",
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/r4b-cli-resume.txt",
+        "docs/v0.5/records/comprehensive-remediation-20261011/evidence/r4b-cli-noop.txt"
+      ]
+    },
+    "w7": {
+      "file": "docs/v0.5/records/comprehensive-remediation-20261011/evidence/w7-focused-green.txt",
+      "review": "docs/v0.5/records/comprehensive-remediation-20261011/reviews/W7.md",
+      "qualification": "Final review records any additional shutdown corrections and their focused passing evidence."
+    }
+  },
+  "rows": [
+    {
+      "id": "V2-01",
+      "fixture": "旧普通冻结候选已确认第1条、未确认第2条",
+      "requiredAssertions": [
+        "第1条不重发",
+        "本批不重写旧内容／时间／抽样",
+        "恢复只续第2条和后处理"
+      ],
+      "status": "pass",
+      "tests": [
+        {
+          "file": "tests/review-recovery.test.ts",
+          "name": "reopens a file database and retries sending while retaining confirmed output and frozen text",
+          "assertions": [
+            "Real file database closes/reopens with first output confirmed and second sending; entire old turn/outbox equal after reopening.",
+            "A future frozen sleep isolates autonomous selection: random.next called once, 180 minutes retained in turn and full candidate; no new sampling during two resumes.",
+            "Every retry/sending/confirmed transition preserves first output and complete serialized frozen candidate/turn.at/interval.",
+            "Only second segment is sent and only memory postprocessing runs; prior confirmed message/outbox unchanged.",
+            "Full frozen turn verified before intentional terminal clearing; completedAt uses current clock and nextAutonomousAt uses retained 180-minute interval."
+          ],
+          "evidence": [
+            "v2Send"
+          ],
+          "scope": "synthetic fixture"
+        },
+        {
+          "file": "tests/appointment-update-host.test.ts",
+          "name": "recovers an old frozen candidate and stored post result exactly once: $name",
+          "assertions": [
+            "metadata-only and future-rescheduling variants inject task-write failure, reopen and retry.",
+            "Serialized frozenResult is byte-equal before commit and observed unchanged at completion; confirmed outbox is unchanged.",
+            "Zero new model calls and sends; exactly one task write after two resumes plus done postprocessing.",
+            "The future update remains pending relative to frozen turn.at even after the commit clock has passed it."
+          ],
+          "evidence": [
+            "r1"
+          ],
+          "scope": "synthetic fixture"
+        },
+        {
+          "file": "tests/shared-v3-recovery.test.ts",
+          "name": "first_freeze_retains_interval_once: %s unattempted recovery reuses selected sample and metadata",
+          "assertions": [
+            "ordinary/shared variants explicitly require random.next once and autonomousIntervalMinutes=180 across unattempted regeneration and postprocessing.",
+            "This is an unattempted fixture, not the first-confirmed/second-unconfirmed disk fixture."
+          ],
+          "evidence": [
+            "batchA"
+          ],
+          "scope": "synthetic fixture"
+        },
+        {
+          "file": "tests/shared-v3-recovery.test.ts",
+          "name": "recover_exact_same_step: file reopen at %s keeps output/count/control exactly once",
+          "assertions": [
+            "shared-only partial/post/committed reopen variants require random.next once, one narrative_shared call, one completed step and no confirmed-segment resend.",
+            "This is a shared turn, not the required ordinary frozen partial-send fixture."
+          ],
+          "evidence": [
+            "batchA"
+          ],
+          "scope": "synthetic fixture"
+        }
+      ],
+      "pendingAssertions": []
+    },
+    {
+      "id": "V2-02",
+      "fixture": "新鲜度waiting，被pause与事件选择交错",
+      "requiredAssertions": [
+        "不新调用、不提交",
+        "resume后沿现有事件接管合同处理",
+        "不丢输入"
+      ],
+      "status": "pass",
+      "tests": [
+        {
+          "file": "tests/host-pause-selection.test.ts",
+          "name": "pause after waiting %s selection preserves generation until resume",
+          "assertions": [
+            "ordinary/event parameterizations interleave host.start and host.pause at resolved-Promise selection boundary.",
+            "While paused: zero model calls, unchanged replyFreshness and only one turn.",
+            "After resume: same turn done with generation=2 and selected scope; exactly one narrative call."
+          ],
+          "evidence": [
+            "r2",
+            "r2Strengthened"
+          ],
+          "scope": "synthetic fixture"
+        },
+        {
+          "file": "tests/host-pause-selection.test.ts",
+          "name": "pause keeps accepting and batching input without a new model call",
+          "assertions": [
+            "Paused accepted input remains unseen with zero model calls after wake.",
+            "Resume consumes it in one turn with one narrative call."
+          ],
+          "evidence": [
+            "r2Strengthened"
+          ],
+          "scope": "synthetic fixture"
+        },
+        {
+          "file": "tests/reply-freshness-host.test.ts",
+          "name": "waiting_yields_to_appointment_without_consuming_chat",
+          "assertions": [
+            "Event takeover commits empty inputMessageIds/batchIds, appointment trigger, event scope and generation=2.",
+            "Original input remains unseen and check remains pending at takeover; later ordinary wake consumes input and appointment is completed."
+          ],
+          "evidence": [
+            "r2"
+          ],
+          "scope": "synthetic fixture"
+        },
+        {
+          "file": "tests/host-pause-selection.test.ts",
+          "name": "pause lets an already entered whole turn finish (waiting continuation=%s)",
+          "assertions": [
+            "Both variants keep signal un-aborted and finish real expression, two exact sender payloads, confirmed outbox and memory while paused.",
+            "Stored outgoing platform IDs and source-backed detail are exact; later appointment stays pending until resume."
+          ],
+          "evidence": [
+            "r2Strengthened"
+          ],
+          "scope": "synthetic fixture"
+        }
+      ],
+      "pendingAssertions": []
+    },
+    {
+      "id": "V2-03",
+      "fixture": "memory pending未开始／computing已开始／ready未应用",
+      "requiredAssertions": [
+        "未开始可按既有规则刷新",
+        "已开始冻结材料和repairCount保留",
+        "ready复用结果不重发模型"
+      ],
+      "status": "pass",
+      "tests": [
+        {
+          "file": "tests/memory-pending-refresh.test.ts",
+          "name": "only explicit unstarted pending refreshes selected and dependency closure (%s)",
+          "assertions": [
+            "startedAt=null refreshes changed dependency body and cutoff; startedAt=at or missing retains old body and cutoff.",
+            "Uses selected owner plus dependency closure; transport starts once per case."
+          ],
+          "evidence": [
+            "m1a"
+          ],
+          "scope": "synthetic fixture"
+        },
+        {
+          "file": "tests/memory-maintenance-checkpoint.test.ts",
+          "name": "reopens interrupted %s maintenance with frozen input and the same checkpoint",
+          "assertions": [
+            "pending/computing variants close/reopen disk after repairCount=1.",
+            "computing becomes pending; id/startedAt/cutoff/snapshot/readSet and web stage/ref/checkpoint remain equal.",
+            "Changing live owner after reopen does not change model request input; repair equals original repair.",
+            "Three total transport requests: invalid first response, interrupted repair, resumed same repair; ready checkpoint clears."
+          ],
+          "evidence": [
+            "batchA"
+          ],
+          "scope": "Historical aggregate coverage only; no saved targeted command for this file was found."
+        },
+        {
+          "file": "tests/memory-v3-recovery.test.ts",
+          "name": "reopens ready without recomputing, rolls back owner and marker together, and skips completed units",
+          "assertions": [
+            "Ready job reopens disk with prepared result.",
+            "Injected commit failure keeps owner content and appliedUnitKeys unchanged.",
+            "Retry applies once; second apply is none; runModel has zero calls."
+          ],
+          "evidence": [
+            "m1b"
+          ],
+          "scope": "synthetic fixture"
+        },
+        {
+          "file": "tests/memory-maintenance-checkpoint.test.ts",
+          "name": "compacts a prepared result and retries its application without another model call (web=%s)",
+          "assertions": [
+            "web enabled/disabled variants make two model requests (invalid + repaired result).",
+            "Ready result survives injected application-storage failure and retry delay; applied marker is ['keep'].",
+            "No additional model request when ready is retried; web material/counters remain while checkpoint clears."
+          ],
+          "evidence": [
+            "batchA"
+          ],
+          "scope": "Historical aggregate coverage only; unrelated new R4b tests are not included."
+        }
+      ],
+      "pendingAssertions": []
+    },
+    {
+      "id": "V2-04",
+      "fixture": "environment preparationVersion0或缺字段",
+      "requiredAssertions": [
+        "保留串行兼容及完整payload",
+        "不被R4压缩",
+        "旧任务结果不因新摘要格式读空"
+      ],
+      "status": "pass",
+      "tests": [
+        {
+          "file": "tests/environment-payload-compaction.test.ts",
+          "name": "keeps nonterminal and legacy payloads byte-for-byte (preparationVersion %s)",
+          "assertions": [
+            "undefined/0 variants cover pending/running/ready/committed/superseded with input/preparation/frozen-result payload.",
+            "Pure compactor returns null and serialized original row is unchanged for every legacy status.",
+            "preparationVersion=1 nonterminal rows are also byte-preserved."
+          ],
+          "evidence": [
+            "r4a"
+          ],
+          "scope": "synthetic fixture"
+        },
+        {
+          "file": "tests/school-week-contract-recovery.test.ts",
+          "name": "old_running_checkpoint_uses_v0; old_ready_direct_commit_no_model",
+          "assertions": [
+            "Missing-version old running input uses modelContractVersion=0, creates the expected school instance.",
+            "Old ready result commits directly with zero generator calls."
+          ],
+          "evidence": [
+            "r4a"
+          ],
+          "scope": "synthetic fixture"
+        },
+        {
+          "file": "tests/world-school-batch.test.ts",
+          "name": "world_before_three_school_steps_and_ready_predecessor_blocks_downstream",
+          "assertions": [
+            "Serial execution order is exactly world, school_campus, school_group, school_week; no turn or sender output is introduced."
+          ],
+          "evidence": [
+            "r4a"
+          ],
+          "scope": "synthetic fixture"
+        },
+        {
+          "file": "tests/world-school-batch.test.ts",
+          "name": "cross_date_supersedes_only_uncommitted_including_running_response",
+          "assertions": [
+            "Legacy superseded running response retains non-null frozenResult and commits no events."
+          ],
+          "evidence": [
+            "r4a"
+          ],
+          "scope": "synthetic fixture"
+        },
+        {
+          "file": "tests/world-school-review14-calendar.test.ts",
+          "name": "pending_retry_cross_start_reuses_frozen_input_and_commits_corrected_version",
+          "assertions": [
+            "Old contract input is compared exactly on retry after time advances; attempt=2 commits.",
+            "Historical instance remains equal rather than overwritten."
+          ],
+          "evidence": [
+            "r4a"
+          ],
+          "scope": "synthetic fixture"
+        }
+      ],
+      "pendingAssertions": []
+    },
+    {
+      "id": "V2-05",
+      "fixture": "environment v1 running跨日，晚到provider结果",
+      "requiredAssertions": [
+        "旧代结果不提交",
+        "执行settle后才收尾",
+        "缓存/checkpoint不会在清理后复活",
+        "新批次可继续"
+      ],
+      "status": "pass",
+      "tests": [
+        {
+          "file": "tests/environment-async-recovery.test.ts",
+          "name": "midnight cancels while paused; late result never revives terminal; in-flight has no now deadline",
+          "assertions": [
+            "Clock advances one day while running and paused; old batch becomes superseded.",
+            "Late generation result leaves step superseded; runtime remains paused."
+          ],
+          "evidence": [
+            "r4a"
+          ],
+          "scope": "synthetic fixture"
+        },
+        {
+          "file": "tests/environment-payload-compaction.test.ts",
+          "name": "scheduler supersede keeps an active web-backed execution payload until settle and rejects its late result",
+          "assertions": [
+            "Deferred session.readPage keeps preparationSnapshot while execution is active and scheduler supersedes.",
+            "After provider-like gate settles, old payload fields are null and audit result is null; events count=0.",
+            "readPage is overridden with a deferred promise; real WebSearchService cache/checkpoint resurrection is not exercised."
+          ],
+          "evidence": [
+            "r4a"
+          ],
+          "scope": "synthetic fixture"
+        },
+        {
+          "file": "tests/environment-payload-compaction.test.ts",
+          "name": "ready publication stays recoverable until its execution settles",
+          "assertions": [
+            "applyReady at ready publication returns none and preserves frozen result.",
+            "After wait, apply commits and clears terminal payload with v1 audit."
+          ],
+          "evidence": [
+            "r4a"
+          ],
+          "scope": "synthetic fixture"
+        },
+        {
+          "file": "tests/environment-async-boundaries.test.ts",
+          "name": "lookup abort while pending is resumable and late results cannot overwrite checkpoint",
+          "assertions": [
+            "Stop during delayed frozen lookup leaves privateLookupResult absent and usedBasis null.",
+            "Resume uses same attempt, total model calls=2 and lookupPending false.",
+            "This is resumable stop, not terminal owner finalization."
+          ],
+          "evidence": [
+            "r4a"
+          ],
+          "scope": "synthetic fixture"
+        },
+        {
+          "file": "tests/environment-async-recovery.test.ts",
+          "name": "stop waits for noncooperative transport and discards late result; resume preserves attempt",
+          "assertions": [
+            "Stop remains unsettled until transport resolves; late result makes zero events and leaves running attempt=1.",
+            "New preparation resumes to ready at attempt=1."
+          ],
+          "evidence": [
+            "r4a"
+          ],
+          "scope": "synthetic fixture"
+        },
+        {
+          "file": "tests/environment-web-finalization.test.ts",
+          "name": "superseded_execution_cannot_repopulate_owner_after_finalization",
+          "assertions": [
+            "Real WebSearchService provider gate plus generator finally late checkpoint write across rollover.",
+            "Payload/checkpoint retained before execution settlement; late page/result discarded; after wait owner cache/checkpoint clear and new batch proceeds."
+          ],
+          "evidence": [
+            "w7"
+          ],
+          "scope": "Synthetic integration fixture"
+        },
+        {
+          "file": "tests/web-owner-finalization.test.ts",
+          "name": "finalize_owner_waits_for_queued_operation_then_releases_cache",
+          "assertions": [
+            "Queued operations drain before owner cache release and checkpoint compaction.",
+            "Concurrent calls share promise; repeated finalization does no NULL update; other owner remains cache-hit eligible; materials/counters/operations/source markers retained."
+          ],
+          "evidence": [
+            "w7"
+          ],
+          "scope": "Synthetic integration fixture"
+        },
+        {
+          "file": "tests/environment-async-host.test.ts",
+          "name": "foreground_pump_does_not_wait_for_terminal_web_drain",
+          "assertions": [
+            "New foreground turn commits while old terminal provider remains unresolved."
+          ],
+          "evidence": [
+            "w7"
+          ],
+          "scope": "Synthetic integration fixture"
+        },
+        {
+          "file": "tests/environment-async-host.test.ts",
+          "name": "host_stop_waits_for_finalizers_before_storage_close",
+          "assertions": [
+            "Host stop remains pending through cleanup; storage closes only after cleanup finishes."
+          ],
+          "evidence": [
+            "w7"
+          ],
+          "scope": "Synthetic integration fixture"
+        },
+        {
+          "file": "tests/environment-async-host.test.ts",
+          "name": "host_stop_reports_cleanup_failure_only_after_all_finalizers_settle (graceful=%s)",
+          "assertions": [
+            "Graceful and abort modes report failure only after every finalizer settles; no false successful stop."
+          ],
+          "evidence": [
+            "w7"
+          ],
+          "scope": "Synthetic integration fixture"
+        }
+      ],
+      "pendingAssertions": []
+    },
+    {
+      "id": "V2-06",
+      "fixture": "web v1/v2，pendingOperationId或lookupPending，修补1次后重启",
+      "requiredAssertions": [
+        "原额度、确认步、材料、已提供标记和修补计数一致",
+        "已确认操作不重读、不重复计数"
+      ],
+      "status": "pass",
+      "tests": [
+        {
+          "file": "tests/web-persistence-v2.test.ts",
+          "name": "legacy_checkpoint_preserves_pending_lookup_repair_and_results",
+          "assertions": [
+            "Raw v1 fixture reopens disk with repairCount=1, lookupUsed=true, private lookup and repair original/errors.",
+            "Converted read shape equals original business fields plus v2 materialIds; full material equals original."
+          ],
+          "evidence": [
+            "w5Final"
+          ],
+          "scope": "synthetic fixture"
+        },
+        {
+          "file": "tests/web-persistence-v2.test.ts",
+          "name": "done_operation_pending_checkpoint_replays_once_after_reopen",
+          "assertions": [
+            "Two invocations separated by disk close/reopen retain exactly one tool result, pendingOperationId=null, counters={successReads:1,failures:0}.",
+            "Provider.read and private lookup have zero calls."
+          ],
+          "evidence": [
+            "w5Final"
+          ],
+          "scope": "synthetic fixture"
+        },
+        {
+          "file": "tests/web-persistence-v2.test.ts",
+          "name": "partial_operation_reopens_at_first_unconfirmed_candidate",
+          "assertions": [
+            "Disk reopen starts at candidate index 3; only URL /d is read and provider.search has zero calls.",
+            "Counters 2/1 become 3/1 once; confirmedSteps become [0,1,2,3]."
+          ],
+          "evidence": [
+            "w5Final"
+          ],
+          "scope": "synthetic fixture"
+        },
+        {
+          "file": "tests/web-persistence-v2.test.ts",
+          "name": "pending_lookup_is_reexecuted_but_confirmed_lookup_is_not",
+          "assertions": [
+            "Pending lookup executes once across two invocations, stores updated private result and clears pending flag."
+          ],
+          "evidence": [
+            "w5Final"
+          ],
+          "scope": "synthetic fixture"
+        },
+        {
+          "file": "tests/web-persistence-v2.test.ts",
+          "name": "repair_budget_survives_v1_upgrade",
+          "assertions": [
+            "repairCount=1 raw v1 disk fixture receives exactly the existing repair; invalid output exhausts original budget without reset.",
+            "lookupUsed remains true and repairCount remains 1."
+          ],
+          "evidence": [
+            "w5Final"
+          ],
+          "scope": "synthetic fixture"
+        },
+        {
+          "file": "tests/web-persistence-v2.test.ts",
+          "name": "partial_recovery_parses_confirmed_materials_once_and_returns_complete_tool_response",
+          "assertions": [
+            "Each confirmed m/m2 body loads once; total material IDs loaded=3 including the new one.",
+            "One provider read, complete three bodies in response and envelope, counters=3/0 and pendingOperationId=null."
+          ],
+          "evidence": [
+            "w5Final"
+          ],
+          "scope": "synthetic fixture"
+        },
+        {
+          "file": "tests/web-payload-migration.test.ts",
+          "name": "migration_preserves_all_owner_states_and_material_bytes",
+          "assertions": [
+            "Four persisted session owner kinds (turn, maintenance, asset, environment), with operation statuses pending/running/done/done, migrate without changing any material rows (including provided flag), source rows or session fields outside checkpoint representation.",
+            "Checkpoint business/repair/lookup fields remain equal and repeated migration updates zero."
+          ],
+          "evidence": [
+            "w5Final"
+          ],
+          "scope": "synthetic fixture"
+        },
+        {
+          "file": "tests/web-model-tools.test.ts",
+          "name": "failed model transmission neither registers a source nor triggers format repair; retry reuses confirmed operation",
+          "assertions": [
+            "Interrupted model transmission retains one confirmed read without a provided self source.",
+            "Retry calls provider.read once total and registers one provided source."
+          ],
+          "evidence": [
+            "w5Final"
+          ],
+          "scope": "synthetic fixture"
+        },
+        {
+          "file": "tests/web-persistence-v2.test.ts",
+          "name": "missing_reference_failure_preserves_raw_legacy_checkpoint_bytes_before_any_save",
+          "assertions": [
+            "Missing material fails with exact run/material ID; raw legacy checkpoint/body bytes unchanged.",
+            "Zero saveCheckpoint, transport and provider.read calls."
+          ],
+          "evidence": [
+            "w5Final"
+          ],
+          "scope": "synthetic fixture"
+        }
+      ],
+      "pendingAssertions": []
+    },
+    {
+      "id": "V2-07",
+      "fixture": "已完成环境/网页，旧残留分批工具中途失败",
+      "requiredAssertions": [
+        "已提交批保留",
+        "失败批回滚",
+        "续跑幂等",
+        "未完成任务字节／引用未被压缩"
+      ],
+      "status": "pass",
+      "tests": [
+        {
+          "file": "tests/web-payload-migration.test.ts",
+          "name": "migration_interruption_resumes_by_residual_format",
+          "assertions": [
+            "Failure at second batch leaves first batch committed with 2 legacy sessions/2 operations residual.",
+            "Failed-batch operation remains v1; removing failure and running one batch updates remaining 4 records and hasMore=false."
+          ],
+          "evidence": [
+            "w5Final"
+          ],
+          "scope": "synthetic fixture"
+        },
+        {
+          "file": "tests/web-payload-migration.test.ts",
+          "name": "migration_ref_mismatch_rolls_back_whole_batch",
+          "assertions": [
+            "Embedded material metadata mismatch rejects conversion; transaction rollback preserves all operation rows and four legacy sessions."
+          ],
+          "evidence": [
+            "w5Final"
+          ],
+          "scope": "synthetic fixture"
+        },
+        {
+          "file": "tests/web-payload-migration.test.ts",
+          "name": "migration_preserves_all_owner_states_and_material_bytes",
+          "assertions": [
+            "Materials/source rows unchanged for turn/maintenance/asset/environment session owners with pending/running/done/done operations; only web v1→v2 references change. This fixture does not create owner task rows or claim ready-owner coverage.",
+            "No-op repeat updates zero; original backup opens with four legacy sessions."
+          ],
+          "evidence": [
+            "w5Final"
+          ],
+          "scope": "synthetic fixture"
+        },
+        {
+          "file": "tests/memory-payload-recovery-matrix.test.ts",
+          "name": "bounded recycler protects $type $status recovery and retains evidence",
+          "assertions": [
+            "Nonterminal environment, maintenance and turn owners retain checkpoint and preparation/post bodies; terminal checkpoints clear.",
+            "Operations/materials/self-read source raw evidence remains exactly equal; repeated recycler updates zero.",
+            "This existing recycler does not perform R4b's historical environment-step payload compaction."
+          ],
+          "evidence": [
+            "w5Focused"
+          ],
+          "scope": "synthetic fixture"
+        },
+        {
+          "file": "tests/memory-payload-compaction-cli.test.ts",
+          "name": "environment second-batch failure rolls back and later resume preserves prior audit time",
+          "assertions": [
+            "Verified assertions: first two terminal rows committed, five residual; failed-batch input retained; resume updates five and first compacted row bytes stay identical."
+          ],
+          "evidence": [
+            "r4b"
+          ],
+          "scope": "Synthetic physical database CLI fixture; no formal apply."
+        },
+        {
+          "file": "tests/memory-payload-compaction-cli.test.ts",
+          "name": "environment CLI opt-in is read-only by default and resumes within a shared limit",
+          "assertions": [
+            "Verified assertions: no-opt-in count=0; opt-in dry-run count=7 with identical DB bytes; shared limit 6 updated then 3.",
+            "Legacy/missing-version/pending/running/ready environment raw JSON unchanged; business rows unchanged; idempotent repeat zero/no backup."
+          ],
+          "evidence": [
+            "r4b"
+          ],
+          "scope": "Synthetic physical database CLI fixture; no formal apply."
+        },
+        {
+          "file": "tests/memory-payload-compaction-cli.test.ts",
+          "name": "environment backup contains existing WAL and SHM and reopens original payloads",
+          "assertions": [
+            "Existing main/WAL/SHM set copied before writer opens; backup reopens with original environment body and committed WAL business rows."
+          ],
+          "evidence": [
+            "r4b"
+          ],
+          "scope": "Synthetic physical database CLI fixture; no formal apply."
+        }
+      ],
+      "pendingAssertions": []
+    },
+    {
+      "id": "V2-08",
+      "fixture": "图观察pending、已有同版本观察、原图清理",
+      "requiredAssertions": [
+        "恢复同一观察／模型上下文",
+        "同版本不重新识别",
+        "优化编码不能放开未读图片资格"
+      ],
+      "status": "pass",
+      "tests": [
+        {
+          "file": "tests/incoming-media-turn.test.ts",
+          "name": "freezes unknown and ready per attachment and reopens pending on the same disk image",
+          "assertions": [
+            "Disk reopen preserves frozen unrecognized/pending entries and frozen assetRef despite changed attachment source URL.",
+            "Recovering pending adds one recognition (2 total including initial failure); third prepare equals recovered result with no extra model calls.",
+            "Confirmed observation is readable."
+          ],
+          "evidence": [
+            "w6"
+          ],
+          "scope": "synthetic fixture"
+        },
+        {
+          "file": "tests/incoming-media-asset-lease.test.ts",
+          "name": "cached observation validates the pending frozen file without encoding, even when new recognition is disabled",
+          "assertions": [
+            "Same recognizer version serves cached observation after validating frozen file: reads=1, encodes=0, no transport call.",
+            "Deleted file cannot authorize pending cached observation: rejection, pending status retained, no transport/fallback."
+          ],
+          "evidence": [
+            "w6"
+          ],
+          "scope": "synthetic fixture"
+        },
+        {
+          "file": "tests/incoming-media-asset-lease.test.ts",
+          "name": "frozen ready and confirmed history remain readable after the image file is gone",
+          "assertions": [
+            "Original and next-turn confirmed observation remain exact after unlink.",
+            "Reads=0 and encodes=0; initial model fetch remains exactly once."
+          ],
+          "evidence": [
+            "w6"
+          ],
+          "scope": "synthetic fixture"
+        },
+        {
+          "file": "tests/incoming-media-asset-lease.test.ts",
+          "name": "image tool continuation and format repair reuse one payload lease",
+          "assertions": [
+            "Three transport requests (web tool, invalid format, good observation) carry identical image URL.",
+            "One byte read/one encode; no data:image content is persisted in checkpoint; final leases/payloads=0."
+          ],
+          "evidence": [
+            "w6"
+          ],
+          "scope": "synthetic fixture"
+        },
+        {
+          "file": "tests/incoming-media-cleanup.test.ts",
+          "name": "protects unread same-hash references and preserves observations after asset retirement",
+          "assertions": [
+            "Unread unfinished-turn reference makes cleanup none and file remains.",
+            "After message consumed and turn done, retiring original file leaves confirmed observation description intact."
+          ],
+          "evidence": [
+            "w6"
+          ],
+          "scope": "synthetic fixture"
+        },
+        {
+          "file": "tests/incoming-media-integration.test.ts",
+          "name": "disabled_visual_input_preserves_confirmed_deferred_image_after_disk_reopen",
+          "assertions": [
+            "Deferred historical image after disk reopen and disabled recognition reaches personal_chat/expression envelopes with same ref/version/observation.",
+            "No new incoming_image call and zero downloads; deferred turn done."
+          ],
+          "evidence": [
+            "batchA"
+          ],
+          "scope": "Historical aggregate coverage only; current W6-focused command does not include this file."
+        }
+      ],
+      "pendingAssertions": []
+    }
+  ],
+  "pendingRootGates": [],
+  "minimalAssertionsSuggested": [
+    {
+      "row": "V2-06",
+      "file": "tests/web-persistence-v2.test.ts",
+      "change": "Optional consolidation only: seed provided=true in existing repairCount=1 durable replay fixture and compare raw material row/provider/counter state after reopen. Existing required fields are covered across complementary fixtures."
+    }
+  ],
+  "finalIntegration": {
+    "status": "pass",
+    "sourceCommit": "d0a9963fd206a5d882d92c73914ee7f28ea9d316",
+    "evidence": "docs/v0.5/records/comprehensive-remediation-20261011/evidence/engineering-gates.json"
+  }
+}

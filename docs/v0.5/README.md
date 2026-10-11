@@ -1,12 +1,12 @@
 # HDSI V0.5：当前文档与审核入口
 
-实施中：[综合审核整改执行包](plans/comprehensive-remediation-20261011/README.md)及[实施记录](records/comprehensive-remediation-20261011/README.md)。预约、暂停和网页文本／提取修复已进入定向验证与独立复核；其余任务及整批验收继续进行，**尚未完成本批部署**。
+最新：[综合审核整改交付](records/comprehensive-remediation-20261011/DELIVERY.md)。5项错误修复、流程／性能改进、离线检索工具与独立复核完成；最终217文件1370项及工程门通过。正式部署和最终服务状态以交付页为准；[实施包](plans/comprehensive-remediation-20261011/README.md)保留已完成步骤和未执行的条件在线实验。
 
 最新综合审核：[2026-10-11 文档／代码／性能审核](reviews/comprehensive-audit-20261011/README.md)，基线 `ce7e88e`。该基线发现4项P2、1项P3代码问题及2类文档问题；后续修复进度以上方实施记录为准。原报告保留触发条件、离线探针与改进优先级。既有189文件1034项经分次复验均有通过记录；暂停缺口仅在Host API交错层复现，线上命令窗口未验证。
 
-核对日期：2026-10-11，源码基线`65f0785`。[本次文档核对](records/document-current-sync-20261011/README.md)覆盖总架构、8份子系统、3份参考与导航，以最新源码和配置白名单为准；本次只改文档，不操作服务或重跑产品验收。
+此前同日文档核对的源码基线为`65f0785`，[原记录](records/document-current-sync-20261011/README.md)覆盖总架构、8份子系统、3份参考与导航，仅描述当时文档核对。当前整改后的规则、维护命令与验收以上方交付为准；旧批次的“只改文档”不描述本轮产品实施。
 
-最新代码交付为[导演联网软提示](records/runtime-web-guidance-20261011/README.md)：仅在实际工具可用时建议世界导演查阅当日重要新闻、三类个人导演按兴趣／需要查阅。此前[动作限定线下](records/offline-action-only-20261010/README.md)将动作表达限定在线下共同活动。[安全停止R1](records/graceful-stop-r1-20261010/DELIVERY.md)与[回复新鲜度T1～T5](records/chat-reply-freshness-20261010/DELIVERY.md)也已交付。各批结果和未验证范围单列在下表及实现对应中；停服／手动重启说明表达部署当时状态，不用于判断当前服务是否运行。
+此前代码交付[导演联网软提示](records/runtime-web-guidance-20261011/README.md)：仅在实际工具可用时建议世界导演查阅当日重要新闻、三类个人导演按兴趣／需要查阅。此前[动作限定线下](records/offline-action-only-20261010/README.md)将动作表达限定在线下共同活动。[安全停止R1](records/graceful-stop-r1-20261010/DELIVERY.md)与[回复新鲜度T1～T5](records/chat-reply-freshness-20261010/DELIVERY.md)也已交付。各批结果和未验证范围单列在下表及实现对应中；停服／手动重启说明表达部署当时状态，不用于判断当前服务是否运行。
 
 此前[交付后复核](reviews/freshness-graceful-stop-20261010/REVIEW.md)以086cd07为基线：普通回复新鲜度可接受；安全停止原有1项P2（浏览器关闭失败被吞掉，仍报告成功并退出），现已修复，附[修复执行方案](reviews/freshness-graceful-stop-20261010/FIX_PLAN.md)。原组合探针在086cd07复现缺陷，在R1后转绿；原审核及失败日志保留历史含义，修复、独立复核补修与部署状态以[关闭记录](records/graceful-stop-r1-20261010/README.md)为准。
 
@@ -37,8 +37,9 @@
 
 | 材料 | 状态 |
 | --- | --- |
-| [本次文档同步](records/document-current-sync-20261011/README.md) | 65f0785基线；规则／配置／导航重新对照，只修当前说明与入口，历史证据保留 |
-| [导演联网软提示最新交付](records/runtime-web-guidance-20261011/README.md) | 世界新闻及三类个人兴趣建议，仅实际工具可用时注入；189文件1034项和工程检查通过，已停服构建部署，真实搜索行为待正常运行观察 |
+| [综合审核整改交付](records/comprehensive-remediation-20261011/DELIVERY.md) | 217文件1370项、工程检查与独立复核通过；350合成样本成本比较、恢复矩阵及Q1/Q2完成，Q3工具完成而线上未执行；正式部署状态见交付 |
+| [此前同日文档同步](records/document-current-sync-20261011/README.md) | 65f0785基线；规则／配置／导航重新对照，只修当前说明与入口，历史证据保留 |
+| [导演联网软提示交付](records/runtime-web-guidance-20261011/README.md) | 世界新闻及三类个人兴趣建议，仅实际工具可用时注入；189文件1034项和工程检查通过，已停服构建部署，真实搜索行为待正常运行观察 |
 | [动作限定线下交付](records/offline-action-only-20261010/README.md) | 程序选择合同并检查公共动作包装；189文件1034项及工程检查、复核通过，已停服构建部署 |
 | [安全停止R1交付](records/graceful-stop-r1-20261010/DELIVERY.md) | 浏览器关闭失败传播；188文件1009项及工程检查、定向回归／原审核探针通过；已完成停服编译部署 |
 | [此前文档同步](records/document-current-sync-20261010/README.md) | 726eb00基线；保留当时的配置白名单和链接检查，不代替本次核对 |
@@ -74,7 +75,7 @@
 
 此前已执行合同：[查看消息资格与专注场景](plans/phone-access-20261010/README.md)。针对首次聊天中普通文献整理被设为无结束时间不可读状态的问题，已区分查看资格与回应意愿，并强制不可读活动指定结束时间；代码及正式停服修正已完成，实际状态和未验证范围见[交付](records/phone-access-20261010/DELIVERY.md)。
 
-上述回复新鲜度和查看资格的计划与审核保留编写时状态；相关实施和部署已经完成。安全停止R1依据[修复执行方案](reviews/freshness-graceful-stop-20261010/FIX_PLAN.md)也已关闭。新综合审核整改仍待实施，见本页顶部执行包。
+上述回复新鲜度和查看资格的计划与审核保留编写时状态；相关实施和部署已经完成。安全停止R1依据[修复执行方案](reviews/freshness-graceful-stop-20261010/FIX_PLAN.md)也已关闭。综合整改离线合同现已实施，条件语义在线实验未执行，见本页顶部交付。
 
 | 目录 | 用途 |
 | --- | --- |

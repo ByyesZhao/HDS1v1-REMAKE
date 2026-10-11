@@ -1,0 +1,34 @@
+{
+  "status": "pass",
+  "verifiedSourceCommit": "d0a9963fd206a5d882d92c73914ee7f28ea9d316",
+  "sourceManifest": "docs/v0.5/records/comprehensive-remediation-20261011/evidence/batch-b-source-manifest.json",
+  "sourceContentUnchangedSinceTests": true,
+  "typecheck": {
+    "exitCode": 0,
+    "evidence": "docs/v0.5/records/comprehensive-remediation-20261011/evidence/batch-b-typecheck.txt"
+  },
+  "isolatedBuild": {
+    "exitCode": 0,
+    "evidence": "docs/v0.5/records/comprehensive-remediation-20261011/evidence/batch-b-isolated-build.txt"
+  },
+  "fullSuite": {
+    "exitCode": 0,
+    "filesPassed": 217,
+    "testsPassed": 1370,
+    "skipped": 0,
+    "durationSeconds": 195.98,
+    "evidence": "docs/v0.5/records/comprehensive-remediation-20261011/evidence/batch-b-full-suite.txt"
+  },
+  "demo": {
+    "exitCode": 0,
+    "evidence": "docs/v0.5/records/comprehensive-remediation-20261011/evidence/batch-b-demo.txt"
+  },
+  "pluginSmoke": {
+    "exitCode": 0,
+    "cases": [
+      "empty_week",
+      "required_notice"
+    ],
+    "evidence": "docs/v0.5/records/comprehensive-remediation-20261011/evidence/batch-b-plugin-smoke.txt"
+  }
+}

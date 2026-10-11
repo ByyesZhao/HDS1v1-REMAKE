@@ -1,0 +1,37 @@
+import {mkdtempSync,copyFileSync,existsSync,readFileSync,writeFileSync,mkdirSync} from 'node:fs';
+import {resolve,join} from 'node:path';
+import {createHash} from 'node:crypto';
+import assert from 'node:assert/strict';
+import {Storage} from '../src/storage';
+import {WebSearchStore} from '../src/web/store';
+import {WebSearchService} from '../src/web/service';
+import {ModelClient} from '../src/model/client';
+import {buildCompletionEnvelope} from '../src/model/resource-pool';
+const oldRoot=resolve('.tmp/comprehensive-remediation-baseline-build');
+const old={Storage:require(join(oldRoot,'storage.js')).Storage,WebSearchStore:require(join(oldRoot,'web/store.js')).WebSearchStore,WebSearchService:require(join(oldRoot,'web/service.js')).WebSearchService,ModelClient:require(join(oldRoot,'model/client.js')).ModelClient,buildCompletionEnvelope:require(join(oldRoot,'model/resource-pool.js')).buildCompletionEnvelope};
+const current={Storage,WebSearchStore,WebSearchService,ModelClient,buildCompletionEnvelope};
+const root=mkdtempSync(resolve('.tmp/rollback-copy-')),at='2026-10-11T00:00:00.000Z',body='完整合成回退正文\n'+'x'.repeat(13000);
+const hash=(data:string|Buffer)=>createHash('sha256').update(data).digest('hex');
+function copyGroup(source:string,destination:string){const files=[];for(const suffix of ['','-wal','-shm'])if(existsSync(source+suffix)){copyFileSync(source+suffix,destination+suffix);assert.equal(hash(readFileSync(source+suffix)),hash(readFileSync(destination+suffix)));files.push({suffix,bytes:readFileSync(source+suffix).length,sha256:hash(readFileSync(source+suffix))});}return files;}
+const task={name:'personal_life',prompt:'synthetic rollback drill',schema:{},parse:(v:any)=>{if(v?.answer!=='ok')throw Error('bad fixture answer');return v;}};
+async function execute(impl:any,path:string,seed=false){
+ const db=new impl.Storage(path),store=new impl.WebSearchStore(db),ref=store.openStage('turn','rollback-fixture','personal','personal_life');
+ let providerCalls=0,completeCalls=0;const envelopes:string[]=[];
+ const service=new impl.WebSearchService(store,{signature:'rollback-offline',search:async()=>{throw Error('unexpected search');},read:async()=>{providerCalls++;return {bodyFormat:'text',title:'fixture',body};}},{now:()=>at},{enabled:true});
+ const session=service.openSession(ref);let error:string|null=null;
+ try{await new impl.ModelClient({complete:async(request:any)=>{completeCalls++;envelopes.push(hash(JSON.stringify(impl.buildCompletionEnvelope(request))));return seed&&completeCalls===1?{webRead:{url:'https://offline.test/rollback'}}:{answer:'ok'};}}).runModel(task,{unchanged:'business input'},{web:session,lookup:null});}catch(e){error=String(e);}
+ const row=JSON.parse(String(db.prepare('SELECT data FROM web_sessions WHERE id=?').get(ref.runId).data));
+ const materials=db.prepare('SELECT data FROM web_materials ORDER BY id').all().map((r:any)=>String(r.data));
+ db.close();return {error,providerCalls,completeCalls,envelopes,checkpointVersion:row.checkpoint?.formatVersion??1,counters:row.counters,materialHash:hash(JSON.stringify(materials))};
+}
+async function main(){
+ const oldDb=join(root,'old.sqlite'),backupDb=join(root,'backup.sqlite'),upgradedDb=join(root,'upgraded.sqlite'),downgradeCopy=join(root,'old-code-new-db.sqlite'),restoredDb=join(root,'restored.sqlite');
+ const seeded=await execute(old,oldDb,true);assert.equal(seeded.error,null);assert.equal(seeded.providerCalls,1);assert.equal(seeded.checkpointVersion,1);
+ const backup=copyGroup(oldDb,backupDb);copyGroup(backupDb,upgradedDb);
+ const upgraded=await execute(current,upgradedDb);assert.equal(upgraded.error,null);assert.equal(upgraded.providerCalls,0);assert.equal(upgraded.checkpointVersion,2);assert.equal(upgraded.envelopes[0],seeded.envelopes.at(-1));assert.equal(upgraded.materialHash,seeded.materialHash);
+ copyGroup(upgradedDb,downgradeCopy);const unsupported=await execute(old,downgradeCopy);assert.match(unsupported.error??'',/materials is not iterable/);assert.equal(unsupported.providerCalls,0);assert.equal(unsupported.envelopes.length,0);
+ const restored=copyGroup(backupDb,restoredDb),rollback=await execute(old,restoredDb);assert.equal(rollback.error,null);assert.equal(rollback.providerCalls,0);assert.equal(rollback.checkpointVersion,1);assert.equal(rollback.envelopes[0],seeded.envelopes.at(-1));assert.deepEqual(rollback.counters,seeded.counters);assert.equal(rollback.materialHash,seeded.materialHash);
+ const report={status:'pass',scope:'Synthetic stopped closed-database copies only; no formal data or network.',baselineSourceRevision:readFileSync('.tmp/comprehensive-remediation-baseline/source-revision.txt','utf8').trim(),baselineCompiled:oldRoot,fixtureRoot:root,backup,restored,seeded,upgraded,oldCodeWithNewDatabase:unsupported,pairedRollback:rollback,conclusion:'Old binary cannot consume the v2 checkpoint in this real completion-envelope path; old binary plus its matched pre-change database backup restores the full envelope and counters without rereading the page.'};
+ const evidence=resolve('docs/v0.5/records/comprehensive-remediation-20261011/evidence');mkdirSync(evidence,{recursive:true});writeFileSync(join(evidence,'rollback-drill.json'),JSON.stringify(report,null,2)+'\n');copyFileSync(__filename,join(evidence,'rollback-drill-source.ts.txt'));console.log(JSON.stringify(report,null,2));
+}
+void main().catch(e=>{console.error(e);process.exitCode=1;});

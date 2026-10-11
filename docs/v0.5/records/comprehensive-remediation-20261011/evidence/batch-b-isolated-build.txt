@@ -1,0 +1,2 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run tsc -p tsconfig.build.json --outDir D:\HDSI-remake\.tmp\comprehensive-remediation-build

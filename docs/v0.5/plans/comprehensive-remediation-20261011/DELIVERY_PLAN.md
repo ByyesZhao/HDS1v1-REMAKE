@@ -8,7 +8,7 @@
 
 **Tech Stack:** 现有PowerShell、Node、npm、TypeScript、Vitest与Koishi离线smoke；不增加依赖。
 
-**Spec:** [综合审核](../../reviews/comprehensive-audit-20261011/README.md)、[文档问题D2/D3](../../reviews/comprehensive-audit-20261011/DOCS_AUDIT.md)、[目录原则](../../../DIRECTORY_POLICY.md)、[总执行入口](README.md)。日期2026-10-11，基线`ce7e88e`，状态**未实施**。
+**Spec:** [综合审核](../../reviews/comprehensive-audit-20261011/README.md)、[文档问题D2/D3](../../reviews/comprehensive-audit-20261011/DOCS_AUDIT.md)、[目录原则](../../../DIRECTORY_POLICY.md)、[总执行入口](README.md)。日期2026-10-11，基线`ce7e88e`，原方案编写时状态**未实施**；后续授权与执行进度见[实施记录](../../records/comprehensive-remediation-20261011/README.md)。
 
 ## Global Constraints
 
@@ -40,24 +40,24 @@
 
 **对应：**审核D2、D3；D1／B3的CLI说明在W2交付后同步。源文件：根`README.md`、`docs/v0.5/{README.md,subsystems/REMAKE_V0.5_RECOVERY.md,subsystems/REMAKE_V0.5_MEMORY.md,subsystems/REMAKE_V0.5_EXPRESSION_STICKERS.md,reference/V0.5_IMPLEMENTATION_MAP_20261009.md}`。
 
-- [ ] **1. 修正文档状态。** 原175／920只称“图片／搜索修复该批验收”，保留对应链接；“最新／本批”统一引用当前交付入口。把“本次只升级测试夹具”加原批次日期／适用范围，不能与当前正式升级记录并列成两个现状。不要通过再读私有库猜当前部署状态。
-- [ ] **2. 补现有回收命令。** 逐项说明实际默认`batch-size=50`、`max-batches=20`、`hasMore`续跑、无待回收内容时不创建备份；默认备份根在数据库旁`backups/memory-payloads/<uuid>/`，自定义`--backup-dir`下仍创建uuid子目录，包含实际存在的DB/WAL/SHM。复用现有工具，不编写“复制主DB即可回退”的简化说明。
-- [ ] **3. 文档中的示例明确是运维动作。** 下例不在写文档时执行；数据库路径由未来部署任务明确提供：
+- [x] **1. 修正文档状态。** 原175／920只称“图片／搜索修复该批验收”，保留对应链接；“最新／本批”统一引用当前交付入口。把“本次只升级测试夹具”加原批次日期／适用范围，不能与当前正式升级记录并列成两个现状。不要通过再读私有库猜当前部署状态。
+- [x] **2. 补现有回收命令。** 逐项说明实际默认`batch-size=50`、`max-batches=20`、`hasMore`续跑、无待回收内容时不创建备份；默认备份根在数据库旁`backups/memory-payloads/<uuid>/`，自定义`--backup-dir`下仍创建uuid子目录，包含实际存在的DB/WAL/SHM。复用现有工具，不编写“复制主DB即可回退”的简化说明。
+- [x] **3. 文档中的示例明确是运维动作。** 下例不在写文档时执行；数据库路径由未来部署任务明确提供：
 
 ```powershell
 npm run memory:compact-payloads -- <数据库绝对路径> --dry-run
 npm run memory:compact-payloads -- <数据库绝对路径> --apply --stopped --batch-size 50 --max-batches 20 --backup-dir <备份目录>
 ```
 
-- [ ] **4. W2完成后补CLI能力表。** `rebuild`只重建向量，不启动浏览器；`import`按已启用配置独立启动网页工具，失败及排空退出语义按实际实现写。不可通过临时关闭正式webSearch来让示例可用。
-- [ ] **5. R4／W5完成后再次对齐。** 说明新增environment终态回收和web正文引用迁移各自覆盖范围、命令、只读／apply边界与兼容矩阵。`--include-environment`是明确opt-in，默认`memory:compact-payloads`范围保持，默认dry-run的零残余不能证明环境残余为零。两工具不能共用同一含糊“升级”描述。
-- [ ] **6. 验收。** 检查本地Markdown链接和锚点、命令参数与CLI解析完全一致；在合成库的既有CLI测试通过后才说“命令可执行”。纯文字修正不另写镜像式产品测试。提交文档同步并列出仍未部署事项。
+- [x] **4. W2完成后补CLI能力表。** `rebuild`只重建向量，不启动浏览器；`import`按已启用配置独立启动网页工具，失败及排空退出语义按实际实现写。不可通过临时关闭正式webSearch来让示例可用。
+- [x] **5. R4／W5完成后再次对齐。** 说明新增environment终态回收和web正文引用迁移各自覆盖范围、命令、只读／apply边界与兼容矩阵。`--include-environment`是明确opt-in，默认`memory:compact-payloads`范围保持，默认dry-run的零残余不能证明环境残余为零。两工具不能共用同一含糊“升级”描述。
+- [x] **6. 验收。** 检查本地Markdown链接和锚点、命令参数与CLI解析完全一致；在合成库的既有CLI测试通过后才说“命令可执行”。纯文字修正不另写镜像式产品测试。提交文档同步并列出仍未部署事项。
 
 ## V1：每批工程验收
 
 **适用批次：**A为R1/R2/W1/W2/W3/D1；B为性能与存储任务。Q1/Q2另行走其评估交付，但工具代码同样做类型与相关测试。各任务红绿回归完成后才进入批次门，不每改一行重复全量。
 
-- [ ] **1. 创建本批证据目录并隔离编译。** 以下PowerShell从执行工作区根运行；`$PWD`只读，不改写系统路径变量。TEMP/TMP仅对本次shell进程生效。
+- [x] **1. 创建本批证据目录并隔离编译。** 以下PowerShell从执行工作区根运行；`$PWD`只读，不改写系统路径变量。TEMP/TMP仅对本次shell进程生效。
 
 ```powershell
 $evidenceRoot = Join-Path $PWD 'docs/v0.5/records/comprehensive-remediation-20261011/evidence'
@@ -73,10 +73,10 @@ npx tsc -p tsconfig.build.json --outDir $compiledRoot
 
 每条独立检查退出码0，失败就保存实际错误，不能让最后一条成功掩盖前条失败。证据按`batch-a/`、`batch-b/`等新子目录保存，避免覆盖上一批红测／通过日志。
 
-- [ ] **2. 全量与演示。** 执行`npm test -- --reporter=dot`、`npm run demo`、`node runtime/plugin-smoke.cjs`，各自保存日志和退出码。smoke需分别通过empty_week／required_notice，明确加载V0指定的新编译目录。
-- [ ] **3. 沙箱处理。** 如果Vite临时缓存ENOENT，使用上述工作区TEMP/TMP重跑；如果仅Chrome或junction被权限阻挡，仅对这些测试申请工具级适当权限复验，保持临时合成库与无网络约束。拒绝或仍失败就如实记录未通过范围，不把skip算pass。
-- [ ] **4. 数量核对。** 审核基线189文件／1034项仅是起点，新增回归后以实际输出为准；跨次覆盖要列每次集合与交集，不能把总数直接相加。
-- [ ] **5. 版本核对。** 记录HEAD、工作树差异、Node/npm版本、构建路径、测试路径；执行`git diff --check`。本批不要求为文档重跑所有历史在线验收。
+- [x] **2. 全量与演示。** 执行`npm test -- --reporter=dot`、`npm run demo`、`node runtime/plugin-smoke.cjs`，各自保存日志和退出码。smoke需分别通过empty_week／required_notice，明确加载V0指定的新编译目录。
+- [x] **3. 沙箱处理。** 如果Vite临时缓存ENOENT，使用上述工作区TEMP/TMP重跑；如果仅Chrome或junction被权限阻挡，仅对这些测试申请工具级适当权限复验，保持临时合成库与无网络约束。拒绝或仍失败就如实记录未通过范围，不把skip算pass。
+- [x] **4. 数量核对。** 审核基线189文件／1034项仅是起点，新增回归后以实际输出为准；跨次覆盖要列每次集合与交集，不能把总数直接相加。
+- [x] **5. 版本核对。** 记录HEAD、工作树差异、Node/npm版本、构建路径、测试路径；执行`git diff --check`。本批不要求为文档重跑所有历史在线验收。
 
 ## V2：持久恢复与兼容总矩阵
 
@@ -97,10 +97,10 @@ npx tsc -p tsconfig.build.json --outDir $compiledRoot
 
 ## V3：性能比较与退出条件
 
-- [ ] 从原审核探针复制合成数据构造方法到本批benchmark，不修改原探针。正确性断言改成产品目标；旧探针“缺陷存在”断言不得作为绿测。
-- [ ] 用相同构建参数、依赖、数据量与Node环境，分别运行固定baseline和after提交的隔离构建；记录各自产物／源码身份，不能两边误用同一个lib。记录确定性工作量、峰值或载荷体积的实际口径，再记录至少7次计时样本和中位数。时间测试避免与全量测试并行，硬件差异只比较相同环境。
-- [ ] 各项硬门槛以W4/W5、R3/R4、M1/M2、W6/W7各自工作量合同为准：减少全文物化／解析，保持消息输出、owner选择、到期资格、排序顺序和恢复请求次数一致。不得用降低20/40、删除必要正文、缩短历史窗口或减少召回条数换取数字。
-- [ ] 某项时间没有改善而工作次数达到目标时，给出完整结果及原因；不得宣称已达到“469ms→某绝对值”或真实生产内存减半。若工作次数目标也不达成，该项不能关闭。
+- [x] 从原审核探针复制合成数据构造方法到本批benchmark，不修改原探针。正确性断言改成产品目标；旧探针“缺陷存在”断言不得作为绿测。
+- [x] 用相同构建参数、依赖、数据量与Node环境，分别运行固定baseline和after提交的隔离构建；记录各自产物／源码身份，不能两边误用同一个lib。记录确定性工作量、峰值或载荷体积的实际口径，再记录至少7次计时样本和中位数。时间测试避免与全量测试并行，硬件差异只比较相同环境。
+- [x] 各项硬门槛以W4/W5、R3/R4、M1/M2、W6/W7各自工作量合同为准：减少全文物化／解析，保持消息输出、owner选择、到期资格、排序顺序和恢复请求次数一致。不得用降低20/40、删除必要正文、缩短历史窗口或减少召回条数换取数字。
+- [x] 某项时间没有改善而工作次数达到目标时，给出完整结果及原因；不得宣称已达到“469ms→某绝对值”或真实生产内存减半。若工作次数目标也不达成，该项不能关闭。
 
 ## V4：交付、合并与正式部署边界
 

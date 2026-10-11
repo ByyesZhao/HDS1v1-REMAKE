@@ -1,0 +1,6 @@
+warning: in the working copy of 'docs/v0.5/plans/comprehensive-remediation-20261011/DELIVERY_PLAN.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/v0.5/plans/comprehensive-remediation-20261011/MEMORY_PLAN.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/v0.5/plans/comprehensive-remediation-20261011/RETRIEVAL_QUALITY_PLAN.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/v0.5/plans/comprehensive-remediation-20261011/RUNTIME_PLAN.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/v0.5/plans/comprehensive-remediation-20261011/WEB_MEDIA_PLAN.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/v0.5/records/comprehensive-remediation-20261011/README.md', LF will be replaced by CRLF the next time Git touches it
