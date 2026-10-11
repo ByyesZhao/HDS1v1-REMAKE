@@ -1,0 +1,94 @@
+{
+  "date": "2026-10-11",
+  "version": "0.5.1",
+  "baseline": "9a14ea4",
+  "productCommits": [
+    "5a41a9f",
+    "64dbc0f"
+  ],
+  "testCommits": [
+    "18d79d1",
+    "1af4f13",
+    "3ac4fb5"
+  ],
+  "baselineTests": {
+    "files": 6,
+    "passed": 50
+  },
+  "t1": {
+    "redFailed": 18,
+    "greenFiles": 7,
+    "greenPassed": 73
+  },
+  "t2": {
+    "redFailed": 4,
+    "greenFiles": 8,
+    "greenPassed": 70
+  },
+  "t3": {
+    "diskPassed": 17,
+    "oldContractFailed": 4,
+    "oldContractPassed": 13,
+    "greenFiles": 7,
+    "greenPassed": 69,
+    "missingRoleUpdateMutationFailed": 2
+  },
+  "firstFull": {
+    "files": 220,
+    "passed": 1405,
+    "failed": 7,
+    "skipped": 2,
+    "resolution": "Build isolated lib before full suite; update old literal error assertion without weakening rejection."
+  },
+  "finalFull": {
+    "command": "npm test -- --reporter=default --reporter=json --outputFile=.superpowers/sdd/EXECUTION_PLAN/full-suite-accepted.json",
+    "exitCode": 0,
+    "files": 220,
+    "passed": 1412,
+    "failed": 0,
+    "skipped": 2,
+    "total": 1414,
+    "durationSeconds": 205.31,
+    "skipReason": "Existing optional archived baseline comparisons in web-payload-cost; no new test skipped."
+  },
+  "gates": [
+    {
+      "command": "npm run typecheck",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run build",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run demo",
+      "exitCode": 0
+    },
+    {
+      "command": "npm test -- tests/plugin-smoke-contract.test.ts tests/plugin-smoke-build-path.test.ts",
+      "exitCode": 0
+    },
+    {
+      "command": "HDSI_TEST_LIB_DIR=<isolated absolute lib> node runtime/plugin-smoke.cjs",
+      "exitCode": 0
+    }
+  ],
+  "pluginTests": {
+    "files": 2,
+    "passed": 10
+  },
+  "smoke": {
+    "empty_week": "four committed steps",
+    "required_notice": "four committed steps"
+  },
+  "review": {
+    "critical": 0,
+    "important": 0,
+    "testEvidenceCorrection": "Read-only stage inspection; mutation fails both switch tests."
+  },
+  "onlineModelOrSearch": false,
+  "realQQAcceptance": false,
+  "formalDatabaseUsedForOfflineTests": false,
+  "resumeExecuted": false,
+  "rawLogs": "Private execution ledger/logs preserved separately; no private runtime data in this evidence."
+}

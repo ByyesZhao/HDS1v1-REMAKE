@@ -2,9 +2,9 @@
 
 返回[版本索引](../README.md)。
 
-当前待实施：[个人导演任务合同修复V2（2026-10-11）](personal-task-contract-20261011/PLAN_V2.md)及[细化实施文档](personal-task-contract-20261011/EXECUTION_PLAN.md)，两份一并交给执行者。[方案审核](../reviews/personal-task-contract-20261011/REVIEW.md)保留程序独占消息检查、个人导演只管理双方预约的方向，修正1项P2恢复边界问题，并补齐未尝试候选重生成、首次重试、沉默封口和life→chat恢复用例。[原方案](personal-task-contract-20261011/README.md)和原设计保留供对照；当前仅完成审核、修订与执行细化，未改产品、部署或解除暂停。
+当前已实施：[个人导演任务合同V2](personal-task-contract-20261011/PLAN_V2.md)及[细化步骤](personal-task-contract-20261011/EXECUTION_PLAN.md)，T1～T4离线验收通过。实际结果与现场状态见[交付](../records/personal-task-contract-20261011/DELIVERY.md)；[原方案](personal-task-contract-20261011/README.md)与[审核](../reviews/personal-task-contract-20261011/REVIEW.md)保留历史含义。
 
-最新已实施离线合同：[综合审核整改执行包（2026-10-11）](comprehensive-remediation-20261011/README.md)。错误修复、流程／性能优化、Q1/Q2评估及Q3离线工具已完成；条件语义在线实验未执行，暂保留执行包路径供后续使用。实际验收与部署状态见[交付](../records/comprehensive-remediation-20261011/DELIVERY.md)。
+前次已实施离线合同：[综合审核整改执行包（2026-10-11）](comprehensive-remediation-20261011/README.md)。错误修复、流程／性能优化、Q1/Q2评估及Q3离线工具已完成；条件语义在线实验未执行，暂保留执行包路径供后续使用。实际验收与部署状态见[交付](../records/comprehensive-remediation-20261011/DELIVERY.md)。
 
 此前已执行合同：[普通聊天回复跟进新消息](chat-reply-freshness-20261010/README.md)。[审核](../reviews/chat-reply-freshness-20261010/REVIEW.md)保留方案 B，补齐等待与事件接管、业务代际、图片冻结和资格重选 4 项合同；对应的[细化执行方案 T1～T5](../reviews/chat-reply-freshness-20261010/EXECUTION_PLAN.md)现已实施，见[交付](../records/chat-reply-freshness-20261010/DELIVERY.md)；15秒和4段参数不改；原调查见[记录](../records/chat-reply-order-20261010/README.md)。
 

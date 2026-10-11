@@ -1,6 +1,6 @@
 # 个人导演任务合同修复 V2 Implementation Plan
 
-> For agentic workers: REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking. 本文为待实施方案；本轮只审核和更新文档，不执行产品修改、部署或现场恢复。
+> For agentic workers: REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking. T1～T4已按本文实施并离线验收；后续用户授权Git上传、安全停止与放入构建，现场状态另记。
 
 **Goal:** 收窄个人导演任务输出为双方预约，消除与程序消息检查的职责重叠，并保持未尝试生成、冻结发送及后处理各自的恢复语义。
 
@@ -10,9 +10,11 @@
 
 **Spec:** 本文“设计合同与恢复矩阵”为V2规范；故障调查沿用[原设计](DESIGN.md)§1～3的证据边界，审核发现及探针见[方案审核](../../reviews/personal-task-contract-20261011/REVIEW.md)。本方案替代[原执行稿](README.md)，原稿保留，不与V2混用。
 
-日期：2026-10-11。状态：**审核修订完成，未实施**。源码基线：`9a14ea4b5191deda366bbe0c3d9fcdeb7dfd0e78`，版本`0.5.1`。T1→T2→T3→T4；正式部署／恢复D1另列。
+日期：2026-10-11。状态：**T1～T4已实施，离线验收通过；现场状态另列**。源码基线：`9a14ea4b5191deda366bbe0c3d9fcdeb7dfd0e78`，版本`0.5.1`。T1→T2→T3→T4；正式部署／恢复D1另列。
 
 交接实施时同时提供[细化实施文档](EXECUTION_PLAN.md)：本文规定设计合同，细化文档补充准备步骤、具体修改接点、测试夹具、断言、命令及交付要求。两份即可指导Sol执行T1～T4，D1仍不随离线实施自动执行。
+
+实施结果见[交付](../../records/personal-task-contract-20261011/DELIVERY.md)。下列原交接指令的现场／推送限制属于编制时范围；用户随后授权上传Git并安全停止、由用户手动重启。具体授权及实际边界见[现场记录](../../records/personal-task-contract-20261011/DEPLOYMENT.md)，未授权hdsi.resume。
 
 ## Global Constraints
 
@@ -72,12 +74,12 @@
 
 **Interfaces:** 保留personalTask公开签名，新增上文私有personalTaskChangeContract；后续通过personalTask消费。
 
-- [ ] 写失败测试：chat/life/shared拒绝check创建、check更新／取消／转预约、scene_step、预约夹带check字段；给shared合法sharedMeta，避免无关错误先阻断。create输入只带模型合法基础字段，不用存储行的id/status污染权限断言。
-- [ ] 写集合测试：pending预约的部分更新／取消成功；unknown/completed/cancelled ID拒绝；重复修改拒绝；空预约仅create；构建后新增／修改原tasks不改变已建Schema／parse。life省略taskChanges、chat/shared必填、原动作与contactEligible=false仍保持。
-- [ ] 假fetch截获json_object／json_schema请求，检查最终任务Schema分支只有appointment及正确ID；工具分支仍存在。经真实ModelClient触发修补和工具续接，检查合同不漂移，不用整个提示中是否出现“check_messages”作为断言。
-- [ ] 替换tasks.test旧“模型check→appointment提前醒”测试为拒绝转换及合法新预约提前醒（原08:30→07:00，预约08:00）；review-fixes的未来check允许用例改为拒绝。保留预约NOW和无关记忆／睡眠用例，task-projection的旧转换用例不删除。
-- [ ] 运行`npm test -- tests/personal-task-contract.test.ts tests/tasks.test.ts tests/review-fixes.test.ts`，记录新增合同测试确因旧权限失败后，实现strict合同和同源validate，再运行至通过。
-- [ ] 运行`npm test -- tests/task-projection.test.ts tests/model-call-context.test.ts tests/web-model-tools.test.ts`及`npm run typecheck`，复核diff后提交T1。
+- [x] 写失败测试：chat/life/shared拒绝check创建、check更新／取消／转预约、scene_step、预约夹带check字段；给shared合法sharedMeta，避免无关错误先阻断。create输入只带模型合法基础字段，不用存储行的id/status污染权限断言。
+- [x] 写集合测试：pending预约的部分更新／取消成功；unknown/completed/cancelled ID拒绝；重复修改拒绝；空预约仅create；构建后新增／修改原tasks不改变已建Schema／parse。life省略taskChanges、chat/shared必填、原动作与contactEligible=false仍保持。
+- [x] 假fetch截获json_object／json_schema请求，检查最终任务Schema分支只有appointment及正确ID；工具分支仍存在。经真实ModelClient触发修补和工具续接，检查合同不漂移，不用整个提示中是否出现“check_messages”作为断言。
+- [x] 替换tasks.test旧“模型check→appointment提前醒”测试为拒绝转换及合法新预约提前醒（原08:30→07:00，预约08:00）；review-fixes的未来check允许用例改为拒绝。保留预约NOW和无关记忆／睡眠用例，task-projection的旧转换用例不删除。
+- [x] 运行`npm test -- tests/personal-task-contract.test.ts tests/tasks.test.ts tests/review-fixes.test.ts`，记录新增合同测试确因旧权限失败后，实现strict合同和同源validate，再运行至通过。
+- [x] 运行`npm test -- tests/task-projection.test.ts tests/model-call-context.test.ts tests/web-model-tools.test.ts`及`npm run typecheck`，复核diff后提交T1。
 
 ## T2：提示职责与现场形态业务流
 
@@ -85,11 +87,11 @@
 
 **Interfaces:** 沿T1合同、reply=later及maintainTask；沿generateTurn/HdsiApp.runTurn，不增加调度API。
 
-- [ ] 三类personal提示说明任务只管预约、检查由程序处理，删除允许模型直接改check期限的旧句。chat/shared延后回应使用reply=later，life未来意图只写nextPlan。正常／修补／工具续接均携带同一职责提示。
-- [ ] 复用modern()、InputBuffer及学校fixture，显式环境协议2；两条历史已读、一条新输入。选择含真实已发布通知ref的请求，让叙事在合法时间获知通知后转为不可读活动。观察经历时间不得早于通知实际releasedAt／publishAt；可用叙事前已可读状态证明该经历合法，不让fixture先因学校时间校验失败。
-- [ ] 用例`school_observation_keeps_personal_life_when_phone_is_inaccessible`断言经历和更新后活动进入个人输入，visible/reconsider空，personal_life执行、expression不执行；轮提交，真实新输入seen仍空，unread检查只绑定该新消息且at为活动预计结束；历史seen不变。
-- [ ] 对照无学校观察且无其他触发的不可读轮可以跳过personal；再次可读后用reply=later维护同一deferred任务、同ID延期仍不改已读状态。学校观察用例本来通过可以保留绿灯，不人为制造红灯。
-- [ ] 先记录提示测试红灯，再修改提示；运行`npm test -- tests/personal-task-contract-flow.test.ts tests/prompt-policy.test.ts tests/tasks.test.ts tests/task-projection.test.ts tests/personal-stage-preparation.test.ts tests/phone-access-flow.test.ts tests/phone-access-contracts.test.ts tests/world-school-personal-reminder.test.ts`至通过，复核后提交T2。
+- [x] 三类personal提示说明任务只管预约、检查由程序处理，删除允许模型直接改check期限的旧句。chat/shared延后回应使用reply=later，life未来意图只写nextPlan。正常／修补／工具续接均携带同一职责提示。
+- [x] 复用modern()、InputBuffer及学校fixture，显式环境协议2；两条历史已读、一条新输入。选择含真实已发布通知ref的请求，让叙事在合法时间获知通知后转为不可读活动。观察经历时间不得早于通知实际releasedAt／publishAt；可用叙事前已可读状态证明该经历合法，不让fixture先因学校时间校验失败。
+- [x] 用例`school_observation_keeps_personal_life_when_phone_is_inaccessible`断言经历和更新后活动进入个人输入，visible/reconsider空，personal_life执行、expression不执行；轮提交，真实新输入seen仍空，unread检查只绑定该新消息且at为活动预计结束；历史seen不变。
+- [x] 对照无学校观察且无其他触发的不可读轮可以跳过personal；再次可读后用reply=later维护同一deferred任务、同ID延期仍不改已读状态。学校观察用例本来通过可以保留绿灯，不人为制造红灯。
+- [x] 先记录提示测试红灯，再修改提示；运行`npm test -- tests/personal-task-contract-flow.test.ts tests/prompt-policy.test.ts tests/tasks.test.ts tests/task-projection.test.ts tests/personal-stage-preparation.test.ts tests/phone-access-flow.test.ts tests/phone-access-contracts.test.ts tests/world-school-personal-reminder.test.ts`至通过，复核后提交T2。
 
 ## T3：按保存状态验证磁盘恢复
 
@@ -97,13 +99,13 @@
 
 **Interfaces:** 真实Storage文件关闭／重开、ModelClient＋假Transport、HdsiApp.resumeUnfinishedTurn／必要的SerialHost.resume。每个fixture重建Storage、WebSearchStore、WebSearchService、上下文组件，不能沿用已关闭连接。
 
-- [ ] `unfrozen_recovery_keeps_repairs_with_new_time`：未冻结personal_life失败，checkpoint.repairCount=2；推进时钟再重开。同ID恢复的首次**个人**请求使用新合同，turn.at为恢复时刻，原repair.original仍在。同角色合法响应完成；再次非法check响应立即ModelFormatError且计数仍2，无该轮故事输出／提交。
-- [ ] `mixed_school_recovery_can_switch_life_to_chat`：冻结输入选择含学校通知、无replyFreshness；恢复叙事改为可读，使新个人角色为chat。断言同personal阶段runId、taskName更新、repairCount仍2，新输入／Schema与chat匹配，旧life repair只作修补材料。合法及非法响应分别验收；不使用静止时钟掩盖角色切换。
-- [ ] `unattempted_legacy_candidate_is_regenerated_under_new_contract`：构造旧check→appointment候选、全pending outbox、无firstAttemptAt、outputComplete=false。推进时钟并重开后，旧稿不发送、旧变化不直接提交；新个人输出必须通过预约合同。用会记录新叙事／个人／表达的runner，不把它们设成“调用即失败”。
-- [ ] `attempted_legacy_candidate_finishes_without_personal_reparse`参数化：一个confirmed＋待续项，以及首项retry但没有confirmed。冻结旧check→appointment结果后重开，叙事／个人／表达调用即失败，记忆合法；保持旧at和候选，confirmed不重发，重试项按现有规则完成。这里不能宣称未知QQ结果永不重复。
-- [ ] `silent_complete_legacy_candidate_only_finishes_post`：零输出、outputComplete=true、旧候选和未完成post；新消息不推翻已封口决定。重开只做后处理；另覆盖post.result已保存时不重做记忆，重复恢复不重复投影任务。
-- [ ] 同逻辑阶段checkpoint覆盖lookupUsed及20／40计数保留；pendingOperationId分别为未完成和已done但尚未写回checkpoint，后者恢复不得再调用provider。到预算2的工具续接不额外增加格式修补次数；确认结果仅按原合同复用。
-- [ ] 新合同特有断言在旧代码失败、既有恢复行为允许原本通过；任何fixture错误单独修正并记录，不能据此改产品。运行`npm test -- tests/personal-task-contract-recovery.test.ts tests/recovery.test.ts tests/web-recovery.test.ts tests/chat-recovery.test.ts tests/reply-freshness-recovery.test.ts tests/shared-v3-recovery.test.ts tests/task-projection.test.ts`，检查各分支结果后提交T3。
+- [x] `unfrozen_recovery_keeps_repairs_with_new_time`：未冻结personal_life失败，checkpoint.repairCount=2；推进时钟再重开。同ID恢复的首次**个人**请求使用新合同，turn.at为恢复时刻，原repair.original仍在。同角色合法响应完成；再次非法check响应立即ModelFormatError且计数仍2，无该轮故事输出／提交。
+- [x] `mixed_school_recovery_can_switch_life_to_chat`：冻结输入选择含学校通知、无replyFreshness；恢复叙事改为可读，使新个人角色为chat。断言同personal阶段runId、taskName更新、repairCount仍2，新输入／Schema与chat匹配，旧life repair只作修补材料。合法及非法响应分别验收；不使用静止时钟掩盖角色切换。
+- [x] `unattempted_legacy_candidate_is_regenerated_under_new_contract`：构造旧check→appointment候选、全pending outbox、无firstAttemptAt、outputComplete=false。推进时钟并重开后，旧稿不发送、旧变化不直接提交；新个人输出必须通过预约合同。用会记录新叙事／个人／表达的runner，不把它们设成“调用即失败”。
+- [x] `attempted_legacy_candidate_finishes_without_personal_reparse`参数化：一个confirmed＋待续项，以及首项retry但没有confirmed。冻结旧check→appointment结果后重开，叙事／个人／表达调用即失败，记忆合法；保持旧at和候选，confirmed不重发，重试项按现有规则完成。这里不能宣称未知QQ结果永不重复。
+- [x] `silent_complete_legacy_candidate_only_finishes_post`：零输出、outputComplete=true、旧候选和未完成post；新消息不推翻已封口决定。重开只做后处理；另覆盖post.result已保存时不重做记忆，重复恢复不重复投影任务。
+- [x] 同逻辑阶段checkpoint覆盖lookupUsed及20／40计数保留；pendingOperationId分别为未完成和已done但尚未写回checkpoint，后者恢复不得再调用provider。到预算2的工具续接不额外增加格式修补次数；确认结果仅按原合同复用。
+- [x] 新合同特有断言在旧代码失败、既有恢复行为允许原本通过；任何fixture错误单独修正并记录，不能据此改产品。运行`npm test -- tests/personal-task-contract-recovery.test.ts tests/recovery.test.ts tests/web-recovery.test.ts tests/chat-recovery.test.ts tests/reply-freshness-recovery.test.ts tests/shared-v3-recovery.test.ts tests/task-projection.test.ts`，检查各分支结果后提交T3。
 
 ## T4：工程验收及现行说明同步
 
@@ -111,10 +113,10 @@
 
 **Interfaces:** 描述T1～T3实际验证后的新合同；原设计和本审核继续保留其基线。
 
-- [ ] 在隔离目录依次运行`npm run typecheck`、`npm test`、`npm run build`、`npm run demo`，各退出0才继续；记录实际全量数量和失败／跳过，不复用本审核50项或旧交付1370项。
-- [ ] 构建后执行`npm test -- tests/plugin-smoke-contract.test.ts tests/plugin-smoke-build-path.test.ts`；将HDSI_TEST_LIB_DIR设为隔离lib的绝对路径，执行`node runtime/plugin-smoke.cjs`，确认两个场景四阶段提交。TEMP／TMP指向隔离目录下已创建的临时目录，结束恢复原环境变量。
-- [ ] 现行说明写预约专用输出、程序未读／复议入口，以及本方案恢复矩阵；不得把“合同更窄”写成模型绝不生成非法JSON。交付页记录代码基线、红绿证据、原预算恢复及未执行在线范围。
-- [ ] 检查Markdown链接、`git diff --check`及提交清单，排除生成物／配置／私有库；更新为“已实施，未部署／未恢复”，复核后提交T4。不得把文档审查当成功能交付。
+- [x] 在隔离目录依次运行`npm run typecheck`、`npm test`、`npm run build`、`npm run demo`，各退出0才继续；记录实际全量数量和失败／跳过，不复用本审核50项或旧交付1370项。
+- [x] 构建后执行`npm test -- tests/plugin-smoke-contract.test.ts tests/plugin-smoke-build-path.test.ts`；将HDSI_TEST_LIB_DIR设为隔离lib的绝对路径，执行`node runtime/plugin-smoke.cjs`，确认两个场景四阶段提交。TEMP／TMP指向隔离目录下已创建的临时目录，结束恢复原环境变量。
+- [x] 现行说明写预约专用输出、程序未读／复议入口，以及本方案恢复矩阵；不得把“合同更窄”写成模型绝不生成非法JSON。交付页记录代码基线、红绿证据、原预算恢复及未执行在线范围。
+- [x] 检查Markdown链接、`git diff --check`及提交清单，排除生成物／配置／私有库；更新为“已实施，未部署／未恢复”，复核后提交T4。不得把文档审查当成功能交付。
 
 ## D1：正式部署及恢复（不在本次审查中执行）
 
@@ -129,4 +131,4 @@
 
 ## 自检与交接
 
-T1对应模型权限，T2保留生活／学校／消息职责，T3覆盖完整恢复矩阵和阶段切换，T4确认工程结果，D1仅指导将来现场操作。没有新增产品模块、持久格式、权限放宽或修补预算。审核已运行的6文件50项测试及合成探针仅证明当前基线的行为；本方案全部实施复选框保持未勾选。
+T1对应模型权限，T2保留生活／学校／消息职责，T3覆盖完整恢复矩阵和阶段切换，T4确认工程结果，D1仅指导将来现场操作。没有新增产品模块、持久格式、权限放宽或修补预算。审核已运行的6文件50项测试及合成探针仅证明当前基线的行为；该审核证据保留历史含义；T1～T4复选框已按本次执行勾选，D1未执行项仍留空。

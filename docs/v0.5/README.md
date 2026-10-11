@@ -1,8 +1,8 @@
 # HDSI V0.5：当前文档与审核入口
 
-最新文档核对：[当前代码交叉核对](records/document-code-crosscheck-20261011/README.md)，基线`9f3c73f`，产品代码与`d0a9963`相同。本轮复核现行架构、8份子系统、3份参考，补齐共同活动提交时序、验收超时范围和导航状态，并通过类型检查及4文件35项定向测试；下列历史产品测试、配置核对和部署结果仍按各自记录日期解释。上一轮见[整改后当前说明复核](records/document-post-remediation-sync-20261011/README.md)。
+此前完整文档核对：[当前代码交叉核对](records/document-code-crosscheck-20261011/README.md)，基线`9f3c73f`，产品代码与`d0a9963`相同。本轮复核现行架构、8份子系统、3份参考，补齐共同活动提交时序、验收超时范围和导航状态，并通过类型检查及4文件35项定向测试；下列历史产品测试、配置核对和部署结果仍按各自记录日期解释。上一轮见[整改后当前说明复核](records/document-post-remediation-sync-20261011/README.md)。
 
-最新：[综合审核整改交付](records/comprehensive-remediation-20261011/DELIVERY.md)。5项错误修复、流程／性能改进、离线检索工具与独立复核完成；最终217文件1370项及工程门通过。正式部署和最终服务状态以交付页为准；[实施包](plans/comprehensive-remediation-20261011/README.md)保留已完成步骤和未执行的条件在线实验。
+前次：[综合审核整改交付](records/comprehensive-remediation-20261011/DELIVERY.md)。5项错误修复、流程／性能改进、离线检索工具与独立复核完成；最终217文件1370项及工程门通过。正式部署和最终服务状态以交付页为准；[实施包](plans/comprehensive-remediation-20261011/README.md)保留已完成步骤和未执行的条件在线实验。
 
 整改来源：[2026-10-11 文档／代码／性能审核](reviews/comprehensive-audit-20261011/README.md)，基线 `ce7e88e`。该基线发现的4项P2、1项P3代码问题及2类文档问题已关闭，证据以上方综合整改交付为准。原报告保留触发条件、离线探针与改进优先级；189文件1034项是原基线的分次验收记录。暂停缺口仅在Host API交错层复现，线上命令窗口未验证。
 
@@ -75,7 +75,7 @@
 
 ## 目录与后续工作
 
-当前待实施：[个人导演任务合同修复V2](plans/personal-task-contract-20261011/PLAN_V2.md)及[细化实施文档](plans/personal-task-contract-20261011/EXECUTION_PLAN.md)，两份一并交接。[审核](reviews/personal-task-contract-20261011/REVIEW.md)保留收窄个人taskChanges为双方预约、程序统一消息检查的方向，修正1项P2恢复边界问题，补齐未尝试／已尝试／沉默候选与恢复角色切换的用例。[原方案](plans/personal-task-contract-20261011/README.md)和[设计与故障依据](plans/personal-task-contract-20261011/DESIGN.md)保留；6文件50项基线测试及合成探针通过仅为审核证据，尚未实施或恢复正式运行。
+最新个人任务合同：[V2](plans/personal-task-contract-20261011/PLAN_V2.md)及[细化步骤](plans/personal-task-contract-20261011/EXECUTION_PLAN.md)已实施；预约专用输出、学校／消息流程及磁盘恢复验收通过，最终220文件1412项通过、2项既有跳过。独立复核与实际部署／服务状态见[交付](records/personal-task-contract-20261011/DELIVERY.md)。原方案、故障依据和审核保留原基线含义。
 
 此前已执行合同：[普通聊天回复跟进新消息](plans/chat-reply-freshness-20261010/README.md)及[细化方案 T1～T5](reviews/chat-reply-freshness-20261010/EXECUTION_PLAN.md)。新规则已实现；原诊断和审核探针保留旧基线，工程交付、独立复核及部署状态见[记录](records/chat-reply-freshness-20261010/README.md)。
 
@@ -87,7 +87,7 @@
 | --- | --- |
 | `architecture/`、`subsystems/` | 当前架构及8份功能规则 |
 | `reference/` | 实现对应、配置和必要参考 |
-| [plans/](plans/README.md) | 当前待实施的个人任务合同修复，以及最近已执行的功能合同；各计划状态单列，原路径供追溯 |
+| [plans/](plans/README.md) | 已实施的个人任务合同修复，以及最近已执行的功能合同；各计划状态单列，原路径供追溯 |
 | [records/](records/README.md) | 最近交付、过程、最终日志及目录整理 |
 | [reviews/](reviews/README.md) | 本批独立报告、探针和原始证据 |
 | [../archive/](../archive/README.md) | 已完成计划、被替代交付、旧审核和早期红绿日志 |
