@@ -1,0 +1,133 @@
+{
+  "baseline": "ce7e88e9c8e4940ec17ae4b5dae2392fd6ddb57c",
+  "scope": "offline fixtures only; no private config, formal DB, service or network",
+  "plainTextRoundTrip": {
+    "inputHtml": "<html><head><title>offline code article</title></head><body><article><p>关系：a &lt; b &amp;&amp; c &gt; d。</p><p>类型：List&lt;String&gt;。</p><p>字面 HTML 示例：&lt;nav&gt;保留这段示例&lt;/nav&gt;。</p></article></body></html>",
+    "domText": "关系：a < b && c > d。\n类型：List<String>。\n字面 HTML 示例：<nav>保留这段示例</nav>。",
+    "storedMaterialBody": "关系：a d。\n类型：List。\n字面 HTML 示例：。",
+    "counters": {
+      "successReads": 1,
+      "failures": 0
+    }
+  },
+  "nestedArticle": {
+    "inputHtml": "<html><body><article><p>外层正文。</p><article><p>内层正文唯一标记。</p></article></article></body></html>",
+    "extractedBody": "外层正文。\n\n内层正文唯一标记。\n\n内层正文唯一标记。",
+    "innerTextOccurrences": 2
+  },
+  "stickerCli": [
+    {
+      "command": "rebuild",
+      "exitCode": 1,
+      "stdout": "",
+      "stderr": "web search enabled but provider not configured\n"
+    },
+    {
+      "command": "import",
+      "exitCode": 1,
+      "stdout": "",
+      "stderr": "web search enabled but provider not configured\n"
+    }
+  ],
+  "imageConversionWorkload": {
+    "syntheticBytes": 1000008,
+    "modelCalls": 1,
+    "resolveImageAssetCalls": 2,
+    "totalDataUrlCharacters": 2666732,
+    "discardedDataUrlCharacters": 1333366,
+    "note": "Synthetic bytes test the asset plumbing only; no real vision model or PNG decoder was called."
+  },
+  "supersededOwner": {
+    "stepStatus": "superseded",
+    "beforeCacheOwners": 1,
+    "afterCacheOwners": 1,
+    "checkpointRetained": true,
+    "materialRetained": 1
+  },
+  "snapshotWorkload": [
+    {
+      "pageCount": 1,
+      "bodyCharacters": 100000,
+      "uniqueBodyCharacters": 100000,
+      "snapshots": 10,
+      "jsonParsesWithBody": 7,
+      "parsedCharacters": 703904,
+      "parseAmplification": 7.03904,
+      "envelopeCharacters": 100843,
+      "activeStoredCharacters": {
+        "web_sessions": 100783,
+        "web_operations": 100762,
+        "web_materials": 100393
+      },
+      "compactedStoredCharacters": {
+        "web_sessions": 308,
+        "web_operations": 100762,
+        "web_materials": 100393
+      },
+      "elapsedMs": 4.218299999999999
+    },
+    {
+      "pageCount": 5,
+      "bodyCharacters": 100000,
+      "uniqueBodyCharacters": 500000,
+      "snapshots": 42,
+      "jsonParsesWithBody": 263,
+      "parsedCharacters": 35694804,
+      "parseAmplification": 71.389608,
+      "envelopeCharacters": 1508033,
+      "activeStoredCharacters": {
+        "web_sessions": 502343,
+        "web_operations": 503810,
+        "web_materials": 501965
+      },
+      "compactedStoredCharacters": {
+        "web_sessions": 308,
+        "web_operations": 503810,
+        "web_materials": 501965
+      },
+      "elapsedMs": 86.04039999999986
+    },
+    {
+      "pageCount": 10,
+      "bodyCharacters": 100000,
+      "uniqueBodyCharacters": 1000000,
+      "snapshots": 82,
+      "jsonParsesWithBody": 988,
+      "parsedCharacters": 151781900,
+      "parseAmplification": 151.7819,
+      "envelopeCharacters": 5527351,
+      "activeStoredCharacters": {
+        "web_sessions": 1004298,
+        "web_operations": 1007624,
+        "web_materials": 1003931
+      },
+      "compactedStoredCharacters": {
+        "web_sessions": 311,
+        "web_operations": 1007624,
+        "web_materials": 1003931
+      },
+      "elapsedMs": 363.7662999999998
+    },
+    {
+      "pageCount": 20,
+      "bodyCharacters": 100000,
+      "uniqueBodyCharacters": 2000000,
+      "snapshots": 162,
+      "jsonParsesWithBody": 3788,
+      "parsedCharacters": 625122808,
+      "parseAmplification": 312.561404,
+      "envelopeCharacters": 21100545,
+      "activeStoredCharacters": {
+        "web_sessions": 2008214,
+        "web_operations": 2015290,
+        "web_materials": 2007881
+      },
+      "compactedStoredCharacters": {
+        "web_sessions": 311,
+        "web_operations": 2015290,
+        "web_materials": 2007881
+      },
+      "elapsedMs": 1440.5386000000003
+    }
+  ]
+}

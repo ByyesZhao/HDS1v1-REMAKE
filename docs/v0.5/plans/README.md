@@ -2,6 +2,8 @@
 
 返回[版本索引](../README.md)。
 
+当前待实施：[综合审核整改执行包（2026-10-11）](comprehensive-remediation-20261011/README.md)。依据[综合审核](../reviews/comprehensive-audit-20261011/README.md)，分为错误修复、流程／性能优化和检索质量评估；含交给SOL的明确执行顺序、接口、回归、验收及回退要求。**目前仅完成方案，未实施、未部署。**
+
 最近已执行合同：[普通聊天回复跟进新消息](chat-reply-freshness-20261010/README.md)。[审核](../reviews/chat-reply-freshness-20261010/REVIEW.md)保留方案 B，补齐等待与事件接管、业务代际、图片冻结和资格重选 4 项合同；交给 SOL 的[细化执行方案 T1～T5](../reviews/chat-reply-freshness-20261010/EXECUTION_PLAN.md)已就绪。T1～T5已实施，见[交付](../records/chat-reply-freshness-20261010/DELIVERY.md)；15秒和4段参数不改；原调查见[记录](../records/chat-reply-order-20261010/README.md)。
 
 此前实施合同：[查看消息资格与专注场景](phone-access-20261010/README.md)。普通专注活动默认可读但允许沉默，明确不可读活动强制结束时间；含旧状态部署处理。代码与工具已实施，交付及现场部署状态见[记录](../records/phone-access-20261010/DELIVERY.md)。

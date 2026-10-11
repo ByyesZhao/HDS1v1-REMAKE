@@ -1,0 +1,161 @@
+{
+  "baseline": "ce7e88e9c8e4940ec17ae4b5dae2392fd6ddb57c",
+  "isolation": "Only in-memory SQLite and scripted models; no network or live services.",
+  "pauseSelectionRace": {
+    "atPause": {
+      "modelCalls": 0,
+      "turns": 0
+    },
+    "pausedImmediately": true,
+    "pausedAfter": true,
+    "modelCallsAfter": [
+      "narrative",
+      "personal_chat"
+    ],
+    "turnsAfter": [
+      {
+        "done": true,
+        "triggerKinds": [
+          "appointment"
+        ]
+      }
+    ],
+    "appointmentAfter": "completed"
+  },
+  "pauseWaitingSelectionRace": {
+    "beforePause": {
+      "state": "waiting",
+      "modelCalls": 0
+    },
+    "pausedAfter": true,
+    "done": true,
+    "scope": "event",
+    "modelCalls": [
+      "narrative",
+      "personal_chat"
+    ]
+  },
+  "dueAppointmentDescriptionUpdate": {
+    "rounds": [
+      {
+        "at": "2026-10-07T10:00:00+08:00",
+        "appointment": {
+          "id": "appointment",
+          "kind": "appointment",
+          "at": "2026-10-07T10:00:00+08:00",
+          "description": "正在赴约，地点改为门口",
+          "status": "pending"
+        },
+        "nextDeadline": "2026-10-07T10:00:00+08:00"
+      },
+      {
+        "at": "2026-10-07T10:00:00+08:00",
+        "appointment": {
+          "id": "appointment",
+          "kind": "appointment",
+          "at": "2026-10-07T10:00:00+08:00",
+          "description": "正在赴约，地点改为门口",
+          "status": "pending"
+        },
+        "nextDeadline": "2026-10-07T10:00:00+08:00"
+      },
+      {
+        "at": "2026-10-07T10:00:00+08:00",
+        "appointment": {
+          "id": "appointment",
+          "kind": "appointment",
+          "at": "2026-10-07T10:00:00+08:00",
+          "description": "正在赴约，地点改为门口",
+          "status": "pending"
+        },
+        "nextDeadline": "2026-10-07T10:00:00+08:00"
+      }
+    ],
+    "turns": 3,
+    "modelCalls": [
+      "narrative",
+      "personal_chat",
+      "narrative",
+      "personal_chat",
+      "narrative",
+      "personal_chat"
+    ]
+  },
+  "appointmentAutomaticHostRepeat": {
+    "inputCount": 0,
+    "personalCalls": 4,
+    "turnCount": 4,
+    "turnTimes": [
+      "2026-10-07T10:00:00+08:00",
+      "2026-10-07T10:00:00+08:00",
+      "2026-10-07T10:00:00+08:00",
+      "2026-10-07T10:00:00+08:00"
+    ],
+    "finalTaskStatus": "completed",
+    "note": "The fourth model result intentionally stops updating so the real Host pump terminates."
+  },
+  "taskHistoryCost": [
+    {
+      "historicalTaskCount": 0,
+      "samples": 5,
+      "allTaskCalls": 20,
+      "materializedTaskRows": 0,
+      "measurementsMs": [
+        1.024000000000001,
+        1.020399999999995,
+        0.761600000000044,
+        0.7743000000000393,
+        0.8054999999999382
+      ],
+      "indexedPendingRows": 0,
+      "indexedPendingQueryMs": 0.01089999999999236
+    },
+    {
+      "historicalTaskCount": 1000,
+      "samples": 5,
+      "allTaskCalls": 20,
+      "materializedTaskRows": 20000,
+      "measurementsMs": [
+        13.865199999999959,
+        10.737999999999943,
+        11.519699999999943,
+        12.397799999999961,
+        11.782600000000002
+      ],
+      "indexedPendingRows": 0,
+      "indexedPendingQueryMs": 0.03209999999990032
+    },
+    {
+      "historicalTaskCount": 10000,
+      "samples": 5,
+      "allTaskCalls": 20,
+      "materializedTaskRows": 200000,
+      "measurementsMs": [
+        110.34750000000008,
+        103.86429999999996,
+        103.40509999999995,
+        110.78060000000005,
+        100.3094000000001
+      ],
+      "indexedPendingRows": 0,
+      "indexedPendingQueryMs": 0.01749999999992724
+    }
+  ],
+  "terminalEnvironmentPayload": {
+    "status": "committed",
+    "candidateCount": 100,
+    "savedStepBytes": 579820,
+    "bytesAfterExistingCompactor": 579820,
+    "compaction": {
+      "limit": 50,
+      "updated": {
+        "indexJobs": 0,
+        "maintenanceJobs": 0,
+        "postJobs": 0,
+        "webSessions": 0
+      },
+      "totalUpdated": 0,
+      "hasMore": false
+    }
+  }
+}

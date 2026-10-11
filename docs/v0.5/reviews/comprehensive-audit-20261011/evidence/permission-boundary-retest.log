@@ -1,0 +1,30 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/browser-visible-dom.test.ts tests/runtime-check-readonly.test.ts --reporter=verbose
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ✓ tests/browser-visible-dom.test.ts > actual CSS excludes invisible body: sheet article 112ms
+ ✓ tests/browser-visible-dom.test.ts > actual CSS excludes invisible body: hidden ancestor 54ms
+ ✓ tests/browser-visible-dom.test.ts > actual CSS excludes invisible body: sheet ancestor 116ms
+ ✓ tests/browser-visible-dom.test.ts > actual CSS excludes invisible body: fixed short 66ms
+ ✓ tests/browser-visible-dom.test.ts > actual CSS excludes invisible body: inherited visibility override 76ms
+ ✓ tests/browser-visible-dom.test.ts > hidden captcha does not spend failure quota 73ms
+ ✓ tests/browser-visible-dom.test.ts > visible captcha after hidden first wall still blocks 81ms
+ ✓ tests/browser-visible-dom.test.ts > hidden bing links and empty state wait for visible results 370ms
+ ✓ tests/browser-visible-dom.test.ts > hidden duckduckgo links and empty state wait for visible results 375ms
+ ✓ tests/browser-visible-dom.test.ts > credential shell counting and independent body: main login 67ms
+ ✓ tests/browser-visible-dom.test.ts > credential shell counting and independent body: role login 105ms
+ ✓ tests/browser-visible-dom.test.ts > credential shell counting and independent body: article beside login 68ms
+ ✓ tests/browser-visible-dom.test.ts > credential shell counting and independent body: dialog beside main 70ms
+ ✓ tests/browser-visible-dom.test.ts > credential shell counting and independent body: article about login 71ms
+ ✓ tests/browser-visible-dom.test.ts > empty or hidden article does not make login successful in actual CSS: <article></article> 82ms
+ ✓ tests/browser-visible-dom.test.ts > empty or hidden article does not make login successful in actual CSS: <article><h1>Heading only</h1></article> 73ms
+ ✓ tests/browser-visible-dom.test.ts > empty or hidden article does not make login successful in actual CSS: <style>.hidden{display:none}</style><article><p class="hidden">HIDDEN_BODY</p></article> 99ms
+ ✓ tests/runtime-check-readonly.test.ts > launcher readonly check reads schema 3 without installing missing auxiliary indexes 1343ms
+ ✓ tests/runtime-check-readonly.test.ts > launcher readonly check reads schema 2 without installing missing auxiliary indexes 1258ms
+
+ Test Files  2 passed (2)
+      Tests  19 passed (19)
+   Start at  09:06:35
+   Duration  5.54s (tests 95%, transform 3%, import 2%)
+

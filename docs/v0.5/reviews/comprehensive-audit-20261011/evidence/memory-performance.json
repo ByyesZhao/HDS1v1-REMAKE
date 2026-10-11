@@ -1,0 +1,135 @@
+{
+  "baseline": "ce7e88e9c8e4940ec17ae4b5dae2392fd6ddb57c",
+  "runtime": "v24.21.0",
+  "method": "In-memory SQLite; synthetic data; 1 warmup + 7 timed runs. No implementation replacement; timings describe current code only. Pool text is synthetic; real data/model latency not measured.",
+  "cases": [
+    {
+      "textCharacters": 128,
+      "pools": {
+        "short": 100,
+        "long": 1000,
+        "archive": 500
+      },
+      "normalizeWork": {
+        "fullOwnerCalls": 2,
+        "hydratedOwnerRows": 3200,
+        "sqlCalls": 14,
+        "changedOwners": 0
+      },
+      "normalizeTiming": {
+        "medianMs": 95.69009999999992,
+        "samplesMs": [
+          91.75509999999997,
+          97.17610000000002,
+          101.66560000000004,
+          92.43150000000003,
+          95.69009999999992,
+          90.41930000000002,
+          97.30119999999988
+        ]
+      },
+      "cleanupNextDeadline": {
+        "medianMs": 107.31410000000005,
+        "samplesMs": [
+          109.52620000000002,
+          109.22250000000008,
+          107.97520000000009,
+          102.84030000000007,
+          107.31410000000005,
+          105.41049999999996,
+          105.4735999999998
+        ]
+      },
+      "uncalibratedRetrieval": {
+        "selectedCandidateCount": 1100,
+        "hydratedVectorBytes": 4096000,
+        "elapsedMs": 29.26570000000038,
+        "semanticSkipReason": "uncalibrated",
+        "remoteRequests": 0
+      },
+      "singleLongOverflow": {
+        "elapsedMs": 135.22299999999996,
+        "awakeningQueries": 3600,
+        "sqlCalls": 3617,
+        "changedOwners": 1
+      }
+    },
+    {
+      "textCharacters": 4096,
+      "pools": {
+        "short": 100,
+        "long": 1000,
+        "archive": 500
+      },
+      "normalizeWork": {
+        "fullOwnerCalls": 2,
+        "hydratedOwnerRows": 3200,
+        "sqlCalls": 14,
+        "changedOwners": 0
+      },
+      "normalizeTiming": {
+        "medianMs": 468.7667000000001,
+        "samplesMs": [
+          467.8645999999999,
+          473.68210000000045,
+          468.7667000000001,
+          476.04479999999967,
+          478.47289999999975,
+          466.0463,
+          459.23089999999956
+        ]
+      },
+      "cleanupNextDeadline": {
+        "medianMs": 174.3705,
+        "samplesMs": [
+          183.53740000000016,
+          172.27459999999974,
+          173.4452999999994,
+          180.6304,
+          174.3705,
+          173.84990000000016,
+          174.71890000000076
+        ]
+      },
+      "uncalibratedRetrieval": {
+        "selectedCandidateCount": 1100,
+        "hydratedVectorBytes": 4096000,
+        "elapsedMs": 159.41049999999996,
+        "semanticSkipReason": "uncalibrated",
+        "remoteRequests": 0
+      },
+      "singleLongOverflow": {
+        "elapsedMs": 511.10989999999947,
+        "awakeningQueries": 3600,
+        "sqlCalls": 3617,
+        "changedOwners": 1
+      }
+    }
+  ],
+  "lexicalExamples": [
+    {
+      "query": "生日礼物",
+      "content": "生日礼物是自己做的卡片",
+      "score": 1,
+      "selectedAtDefaultThreshold": true
+    },
+    {
+      "query": "还记得那次生日礼物吗",
+      "content": "生日礼物是自己做的卡片",
+      "score": 1,
+      "selectedAtDefaultThreshold": true
+    },
+    {
+      "query": "你还记得我送你的生日礼物吗",
+      "content": "生日礼物是自己做的卡片",
+      "score": 0.6,
+      "selectedAtDefaultThreshold": false
+    },
+    {
+      "query": "我送你的贺卡还留着吗",
+      "content": "生日礼物是自己做的卡片",
+      "score": 0,
+      "selectedAtDefaultThreshold": false
+    }
+  ]
+}

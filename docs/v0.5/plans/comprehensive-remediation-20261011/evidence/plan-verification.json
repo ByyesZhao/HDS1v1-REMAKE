@@ -1,0 +1,1775 @@
+{
+  "scope": "Documentation checks only; no product tests, implementation, deployment, migration or provider calls performed in this planning turn.",
+  "baseline": "ce7e88e9c8e4940ec17ae4b5dae2392fd6ddb57c",
+  "plans": [
+    {
+      "file": "docs/v0.5/plans/comprehensive-remediation-20261011/DELIVERY_PLAN.md",
+      "sha256": "99fb0b832363f1e46f604ef48398a27b1e05e2bc8d61b7439d9224cebc1c21a8",
+      "uncheckedSteps": 24
+    },
+    {
+      "file": "docs/v0.5/plans/comprehensive-remediation-20261011/MEMORY_PLAN.md",
+      "sha256": "e3c3898358493f51d1e3dba4e99cd698c8259f0a7c18ab39f1e3735c915f89fb",
+      "uncheckedSteps": 45
+    },
+    {
+      "file": "docs/v0.5/plans/comprehensive-remediation-20261011/README.md",
+      "sha256": "27074cc8f1eaaab37a1564798e584d1939dfa892063d7f332f6a4a16bba40e24",
+      "uncheckedSteps": 6
+    },
+    {
+      "file": "docs/v0.5/plans/comprehensive-remediation-20261011/RETRIEVAL_QUALITY_PLAN.md",
+      "sha256": "aee47b61243af7d580efeed33c190073552d6802bca6b334694ae17abb349b62",
+      "uncheckedSteps": 18
+    },
+    {
+      "file": "docs/v0.5/plans/comprehensive-remediation-20261011/RUNTIME_PLAN.md",
+      "sha256": "9ee7e7a06dda2c917d12f7b0322ebfad374e0a289ec4e886a83cb3df98f5232d",
+      "uncheckedSteps": 40
+    },
+    {
+      "file": "docs/v0.5/plans/comprehensive-remediation-20261011/WEB_MEDIA_PLAN.md",
+      "sha256": "d8cdfbf56b19dd76e36ef9c022c444f5840a6fbe8b0a1bb42766447f31bd3c82",
+      "uncheckedSteps": 62
+    }
+  ],
+  "linksChecked": 168,
+  "links": [
+    {
+      "file": "docs/v0.5/plans/comprehensive-remediation-20261011/DELIVERY_PLAN.md",
+      "href": "../../reviews/comprehensive-audit-20261011/README.md"
+    },
+    {
+      "file": "docs/v0.5/plans/comprehensive-remediation-20261011/DELIVERY_PLAN.md",
+      "href": "../../reviews/comprehensive-audit-20261011/DOCS_AUDIT.md"
+    },
+    {
+      "file": "docs/v0.5/plans/comprehensive-remediation-20261011/DELIVERY_PLAN.md",
+      "href": "../../../DIRECTORY_POLICY.md"
+    },
+    {
+      "file": "docs/v0.5/plans/comprehensive-remediation-20261011/DELIVERY_PLAN.md",
+      "href": "README.md"
+    },
+    {
+      "file": "docs/v0.5/plans/comprehensive-remediation-20261011/MEMORY_PLAN.md",
+      "href": "../../reviews/comprehensive-audit-20261011/MEMORY_PERFORMANCE.md"
+    },
+    {
+      "file": "docs/v0.5/plans/comprehensive-remediation-20261011/MEMORY_PLAN.md",
+      "href": "../../subsystems/REMAKE_V0.5_MEMORY.md"
+    },
+    {
+      "file": "docs/v0.5/plans/comprehensive-remediation-20261011/MEMORY_PLAN.md",
+      "href": "RETRIEVAL_QUALITY_PLAN.md"
+    },
+    {
+      "file": "docs/v0.5/plans/comprehensive-remediation-20261011/MEMORY_PLAN.md",
+      "href": "DELIVERY_PLAN.md#v1每批工程验收"
+    },
+    {
+      "file": "docs/v0.5/plans/comprehensive-remediation-20261011/README.md",
+      "href": "../../reviews/comprehensive-audit-20261011/README.md"
+    },
+    {
+      "file": "docs/v0.5/plans/comprehensive-remediation-20261011/README.md",
+      "href": "../../README.md"
+    },
+    {
+      "file": "docs/v0.5/plans/comprehensive-remediation-20261011/README.md",
+      "href": "../../../DIRECTORY_POLICY.md"
+    },
+    {
+      "file": "docs/v0.5/plans/comprehensive-remediation-20261011/README.md",
+      "href": "RUNTIME_PLAN.md"
+    },
+    {
+      "file": "docs/v0.5/plans/comprehensive-remediation-20261011/README.md",
+      "href": "WEB_MEDIA_PLAN.md"
+    },
+    {
+      "file": "docs/v0.5/plans/comprehensive-remediation-20261011/README.md",
+      "href": "MEMORY_PLAN.md"
+    },
+    {
+      "file": "docs/v0.5/plans/comprehensive-remediation-20261011/README.md",
+      "href": "RETRIEVAL_QUALITY_PLAN.md"
+    },
+    {
+      "file": "docs/v0.5/plans/comprehensive-remediation-20261011/README.md",
+      "href": "DELIVERY_PLAN.md"
+    },
+    {
+      "file": "docs/v0.5/plans/comprehensive-remediation-20261011/README.md",
+      "href": "evidence/plan-verification.json"
+    },
+    {
+      "file": "docs/v0.5/plans/comprehensive-remediation-20261011/RETRIEVAL_QUALITY_PLAN.md",
+      "href": "../../reviews/comprehensive-audit-20261011/MEMORY_PERFORMANCE.md"
+    },
+    {
+      "file": "docs/v0.5/plans/comprehensive-remediation-20261011/RETRIEVAL_QUALITY_PLAN.md",
+      "href": "../../subsystems/REMAKE_V0.5_MEMORY.md"
+    },
+    {
+      "file": "docs/v0.5/plans/comprehensive-remediation-20261011/RETRIEVAL_QUALITY_PLAN.md",
+      "href": "README.md"
+    },
+    {
+      "file": "docs/v0.5/plans/comprehensive-remediation-20261011/RETRIEVAL_QUALITY_PLAN.md",
+      "href": "MEMORY_PLAN.md"
+    },
+    {
+      "file": "docs/v0.5/plans/comprehensive-remediation-20261011/RUNTIME_PLAN.md",
+      "href": "WEB_MEDIA_PLAN.md"
+    },
+    {
+      "file": "docs/v0.5/plans/comprehensive-remediation-20261011/RUNTIME_PLAN.md",
+      "href": "../../reviews/comprehensive-audit-20261011/README.md"
+    },
+    {
+      "file": "docs/v0.5/plans/comprehensive-remediation-20261011/RUNTIME_PLAN.md",
+      "href": "../../reviews/comprehensive-audit-20261011/RUNTIME_AUDIT.md"
+    },
+    {
+      "file": "docs/v0.5/plans/comprehensive-remediation-20261011/RUNTIME_PLAN.md",
+      "href": "README.md"
+    },
+    {
+      "file": "docs/v0.5/plans/comprehensive-remediation-20261011/RUNTIME_PLAN.md",
+      "href": "../../README.md"
+    },
+    {
+      "file": "docs/v0.5/plans/comprehensive-remediation-20261011/RUNTIME_PLAN.md",
+      "href": "DELIVERY_PLAN.md"
+    },
+    {
+      "file": "docs/v0.5/plans/comprehensive-remediation-20261011/WEB_MEDIA_PLAN.md",
+      "href": "../../reviews/comprehensive-audit-20261011/README.md"
+    },
+    {
+      "file": "docs/v0.5/plans/comprehensive-remediation-20261011/WEB_MEDIA_PLAN.md",
+      "href": "../../reviews/comprehensive-audit-20261011/WEB_MEDIA_AUDIT.md"
+    },
+    {
+      "file": "docs/v0.5/plans/comprehensive-remediation-20261011/WEB_MEDIA_PLAN.md",
+      "href": "../../subsystems/REMAKE_V0.5_WEB_SEARCH.md"
+    },
+    {
+      "file": "docs/v0.5/plans/comprehensive-remediation-20261011/WEB_MEDIA_PLAN.md",
+      "href": "../../subsystems/REMAKE_V0.5_EXPRESSION_STICKERS.md"
+    },
+    {
+      "file": "docs/v0.5/plans/comprehensive-remediation-20261011/WEB_MEDIA_PLAN.md",
+      "href": "RUNTIME_PLAN.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "plans/comprehensive-remediation-20261011/README.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "reviews/comprehensive-audit-20261011/README.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "records/document-current-sync-20261011/README.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "records/runtime-web-guidance-20261011/README.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "records/offline-action-only-20261010/README.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "records/graceful-stop-r1-20261010/DELIVERY.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "records/chat-reply-freshness-20261010/DELIVERY.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "reviews/freshness-graceful-stop-20261010/REVIEW.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "reviews/freshness-graceful-stop-20261010/FIX_PLAN.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "records/graceful-stop-r1-20261010/README.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "records/document-current-sync-20261010/README.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "records/document-final-audit-20261010/README.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "records/image-search-post-review-fixes-20261010/DELIVERY.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "../DIRECTORY_POLICY.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "architecture/REMAKE_V0.5.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "subsystems/REMAKE_V0.5_DIRECTORS.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "subsystems/REMAKE_V0.5_SCHEDULING.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "subsystems/REMAKE_V0.5_MEMORY.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "subsystems/REMAKE_V0.5_SHARED_ACTIVITY.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "subsystems/REMAKE_V0.5_CONTEXT.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "subsystems/REMAKE_V0.5_EXPRESSION_STICKERS.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "subsystems/REMAKE_V0.5_WEB_SEARCH.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "subsystems/REMAKE_V0.5_RECOVERY.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "reference/V0.5_IMPLEMENTATION_MAP_20261009.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "reference/BACKGROUND_VIEW_MAPPING_20261008.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "../../README.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "reference/MODEL_CALLS_AND_WEB_OPTIONS_20261009.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "records/document-current-sync-20261011/evidence/effective-models.json"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "records/feature-enablement-20261010/README.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "records/document-current-sync-20261011/README.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "records/runtime-web-guidance-20261011/README.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "records/offline-action-only-20261010/README.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "records/graceful-stop-r1-20261010/DELIVERY.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "records/document-current-sync-20261010/README.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "reviews/freshness-graceful-stop-20261010/REVIEW.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "reviews/freshness-graceful-stop-20261010/FIX_PLAN.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "records/graceful-stop-r1-20261010/README.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "reviews/chat-reply-freshness-20261010/REVIEW.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "reviews/chat-reply-freshness-20261010/EXECUTION_PLAN.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "records/chat-reply-freshness-20261010/DELIVERY.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "records/chat-reply-order-20261010/README.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "plans/chat-reply-freshness-20261010/README.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "records/phone-access-20261010/DELIVERY.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "records/phone-access-20261010/REVIEW_CLOSURE.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "reviews/phone-access-20261010/PLAN_REVIEW.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "records/onebot-connection-20261010/README.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "records/feature-enablement-20261010/README.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "records/document-final-audit-20261010/README.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "records/image-search-post-review-fixes-20261010/DELIVERY.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "reviews/image-search-post-implementation-20261010/REVIEW.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "reviews/image-search-post-implementation-20261010/FIX_PLAN.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "records/image-search-post-review-fixes-20261010/DELIVERY.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "records/image-input-20261009/DELIVERY.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "records/local-browser-search-20261009/DELIVERY.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "records/document-model-audit-20261009/README.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "records/reply-guidance-20261009/DELIVERY.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "records/environment-post-delivery-fixes-20261009/DELIVERY.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "reviews/environment-async-20261009/post-delivery/FIX_DIFF_REVIEW.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "reviews/environment-async-20261009/post-delivery/REVIEW.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "records/environment-async-20261009/DELIVERY.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "records/environment-async-20261009/IMPLEMENTATION_LOG.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "reviews/environment-async-20261009/INDEPENDENT_REVIEW.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "records/environment-async-20261009/REVIEW_CLOSURE.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "records/environment-async-20261009/evidence/workload-final.json"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "records/document-organization-20261009/README.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "records/environment-post-delivery-fixes-20261009/evidence/formal-upgrade-summary.json"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "records/environment-post-delivery-fixes-20261009/evidence/formal-postcheck.json"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "../archive/records/"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "../archive/reviews/"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "plans/chat-reply-freshness-20261010/README.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "reviews/chat-reply-freshness-20261010/EXECUTION_PLAN.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "records/chat-reply-freshness-20261010/README.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "plans/phone-access-20261010/README.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "records/phone-access-20261010/DELIVERY.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "reviews/freshness-graceful-stop-20261010/FIX_PLAN.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "plans/README.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "records/README.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "reviews/README.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "../archive/README.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "../../runtime/archive/README.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "../DIRECTORY_POLICY.md"
+    },
+    {
+      "file": "docs/v0.5/README.md",
+      "href": "records/environment-async-20261009/evidence/document-moves.json"
+    },
+    {
+      "file": "docs/v0.5/plans/README.md",
+      "href": "../README.md"
+    },
+    {
+      "file": "docs/v0.5/plans/README.md",
+      "href": "comprehensive-remediation-20261011/README.md"
+    },
+    {
+      "file": "docs/v0.5/plans/README.md",
+      "href": "../reviews/comprehensive-audit-20261011/README.md"
+    },
+    {
+      "file": "docs/v0.5/plans/README.md",
+      "href": "chat-reply-freshness-20261010/README.md"
+    },
+    {
+      "file": "docs/v0.5/plans/README.md",
+      "href": "../reviews/chat-reply-freshness-20261010/REVIEW.md"
+    },
+    {
+      "file": "docs/v0.5/plans/README.md",
+      "href": "../reviews/chat-reply-freshness-20261010/EXECUTION_PLAN.md"
+    },
+    {
+      "file": "docs/v0.5/plans/README.md",
+      "href": "../records/chat-reply-freshness-20261010/DELIVERY.md"
+    },
+    {
+      "file": "docs/v0.5/plans/README.md",
+      "href": "../records/chat-reply-order-20261010/README.md"
+    },
+    {
+      "file": "docs/v0.5/plans/README.md",
+      "href": "phone-access-20261010/README.md"
+    },
+    {
+      "file": "docs/v0.5/plans/README.md",
+      "href": "../records/phone-access-20261010/DELIVERY.md"
+    },
+    {
+      "file": "docs/v0.5/plans/README.md",
+      "href": "../reviews/phone-access-20261010/PLAN_REVIEW.md"
+    },
+    {
+      "file": "docs/v0.5/plans/README.md",
+      "href": "image-input-local-search-20261009/README.md"
+    },
+    {
+      "file": "docs/v0.5/plans/README.md",
+      "href": "../records/image-input-20261009/DELIVERY.md"
+    },
+    {
+      "file": "docs/v0.5/plans/README.md",
+      "href": "../records/local-browser-search-20261009/DELIVERY.md"
+    },
+    {
+      "file": "docs/v0.5/plans/README.md",
+      "href": "../../DIRECTORY_POLICY.md"
+    },
+    {
+      "file": "docs/v0.5/plans/README.md",
+      "href": "../reviews/image-search-post-implementation-20261010/REVIEW.md"
+    },
+    {
+      "file": "docs/v0.5/plans/README.md",
+      "href": "../reviews/image-search-post-implementation-20261010/FIX_PLAN.md"
+    },
+    {
+      "file": "docs/v0.5/plans/README.md",
+      "href": "../records/image-search-post-review-fixes-20261010/DELIVERY.md"
+    },
+    {
+      "file": "docs/v0.5/plans/README.md",
+      "href": "../records/environment-async-20261009/DELIVERY.md"
+    },
+    {
+      "file": "docs/v0.5/plans/README.md",
+      "href": "../records/environment-post-delivery-fixes-20261009/DELIVERY.md"
+    },
+    {
+      "file": "docs/v0.5/plans/README.md",
+      "href": "../records/feature-enablement-20261010/README.md"
+    },
+    {
+      "file": "docs/v0.5/plans/README.md",
+      "href": "../reviews/freshness-graceful-stop-20261010/FIX_PLAN.md"
+    },
+    {
+      "file": "docs/v0.5/plans/README.md",
+      "href": "../records/graceful-stop-r1-20261010/DELIVERY.md"
+    },
+    {
+      "file": "docs/v0.5/reviews/comprehensive-audit-20261011/README.md",
+      "href": "../../plans/comprehensive-remediation-20261011/README.md"
+    },
+    {
+      "file": "docs/v0.5/reviews/comprehensive-audit-20261011/README.md",
+      "href": "../../README.md"
+    },
+    {
+      "file": "docs/v0.5/reviews/comprehensive-audit-20261011/README.md",
+      "href": "RUNTIME_AUDIT.md#rt-2预约的非时间修改错误地阻止完成立即再次触发"
+    },
+    {
+      "file": "docs/v0.5/reviews/comprehensive-audit-20261011/README.md",
+      "href": "WEB_MEDIA_AUDIT.md#wm-b1--p2浏览器提取出的纯文本被第二次当-html-清理静默损坏网页正文"
+    },
+    {
+      "file": "docs/v0.5/reviews/comprehensive-audit-20261011/README.md",
+      "href": "WEB_MEDIA_AUDIT.md#wm-b2--p2启用-browser-搜索的配置使表情-import-和-rebuild-命令必然提前失败"
+    },
+    {
+      "file": "docs/v0.5/reviews/comprehensive-audit-20261011/README.md",
+      "href": "RUNTIME_AUDIT.md#rt-1候选选择与暂停交错时暂停后仍开始新的故事工作"
+    },
+    {
+      "file": "docs/v0.5/reviews/comprehensive-audit-20261011/README.md",
+      "href": "WEB_MEDIA_AUDIT.md#wm-b3--p3嵌套-articlemain-的正文会被重复拼接"
+    },
+    {
+      "file": "docs/v0.5/reviews/comprehensive-audit-20261011/README.md",
+      "href": "DOCS_AUDIT.md"
+    },
+    {
+      "file": "docs/v0.5/reviews/comprehensive-audit-20261011/README.md",
+      "href": "WEB_MEDIA_AUDIT.md#wm-o1--优先把网页控制信息与正文快照分开减少-json-重读及重复存储"
+    },
+    {
+      "file": "docs/v0.5/reviews/comprehensive-audit-20261011/README.md",
+      "href": "MEMORY_PERFORMANCE.md#m1优先消除串行容量归一中的全量正文载入和排序查询"
+    },
+    {
+      "file": "docs/v0.5/reviews/comprehensive-audit-20261011/README.md",
+      "href": "RUNTIME_AUDIT.md#rt-o1用待办工作集替代重复读取历史任务"
+    },
+    {
+      "file": "docs/v0.5/reviews/comprehensive-audit-20261011/README.md",
+      "href": "RUNTIME_AUDIT.md#rt-o2压缩终态环境准备快照"
+    },
+    {
+      "file": "docs/v0.5/reviews/comprehensive-audit-20261011/README.md",
+      "href": "WEB_MEDIA_AUDIT.md#wm-o3--次优先环境任务-superseded-后回收其临时网页-owner"
+    },
+    {
+      "file": "docs/v0.5/reviews/comprehensive-audit-20261011/README.md",
+      "href": "MEMORY_PERFORMANCE.md#m2在读取向量前判断语义通道是否可用"
+    },
+    {
+      "file": "docs/v0.5/reviews/comprehensive-audit-20261011/README.md",
+      "href": "MEMORY_PERFORMANCE.md#m3用真实自然语言扩展检索标定比继续堆叠上下文更有价值"
+    },
+    {
+      "file": "docs/v0.5/reviews/comprehensive-audit-20261011/README.md",
+      "href": "WEB_MEDIA_AUDIT.md#wm-o2--次优先合并图片资产的验证和编码读取"
+    },
+    {
+      "file": "docs/v0.5/reviews/comprehensive-audit-20261011/README.md",
+      "href": "evidence/baseline-tests.log"
+    },
+    {
+      "file": "docs/v0.5/reviews/comprehensive-audit-20261011/README.md",
+      "href": "evidence/baseline-tests-workspace-temp.log"
+    },
+    {
+      "file": "docs/v0.5/reviews/comprehensive-audit-20261011/README.md",
+      "href": "evidence/permission-boundary-retest.log"
+    },
+    {
+      "file": "docs/v0.5/reviews/comprehensive-audit-20261011/README.md",
+      "href": "evidence/tests-without-startup-probe.log"
+    },
+    {
+      "file": "docs/v0.5/reviews/comprehensive-audit-20261011/README.md",
+      "href": "evidence/typecheck.log"
+    },
+    {
+      "file": "docs/v0.5/reviews/comprehensive-audit-20261011/README.md",
+      "href": "evidence/build.log"
+    },
+    {
+      "file": "docs/v0.5/reviews/comprehensive-audit-20261011/README.md",
+      "href": "evidence/demo.log"
+    },
+    {
+      "file": "docs/v0.5/reviews/comprehensive-audit-20261011/README.md",
+      "href": "evidence/runtime-probe-output.json"
+    },
+    {
+      "file": "docs/v0.5/reviews/comprehensive-audit-20261011/README.md",
+      "href": "evidence/web-media-probe.json"
+    },
+    {
+      "file": "docs/v0.5/reviews/comprehensive-audit-20261011/README.md",
+      "href": "evidence/memory-performance.json"
+    },
+    {
+      "file": "docs/v0.5/reviews/comprehensive-audit-20261011/README.md",
+      "href": "evidence/document-verification.json"
+    },
+    {
+      "file": "docs/v0.5/reviews/comprehensive-audit-20261011/README.md",
+      "href": "DOCS_AUDIT.md"
+    },
+    {
+      "file": "docs/v0.5/reviews/comprehensive-audit-20261011/README.md",
+      "href": "RUNTIME_AUDIT.md"
+    },
+    {
+      "file": "docs/v0.5/reviews/comprehensive-audit-20261011/README.md",
+      "href": "WEB_MEDIA_AUDIT.md"
+    },
+    {
+      "file": "docs/v0.5/reviews/comprehensive-audit-20261011/README.md",
+      "href": "MEMORY_PERFORMANCE.md"
+    }
+  ],
+  "sourceReferences": [
+    {
+      "path": "runtime/plugin-smoke.cjs",
+      "exists": true,
+      "plans": [
+        "DELIVERY_PLAN.md",
+        "RUNTIME_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/runtime-check-readonly.test.ts",
+      "exists": true,
+      "plans": [
+        "DELIVERY_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/plugin-smoke-build-path.test.ts",
+      "exists": false,
+      "plans": [
+        "DELIVERY_PLAN.md"
+      ]
+    },
+    {
+      "path": "src/environment/snapshot.ts",
+      "exists": true,
+      "plans": [
+        "MEMORY_PLAN.md",
+        "RUNTIME_PLAN.md"
+      ]
+    },
+    {
+      "path": "src/deployment/memory-runtime.ts",
+      "exists": true,
+      "plans": [
+        "MEMORY_PLAN.md"
+      ]
+    },
+    {
+      "path": "src/deployment/memory-capacity-upgrade.ts",
+      "exists": true,
+      "plans": [
+        "MEMORY_PLAN.md"
+      ]
+    },
+    {
+      "path": "src/recovery.ts",
+      "exists": true,
+      "plans": [
+        "MEMORY_PLAN.md",
+        "RUNTIME_PLAN.md"
+      ]
+    },
+    {
+      "path": "src/memory/policy-snapshot.ts",
+      "exists": false,
+      "plans": [
+        "MEMORY_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/memory-policy-snapshot.test.ts",
+      "exists": false,
+      "plans": [
+        "MEMORY_PLAN.md"
+      ]
+    },
+    {
+      "path": "src/memory/metadata.ts",
+      "exists": true,
+      "plans": [
+        "MEMORY_PLAN.md"
+      ]
+    },
+    {
+      "path": "src/memory/summary-repair.ts",
+      "exists": true,
+      "plans": [
+        "MEMORY_PLAN.md"
+      ]
+    },
+    {
+      "path": "src/memory/maintenance.ts",
+      "exists": true,
+      "plans": [
+        "MEMORY_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/memory-pending-refresh.test.ts",
+      "exists": true,
+      "plans": [
+        "MEMORY_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/memory-batch-characters.test.ts",
+      "exists": true,
+      "plans": [
+        "MEMORY_PLAN.md"
+      ]
+    },
+    {
+      "path": "src/memory/capacity.ts",
+      "exists": true,
+      "plans": [
+        "MEMORY_PLAN.md"
+      ]
+    },
+    {
+      "path": "src/memory/policy-order.ts",
+      "exists": false,
+      "plans": [
+        "MEMORY_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/memory-policy-order.test.ts",
+      "exists": false,
+      "plans": [
+        "MEMORY_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/memory-capacity-work.test.ts",
+      "exists": false,
+      "plans": [
+        "MEMORY_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/review17-capacity-cost.test.ts",
+      "exists": true,
+      "plans": [
+        "MEMORY_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/memory-capacity-lifecycle.test.ts",
+      "exists": true,
+      "plans": [
+        "MEMORY_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/memory-capacity-upgrade.test.ts",
+      "exists": true,
+      "plans": [
+        "MEMORY_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/memory-v3-recovery.test.ts",
+      "exists": true,
+      "plans": [
+        "MEMORY_PLAN.md"
+      ]
+    },
+    {
+      "path": "src/memory/cleanup.ts",
+      "exists": true,
+      "plans": [
+        "MEMORY_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/memory-cleanup-policy-work.test.ts",
+      "exists": false,
+      "plans": [
+        "MEMORY_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/memory-capacity-cleanup.test.ts",
+      "exists": true,
+      "plans": [
+        "MEMORY_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/memory-cleanup-write-amplification.test.ts",
+      "exists": true,
+      "plans": [
+        "MEMORY_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/memory-capacity-prune-race.test.ts",
+      "exists": true,
+      "plans": [
+        "MEMORY_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/memory-capacity-idle-integration.test.ts",
+      "exists": true,
+      "plans": [
+        "MEMORY_PLAN.md"
+      ]
+    },
+    {
+      "path": "src/memory/store.ts",
+      "exists": true,
+      "plans": [
+        "MEMORY_PLAN.md"
+      ]
+    },
+    {
+      "path": "src/memory/retrieval.ts",
+      "exists": true,
+      "plans": [
+        "MEMORY_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/memory-retrieval-vector-work.test.ts",
+      "exists": false,
+      "plans": [
+        "MEMORY_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/memory-v3-store.test.ts",
+      "exists": true,
+      "plans": [
+        "MEMORY_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/memory-v3-retrieval.test.ts",
+      "exists": true,
+      "plans": [
+        "MEMORY_PLAN.md",
+        "RETRIEVAL_QUALITY_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/memory-v3-index.test.ts",
+      "exists": true,
+      "plans": [
+        "MEMORY_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/memory-v3-deployment.test.ts",
+      "exists": true,
+      "plans": [
+        "MEMORY_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/environment-retrieval-vector-snapshot.test.ts",
+      "exists": false,
+      "plans": [
+        "MEMORY_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/environment-preparation-snapshot.test.ts",
+      "exists": true,
+      "plans": [
+        "MEMORY_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/environment-async-recovery.test.ts",
+      "exists": true,
+      "plans": [
+        "MEMORY_PLAN.md",
+        "RUNTIME_PLAN.md",
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/environment-async-provenance.test.ts",
+      "exists": true,
+      "plans": [
+        "MEMORY_PLAN.md",
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/environment-async-tools.test.ts",
+      "exists": true,
+      "plans": [
+        "MEMORY_PLAN.md",
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "scripts/check-memory-access-work.ts",
+      "exists": false,
+      "plans": [
+        "MEMORY_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/memory-access-work-probe.test.ts",
+      "exists": false,
+      "plans": [
+        "MEMORY_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/fixtures/memory-retrieval-v2.json",
+      "exists": false,
+      "plans": [
+        "RETRIEVAL_QUALITY_PLAN.md"
+      ]
+    },
+    {
+      "path": "scripts/lib/memory-retrieval-evaluation.ts",
+      "exists": false,
+      "plans": [
+        "RETRIEVAL_QUALITY_PLAN.md"
+      ]
+    },
+    {
+      "path": "scripts/evaluate-memory-retrieval.ts",
+      "exists": false,
+      "plans": [
+        "RETRIEVAL_QUALITY_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/memory-retrieval-evaluation.test.ts",
+      "exists": false,
+      "plans": [
+        "RETRIEVAL_QUALITY_PLAN.md"
+      ]
+    },
+    {
+      "path": "src/model/context-views.ts",
+      "exists": true,
+      "plans": [
+        "RETRIEVAL_QUALITY_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/memory-retrieval-calibration-split.test.ts",
+      "exists": false,
+      "plans": [
+        "RETRIEVAL_QUALITY_PLAN.md"
+      ]
+    },
+    {
+      "path": "src/memory/lexical.ts",
+      "exists": true,
+      "plans": [
+        "RETRIEVAL_QUALITY_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/fixtures/memory-retrieval-semantic-v2.json",
+      "exists": false,
+      "plans": [
+        "RETRIEVAL_QUALITY_PLAN.md"
+      ]
+    },
+    {
+      "path": "scripts/prepare-memory-retrieval-vectors.ts",
+      "exists": false,
+      "plans": [
+        "RETRIEVAL_QUALITY_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/memory-retrieval-semantic-evaluation.test.ts",
+      "exists": false,
+      "plans": [
+        "RETRIEVAL_QUALITY_PLAN.md"
+      ]
+    },
+    {
+      "path": "src/host/task-projection.ts",
+      "exists": false,
+      "plans": [
+        "RUNTIME_PLAN.md"
+      ]
+    },
+    {
+      "path": "src/memory/organize.ts",
+      "exists": true,
+      "plans": [
+        "RUNTIME_PLAN.md",
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "src/app.ts",
+      "exists": true,
+      "plans": [
+        "RUNTIME_PLAN.md"
+      ]
+    },
+    {
+      "path": "src/host/runtime.ts",
+      "exists": true,
+      "plans": [
+        "RUNTIME_PLAN.md"
+      ]
+    },
+    {
+      "path": "src/storage.ts",
+      "exists": true,
+      "plans": [
+        "RUNTIME_PLAN.md"
+      ]
+    },
+    {
+      "path": "src/host/scheduler.ts",
+      "exists": true,
+      "plans": [
+        "RUNTIME_PLAN.md"
+      ]
+    },
+    {
+      "path": "src/host/shared.ts",
+      "exists": true,
+      "plans": [
+        "RUNTIME_PLAN.md"
+      ]
+    },
+    {
+      "path": "src/environment/runtime.ts",
+      "exists": true,
+      "plans": [
+        "RUNTIME_PLAN.md",
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "src/environment/payload-compaction.ts",
+      "exists": false,
+      "plans": [
+        "RUNTIME_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/task-projection.test.ts",
+      "exists": false,
+      "plans": [
+        "RUNTIME_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/appointment-update-host.test.ts",
+      "exists": false,
+      "plans": [
+        "RUNTIME_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/tasks.test.ts",
+      "exists": true,
+      "plans": [
+        "RUNTIME_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/chat-active-consistency.test.ts",
+      "exists": true,
+      "plans": [
+        "RUNTIME_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/helpers.ts",
+      "exists": true,
+      "plans": [
+        "RUNTIME_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/review-fixes.test.ts",
+      "exists": true,
+      "plans": [
+        "RUNTIME_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/review-recovery.test.ts",
+      "exists": true,
+      "plans": [
+        "RUNTIME_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/host-pause-selection.test.ts",
+      "exists": false,
+      "plans": [
+        "RUNTIME_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/reply-freshness-host.test.ts",
+      "exists": true,
+      "plans": [
+        "RUNTIME_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/environment-async-host-gates.test.ts",
+      "exists": true,
+      "plans": [
+        "RUNTIME_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/graceful-stop-host.test.ts",
+      "exists": true,
+      "plans": [
+        "RUNTIME_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/task-queries.test.ts",
+      "exists": false,
+      "plans": [
+        "RUNTIME_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/scheduler-task-workset.test.ts",
+      "exists": false,
+      "plans": [
+        "RUNTIME_PLAN.md"
+      ]
+    },
+    {
+      "path": "scripts/check-task-scheduling.ts",
+      "exists": false,
+      "plans": [
+        "RUNTIME_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/scheduler.test.ts",
+      "exists": true,
+      "plans": [
+        "RUNTIME_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/shared-v3-scheduler.test.ts",
+      "exists": true,
+      "plans": [
+        "RUNTIME_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/reply-freshness-scheduler.test.ts",
+      "exists": true,
+      "plans": [
+        "RUNTIME_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/world-school-batch.test.ts",
+      "exists": true,
+      "plans": [
+        "RUNTIME_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/environment-payload-compaction.test.ts",
+      "exists": false,
+      "plans": [
+        "RUNTIME_PLAN.md",
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "src/environment/types.ts",
+      "exists": true,
+      "plans": [
+        "RUNTIME_PLAN.md"
+      ]
+    },
+    {
+      "path": "src/environment/preparation.ts",
+      "exists": true,
+      "plans": [
+        "RUNTIME_PLAN.md",
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/environment-async-phases.test.ts",
+      "exists": true,
+      "plans": [
+        "RUNTIME_PLAN.md"
+      ]
+    },
+    {
+      "path": "src/environment/digest.ts",
+      "exists": false,
+      "plans": [
+        "RUNTIME_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/school-week-contract-recovery.test.ts",
+      "exists": true,
+      "plans": [
+        "RUNTIME_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/world-school-review14-contracts.test.ts",
+      "exists": true,
+      "plans": [
+        "RUNTIME_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/world-school-review14-calendar.test.ts",
+      "exists": true,
+      "plans": [
+        "RUNTIME_PLAN.md"
+      ]
+    },
+    {
+      "path": "runtime/plugin-smoke-fixtures.cjs",
+      "exists": true,
+      "plans": [
+        "RUNTIME_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/environment-async-boundaries.test.ts",
+      "exists": true,
+      "plans": [
+        "RUNTIME_PLAN.md",
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "src/memory/payload-compaction.ts",
+      "exists": true,
+      "plans": [
+        "RUNTIME_PLAN.md",
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "src/deployment/memory-payload-compaction.ts",
+      "exists": true,
+      "plans": [
+        "RUNTIME_PLAN.md"
+      ]
+    },
+    {
+      "path": "scripts/compact-memory-payloads.ts",
+      "exists": true,
+      "plans": [
+        "RUNTIME_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/memory-payload-compaction.test.ts",
+      "exists": true,
+      "plans": [
+        "RUNTIME_PLAN.md",
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/memory-payload-compaction-cli.test.ts",
+      "exists": true,
+      "plans": [
+        "RUNTIME_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/memory-payload-recovery-matrix.test.ts",
+      "exists": true,
+      "plans": [
+        "RUNTIME_PLAN.md"
+      ]
+    },
+    {
+      "path": "src/web/provider.ts",
+      "exists": true,
+      "plans": [
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "scripts/stickers.ts",
+      "exists": true,
+      "plans": [
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "src/deployment/sticker-web-runtime.ts",
+      "exists": false,
+      "plans": [
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "src/web/browser/extract.ts",
+      "exists": true,
+      "plans": [
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "src/web/store.ts",
+      "exists": true,
+      "plans": [
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "src/model/client.ts",
+      "exists": true,
+      "plans": [
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "src/web/persistence.ts",
+      "exists": false,
+      "plans": [
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "src/input-media/assets.ts",
+      "exists": true,
+      "plans": [
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "src/web/service.ts",
+      "exists": true,
+      "plans": [
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "src/web/content.ts",
+      "exists": true,
+      "plans": [
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/web-content.test.ts",
+      "exists": true,
+      "plans": [
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/browser-web-integration.test.ts",
+      "exists": true,
+      "plans": [
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "scripts/validate-local-web.ts",
+      "exists": true,
+      "plans": [
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/browser-search-provider.test.ts",
+      "exists": true,
+      "plans": [
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/web-session.test.ts",
+      "exists": true,
+      "plans": [
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/web-provider.test.ts",
+      "exists": true,
+      "plans": [
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "runtime/koishi.yml",
+      "exists": true,
+      "plans": [
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/stickers-cli.test.ts",
+      "exists": false,
+      "plans": [
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/sticker-web-runtime.test.ts",
+      "exists": false,
+      "plans": [
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/local-web-validation-startup.test.ts",
+      "exists": true,
+      "plans": [
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "runtime/package.json",
+      "exists": true,
+      "plans": [
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/stickers.test.ts",
+      "exists": true,
+      "plans": [
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/web-deployment.test.ts",
+      "exists": true,
+      "plans": [
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/browser-page-extraction.test.ts",
+      "exists": true,
+      "plans": [
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/browser-visible-dom.test.ts",
+      "exists": true,
+      "plans": [
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/browser-koishi-port.test.ts",
+      "exists": true,
+      "plans": [
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "src/web/types.ts",
+      "exists": true,
+      "plans": [
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/web-light-state.test.ts",
+      "exists": false,
+      "plans": [
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/web-store.test.ts",
+      "exists": true,
+      "plans": [
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/web-model-tools.test.ts",
+      "exists": true,
+      "plans": [
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/web-memory-sources.test.ts",
+      "exists": true,
+      "plans": [
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/web-recovery.test.ts",
+      "exists": true,
+      "plans": [
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/web-status.test.ts",
+      "exists": true,
+      "plans": [
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "src/model/resource-pool.ts",
+      "exists": true,
+      "plans": [
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/web-persistence-v2.test.ts",
+      "exists": false,
+      "plans": [
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/resource-pool-index.test.ts",
+      "exists": true,
+      "plans": [
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/incoming-image-model.test.ts",
+      "exists": true,
+      "plans": [
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "src/web/payload-migration.ts",
+      "exists": false,
+      "plans": [
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "src/deployment/web-payload-migration.ts",
+      "exists": false,
+      "plans": [
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "scripts/migrate-web-payloads.ts",
+      "exists": false,
+      "plans": [
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/web-payload-migration.test.ts",
+      "exists": false,
+      "plans": [
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/web-payload-migration-cli.test.ts",
+      "exists": false,
+      "plans": [
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/web-payload-cost.test.ts",
+      "exists": false,
+      "plans": [
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "scripts/measure-web-payloads.ts",
+      "exists": false,
+      "plans": [
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "src/input-media/service.ts",
+      "exists": true,
+      "plans": [
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/incoming-media-assets.test.ts",
+      "exists": true,
+      "plans": [
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/incoming-media-turn.test.ts",
+      "exists": true,
+      "plans": [
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/incoming-media-asset-lease.test.ts",
+      "exists": false,
+      "plans": [
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "src/deployment/plugin-runtime.ts",
+      "exists": true,
+      "plans": [
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/incoming-media-cleanup.test.ts",
+      "exists": true,
+      "plans": [
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/incoming-media-onebot-review.test.ts",
+      "exists": true,
+      "plans": [
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/web-owner-finalization.test.ts",
+      "exists": false,
+      "plans": [
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/environment-web-finalization.test.ts",
+      "exists": false,
+      "plans": [
+        "WEB_MEDIA_PLAN.md"
+      ]
+    },
+    {
+      "path": "tests/environment-async-host.test.ts",
+      "exists": true,
+      "plans": [
+        "WEB_MEDIA_PLAN.md"
+      ]
+    }
+  ],
+  "sourceReferenceNote": "Literal source paths only; exists:false entries were manually reviewed as explicitly planned new files, not broken documentation links. Brace/relative shorthand is not covered by this inventory.",
+  "productDiff": null,
+  "productUntracked": null,
+  "errors": []
+}

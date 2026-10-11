@@ -1,0 +1,11 @@
+{
+  "markdownFiles": 5,
+  "linksChecked": 37,
+  "jsonFiles": [
+    "document-verification.json",
+    "memory-performance.json",
+    "runtime-probe-output.json",
+    "web-media-probe.json"
+  ],
+  "errors": []
+}
