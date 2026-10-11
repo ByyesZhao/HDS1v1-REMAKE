@@ -10,6 +10,7 @@ const day=86400_000;
 // Keep this expression equivalent to capacity.archiveStart, including natural expiry without a persisted anchor.
 export function archiveStartSql(data='data',now='?'):string {return `CASE WHEN json_extract(${data},'$.kind')='long' AND json_extract(${data},'$.status')='active' AND json_extract(${data},'$.mergedInto') IS NULL THEN COALESCE(json_extract(${data},'$.archiveEnteredAt'),json_extract(${data},'$.capacityExitedAt'),CASE WHEN julianday(json_extract(${data},'$.expiresAt'))<=julianday(${now}) THEN json_extract(${data},'$.expiresAt') END) END`;}
 export type JobTable='memory_index_jobs'|'memory_maintenance_jobs';
+export interface CandidateReadOptions {includeVectors?:boolean;}
 function parse<T>(row: Record<string,unknown>|undefined):T|null { return row ? JSON.parse(String(row.data)) : null; }
 export function memoryIndexText(owner:MemoryCandidate):string {
   return owner.ownerType==='detail'?`${owner.key}\n${owner.aliases?.join(' ')??''}\n${owner.value}`:`${owner.content}\n${owner.topics.join(' ')}\n${owner.feelingSummary}\n${owner.projectionBasis?.content??''}`;
@@ -126,17 +127,19 @@ export class MemoryStore {
     const data=memoryOwnerData(owner);
     this.storage.prepare(`INSERT INTO ${table}(id,data) VALUES(?,?) ON CONFLICT(id) DO UPDATE SET data=excluded.data`).run(owner.ownerId,JSON.stringify(data));
   }
-  selectCandidates(request:RetrievalRequest):MemoryCandidate[] {
+  selectCandidates(request:RetrievalRequest,options:CandidateReadOptions={}):MemoryCandidate[] {
     if(request.scope==='archive'&&!request.permissions.allowArchive||request.includeDetailHistory&&!request.permissions.allowDetailHistory)throw new Error('retrieval permission denied');
-    const archive=request.scope==='archive'; const signature=this.storage.get<string>('memory_embedding_signature')??'';
+    const archive=request.scope==='archive',includeVectors=options.includeVectors!==false;
     const sql=`WITH owners AS (
       SELECT id,data FROM memories WHERE json_extract(data,'$.status') NOT IN ('merged','discarded') AND
       ((json_extract(data,'$.kind')='short' AND json_extract(data,'$.capacityExitedAt') IS NULL AND (? OR julianday(json_extract(data,'$.shortExpiresAt'))>julianday(?))) OR
        (json_extract(data,'$.kind')='long' AND json_extract(data,'$.status')!='durable' AND julianday(json_extract(data,'$.retainedFrom'))<=julianday(?) AND (? OR (${archiveStartSql()}) IS NULL)))
       UNION ALL SELECT id,data FROM details
       UNION ALL SELECT id,data FROM learned_background WHERE json_extract(data,'$.status')='active')
-      SELECT o.data,i.vector FROM owners o LEFT JOIN memory_index i ON i.ownerType=json_extract(o.data,'$.ownerType') AND i.ownerId=o.id AND i.revision=json_extract(o.data,'$.revision') AND i.configSignature=?`;
-    return this.storage.prepare(sql).all(archive?1:0,request.at,request.at,archive?1:0,request.at,signature).map(row=>{
+      SELECT o.data${includeVectors?',i.vector':''} FROM owners o${includeVectors?" LEFT JOIN memory_index i ON i.ownerType=json_extract(o.data,'$.ownerType') AND i.ownerId=o.id AND i.revision=json_extract(o.data,'$.revision') AND i.configSignature=?":''}`;
+    const parameters:Array<string|number>=[archive?1:0,request.at,request.at,archive?1:0,request.at];
+    if(includeVectors)parameters.push(this.storage.get<string>('memory_embedding_signature')??'');
+    return this.storage.prepare(sql).all(...parameters).map(row=>{
       const data=memoryOwnerData(JSON.parse(String(row.data)) as MemoryCandidate);
       if(!data.ownerType&&data.key)return this.makeOwner({ownerType:'detail',ownerId:data.key},{...data,content:data.value??''},data.effectiveAt??request.at);
       if(row.vector){const bytes=Uint8Array.from(row.vector as Uint8Array);data.normalizedVector=new Float32Array(bytes.buffer);}return data;

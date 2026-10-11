@@ -1,0 +1,14 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/memory-retrieval-vector-work.test.ts tests/memory-v3-store.test.ts tests/memory-v3-retrieval.test.ts tests/memory-v3-index.test.ts tests/memory-v3-deployment.test.ts
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+
+ Test Files  5 passed (5)
+      Tests  38 passed (38)
+   Start at  09:52:40
+   Duration  3.78s (tests 68%, import 17%, transform 15%, worker 1%)
+
+    Isolate  5 workers spawned · ~122ms startup each (spawn + environment, per file)
+             at least ~489ms faster with isolate: false — reuses workers across files instead of one per file
+

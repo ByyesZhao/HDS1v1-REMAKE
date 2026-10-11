@@ -13,6 +13,14 @@ export interface RetrievalCalibration {
   lexical:{fact:number;experience:number}; semantic?:{fact:number;experience:number;configSignature:string}|null;
 }
 export const defaultCalibration:RetrievalCalibration={lexical:{fact:1,experience:1},semantic:null};
+export interface SemanticCapability {
+  reason:'no_index'|'uncalibrated'|'signature_mismatch'|null;
+  indexSignature:string|null;
+  dimensions:number|null;
+}
+export function semanticPreflight(query:string,capability:SemanticCapability):'no_index'|'empty_query'|'uncalibrated'|'signature_mismatch'|null {
+  return capability.reason==='no_index'?'no_index':!query.trim()?'empty_query':capability.reason;
+}
 const wantsArchive=(q:string)=>/还记得|回忆|那次|去年.*(?:生日|经历|考试)/.test(q);
 const wantsHistory=(q:string)=>/以前|之前|旧|曾经|变化|原来|过去/.test(q);
 export function makeRetrievalRequest(query:string,at:string,phase:string,budget:number|null=null,visibleSourceIds:string[]=[]):RetrievalRequest {
@@ -27,18 +35,25 @@ export class MemoryRetrieval {
   metrics={candidates:0,selected:0,excludedByLimits:0,sqlMs:0,semanticSkipped:0,semanticSkipReason:null as string|null};
   constructor(public readonly store:MemoryStore,private index?:MemoryIndex,limits:Partial<ContextLimits>={},private calibration:RetrievalCalibration=defaultCalibration){this.limits={...defaultContextLimits,...limits};}
   async build(request:RetrievalRequest,options:RetrievalBuildOptions={}):Promise<RetrievedContext> {
-    const at=performance.now(),candidates=this.store.selectCandidates(request);this.metrics.sqlMs=performance.now()-at;this.metrics.candidates=candidates.length;
+    const capability=this.semanticCapability(),preflight=semanticPreflight(request.query,capability);
+    const at=performance.now(),candidates=this.store.selectCandidates(request,{includeVectors:preflight===null});this.metrics.sqlMs=performance.now()-at;this.metrics.candidates=candidates.length;
     const recent=options.includeRecent===false?[]:new ((request.dialogueWindowVersion??this.store.storage.runtime().dialogueContextVersion)===2?ChatEpisodes:DialogueEpisodes)(new DialogueStore(this.store.storage),this.limits.dialogueIdleMinutes).recent(request.phase,request.at,this.limits.recentDialogueSegments,request.permissions.visibleSourceIds).messages;
-    return this.buildFrozen(request,candidates,recent,ids=>assertMessageSources(this.store.storage,ids),request.includeDetailHistory?this.store.storage.all('detail_history'):[]);
+    return this.buildFrozen(request,candidates,recent,ids=>assertMessageSources(this.store.storage,ids),request.includeDetailHistory?this.store.storage.all('detail_history'):[],undefined,capability);
   }
   configuration(){return {limits:this.limits,calibration:this.calibration,indexSignature:this.index?.configSignature??null};}
-  async buildFrozen(request:RetrievalRequest,candidates:MemoryCandidate[],recent:RetrievedContext['recent'],assertSources:(ids:string[])=>void,history:RetrievedContext['detailHistory']=[],signal?:AbortSignal):Promise<RetrievedContext>{
-    this.metrics.candidates=candidates.length;
+  semanticCapability():SemanticCapability {
     const threshold=this.calibration.semantic;
     const calibrated=!!threshold&&[threshold.fact,threshold.experience].every(n=>Number.isFinite(n)&&n>=-1&&n<=1);
-    const eligibleCandidates=candidates.filter(r=>!(r.kind==='learned'&&r.alwaysInclude)&&!(r.ownerType==='detail'&&[r.key,...r.aliases??[]].filter(Boolean).some(alias=>request.query.toLowerCase().includes(alias!.toLowerCase()))));
-    const compatible=eligibleCandidates.some(r=>r.normalizedVector?.length&&(!this.index?.dimensions||r.normalizedVector.length===this.index.dimensions)&&[...r.normalizedVector].every(Number.isFinite));
-    const reason=!this.index?'no_index':!request.query.trim()?'empty_query':!calibrated?'uncalibrated':threshold!.configSignature!==this.index.configSignature?'signature_mismatch':!compatible?'no_compatible_candidate':null;
+    return {reason:!this.index?'no_index':!calibrated?'uncalibrated':threshold!.configSignature!==this.index.configSignature?'signature_mismatch':null,indexSignature:this.index?.configSignature??null,dimensions:this.index?.dimensions??null};
+  }
+  async buildFrozen(request:RetrievalRequest,candidates:MemoryCandidate[],recent:RetrievedContext['recent'],assertSources:(ids:string[])=>void,history:RetrievedContext['detailHistory']=[],signal?:AbortSignal,capability:SemanticCapability=this.semanticCapability()):Promise<RetrievedContext>{
+    this.metrics.candidates=candidates.length;
+    let reason:ReturnType<typeof semanticPreflight>|'no_compatible_candidate'=semanticPreflight(request.query,capability);
+    if(reason===null){
+      const eligibleCandidates=candidates.filter(r=>!(r.kind==='learned'&&r.alwaysInclude)&&!(r.ownerType==='detail'&&[r.key,...r.aliases??[]].filter(Boolean).some(alias=>request.query.toLowerCase().includes(alias!.toLowerCase()))));
+      const compatible=eligibleCandidates.some(r=>r.normalizedVector?.length&&(!capability.dimensions||r.normalizedVector.length===capability.dimensions)&&r.normalizedVector.every(Number.isFinite));
+      if(!compatible)reason='no_compatible_candidate';
+    }
     this.metrics.semanticSkipReason=reason;
     if(reason){this.metrics.semanticSkipped++;if(this.index){this.index.stats.semanticSkipped=(this.index.stats.semanticSkipped??0)+1;const reasons=this.index.stats.semanticSkipReasons??{};reasons[reason]=(reasons[reason]??0)+1;this.index.stats.semanticSkipReasons=reasons;}}
     const vector=reason?null:await this.index!.query(request.query,signal);
