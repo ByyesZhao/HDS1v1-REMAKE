@@ -1,0 +1,142 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/environment-retrieval-vector-snapshot.test.ts
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ❯ tests/environment-retrieval-vector-snapshot.test.ts (15 tests | 15 failed) 166ms
+   × uncalibrated environment freeze omits all 1000x1024 vectors and preserves configuration signature 106ms
+   × old_disabled survives JSON and uses only frozen owners and vectors 5ms
+   × new_disabled survives JSON and uses only frozen owners and vectors 4ms
+   × old_enabled survives JSON and uses only frozen owners and vectors 4ms
+   × new_enabled survives JSON and uses only frozen owners and vectors 4ms
+   × empty freeze query does not disable later semantic lookup 4ms
+   × rejects changed calibration before vector conversion or querying 4ms
+   × rejects changed limits before vector conversion or querying 5ms
+   × rejects changed endpoint before vector conversion or querying 4ms
+   × rejects changed model before vector conversion or querying 4ms
+   × rejects changed dimensions before vector conversion or querying 5ms
+   × rejects changed template before vector conversion or querying 4ms
+   × rejects mismatched saved capability even if the legacy configuration digest matches 4ms
+   × old frozen lookup keeps permissions, source validation and cancellation without live reads 4ms
+   × new frozen lookup keeps permissions, source validation and cancellation without live reads 4ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 15 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/environment-retrieval-vector-snapshot.test.ts > uncalibrated environment freeze omits all 1000x1024 vectors and preserves configuration signature
+Error: no such table: self_web_read_sources
+ ❯ Storage.prepare src/storage.ts:70:41
+     68|   hasTable(table:string):boolean {return !!this.db.prepare("SELECT 1 F…
+     69|   close(): void { this.db.close(); }
+     70|   prepare(sql: string) { return this.db.prepare(sql); }
+       |                                         ^
+     71|   pragmas(): { journalMode: string; synchronous: number } {
+     72|     return { journalMode: String(this.db.prepare('PRAGMA journal_mode'…
+ ❯ Storage.<anonymous> tests/environment-retrieval-vector-snapshot.test.ts:29:21
+ ❯ captureSourcePresence src/environment/snapshot.ts:45:23
+ ❯ freezeEnvironmentRetrieval src/environment/snapshot.ts:55:23
+ ❯ freezeEnvironmentSnapshot src/environment/snapshot.ts:66:200
+ ❯ freeze tests/environment-retrieval-vector-snapshot.test.ts:21:20
+ ❯ tests/environment-retrieval-vector-snapshot.test.ts:32:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/15]⎯
+
+ FAIL  tests/environment-retrieval-vector-snapshot.test.ts > old_disabled survives JSON and uses only frozen owners and vectors
+ FAIL  tests/environment-retrieval-vector-snapshot.test.ts > new_disabled survives JSON and uses only frozen owners and vectors
+ FAIL  tests/environment-retrieval-vector-snapshot.test.ts > old_enabled survives JSON and uses only frozen owners and vectors
+ FAIL  tests/environment-retrieval-vector-snapshot.test.ts > new_enabled survives JSON and uses only frozen owners and vectors
+Error: no such table: self_web_read_sources
+ ❯ Storage.prepare src/storage.ts:70:41
+     68|   hasTable(table:string):boolean {return !!this.db.prepare("SELECT 1 F…
+     69|   close(): void { this.db.close(); }
+     70|   prepare(sql: string) { return this.db.prepare(sql); }
+       |                                         ^
+     71|   pragmas(): { journalMode: string; synchronous: number } {
+     72|     return { journalMode: String(this.db.prepare('PRAGMA journal_mode'…
+ ❯ captureSourcePresence src/environment/snapshot.ts:45:23
+ ❯ freezeEnvironmentRetrieval src/environment/snapshot.ts:55:23
+ ❯ freezeEnvironmentSnapshot src/environment/snapshot.ts:66:200
+ ❯ freeze tests/environment-retrieval-vector-snapshot.test.ts:21:20
+ ❯ tests/environment-retrieval-vector-snapshot.test.ts:41:28
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/15]⎯
+
+ FAIL  tests/environment-retrieval-vector-snapshot.test.ts > empty freeze query does not disable later semantic lookup
+Error: no such table: self_web_read_sources
+ ❯ Storage.prepare src/storage.ts:70:41
+     68|   hasTable(table:string):boolean {return !!this.db.prepare("SELECT 1 F…
+     69|   close(): void { this.db.close(); }
+     70|   prepare(sql: string) { return this.db.prepare(sql); }
+       |                                         ^
+     71|   pragmas(): { journalMode: string; synchronous: number } {
+     72|     return { journalMode: String(this.db.prepare('PRAGMA journal_mode'…
+ ❯ captureSourcePresence src/environment/snapshot.ts:45:23
+ ❯ freezeEnvironmentRetrieval src/environment/snapshot.ts:55:23
+ ❯ freezeEnvironmentSnapshot src/environment/snapshot.ts:66:200
+ ❯ freeze tests/environment-retrieval-vector-snapshot.test.ts:21:20
+ ❯ tests/environment-retrieval-vector-snapshot.test.ts:57:78
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/15]⎯
+
+ FAIL  tests/environment-retrieval-vector-snapshot.test.ts > rejects changed calibration before vector conversion or querying
+ FAIL  tests/environment-retrieval-vector-snapshot.test.ts > rejects changed limits before vector conversion or querying
+ FAIL  tests/environment-retrieval-vector-snapshot.test.ts > rejects changed endpoint before vector conversion or querying
+ FAIL  tests/environment-retrieval-vector-snapshot.test.ts > rejects changed model before vector conversion or querying
+ FAIL  tests/environment-retrieval-vector-snapshot.test.ts > rejects changed dimensions before vector conversion or querying
+ FAIL  tests/environment-retrieval-vector-snapshot.test.ts > rejects changed template before vector conversion or querying
+Error: no such table: self_web_read_sources
+ ❯ Storage.prepare src/storage.ts:70:41
+     68|   hasTable(table:string):boolean {return !!this.db.prepare("SELECT 1 F…
+     69|   close(): void { this.db.close(); }
+     70|   prepare(sql: string) { return this.db.prepare(sql); }
+       |                                         ^
+     71|   pragmas(): { journalMode: string; synchronous: number } {
+     72|     return { journalMode: String(this.db.prepare('PRAGMA journal_mode'…
+ ❯ captureSourcePresence src/environment/snapshot.ts:45:23
+ ❯ freezeEnvironmentRetrieval src/environment/snapshot.ts:55:23
+ ❯ freezeEnvironmentSnapshot src/environment/snapshot.ts:66:200
+ ❯ freeze tests/environment-retrieval-vector-snapshot.test.ts:21:20
+ ❯ tests/environment-retrieval-vector-snapshot.test.ts:67:86
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/15]⎯
+
+ FAIL  tests/environment-retrieval-vector-snapshot.test.ts > rejects mismatched saved capability even if the legacy configuration digest matches
+Error: no such table: self_web_read_sources
+ ❯ Storage.prepare src/storage.ts:70:41
+     68|   hasTable(table:string):boolean {return !!this.db.prepare("SELECT 1 F…
+     69|   close(): void { this.db.close(); }
+     70|   prepare(sql: string) { return this.db.prepare(sql); }
+       |                                         ^
+     71|   pragmas(): { journalMode: string; synchronous: number } {
+     72|     return { journalMode: String(this.db.prepare('PRAGMA journal_mode'…
+ ❯ captureSourcePresence src/environment/snapshot.ts:45:23
+ ❯ freezeEnvironmentRetrieval src/environment/snapshot.ts:55:23
+ ❯ freezeEnvironmentSnapshot src/environment/snapshot.ts:66:200
+ ❯ freeze tests/environment-retrieval-vector-snapshot.test.ts:21:20
+ ❯ tests/environment-retrieval-vector-snapshot.test.ts:77:67
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/15]⎯
+
+ FAIL  tests/environment-retrieval-vector-snapshot.test.ts > old frozen lookup keeps permissions, source validation and cancellation without live reads
+ FAIL  tests/environment-retrieval-vector-snapshot.test.ts > new frozen lookup keeps permissions, source validation and cancellation without live reads
+Error: no such table: self_web_read_sources
+ ❯ Storage.prepare src/storage.ts:70:41
+     68|   hasTable(table:string):boolean {return !!this.db.prepare("SELECT 1 F…
+     69|   close(): void { this.db.close(); }
+     70|   prepare(sql: string) { return this.db.prepare(sql); }
+       |                                         ^
+     71|   pragmas(): { journalMode: string; synchronous: number } {
+     72|     return { journalMode: String(this.db.prepare('PRAGMA journal_mode'…
+ ❯ captureSourcePresence src/environment/snapshot.ts:45:23
+ ❯ freezeEnvironmentRetrieval src/environment/snapshot.ts:55:23
+ ❯ freezeEnvironmentSnapshot src/environment/snapshot.ts:66:200
+ ❯ freeze tests/environment-retrieval-vector-snapshot.test.ts:21:20
+ ❯ tests/environment-retrieval-vector-snapshot.test.ts:83:75
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/15]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  15 failed (15)
+   Start at  09:54:16
+   Duration  811ms (transform 46%, tests 27%, import 26%, worker 1%)
+

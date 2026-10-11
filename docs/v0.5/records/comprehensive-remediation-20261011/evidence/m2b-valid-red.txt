@@ -1,0 +1,117 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/environment-retrieval-vector-snapshot.test.ts
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ❯ tests/environment-retrieval-vector-snapshot.test.ts (15 tests | 15 failed) 42ms
+   × uncalibrated environment freeze omits all 1000x1024 vectors and preserves configuration signature 11ms
+   × old_disabled survives JSON and uses only frozen owners and vectors 3ms
+   × new_disabled survives JSON and uses only frozen owners and vectors 2ms
+   × old_enabled survives JSON and uses only frozen owners and vectors 2ms
+   × new_enabled survives JSON and uses only frozen owners and vectors 2ms
+   × empty freeze query does not disable later semantic lookup 2ms
+   × rejects changed calibration before vector conversion or querying 2ms
+   × rejects changed limits before vector conversion or querying 2ms
+   × rejects changed endpoint before vector conversion or querying 2ms
+   × rejects changed model before vector conversion or querying 2ms
+   × rejects changed dimensions before vector conversion or querying 2ms
+   × rejects changed template before vector conversion or querying 2ms
+   × rejects mismatched saved capability even if the legacy configuration digest matches 2ms
+   × old frozen lookup keeps permissions, source validation and cancellation without live reads 2ms
+   × new frozen lookup keeps permissions, source validation and cancellation without live reads 2ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 15 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/environment-retrieval-vector-snapshot.test.ts > uncalibrated environment freeze omits all 1000x1024 vectors and preserves configuration signature
+TypeError: WebStore is not a constructor
+ ❯ fixture tests/environment-retrieval-vector-snapshot.test.ts:12:79
+     10| const stores:Storage[]=[];afterEach(()=>{vi.restoreAllMocks();stores.s…
+     11| function fixture(enabled=false,count=1,query='手机'){
+     12|   const base=setup();stores.push(base.storage);base.config.worldSettin…
+       |                                                                               ^
+     13|   const store=new MemoryStore(base.storage);store.migrate(NOW);
+     14|   const embed=vi.fn(async()=>[1,...Array(1023).fill(0)]),provider={mod…
+ ❯ tests/environment-retrieval-vector-snapshot.test.ts:28:34
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/15]⎯
+
+ FAIL  tests/environment-retrieval-vector-snapshot.test.ts > old_disabled survives JSON and uses only frozen owners and vectors
+ FAIL  tests/environment-retrieval-vector-snapshot.test.ts > new_disabled survives JSON and uses only frozen owners and vectors
+ FAIL  tests/environment-retrieval-vector-snapshot.test.ts > old_enabled survives JSON and uses only frozen owners and vectors
+ FAIL  tests/environment-retrieval-vector-snapshot.test.ts > new_enabled survives JSON and uses only frozen owners and vectors
+TypeError: WebStore is not a constructor
+ ❯ fixture tests/environment-retrieval-vector-snapshot.test.ts:12:79
+     10| const stores:Storage[]=[];afterEach(()=>{vi.restoreAllMocks();stores.s…
+     11| function fixture(enabled=false,count=1,query='手机'){
+     12|   const base=setup();stores.push(base.storage);base.config.worldSettin…
+       |                                                                               ^
+     13|   const store=new MemoryStore(base.storage);store.migrate(NOW);
+     14|   const embed=vi.fn(async()=>[1,...Array(1023).fill(0)]),provider={mod…
+ ❯ tests/environment-retrieval-vector-snapshot.test.ts:41:80
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/15]⎯
+
+ FAIL  tests/environment-retrieval-vector-snapshot.test.ts > empty freeze query does not disable later semantic lookup
+TypeError: WebStore is not a constructor
+ ❯ fixture tests/environment-retrieval-vector-snapshot.test.ts:12:79
+     10| const stores:Storage[]=[];afterEach(()=>{vi.restoreAllMocks();stores.s…
+     11| function fixture(enabled=false,count=1,query='手机'){
+     12|   const base=setup();stores.push(base.storage);base.config.worldSettin…
+       |                                                                               ^
+     13|   const store=new MemoryStore(base.storage);store.migrate(NOW);
+     14|   const embed=vi.fn(async()=>[1,...Array(1023).fill(0)]),provider={mod…
+ ❯ tests/environment-retrieval-vector-snapshot.test.ts:58:34
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/15]⎯
+
+ FAIL  tests/environment-retrieval-vector-snapshot.test.ts > rejects changed calibration before vector conversion or querying
+ FAIL  tests/environment-retrieval-vector-snapshot.test.ts > rejects changed limits before vector conversion or querying
+ FAIL  tests/environment-retrieval-vector-snapshot.test.ts > rejects changed endpoint before vector conversion or querying
+ FAIL  tests/environment-retrieval-vector-snapshot.test.ts > rejects changed model before vector conversion or querying
+ FAIL  tests/environment-retrieval-vector-snapshot.test.ts > rejects changed dimensions before vector conversion or querying
+ FAIL  tests/environment-retrieval-vector-snapshot.test.ts > rejects changed template before vector conversion or querying
+TypeError: WebStore is not a constructor
+ ❯ fixture tests/environment-retrieval-vector-snapshot.test.ts:12:79
+     10| const stores:Storage[]=[];afterEach(()=>{vi.restoreAllMocks();stores.s…
+     11| function fixture(enabled=false,count=1,query='手机'){
+     12|   const base=setup();stores.push(base.storage);base.config.worldSettin…
+       |                                                                               ^
+     13|   const store=new MemoryStore(base.storage);store.migrate(NOW);
+     14|   const embed=vi.fn(async()=>[1,...Array(1023).fill(0)]),provider={mod…
+ ❯ tests/environment-retrieval-vector-snapshot.test.ts:68:47
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/15]⎯
+
+ FAIL  tests/environment-retrieval-vector-snapshot.test.ts > rejects mismatched saved capability even if the legacy configuration digest matches
+TypeError: WebStore is not a constructor
+ ❯ fixture tests/environment-retrieval-vector-snapshot.test.ts:12:79
+     10| const stores:Storage[]=[];afterEach(()=>{vi.restoreAllMocks();stores.s…
+     11| function fixture(enabled=false,count=1,query='手机'){
+     12|   const base=setup();stores.push(base.storage);base.config.worldSettin…
+       |                                                                               ^
+     13|   const store=new MemoryStore(base.storage);store.migrate(NOW);
+     14|   const embed=vi.fn(async()=>[1,...Array(1023).fill(0)]),provider={mod…
+ ❯ tests/environment-retrieval-vector-snapshot.test.ts:78:28
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/15]⎯
+
+ FAIL  tests/environment-retrieval-vector-snapshot.test.ts > old frozen lookup keeps permissions, source validation and cancellation without live reads
+ FAIL  tests/environment-retrieval-vector-snapshot.test.ts > new frozen lookup keeps permissions, source validation and cancellation without live reads
+TypeError: WebStore is not a constructor
+ ❯ fixture tests/environment-retrieval-vector-snapshot.test.ts:12:79
+     10| const stores:Storage[]=[];afterEach(()=>{vi.restoreAllMocks();stores.s…
+     11| function fixture(enabled=false,count=1,query='手机'){
+     12|   const base=setup();stores.push(base.storage);base.config.worldSettin…
+       |                                                                               ^
+     13|   const store=new MemoryStore(base.storage);store.migrate(NOW);
+     14|   const embed=vi.fn(async()=>[1,...Array(1023).fill(0)]),provider={mod…
+ ❯ tests/environment-retrieval-vector-snapshot.test.ts:84:40
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/15]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  15 failed (15)
+   Start at  09:54:27
+   Duration  653ms (transform 56%, import 34%, tests 9%, worker 1%)
+
