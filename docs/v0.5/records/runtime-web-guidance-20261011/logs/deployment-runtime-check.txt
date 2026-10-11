@@ -1,0 +1,6 @@
+koishi: D:\HDSI-remake\runtime\node_modules\koishi\lib\index.cjs
+koishi-plugin-adapter-onebot: D:\HDSI-remake\runtime\node_modules\koishi-plugin-adapter-onebot\lib\index.js
+koishi-plugin-hdsi-remake: D:\HDSI-remake\lib\index.js
+@koishijs/plugin-console: D:\HDSI-remake\runtime\node_modules\@koishijs\plugin-console\lib\node\index.js
+67 stickers ready.
+Specified configuration and database checks verified; no network requests made.

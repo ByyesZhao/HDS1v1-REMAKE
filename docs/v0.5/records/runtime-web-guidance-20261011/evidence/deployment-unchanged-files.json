@@ -1,0 +1,14 @@
+[
+  {
+    "Path": "runtime/data/hdsi-remake.sqlite",
+    "Unchanged": true
+  },
+  {
+    "Path": "config.local.json",
+    "Unchanged": true
+  },
+  {
+    "Path": "runtime/koishi.yml",
+    "Unchanged": true
+  }
+]

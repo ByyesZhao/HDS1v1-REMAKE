@@ -1,6 +1,6 @@
 # 夜间运行核对与导演联网软提示
 
-日期：2026-10-11（Asia/Shanghai）。源码基线d94640e。先只读检查昨晚至今日的正式状态，随后按用户要求增加两条联网软提示；未改模型、强度、搜索引擎或配额。
+日期：2026-10-11（Asia/Shanghai）。状态：已交付。源码基线d94640e，实施提交cd8b0e5。先只读检查昨晚至今日的正式状态，随后按用户要求增加两条联网软提示；未改模型、强度、搜索引擎或配额。
 
 ## 1. 运行核对
 
@@ -34,4 +34,8 @@ HDSI普通控制台没有在runtime目录持续落盘日志；成功任务会清
 
 独立只读复核未发现问题，允许合并：确认提示实际传输、工具额度耗尽时不继续注入、来源资格没有扩大。复核没有重复访问正式库，也没有判断真实模型搜索效果。
 
-检查与调试不调用真实模型、浏览器搜索或QQ；软提示是否让真实模型主动搜索仍需后续正常运行观察，不因离线检查通过宣称已联网。2026-10-11执行runtime/stop.cjs已返回安全停止成功，待备份旧lib并构建部署；用户手动重启，SnowLuma保持运行。
+检查与调试不调用真实模型、浏览器搜索或QQ；软提示是否让真实模型主动搜索仍需后续正常运行观察，不因离线检查通过宣称已联网。
+
+正式部署：2026-10-11约08:52，runtime/stop.cjs返回安全停止成功，5141监听及停止描述文件均已消失；3001仍由SnowLuma监听。旧lib共228个文件备份至runtime/archive/batches/director-web-guidance-20261011-085226/lib。实施提交快进合并main后构建成功，实际编译模块离线核对通过；正式runtime检查成功（67个表情包、指定配置／数据库结构及依赖，禁用网络请求），见logs/deployment-build.txt及logs/deployment-runtime-check.txt。
+
+停服后与检查后的SHA256比较确认正式数据库主文件、config.local.json及runtime/koishi.yml均未改动，见[evidence/deployment-unchanged-files.json](evidence/deployment-unchanged-files.json)。没有迁移数据库、更换模型／强度或修改调度。HDSI保持停止，由用户双击start-hdsi.cmd启动；不自动重跑已经完成的今日世界导演，新提示在后续模型调用生效。改动仅提交本地main，未推送GitHub。
