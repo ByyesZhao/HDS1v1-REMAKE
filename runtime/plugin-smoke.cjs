@@ -4,8 +4,9 @@ const {resolve,join,sep}=require('node:path');
 const {tmpdir}=require('node:os');
 const {performance}=require('node:perf_hooks');
 const {DatabaseSync}=require('node:sqlite');
-const plugin=require('../lib/index.js');
-const {systemClock}=require('../lib/time.js');
+const testLib=process.env.HDSI_TEST_LIB_DIR||resolve(__dirname,'../lib');
+const plugin=require(join(testLib,'index.js'));
+const {systemClock}=require(join(testLib,'time.js'));
 const {parseEnvelopeRequest,mockEnvironmentResponse,waitForEnvironmentBatch,validatePersistedNotices}=require('./plugin-smoke-fixtures.cjs');
 async function runScenario(scenario){
  const workspace=mkdtempSync(join(tmpdir(),'hdsi-plugin-smoke-')),settingsPath=join(workspace,'story.json');

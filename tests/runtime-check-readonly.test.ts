@@ -1,5 +1,5 @@
 import {it,expect} from 'vitest';
-import {mkdtempSync,mkdirSync,copyFileSync,symlinkSync,writeFileSync,readFileSync,rmSync} from 'node:fs';
+import {mkdtempSync,mkdirSync,copyFileSync,symlinkSync,writeFileSync,readFileSync,realpathSync,rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';import {join,resolve,relative} from 'node:path';import {spawnSync} from 'node:child_process';
 import {Storage} from '../src/storage';import {MemoryStore} from '../src/memory/store';import {NOW} from './helpers';
 
@@ -10,7 +10,9 @@ it.each([3,2])('launcher readonly check reads schema %i without installing missi
   mkdirSync(runtime,{recursive:true});writeFileSync(join(runtime,'package.json'),'{}');
   copyFileSync(resolve('runtime/check.cjs'),join(runtime,'check.cjs'));
   symlinkSync(resolve('runtime/node_modules'),join(runtime,'node_modules'),'junction');
-  symlinkSync(resolve('lib'),join(root,'lib'),'junction');
+  const testLib=process.env.HDSI_TEST_LIB_DIR??resolve('lib');
+  symlinkSync(testLib,join(root,'lib'),'junction');
+  expect(realpathSync(join(root,'lib'))).toBe(realpathSync(testLib));
   const settings=JSON.parse(readFileSync('examples/story.sample.json','utf8'));
   settings.stickersEnabled=false;writeFileSync(join(root,'config.local.json'),JSON.stringify(settings));
   writeFileSync(join(root,'key.txt'),'deepseek KEY: synthetic-key\nqwen3.7-text-embedding KEY: synthetic-key');

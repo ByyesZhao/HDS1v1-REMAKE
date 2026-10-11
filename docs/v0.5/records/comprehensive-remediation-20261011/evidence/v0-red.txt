@@ -1,0 +1,45 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/plugin-smoke-build-path.test.ts --reporter=dot
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+xx·
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/plugin-smoke-build-path.test.ts > smoke_uses_requested_build_path for both plugin and clock
+AssertionError: expected '' to contain 'isolated-plugin-loaded'
+
+- Expected
++ Received
+
+- isolated-plugin-loaded
+
+ ❯ tests/plugin-smoke-build-path.test.ts:20:25
+     18|   const result=loadSmoke(root);
+     19|   expect(result.error).toBeUndefined();expect(result.status,result.std…
+     20|   expect(result.stdout).toContain('isolated-plugin-loaded');expect(res…
+       |                         ^
+     21|  }finally{rmSync(root,{recursive:true,force:true});}
+     22| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/plugin-smoke-build-path.test.ts > smoke rejects an explicitly missing build instead of loading deployed lib
+AssertionError: expected +0 not to be +0 // Object.is equality
+ ❯ tests/plugin-smoke-build-path.test.ts:29:66
+     27|   const missing=join(root,'not-built');mkdirSync(missing);
+     28|   const result=loadSmoke(missing);
+     29|   expect(result.error).toBeUndefined();expect(result.status).not.toBe(…
+       |                                                                  ^
+     30|   expect(result.stderr).toContain('not-built');
+     31|  }finally{rmSync(root,{recursive:true,force:true});}
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 1 passed (3)
+   Start at  09:27:39
+   Duration  1.53s (tests 98%, transform 1%, import 1%)
+

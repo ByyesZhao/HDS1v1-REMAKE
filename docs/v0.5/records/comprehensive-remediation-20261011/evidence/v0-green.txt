@@ -1,0 +1,12 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/plugin-smoke-build-path.test.ts --reporter=dot
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+···
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  09:27:55
+   Duration  993ms (tests 96%, transform 2%, import 2%, worker 1%)
+
