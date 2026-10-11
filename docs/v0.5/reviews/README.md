@@ -2,7 +2,9 @@
 
 返回[版本索引](../README.md)。
 
-最新为[普通回复新鲜度与安全停止交付后复核](freshness-graceful-stop-20261010/REVIEW.md)，基线086cd07。新鲜度T1～T5未发现需修复问题；安全停止新增1项P2（浏览器关闭失败仍报告成功并退出）后续已修，见[关闭记录](../records/graceful-stop-r1-20261010/README.md)，原报告附[修复执行方案](freshness-graceful-stop-20261010/FIX_PLAN.md)与HTTP组合探针。既有187文件1004项经全量运行及两组沙箱限制复跑均有通过记录；新增缺陷探针在086cd07为RED；安全停止R1后的原探针转为GREEN，新增回归及最终188文件1009项见[交付](../records/graceful-stop-r1-20261010/DELIVERY.md)。原I1断连修复仍通过，原审核报告与失败日志不改写。
+最近两批的独立代码复核结论随[导演联网软提示](../records/runtime-web-guidance-20261011/README.md)和[动作限定线下](../records/offline-action-only-20261010/README.md)保存。下列独立报告只覆盖它们标注的基线；当前规则与配置以[2026-10-11文档核对](../records/document-current-sync-20261011/README.md)为准，不将旧报告写成新代码的完整复核。
+
+此前[普通回复新鲜度与安全停止交付后复核](freshness-graceful-stop-20261010/REVIEW.md)，基线086cd07。新鲜度T1～T5未发现需修复问题；安全停止新增1项P2（浏览器关闭失败仍报告成功并退出）后续已修，见[关闭记录](../records/graceful-stop-r1-20261010/README.md)，原报告附[修复执行方案](freshness-graceful-stop-20261010/FIX_PLAN.md)与HTTP组合探针。既有187文件1004项经全量运行及两组沙箱限制复跑均有通过记录；新增缺陷探针在086cd07为RED；安全停止R1后的原探针转为GREEN，新增回归及最终188文件1009项见[交付](../records/graceful-stop-r1-20261010/DELIVERY.md)。原I1断连修复仍通过，原审核报告与失败日志不改写。
 
 前次[普通回复跟进新消息方案审核](chat-reply-freshness-20261010/REVIEW.md)，源码基线3fb4e1c；保留原方案 B，补齐 4 项重要合同，附[细化执行方案 T1～T5](chat-reply-freshness-20261010/EXECUTION_PLAN.md)。原基线定向回归8文件35项通过，合成探针复核旧行为与重算接点；新功能现已实施，工程验证与独立复核见[交付](../records/chat-reply-freshness-20261010/DELIVERY.md)。原报告不改写为实施验收。
 

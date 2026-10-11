@@ -1,0 +1,49 @@
+{
+  "date": "2026-10-11",
+  "codeBaseline": "65f0785",
+  "comparison": [
+    {
+      "key": "models",
+      "unchanged": true
+    },
+    {
+      "key": "configuredConnections",
+      "unchanged": true
+    },
+    {
+      "key": "visualInput",
+      "unchanged": true
+    },
+    {
+      "key": "web",
+      "unchanged": true
+    },
+    {
+      "key": "embeddings",
+      "unchanged": true
+    },
+    {
+      "key": "runtime",
+      "unchanged": true
+    },
+    {
+      "key": "backgroundMapping",
+      "unchanged": true
+    },
+    {
+      "key": "parameters",
+      "unchanged": true
+    },
+    {
+      "key": "semanticCalibrationEnabled",
+      "unchanged": true
+    }
+  ],
+  "modelCounts": {
+    "configured": 13,
+    "flash": 13,
+    "low": 10,
+    "high": 3
+  },
+  "scope": "Whitelist comparison only; no credentials, character prose, database or services accessed."
+}

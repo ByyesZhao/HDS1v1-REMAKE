@@ -1,10 +1,12 @@
 # HDSI V0.5：当前文档与审核入口
 
-核对日期：2026-10-11。最新[运行核对与导演搜索软提示](records/runtime-web-guidance-20261011/README.md)仅在实际工具可用时提醒世界导演查阅当日重要新闻、个人导演按兴趣／需要查阅；交付状态及检查边界见记录。最新动作表达边界修订见[实施记录](records/offline-action-only-20261010/README.md)：程序只为线下共同活动开放动作表达，其余模式采用纯文字合同；已完成编译部署；189文件1034项、类型／构建／demo／插件及正式只读装配通过，服务保持停止，由用户手动启动。过程与复核范围以该记录为准。此前[安全停止R1](records/graceful-stop-r1-20261010/README.md)修复浏览器关闭失败仍报告成功的问题，原新鲜度T1～T5不改。最终188文件1009项、类型／构建／演示／双场景插件检查通过；复核时序缺口已补实，正式停服部署完成，见[交付](records/graceful-stop-r1-20261010/DELIVERY.md)。此前[安全停止交付](records/graceful-stop-20261010/DELIVERY.md)与[新鲜度交付](records/chat-reply-freshness-20261010/DELIVERY.md)保留各自基线和证据。
+核对日期：2026-10-11，源码基线`65f0785`。[本次文档核对](records/document-current-sync-20261011/README.md)覆盖总架构、8份子系统、3份参考与导航，以最新源码和配置白名单为准；本次只改文档，不操作服务或重跑产品验收。
 
-最新[交付后复核](reviews/freshness-graceful-stop-20261010/REVIEW.md)以086cd07为基线：普通回复新鲜度可接受；安全停止原有1项P2（浏览器关闭失败被吞掉，仍报告成功并退出），现已修复，附[修复执行方案](reviews/freshness-graceful-stop-20261010/FIX_PLAN.md)。原组合探针在086cd07复现缺陷，在R1后转绿；原审核及失败日志保留历史含义，修复、独立复核补修与部署状态以[关闭记录](records/graceful-stop-r1-20261010/README.md)为准。
+最新代码交付为[导演联网软提示](records/runtime-web-guidance-20261011/README.md)：仅在实际工具可用时建议世界导演查阅当日重要新闻、三类个人导演按兴趣／需要查阅。此前[动作限定线下](records/offline-action-only-20261010/README.md)将动作表达限定在线下共同活动。[安全停止R1](records/graceful-stop-r1-20261010/DELIVERY.md)与[回复新鲜度T1～T5](records/chat-reply-freshness-20261010/DELIVERY.md)也已交付。各批结果和未验证范围单列在下表及实现对应中；停服／手动重启说明表达部署当时状态，不用于判断当前服务是否运行。
 
-此前[文档同步](records/document-current-sync-20261010/README.md)以源码726eb00为基线，核查当前规则、配置及导航，不修改产品、部署或服务。前次[文档核对](records/document-final-audit-20261010/README.md)和[图片／搜索修复交付](records/image-search-post-review-fixes-20261010/DELIVERY.md)保留原基线、原证据及未执行范围，不以本批覆盖历史结论。
+此前[交付后复核](reviews/freshness-graceful-stop-20261010/REVIEW.md)以086cd07为基线：普通回复新鲜度可接受；安全停止原有1项P2（浏览器关闭失败被吞掉，仍报告成功并退出），现已修复，附[修复执行方案](reviews/freshness-graceful-stop-20261010/FIX_PLAN.md)。原组合探针在086cd07复现缺陷，在R1后转绿；原审核及失败日志保留历史含义，修复、独立复核补修与部署状态以[关闭记录](records/graceful-stop-r1-20261010/README.md)为准。
+
+此前[文档同步](records/document-current-sync-20261010/README.md)以源码726eb00为基线，前次[文档核对](records/document-final-audit-20261010/README.md)和[图片／搜索修复交付](records/image-search-post-review-fixes-20261010/DELIVERY.md)保留原基线、原证据及未执行范围，不以本批覆盖历史结论。
 
 默认提供整个 `docs/v0.5/`，从本文件阅读，并附[目录原则](../DIRECTORY_POLICY.md)。当前功能说明为以下10份；归档仅按疑点查阅。
 
@@ -25,14 +27,17 @@
 
 背景用途参考为[已批准映射](reference/BACKGROUND_VIEW_MAPPING_20261008.md)，不是新审批。运行和显式升级命令见[项目README](../../README.md)。
 
-各模型用途及当前搜索配置见[模型调用与网页搜索参考](reference/MODEL_CALLS_AND_WEB_OPTIONS_20261009.md)。[本次配置白名单](records/document-current-sync-20261010/evidence/effective-models.json)确认13个已配置连接均Flash，10个low／3个high；用户图观察未单独覆盖，复用Flash/high。此前按用户要求[打开新图识别和Bing搜索](records/feature-enablement-20261010/README.md)，搜索provider为browser，Koishi已配置Puppeteer。模型参数保持不变；已配置启用不等于服务已经启动或真实在线质量已验收。
+各模型用途及当前搜索配置见[模型调用与网页搜索参考](reference/MODEL_CALLS_AND_WEB_OPTIONS_20261009.md)。[本次配置白名单](records/document-current-sync-20261011/evidence/effective-models.json)确认13个已配置连接均Flash，10个low／3个high；用户图观察未单独覆盖，复用Flash/high。此前按用户要求[打开新图识别和Bing搜索](records/feature-enablement-20261010/README.md)，搜索provider为browser，Koishi已配置Puppeteer。模型参数保持不变；已配置启用不等于服务已经启动或真实在线质量已验收。
 
 ## 最新交付与审核
 
 | 材料 | 状态 |
 | --- | --- |
-| [安全停止R1最新交付](records/graceful-stop-r1-20261010/DELIVERY.md) | 浏览器关闭失败传播；188文件1009项及工程检查、定向回归／原审核探针通过；已完成停服编译部署，由用户手动启动 |
-| [本次文档同步](records/document-current-sync-20261010/README.md) | 726eb00基线；源码规则对照、配置白名单及全目录链接检查；未重跑产品测试或操作服务 |
+| [本次文档同步](records/document-current-sync-20261011/README.md) | 65f0785基线；规则／配置／导航重新对照，只修当前说明与入口，历史证据保留 |
+| [导演联网软提示最新交付](records/runtime-web-guidance-20261011/README.md) | 世界新闻及三类个人兴趣建议，仅实际工具可用时注入；189文件1034项和工程检查通过，已停服构建部署，真实搜索行为待正常运行观察 |
+| [动作限定线下交付](records/offline-action-only-20261010/README.md) | 程序选择合同并检查公共动作包装；189文件1034项及工程检查、复核通过，已停服构建部署 |
+| [安全停止R1交付](records/graceful-stop-r1-20261010/DELIVERY.md) | 浏览器关闭失败传播；188文件1009项及工程检查、定向回归／原审核探针通过；已完成停服编译部署 |
+| [此前文档同步](records/document-current-sync-20261010/README.md) | 726eb00基线；保留当时的配置白名单和链接检查，不代替本次核对 |
 | [新鲜度／安全停止交付后复核](reviews/freshness-graceful-stop-20261010/REVIEW.md)及[修复执行方案](reviews/freshness-graceful-stop-20261010/FIX_PLAN.md) | 新鲜度未发现需修复问题；安全停止R1原为P2，后续修复见[记录](records/graceful-stop-r1-20261010/README.md)，原基线的真实HTTP与离线页面槽组合探针确认错误成功退出，R1后转绿；既有187文件1004项经分次复验通过 |
 | [普通回复新鲜度方案审核](reviews/chat-reply-freshness-20261010/REVIEW.md)与[细化执行方案](reviews/chat-reply-freshness-20261010/EXECUTION_PLAN.md) | 保留方案 B，补齐等待／事件接管、业务代际、图片冻结、资格重选 4 项合同；原基线8文件35项为方案审核证据；T1～T5现已实现，该批990项及部署边界见[交付](records/chat-reply-freshness-20261010/DELIVERY.md) |
 | [回复错位诊断](records/chat-reply-order-20261010/README.md)与[改动方案](plans/chat-reply-freshness-20261010/README.md) | 修复前诊断：15秒正确，但生成输入固定，旧候选仍发送；原调查未改产品／服务。T1～T5已改为首次发送尝试前遇新输入等待并重算，见新鲜度交付 |
