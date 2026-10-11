@@ -1,0 +1,44 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/host-pause-selection.test.ts
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ❯ tests/host-pause-selection.test.ts (6 tests | 1 failed) 149ms
+   × pause lets an already entered whole turn finish (waiting continuation=false) 26ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/host-pause-selection.test.ts > pause lets an already entered whole turn finish (waiting continuation=false)
+AssertionError: expected { …(17) } to match object { done: true, …(4) }
+(15 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "completedAt": "2026-10-07T02:00:04.750Z",
+    "done": true,
+    "frozenResult": null,
+    "outputComplete": true,
+-   "replyFreshness": {
+-     "generation": 1,
+-     "state": "sealed",
+-   },
+  }
+
+ ❯ tests/host-pause-selection.test.ts:68:38
+     66|   expect(modelSignal?.aborted).not.toBe(true);expect(d.storage.unfinis…
+     67|   expect(d.storage.runtime().paused).toBe(true);expect(d.storage.all('…
+     68|   expect(d.storage.read('turns',id)).toMatchObject({done:true,outputCo…
+       |                                      ^
+     69|   expect(d.models.calls.map(c=>c.name)).toEqual(['narrative','personal…
+     70|   expect(pausedStages).toEqual([{name:'expression',paused:true},{name:…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 5 passed (6)
+   Start at  09:34:45
+   Duration  901ms (transform 56%, import 25%, tests 19%, worker 1%)
+

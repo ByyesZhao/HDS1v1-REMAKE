@@ -1,0 +1,11 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/host-pause-selection.test.ts
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+
+ Test Files  1 passed (1)
+      Tests  6 passed (6)
+   Start at  09:34:58
+   Duration  915ms (transform 55%, import 25%, tests 19%, worker 1%)
+

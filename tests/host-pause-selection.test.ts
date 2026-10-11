@@ -3,7 +3,9 @@ import {HdsiApp} from '../src/app';
 import {InputBuffer} from '../src/host/input';
 import {Scheduler} from '../src/host/scheduler';
 import {SerialHost} from '../src/host/runtime';
+import {MemoryStore} from '../src/memory/store';
 import {modern} from './chat-fixture';
+import {emptyMemory} from './helpers';
 
 function deferred(){let resolve!:()=>void;const promise=new Promise<void>(r=>resolve=r);return {promise,resolve};}
 function appointment(d:ReturnType<typeof modern>,id:string){d.storage.save('tasks',id,{id,kind:'appointment',at:d.clock.now(),description:id,status:'pending'});}
@@ -49,16 +51,32 @@ it.each(['ordinary','event'] as const)('pause after waiting %s selection preserv
 it.each([false,true])('pause lets an already entered whole turn finish (waiting continuation=%s)',async continuation=>{
  const fixture=continuation?await waiting():null,d=fixture?.d??modern(),app=fixture?.app??new HdsiApp(d);
  if(continuation)d.clock.advance(15000);else appointment(d,'first');
+ d.models.outputs.personal_chat={emotions:[],reply:{decision:'now',intention:'完成当前回复',draft:'暂停时继续完成。两段都已发送。'},taskChanges:[]};
+ d.models.outputs.expression={parts:[{kind:'text',content:'暂停时继续完成。'},{kind:'text',content:'两段都已发送。'}]};
+ d.models.outputs.memory=(input:any)=>({...emptyMemory,detailChanges:[{action:'create',key:'暂停期间完成的回复',value:'两段都已发送',aliases:[],reason:'本轮已经确认的输出',sourceIds:[input.outgoing[0].id]}]});
  const started=deferred(),gate=deferred(),original=d.models.runModel.bind(d.models);let modelSignal:AbortSignal|undefined;
- d.models.runModel=async(task,input,options)=>{if(task.name==='narrative'){modelSignal=options?.signal;started.resolve();await gate.promise;}return original(task,input,options);};
+ const pausedStages:Array<{name:string;paused:boolean}>=[],sendingWhilePaused:boolean[]=[],send=d.sender.sendItem.bind(d.sender);
+ d.models.runModel=async(task,input,options)=>{if(task.name==='narrative'){modelSignal=options?.signal;started.resolve();await gate.promise;}if(task.name==='expression'||task.name==='memory')pausedStages.push({name:task.name,paused:d.storage.runtime().paused});return original(task,input,options);};
+ d.sender.sendItem=async item=>{sendingWhilePaused.push(d.storage.runtime().paused);return send(item);};
  const host=new SerialHost(app,{timers:false});
  try{
-  const running=host.start();await started.promise;await host.pause();appointment(d,'later');gate.resolve();await running;
+  const running=host.start();await started.promise;const id=d.storage.unfinishedTurn()!.id;
+  if(continuation)expect(id).toBe(fixture!.id);
+  await host.pause();appointment(d,'later');gate.resolve();await running;
   expect(modelSignal?.aborted).not.toBe(true);expect(d.storage.unfinishedTurn()).toBeNull();
-  expect(d.storage.all('turns')).toHaveLength(1);expect(d.storage.all('turns')[0].done).toBe(true);
+  expect(d.storage.runtime().paused).toBe(true);expect(d.storage.all('turns')).toHaveLength(1);
+  expect(d.storage.read('turns',id)).toMatchObject({done:true,outputComplete:true,frozenResult:null,completedAt:expect.any(String)});
+  if(continuation)expect(d.storage.read('turns',id)!.replyFreshness).toMatchObject({generation:2,state:'sealed'});
+  expect(d.models.calls.map(c=>c.name)).toEqual(['narrative','personal_chat','expression','memory']);
+  expect(pausedStages).toEqual([{name:'expression',paused:true},{name:'memory',paused:true}]);
+  expect(d.sender.sent.map(i=>({seq:i.seq,kind:i.kind,payload:i.payload}))).toEqual([{seq:0,kind:'text',payload:'暂停时继续完成。'},{seq:1,kind:'text',payload:'两段都已发送。'}]);
+  expect(sendingWhilePaused).toEqual([true,true]);expect(d.sender.errors).toEqual([]);
+  expect(d.storage.outbox(id)).toMatchObject([{seq:0,payload:'暂停时继续完成。',status:'confirmed',confirmedAt:expect.any(String),platformMessageIds:['qq-0']},{seq:1,payload:'两段都已发送。',status:'confirmed',confirmedAt:expect.any(String),platformMessageIds:['qq-1']}]);
+  expect(d.storage.messagesByTurn(id).filter(m=>m.direction==='outgoing').map(m=>({content:m.content,platformMessageIds:m.platformMessageIds}))).toEqual([{content:'暂停时继续完成。',platformMessageIds:['qq-0']},{content:'两段都已发送。',platformMessageIds:['qq-1']}]);
+  expect(new MemoryStore(d.storage).owner({ownerType:'detail',ownerId:'暂停期间完成的回复'})).toMatchObject({value:'两段都已发送',sourceIds:[`${id}:out:0`]});
+  expect(d.storage.read('post_jobs',id)).toMatchObject({turnId:id,result:null});
+  if(continuation){expect(d.storage.read('messages','a')!.seenTurnId).toBe(id);expect(d.storage.read('messages','b')!.seenTurnId).toBe(id);}else expect(d.storage.read('tasks','first')!.status).toBe('completed');
   expect(d.storage.read('tasks','later')!.status).toBe('pending');
-  expect(d.models.calls.filter(c=>c.name==='narrative')).toHaveLength(1);
-  expect(d.models.calls.some(c=>c.name==='personal_chat')).toBe(true);
   await host.resume();expect(d.storage.read('tasks','later')!.status).toBe('completed');
   expect(d.storage.all('turns')).toHaveLength(2);
  }finally{gate.resolve();await host.stop();d.storage.close();}
