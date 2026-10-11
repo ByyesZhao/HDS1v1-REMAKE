@@ -1,0 +1,9 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 web:migrate-payloads
+npm notice run tsx scripts/migrate-web-payloads.ts .tmp/web-remediation/w5-legacy.sqlite --dry-run
+{
+  "mode": "dry-run",
+  "database": "D:\\HDSI-remake\\.tmp\\web-remediation\\w5-legacy.sqlite",
+  "legacySessions": 3,
+  "legacyOperations": 3,
+  "invalidReferences": []
+}

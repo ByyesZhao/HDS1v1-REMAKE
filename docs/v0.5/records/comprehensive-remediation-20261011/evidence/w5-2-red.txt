@@ -1,0 +1,69 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/web-payload-migration.test.ts tests/web-payload-migration-cli.test.ts
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ❯ tests/web-payload-migration.test.ts (0 test)
+ ❯ tests/web-payload-migration-cli.test.ts (1 test | 1 failed) 156ms
+   × CLI defaults read-only and requires explicit stopped path before writing 155ms
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/web-payload-migration.test.ts [ tests/web-payload-migration.test.ts ]
+Error: Cannot find module '../src/web/payload-migration' imported from D:/HDSI-remake/tests/web-payload-migration.test.ts
+ ❯ tests/web-payload-migration.test.ts:6:1
+      4| import {join} from 'node:path';
+      5| import {tmpdir} from 'node:os';
+      6| import {inspectWebPayloads,migrateWebPayloadBatch} from '../src/web/pa…
+       | ^
+      7| import {migrateWebPayloads} from '../src/deployment/web-payload-migrat…
+      8| const dirs:string[]=[],dbs:DatabaseSync[]=[];afterEach(()=>{dbs.splice…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/web-payload-migration-cli.test.ts > CLI defaults read-only and requires explicit stopped path before writing
+AssertionError: node:internal/modules/esm/resolve:272
+    throw new ERR_MODULE_NOT_FOUND(
+          ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module 'D:\HDSI-remake\scripts\migrate-web-payloads.ts' imported from D:\HDSI-remake\
+    at finalizeResolution (node:internal/modules/esm/resolve:272:11)
+    at moduleResolve (node:internal/modules/esm/resolve:879:10)
+    at defaultResolve (node:internal/modules/esm/resolve:1006:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:705:20)
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:725:38)
+    at nextStep (node:internal/modules/customization_hooks:189:26)
+    at resolveBaseSync (file:///D:/HDSI-remake/node_modules/tsx/dist/register-nyXW-TH3.mjs:2:11092)
+    at resolveDirectorySync (file:///D:/HDSI-remake/node_modules/tsx/dist/register-nyXW-TH3.mjs:2:12398)
+    at resolveTsPathsSync (file:///D:/HDSI-remake/node_modules/tsx/dist/register-nyXW-TH3.mjs:2:13605)
+    at resolve (file:///D:/HDSI-remake/node_modules/tsx/dist/register-nyXW-TH3.mjs:2:16832) {
+  code: 'ERR_MODULE_NOT_FOUND',
+  url: 'file:///D:/HDSI-remake/scripts/migrate-web-payloads.ts'
+}
+
+Node.js v24.21.0
+: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ resolveBaseSync node_modules/tsx/dist/register-nyXW-TH3.mjs:2:11092
+ ❯ resolveDirectorySync node_modules/tsx/dist/register-nyXW-TH3.mjs:2:12398
+ ❯ resolveTsPathsSync node_modules/tsx/dist/register-nyXW-TH3.mjs:2:13605
+ ❯ tests/web-payload-migration-cli.test.ts:8:748
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  1 failed (1)
+   Start at  09:49:24
+   Duration  516ms (tests 86%, import 6%, worker 5%, transform 3%)
+

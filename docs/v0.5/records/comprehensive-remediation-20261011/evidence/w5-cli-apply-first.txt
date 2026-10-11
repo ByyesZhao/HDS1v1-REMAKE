@@ -1,0 +1,21 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 web:migrate-payloads
+npm notice run tsx scripts/migrate-web-payloads.ts .tmp/web-remediation/w5-legacy.sqlite --apply --stopped --batch-size 2 --max-batches 1 --backup-dir .tmp/web-remediation/backups
+{
+  "mode": "apply",
+  "database": "D:\\HDSI-remake\\.tmp\\web-remediation\\w5-legacy.sqlite",
+  "formatVersion": 2,
+  "before": {
+    "legacySessions": 3,
+    "legacyOperations": 3,
+    "invalidReferences": []
+  },
+  "after": {
+    "legacySessions": 1,
+    "legacyOperations": 1,
+    "invalidReferences": []
+  },
+  "batches": 1,
+  "hasMore": true,
+  "backupPath": "D:\\HDSI-remake\\.tmp\\web-remediation\\backups\\90dcd3d2-b603-4da7-905f-2de2c43ade84",
+  "updated": 4
+}

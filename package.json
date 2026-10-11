@@ -33,7 +33,8 @@
     "validate:world-school": "tsx scripts/validate-world-school.ts",
     "memory:check": "tsx scripts/check-memory-retrieval.ts",
     "memory:background": "tsx scripts/prepare-character-background.ts",
-    "web:check": "tsx scripts/check-web-context.ts"
+    "web:check": "tsx scripts/check-web-context.ts",
+    "web:migrate-payloads": "tsx scripts/migrate-web-payloads.ts"
   },
   "dependencies": {
     "@mozilla/readability": "0.6.0",
