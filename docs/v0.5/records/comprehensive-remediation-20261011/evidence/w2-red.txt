@@ -1,0 +1,116 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/stickers-cli.test.ts tests/sticker-web-runtime.test.ts
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ❯ tests/stickers-cli.test.ts (5 tests | 4 failed) 3939ms
+   × rebuild_with_enabled_browser_never_creates_web_or_vision 674ms
+   × import_with_enabled_browser_completes_tool_roundtrip 968ms
+   × import_browser_start_reject_preserves_original_error 916ms
+   × import_failure_drains_pages_before_closing_storage 881ms
+ ❯ tests/sticker-web-runtime.test.ts (5 tests | 5 failed) 40ms
+   × import browser reject settles and closes isolated context 25ms
+   × import browser never settles and closes isolated context 5ms
+   × import browser ready settles and closes isolated context 3ms
+   × unconfigured enabled import keeps explicit configuration failure 3ms
+   × disabled import does not construct a Context or browser service 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 9 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/sticker-web-runtime.test.ts > import browser reject settles and closes isolated context
+ FAIL  tests/sticker-web-runtime.test.ts > import browser never settles and closes isolated context
+ FAIL  tests/sticker-web-runtime.test.ts > import browser ready settles and closes isolated context
+Error: Cannot find module '/src/deployment/sticker-web-runtime' imported from D:/HDSI-remake/tests/sticker-web-runtime.test.ts
+ ❯ factory tests/sticker-web-runtime.test.ts:11:34
+
+ ❯ tests/sticker-web-runtime.test.ts:19:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/9]⎯
+
+ FAIL  tests/sticker-web-runtime.test.ts > unconfigured enabled import keeps explicit configuration failure
+Error: Cannot find module '/src/deployment/sticker-web-runtime' imported from D:/HDSI-remake/tests/sticker-web-runtime.test.ts
+ ❯ factory tests/sticker-web-runtime.test.ts:11:34
+
+ ❯ tests/sticker-web-runtime.test.ts:26:57
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/9]⎯
+
+ FAIL  tests/sticker-web-runtime.test.ts > disabled import does not construct a Context or browser service
+Error: Cannot find module '/src/deployment/sticker-web-runtime' imported from D:/HDSI-remake/tests/sticker-web-runtime.test.ts
+ ❯ factory tests/sticker-web-runtime.test.ts:11:34
+
+ ❯ tests/sticker-web-runtime.test.ts:31:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/9]⎯
+
+ FAIL  tests/stickers-cli.test.ts > rebuild_with_enabled_browser_never_creates_web_or_vision
+AssertionError: web search enabled but provider not configured
+: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ tests/stickers-cli.test.ts:34:126
+     32|
+     33| it('rebuild_with_enabled_browser_never_creates_web_or_vision',()=>{
+     34|  const {child,counts,stickers,sessions}=run('rebuild');expect(child.er…
+       |                                                                                                                              ^
+     35|  expect(stickers).toEqual([expect.objectContaining({id:'existing',path…
+     36|  expect(counts).toMatchObject({browserLoads:0,browserFactory:0,vision:…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/9]⎯
+
+ FAIL  tests/stickers-cli.test.ts > import_with_enabled_browser_completes_tool_roundtrip
+AssertionError: web search enabled but provider not configured
+: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ tests/stickers-cli.test.ts:39:125
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/9]⎯
+
+ FAIL  tests/stickers-cli.test.ts > import_browser_start_reject_preserves_original_error
+AssertionError: expected 'web search enabled but provider not c…' to contain 'SYNTHETIC_BROWSER_START_FAILURE'
+
+- Expected
++ Received
+
+- SYNTHETIC_BROWSER_START_FAILURE
++ web search enabled but provider not configured
++
+
+ ❯ tests/stickers-cli.test.ts:45:105
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/9]⎯
+
+ FAIL  tests/stickers-cli.test.ts > import_failure_drains_pages_before_closing_storage
+AssertionError: expected 'web search enabled but provider not c…' to contain 'SYNTHETIC_PAGE_CLOSE_FAILURE'
+
+- Expected
++ Received
+
+- SYNTHETIC_PAGE_CLOSE_FAILURE
++ web search enabled but provider not configured
++
+
+ ❯ tests/stickers-cli.test.ts:51:112
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/9]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  9 failed | 1 passed (10)
+   Start at  09:31:19
+   Duration  4.77s (tests 89%, import 10%, transform 2%)
+

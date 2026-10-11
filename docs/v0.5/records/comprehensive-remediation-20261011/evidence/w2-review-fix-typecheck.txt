@@ -1,0 +1,46 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run tsc --noEmit
+tests/memory-policy-snapshot.test.ts(6,83): error TS2307: Cannot find module '../src/memory/policy-snapshot' or its corresponding type declarations.
+tests/memory-policy-snapshot.test.ts(7,27): error TS2724: '"../src/memory/summary-repair"' has no exported member named 'summaryRepairPolicyPair'. Did you mean 'summaryRepairPair'?
+tests/memory-policy-snapshot.test.ts(17,74): error TS2345: Argument of type '{ content: string; sourceIds: string[]; value?: undefined; } | { content: undefined; value: string; sourceIds: string[]; } | { content: string; value: string; sourceIds: never[]; }' is not assignable to parameter of type 'Partial<MemoryCandidate> & { content: string; }'.
+  Type '{ content: undefined; value: string; sourceIds: string[]; }' is not assignable to type 'Partial<MemoryCandidate> & { content: string; }'.
+    Type '{ content: undefined; value: string; sourceIds: string[]; }' is not assignable to type '{ content: string; }'.
+      Types of property 'content' are incompatible.
+        Type 'undefined' is not assignable to type 'string'.
+tests/memory-policy-snapshot.test.ts(52,147): error TS2345: Argument of type 'Partial<MemoryCandidate>' is not assignable to parameter of type 'Partial<MemoryCandidate> & { content: string; }'.
+  Type 'Partial<MemoryCandidate>' is not assignable to type '{ content: string; }'.
+    Types of property 'content' are incompatible.
+      Type 'string | undefined' is not assignable to type 'string'.
+        Type 'undefined' is not assignable to type 'string'.
+tests/memory-policy-snapshot.test.ts(77,77): error TS7006: Parameter 'r' implicitly has an 'any' type.
+tests/memory-policy-snapshot.test.ts(80,27): error TS7006: Parameter 'r' implicitly has an 'any' type.
+tests/web-light-state.test.ts(25,18): error TS2339: Property 'state' does not exist on type 'WebSearchStore'.
+tests/web-light-state.test.ts(26,18): error TS2339: Property 'materialMetadata' does not exist on type 'WebSearchStore'.
+tests/web-light-state.test.ts(26,81): error TS2339: Property 'materialMetadata' does not exist on type 'WebSearchStore'.
+tests/web-light-state.test.ts(32,18): error TS2339: Property 'state' does not exist on type 'WebSearchStore'.
+tests/web-light-state.test.ts(34,17): error TS2339: Property 'checkpoint' does not exist on type 'WebSearchStore'.
+tests/web-light-state.test.ts(34,77): error TS2551: Property 'materials' does not exist on type 'WebSearchStore'. Did you mean 'materialRows'?
+tests/web-light-state.test.ts(40,17): error TS2551: Property 'materials' does not exist on type 'WebSearchStore'. Did you mean 'materialRows'?
+tests/web-light-state.test.ts(40,71): error TS2551: Property 'materials' does not exist on type 'WebSearchStore'. Did you mean 'materialRows'?
+tests/web-light-state.test.ts(40,135): error TS2551: Property 'materials' does not exist on type 'WebSearchStore'. Did you mean 'materialRows'?
+tests/web-light-state.test.ts(40,189): error TS2551: Property 'materials' does not exist on type 'WebSearchStore'. Did you mean 'materialRows'?
+tests/web-light-state.test.ts(41,17): error TS2339: Property 'materialMetadata' does not exist on type 'WebSearchStore'.
+tests/web-light-state.test.ts(41,51): error TS7006: Parameter 'm' implicitly has an 'any' type.
+tests/web-light-state.test.ts(42,21): error TS2339: Property 'state' does not exist on type 'WebSearchStore'.
+tests/web-light-state.test.ts(42,85): error TS2339: Property 'checkpoint' does not exist on type 'WebSearchStore'.
+tests/web-memory-sources.test.ts(19,193): error TS2769: No overload matches this call.
+  Overload 1 of 4, '(object: WebSearchStore, key: "snapshot" | "compactOwnerCheckpoint" | "openStage" | "materialRows" | "operation" | "beginOperation" | "saveOperation" | "commitStep" | ... 7 more ... | "operationalStatus"): Mock<...>', gave the following error.
+    Argument of type '"materials"' is not assignable to parameter of type '"snapshot" | "compactOwnerCheckpoint" | "openStage" | "materialRows" | "operation" | "beginOperation" | "saveOperation" | "commitStep" | "finishOperation" | "saveCheckpoint" | ... 5 more ... | "operationalStatus"'.
+  Overload 2 of 4, '(object: WebSearchStore, key: never): never', gave the following error.
+    Argument of type '"materials"' is not assignable to parameter of type 'never'.
+tests/web-model-tools.test.ts(18,84): error TS2769: No overload matches this call.
+  Overload 1 of 4, '(object: WebSearchStore, key: "snapshot" | "compactOwnerCheckpoint" | "openStage" | "materialRows" | "operation" | "beginOperation" | "saveOperation" | "commitStep" | ... 7 more ... | "operationalStatus"): Mock<...>', gave the following error.
+    Argument of type '"checkpoint"' is not assignable to parameter of type '"snapshot" | "compactOwnerCheckpoint" | "openStage" | "materialRows" | "operation" | "beginOperation" | "saveOperation" | "commitStep" | "finishOperation" | "saveCheckpoint" | ... 5 more ... | "operationalStatus"'.
+  Overload 2 of 4, '(object: WebSearchStore, key: never): never', gave the following error.
+    Argument of type '"checkpoint"' is not assignable to parameter of type 'never'.
+tests/web-store.test.ts(12,73): error TS2769: No overload matches this call.
+  Overload 1 of 4, '(object: WebSearchStore, key: "snapshot" | "compactOwnerCheckpoint" | "openStage" | "materialRows" | "operation" | "beginOperation" | "saveOperation" | "commitStep" | ... 7 more ... | "operationalStatus"): Mock<...>', gave the following error.
+    Argument of type '"materialMetadata"' is not assignable to parameter of type '"snapshot" | "compactOwnerCheckpoint" | "openStage" | "materialRows" | "operation" | "beginOperation" | "saveOperation" | "commitStep" | "finishOperation" | "saveCheckpoint" | ... 5 more ... | "operationalStatus"'.
+  Overload 2 of 4, '(object: WebSearchStore, key: never): never', gave the following error.
+    Argument of type '"materialMetadata"' is not assignable to parameter of type 'never'.
+tests/web-store.test.ts(13,18): error TS2339: Property 'state' does not exist on type 'WebSearchStore'.

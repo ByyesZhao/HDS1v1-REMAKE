@@ -1,0 +1,27 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/sticker-web-runtime.test.ts -t installed Puppeteer plugin
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+stdout | tests/sticker-web-runtime.test.ts > installed Puppeteer plugin closes actual canvas owner before browser despite traceable ctx rebinding
+[I] puppeteer chrome executable found at /synthetic/chrome
+
+ ❯ tests/sticker-web-runtime.test.ts (14 tests | 1 failed | 13 skipped) 267ms
+   × installed Puppeteer plugin closes actual canvas owner before browser despite traceable ctx rebinding 265ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/sticker-web-runtime.test.ts > installed Puppeteer plugin closes actual canvas owner before browser despite traceable ctx rebinding
+Error: SYNTHETIC_PROTOCOL_CONNECTION_CLOSED
+ ❯ Object.close tests/sticker-web-runtime.test.ts:87:206
+
+ ❯ canvas_default.stop node_modules/koishi-plugin-puppeteer/src/canvas.ts:151:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 13 skipped (14)
+   Start at  09:43:47
+   Duration  793ms (import 52%, tests 41%, transform 6%, worker 1%)
+

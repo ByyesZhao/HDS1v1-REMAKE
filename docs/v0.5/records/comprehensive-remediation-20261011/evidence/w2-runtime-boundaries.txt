@@ -1,0 +1,11 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/sticker-web-runtime.test.ts
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+
+ Test Files  1 passed (1)
+      Tests  8 passed (8)
+   Start at  09:34:19
+   Duration  1.08s (tests 59%, import 36%, transform 4%)
+

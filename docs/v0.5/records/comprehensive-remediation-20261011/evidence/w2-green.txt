@@ -1,0 +1,42 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/stickers-cli.test.ts tests/sticker-web-runtime.test.ts
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ❯ tests/stickers-cli.test.ts (5 tests | 1 failed) 4286ms
+   × import_failure_drains_pages_before_closing_storage 1111ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/stickers-cli.test.ts > import_failure_drains_pages_before_closing_storage
+AssertionError: expected [ { …(6) } ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   {
++     "description": "Synthetic sticker description",
++     "embedding": [
++       1,
++       0,
++     ],
++     "embeddingBaseUrl": "https://embedding.invalid/v1",
++     "embeddingModel": "fixture-vector",
++     "id": "ccc203e7-211e-4b23-83dd-a11cc44a1914",
++     "path": "D:\\HDSI-remake\\.tmp\\comprehensive-remediation-tests\\hdsi-sticker-cli-6roigF\\fixture.png",
++   },
++ ]
+
+ ❯ tests/stickers-cli.test.ts:51:340
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 9 passed (10)
+   Start at  09:31:47
+   Duration  5.48s (tests 90%, import 9%, transform 1%)
+

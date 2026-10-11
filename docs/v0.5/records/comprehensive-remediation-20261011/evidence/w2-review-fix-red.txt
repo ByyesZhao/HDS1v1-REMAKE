@@ -1,0 +1,80 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/sticker-web-runtime.test.ts
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+stdout | tests/sticker-web-runtime.test.ts > disposal awaits real asynchronous puppeteer stop and propagates failure
+Error: REAL_SERVICE_CLOSE_FAILURE
+    at stop (D:/HDSI-remake/tests/sticker-web-runtime.test.ts:62:100)
+    at Browser.stop (D:/HDSI-remake/tests/sticker-web-runtime.test.ts:64:187)
+
+stdout | tests/sticker-web-runtime.test.ts > timed out launch closes resources acquired when its start eventually settles
+CordisError: cannot create effect on inactive context
+    at MainScope.assertActive (D:\HDSI-remake\node_modules\@cordisjs\core\lib\index.cjs:637:11)
+    at MainScope.effect (D:\HDSI-remake\node_modules\@cordisjs\core\lib\index.cjs:640:10)
+    at Proxy.set (D:\HDSI-remake\node_modules\@cordisjs\core\lib\index.cjs:336:21)
+    at D:\HDSI-remake\node_modules\@cordisjs\core\lib\index.cjs:1214:32
+    at async Promise.all (index 15)
+    at Proxy.flush (D:\HDSI-remake\node_modules\@cordisjs\core\lib\index.cjs:497:7)
+    at Proxy.start (D:\HDSI-remake\node_modules\@cordisjs\core\lib\index.cjs:571:5)
+    at async Promise.all (index 0) {
+  code: 'INACTIVE_EFFECT'
+}
+
+ ❯ tests/sticker-web-runtime.test.ts (12 tests | 4 failed) 2645ms
+   × startup budget covers ready Puppeteer while injected canvas start remains pending 1013ms
+   × disposal awaits real asynchronous puppeteer stop and propagates failure 20ms
+   × disposal awaits real asynchronous canvas stop and propagates failure 17ms
+   × timed out launch closes resources acquired when its start eventually settles 1015ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/sticker-web-runtime.test.ts > startup budget covers ready Puppeteer while injected canvas start remains pending
+Error: Test timed out in 1000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/sticker-web-runtime.test.ts:48:1
+     46| });
+     47|
+     48| it('startup budget covers ready Puppeteer while injected canvas start …
+       | ^
+     49|  const storage=new Storage(':memory:');let ctx:any,canvasStarting!:()=…
+     50|  const canvasStarted=new Promise<void>(resolve=>{canvasStarting=resolv…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/sticker-web-runtime.test.ts > disposal awaits real asynchronous puppeteer stop and propagates failure
+ FAIL  tests/sticker-web-runtime.test.ts > disposal awaits real asynchronous canvas stop and propagates failure
+AssertionError: promise resolved "undefined" instead of rejecting
+
+- Expected:
+Error {
+  "message": "rejected promise",
+}
+
++ Received:
+undefined
+
+ ❯ tests/sticker-web-runtime.test.ts:67:324
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  tests/sticker-web-runtime.test.ts > timed out launch closes resources acquired when its start eventually settles
+Error: Test timed out in 1000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/sticker-web-runtime.test.ts:71:1
+     69| });
+     70|
+     71| it('timed out launch closes resources acquired when its start eventual…
+       | ^
+     72|  const storage=new Storage(':memory:');let ctx:any,finishStart!:()=>vo…
+     73|  const startGate=new Promise<void>(resolve=>{finishStart=resolve;}),cl…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 8 passed (12)
+   Start at  09:38:32
+   Duration  3.24s (tests 86%, import 13%, transform 1%)
+
