@@ -1,0 +1,8 @@
+{"stage":"world","available":true,"newsGuidance":true,"interestGuidance":false}
+{"stage":"world","available":false,"newsGuidance":false,"interestGuidance":false}
+{"stage":"personal_life","available":true,"newsGuidance":false,"interestGuidance":true}
+{"stage":"personal_chat","available":true,"newsGuidance":false,"interestGuidance":true}
+{"stage":"personal_shared","available":true,"newsGuidance":false,"interestGuidance":true}
+{"stage":"personal_life","available":false,"newsGuidance":false,"interestGuidance":false}
+{"stage":"expression","available":true,"newsGuidance":false,"interestGuidance":false}
+{"stage":"school_campus","available":true,"newsGuidance":false,"interestGuidance":false}
