@@ -1,0 +1,14 @@
+{
+  "dataset": "tests/fixtures/memory-retrieval-v2.json",
+  "sha256": "8abac8950e18ab379effe7231b04d5debebd654f6a758892a898c52caeae1366",
+  "frozenAt": "2026-10-11T02:13:30.2211406Z",
+  "labelReview": "reviews/Q1-labels.md",
+  "codeReview": "reviews/Q1.md",
+  "families": 60,
+  "queries": 360,
+  "holdoutStatus": "sealed_before_Q2_candidate_selection",
+  "allowedBaselineSplits": [
+    "development",
+    "calibration"
+  ]
+}

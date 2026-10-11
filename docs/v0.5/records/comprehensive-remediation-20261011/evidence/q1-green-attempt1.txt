@@ -1,0 +1,145 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/memory-retrieval-evaluation.test.ts --reporter=verbose
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ✓ tests/memory-retrieval-evaluation.test.ts > static benchmark label contract (does not retrieve holdout) > family_never_crosses_splits 19ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > static benchmark label contract (does not retrieve holdout) > duplicate_query_id_rejected 9ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > static benchmark label contract (does not retrieve holdout) > expected_keys_exist 14ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > static benchmark label contract (does not retrieve holdout) > six_query_categories_per_family 16ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > static benchmark label contract (does not retrieve holdout) > fact_and_experience_stratified 13ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > static benchmark label contract (does not retrieve holdout) > negative_query_has_empty_expectation 9ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > static benchmark label contract (does not retrieve holdout) > requires three distractors and source closure 18ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > static benchmark label contract (does not retrieve holdout) > retains exact file hash and detects in-memory label changes 17ms
+ × tests/memory-retrieval-evaluation.test.ts > evaluation_uses_real_retrieval 13ms
+   → detail effectiveAt must be nonempty text
+ × tests/memory-retrieval-evaluation.test.ts > negative false hits exclude alwaysInclude and null denominators stay null 4ms
+   → detail effectiveAt must be nonempty text
+ ✓ tests/memory-retrieval-evaluation.test.ts > lookup_does_not_expand_permissions 4ms
+ × tests/memory-retrieval-evaluation.test.ts > memory_context_matches_personal_evidence: personal_chat 3ms
+   → detail effectiveAt must be nonempty text
+ × tests/memory-retrieval-evaluation.test.ts > memory_context_matches_personal_evidence: personal_life 2ms
+   → detail effectiveAt must be nonempty text
+ × tests/memory-retrieval-evaluation.test.ts > memory_context_matches_personal_evidence: personal_shared 2ms
+   → detail effectiveAt must be nonempty text
+ × tests/memory-retrieval-evaluation.test.ts > seeds canonical closure without filtering it out of reported SQL results 2ms
+   → detail effectiveAt must be nonempty text
+ × tests/memory-retrieval-evaluation.test.ts > fresh databases prevent cross-query state and reports are deterministic 2ms
+   → detail effectiveAt must be nonempty text
+ × tests/memory-retrieval-evaluation.test.ts > counts actual materialized vectors and provider requests 2ms
+   → detail effectiveAt must be nonempty text
+ ✓ tests/memory-retrieval-evaluation.test.ts > validates frozen candidate against exact candidate bytes and dataset hash 3ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > CLI requires explicit paths and refuses Q1 holdout before writing a report 978ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 8 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/memory-retrieval-evaluation.test.ts > evaluation_uses_real_retrieval
+Error: detail effectiveAt must be nonempty text
+ ❯ check scripts/lib/memory-retrieval-evaluation.ts:78:89
+     76| const ownerKey=(owner:Pick<MemoryCandidate,'ownerType'|'ownerId'>):Ret…
+     77| const unique=<T>(items:T[])=>[...new Set(items)];
+     78| function check(condition:unknown,message:string):asserts condition {if…
+       |                                                                                         ^
+     79| function text(value:unknown,label:string):asserts value is string {che…
+     80| function date(value:unknown,label:string):void {text(value,label);chec…
+ ❯ text scripts/lib/memory-retrieval-evaluation.ts:79:68
+ ❯ date scripts/lib/memory-retrieval-evaluation.ts:80:49
+ ❯ validateRetrievalDataset scripts/lib/memory-retrieval-evaluation.ts:183:124
+ ❯ evaluateRetrievalDataset scripts/lib/memory-retrieval-evaluation.ts:241:3
+ ❯ tests/memory-retrieval-evaluation.test.ts:94:36
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/8]⎯
+
+ FAIL  tests/memory-retrieval-evaluation.test.ts > negative false hits exclude alwaysInclude and null denominators stay null
+Error: detail effectiveAt must be nonempty text
+ ❯ check scripts/lib/memory-retrieval-evaluation.ts:78:89
+     76| const ownerKey=(owner:Pick<MemoryCandidate,'ownerType'|'ownerId'>):Ret…
+     77| const unique=<T>(items:T[])=>[...new Set(items)];
+     78| function check(condition:unknown,message:string):asserts condition {if…
+       |                                                                                         ^
+     79| function text(value:unknown,label:string):asserts value is string {che…
+     80| function date(value:unknown,label:string):void {text(value,label);chec…
+ ❯ text scripts/lib/memory-retrieval-evaluation.ts:79:68
+ ❯ date scripts/lib/memory-retrieval-evaluation.ts:80:49
+ ❯ validateRetrievalDataset scripts/lib/memory-retrieval-evaluation.ts:183:124
+ ❯ evaluateRetrievalDataset scripts/lib/memory-retrieval-evaluation.ts:241:3
+ ❯ tests/memory-retrieval-evaluation.test.ts:113:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/8]⎯
+
+ FAIL  tests/memory-retrieval-evaluation.test.ts > memory_context_matches_personal_evidence: personal_chat
+ FAIL  tests/memory-retrieval-evaluation.test.ts > memory_context_matches_personal_evidence: personal_life
+ FAIL  tests/memory-retrieval-evaluation.test.ts > memory_context_matches_personal_evidence: personal_shared
+Error: detail effectiveAt must be nonempty text
+ ❯ check scripts/lib/memory-retrieval-evaluation.ts:78:89
+     76| const ownerKey=(owner:Pick<MemoryCandidate,'ownerType'|'ownerId'>):Ret…
+     77| const unique=<T>(items:T[])=>[...new Set(items)];
+     78| function check(condition:unknown,message:string):asserts condition {if…
+       |                                                                                         ^
+     79| function text(value:unknown,label:string):asserts value is string {che…
+     80| function date(value:unknown,label:string):void {text(value,label);chec…
+ ❯ text scripts/lib/memory-retrieval-evaluation.ts:79:68
+ ❯ date scripts/lib/memory-retrieval-evaluation.ts:80:49
+ ❯ validateRetrievalDataset scripts/lib/memory-retrieval-evaluation.ts:183:124
+ ❯ evaluateRetrievalDataset scripts/lib/memory-retrieval-evaluation.ts:241:3
+ ❯ tests/memory-retrieval-evaluation.test.ts:133:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/8]⎯
+
+ FAIL  tests/memory-retrieval-evaluation.test.ts > seeds canonical closure without filtering it out of reported SQL results
+Error: detail effectiveAt must be nonempty text
+ ❯ check scripts/lib/memory-retrieval-evaluation.ts:78:89
+     76| const ownerKey=(owner:Pick<MemoryCandidate,'ownerType'|'ownerId'>):Ret…
+     77| const unique=<T>(items:T[])=>[...new Set(items)];
+     78| function check(condition:unknown,message:string):asserts condition {if…
+       |                                                                                         ^
+     79| function text(value:unknown,label:string):asserts value is string {che…
+     80| function date(value:unknown,label:string):void {text(value,label);chec…
+ ❯ text scripts/lib/memory-retrieval-evaluation.ts:79:68
+ ❯ date scripts/lib/memory-retrieval-evaluation.ts:80:49
+ ❯ validateRetrievalDataset scripts/lib/memory-retrieval-evaluation.ts:183:124
+ ❯ evaluateRetrievalDataset scripts/lib/memory-retrieval-evaluation.ts:241:3
+ ❯ tests/memory-retrieval-evaluation.test.ts:147:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/8]⎯
+
+ FAIL  tests/memory-retrieval-evaluation.test.ts > fresh databases prevent cross-query state and reports are deterministic
+Error: detail effectiveAt must be nonempty text
+ ❯ check scripts/lib/memory-retrieval-evaluation.ts:78:89
+     76| const ownerKey=(owner:Pick<MemoryCandidate,'ownerType'|'ownerId'>):Ret…
+     77| const unique=<T>(items:T[])=>[...new Set(items)];
+     78| function check(condition:unknown,message:string):asserts condition {if…
+       |                                                                                         ^
+     79| function text(value:unknown,label:string):asserts value is string {che…
+     80| function date(value:unknown,label:string):void {text(value,label);chec…
+ ❯ text scripts/lib/memory-retrieval-evaluation.ts:79:68
+ ❯ date scripts/lib/memory-retrieval-evaluation.ts:80:49
+ ❯ validateRetrievalDataset scripts/lib/memory-retrieval-evaluation.ts:183:124
+ ❯ evaluateRetrievalDataset scripts/lib/memory-retrieval-evaluation.ts:241:3
+ ❯ tests/memory-retrieval-evaluation.test.ts:153:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/8]⎯
+
+ FAIL  tests/memory-retrieval-evaluation.test.ts > counts actual materialized vectors and provider requests
+Error: detail effectiveAt must be nonempty text
+ ❯ check scripts/lib/memory-retrieval-evaluation.ts:78:89
+     76| const ownerKey=(owner:Pick<MemoryCandidate,'ownerType'|'ownerId'>):Ret…
+     77| const unique=<T>(items:T[])=>[...new Set(items)];
+     78| function check(condition:unknown,message:string):asserts condition {if…
+       |                                                                                         ^
+     79| function text(value:unknown,label:string):asserts value is string {che…
+     80| function date(value:unknown,label:string):void {text(value,label);chec…
+ ❯ text scripts/lib/memory-retrieval-evaluation.ts:79:68
+ ❯ date scripts/lib/memory-retrieval-evaluation.ts:80:49
+ ❯ validateRetrievalDataset scripts/lib/memory-retrieval-evaluation.ts:183:124
+ ❯ evaluateRetrievalDataset scripts/lib/memory-retrieval-evaluation.ts:241:3
+ ❯ tests/memory-retrieval-evaluation.test.ts:164:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/8]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  8 failed | 11 passed (19)
+   Start at  10:05:10
+   Duration  1.71s (tests 73%, transform 17%, import 10%)
+

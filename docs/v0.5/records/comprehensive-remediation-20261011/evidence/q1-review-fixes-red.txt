@@ -1,0 +1,87 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/memory-retrieval-evaluation.test.ts --reporter=verbose
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ✓ tests/memory-retrieval-evaluation.test.ts > static benchmark label contract (does not retrieve holdout) > family_never_crosses_splits 20ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > static benchmark label contract (does not retrieve holdout) > duplicate_query_id_rejected 10ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > static benchmark label contract (does not retrieve holdout) > expected_keys_exist 13ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > static benchmark label contract (does not retrieve holdout) > six_query_categories_per_family 17ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > static benchmark label contract (does not retrieve holdout) > fact_and_experience_stratified 13ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > static benchmark label contract (does not retrieve holdout) > negative_query_has_empty_expectation 11ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > static benchmark label contract (does not retrieve holdout) > requires three distractors and source closure 21ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > static benchmark label contract (does not retrieve holdout) > retains exact file hash and detects in-memory label changes 18ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > static benchmark label contract (does not retrieve holdout) > rejects query text leakage and incomplete typed message seeds 20ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > evaluation_uses_real_retrieval 26ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > negative false hits exclude alwaysInclude and null denominators stay null 13ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > lookup_does_not_expand_permissions 3ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > memory_context_matches_personal_evidence: personal_chat 8ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > memory_context_matches_personal_evidence: personal_life 8ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > memory_context_matches_personal_evidence: personal_shared 9ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > seeds canonical closure without filtering it out of reported SQL results 9ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > requires labels for extra closure owners and follows historical owner sources 9ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > fresh databases prevent cross-query state and reports are deterministic 35ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > counts actual materialized vectors and provider requests 8ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > validates frozen candidate against exact candidate bytes and dataset hash 3ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > CLI requires explicit paths and refuses Q1 holdout before writing a report 903ms
+ × tests/memory-retrieval-evaluation.test.ts > rejects short and long owner IDs that collide in the physical memories table 7ms
+   → expected [Function] to throw an error
+ ✓ tests/memory-retrieval-evaluation.test.ts > preserves same ID owners stored in different physical tables 8ms
+ × tests/memory-retrieval-evaluation.test.ts > CLI rejects Windows case aliases without modifying dataset bytes 1793ms
+   → expected +0 not to be +0 // Object.is equality
+ × tests/memory-retrieval-evaluation.test.ts > CLI rejects hard-linked input/output aliases without modifying dataset bytes 120ms
+   → EPERM: operation not permitted, link 'D:\HDSI-remake\.tmp\comprehensive-remediation-tests\q1-hardlink-alias-gHdh0i\frozen-dataset.json' -> 'D:\HDSI-remake\.tmp\comprehensive-remediation-tests\q1-hardlink-alias-gHdh0i\report-alias.json'
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/memory-retrieval-evaluation.test.ts > rejects short and long owner IDs that collide in the physical memories table
+AssertionError: expected [Function] to throw an error
+
+- Expected:
+null
+
++ Received:
+undefined
+
+ ❯ tests/memory-retrieval-evaluation.test.ts:210:66
+    208|   d.families[0].owners.push({...clone(long),ownerType:'short',kind:'sh…
+    209|   d.queries[0].candidateOwnerKeys.push('short:expired');
+    210|   expect(()=>validateRetrievalDataset(d,{benchmarkShape:false})).toThr…
+       |                                                                  ^
+    211|   await expect(evaluateRetrievalDataset(d,defaultCalibration,{splits:[…
+    212| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/memory-retrieval-evaluation.test.ts > CLI rejects Windows case aliases without modifying dataset bytes
+AssertionError: expected +0 not to be +0 // Object.is equality
+ ❯ tests/memory-retrieval-evaluation.test.ts:241:29
+    239|   writeFileSync(input,bytes);
+    240|   const result=spawnSync(process.execPath,['--import','tsx',resolve('s…
+    241|   expect(result.status).not.toBe(0);expect(result.stderr).toMatch(/ove…
+       |                             ^
+    242| });
+    243|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  tests/memory-retrieval-evaluation.test.ts > CLI rejects hard-linked input/output aliases without modifying dataset bytes
+Error: EPERM: operation not permitted, link 'D:\HDSI-remake\.tmp\comprehensive-remediation-tests\q1-hardlink-alias-gHdh0i\frozen-dataset.json' -> 'D:\HDSI-remake\.tmp\comprehensive-remediation-tests\q1-hardlink-alias-gHdh0i\report-alias.json'
+ ❯ tests/memory-retrieval-evaluation.test.ts:246:30
+    244| it('CLI rejects hard-linked input/output aliases without modifying dat…
+    245|   const dir=mkdtempSync(join(tmpdir(),'q1-hardlink-alias-')),input=joi…
+    246|   writeFileSync(input,bytes);linkSync(input,alias);
+       |                              ^
+    247|   const result=spawnSync(process.execPath,['--import','tsx',resolve('s…
+    248|   expect(result.status).not.toBe(0);expect(result.stderr).toMatch(/ove…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { errno: -4048, code: 'EPERM', syscall: 'link', path: 'D:\HDSI-remake\.tmp\comprehensive-remediation-tests\q1-hardlink-alias-gHdh0i\frozen-dataset.json', dest: 'D:\HDSI-remake\.tmp\comprehensive-remediation-tests\q1-hardlink-alias-gHdh0i\report-alias.json' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 22 passed (25)
+   Start at  10:11:05
+   Duration  3.66s (tests 88%, transform 7%, import 4%)
+

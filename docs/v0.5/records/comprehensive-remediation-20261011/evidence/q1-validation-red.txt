@@ -1,0 +1,54 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/memory-retrieval-evaluation.test.ts --reporter=verbose
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ✓ tests/memory-retrieval-evaluation.test.ts > static benchmark label contract (does not retrieve holdout) > family_never_crosses_splits 18ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > static benchmark label contract (does not retrieve holdout) > duplicate_query_id_rejected 9ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > static benchmark label contract (does not retrieve holdout) > expected_keys_exist 12ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > static benchmark label contract (does not retrieve holdout) > six_query_categories_per_family 14ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > static benchmark label contract (does not retrieve holdout) > fact_and_experience_stratified 12ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > static benchmark label contract (does not retrieve holdout) > negative_query_has_empty_expectation 10ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > static benchmark label contract (does not retrieve holdout) > requires three distractors and source closure 19ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > static benchmark label contract (does not retrieve holdout) > retains exact file hash and detects in-memory label changes 15ms
+ × tests/memory-retrieval-evaluation.test.ts > static benchmark label contract (does not retrieve holdout) > rejects query text leakage and incomplete typed message seeds 18ms
+   → expected [Function] to throw an error
+ ✓ tests/memory-retrieval-evaluation.test.ts > evaluation_uses_real_retrieval 25ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > negative false hits exclude alwaysInclude and null denominators stay null 14ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > lookup_does_not_expand_permissions 3ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > memory_context_matches_personal_evidence: personal_chat 8ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > memory_context_matches_personal_evidence: personal_life 8ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > memory_context_matches_personal_evidence: personal_shared 7ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > seeds canonical closure without filtering it out of reported SQL results 9ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > fresh databases prevent cross-query state and reports are deterministic 41ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > counts actual materialized vectors and provider requests 9ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > validates frozen candidate against exact candidate bytes and dataset hash 3ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > CLI requires explicit paths and refuses Q1 holdout before writing a report 889ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/memory-retrieval-evaluation.test.ts > static benchmark label contract (does not retrieve holdout) > rejects query text leakage and incomplete typed message seeds
+AssertionError: expected [Function] to throw an error
+
+- Expected:
+null
+
++ Received:
+undefined
+
+ ❯ tests/memory-retrieval-evaluation.test.ts:93:45
+     91|   it('rejects query text leakage and incomplete typed message seeds',(…
+     92|     const d=main();d.queries[6].text=d.queries[0].text;
+     93|     expect(()=>validateRetrievalDataset(d)).toThrow(/query text.*famil…
+       |                                             ^
+     94|     const broken=main();delete (broken.families[0].messages[0] as Part…
+     95|     expect(()=>validateRetrievalDataset(broken)).toThrow(/outboxSeq/);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 19 passed (20)
+   Start at  10:06:34
+   Duration  1.68s (tests 75%, transform 15%, import 10%)
+

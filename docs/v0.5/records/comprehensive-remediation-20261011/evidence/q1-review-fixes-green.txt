@@ -1,0 +1,36 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/memory-retrieval-evaluation.test.ts --reporter=verbose
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ✓ tests/memory-retrieval-evaluation.test.ts > static benchmark label contract (does not retrieve holdout) > family_never_crosses_splits 20ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > static benchmark label contract (does not retrieve holdout) > duplicate_query_id_rejected 10ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > static benchmark label contract (does not retrieve holdout) > expected_keys_exist 13ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > static benchmark label contract (does not retrieve holdout) > six_query_categories_per_family 17ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > static benchmark label contract (does not retrieve holdout) > fact_and_experience_stratified 14ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > static benchmark label contract (does not retrieve holdout) > negative_query_has_empty_expectation 10ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > static benchmark label contract (does not retrieve holdout) > requires three distractors and source closure 26ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > static benchmark label contract (does not retrieve holdout) > retains exact file hash and detects in-memory label changes 17ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > static benchmark label contract (does not retrieve holdout) > rejects query text leakage and incomplete typed message seeds 19ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > evaluation_uses_real_retrieval 26ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > negative false hits exclude alwaysInclude and null denominators stay null 14ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > lookup_does_not_expand_permissions 3ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > memory_context_matches_personal_evidence: personal_chat 8ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > memory_context_matches_personal_evidence: personal_life 8ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > memory_context_matches_personal_evidence: personal_shared 8ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > seeds canonical closure without filtering it out of reported SQL results 10ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > requires labels for extra closure owners and follows historical owner sources 10ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > fresh databases prevent cross-query state and reports are deterministic 37ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > counts actual materialized vectors and provider requests 9ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > validates frozen candidate against exact candidate bytes and dataset hash 3ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > CLI requires explicit paths and refuses Q1 holdout before writing a report 974ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > rejects short and long owner IDs that collide in the physical memories table 3ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > preserves same ID owners stored in different physical tables 7ms
+ ✓ tests/memory-retrieval-evaluation.test.ts > CLI rejects Windows case aliases without modifying dataset bytes 422ms
+ ↓ tests/memory-retrieval-evaluation.test.ts > CLI rejects hard-linked input/output aliases without modifying dataset bytes 125ms [Host filesystem policy does not permit creating a hard link]
+
+ Test Files  1 passed (1)
+      Tests  24 passed | 1 skipped (25)
+   Start at  10:11:32
+   Duration  2.35s (tests 82%, transform 11%, import 7%)
+

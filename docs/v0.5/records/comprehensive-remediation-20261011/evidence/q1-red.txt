@@ -1,0 +1,28 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/memory-retrieval-evaluation.test.ts --reporter=verbose
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/memory-retrieval-evaluation.test.ts [ tests/memory-retrieval-evaluation.test.ts ]
+Error: Cannot find module '../scripts/lib/memory-retrieval-evaluation' imported from D:/HDSI-remake/tests/memory-retrieval-evaluation.test.ts
+ ❯ tests/memory-retrieval-evaluation.test.ts:13:1
+     11| import { ChatEpisodes } from '../src/dialogue/chat-episodes';
+     12| import { DialogueStore } from '../src/dialogue/store';
+     13| import {
+       | ^
+     14|   evaluateRetrievalDataset, validateRetrievalDataset, loadRetrievalDat…
+     15|   retrievalDatasetHash, buildEvaluationRequest, validateFrozenCandidat…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: 'ERR_MODULE_NOT_FOUND' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  10:02:04
+   Duration  351ms (worker 96%, environment 4%)
+
