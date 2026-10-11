@@ -110,13 +110,13 @@ export function applyTasks(d: Dependencies, candidate: TurnCandidate, turnAt: IS
 
 **旧轮恢复裁决：** 本修复不增加TaskChange协议版本。旧未done轮已经有frozenResult／post.result时，保持原候选、原输出、原抽样、原turn.at和已完成发送状态，直接用新`projectTaskChanges`完成尚未提交的任务状态；不为“换规则”再请求模型。旧候选nextState已经冻结，不能恢复时重跑arrangeSleep或改写它；新生成轮使用统一规划投影。已done轮仍由`finishPostprocessing`早退，不回写历史。此差异是有意修复尚未提交的任务生命周期，不是迁移全部旧预约。
 
-- [ ] **Step 1 — 写纯投影失败回归。** `task-projection.test.ts` 表驱动覆盖上表所有行。固定 `turnAt='2026-10-07T10:00:00+08:00'`，旧预约 at=该值，同 epoch 替换为 `'2026-10-07T02:00:00Z'`；过去09:59、同刻10:00、未来10:05分别断言 completed/completed/pending。旧 cancelled 的 completedTaskIds 和旧 completed 的未来 update 均不变成 pending；输入数组深比较不变。
-- [ ] **Step 2 — 写真实调用链失败回归。** `appointment-update-host.test.ts` 采用 `setup`、真实 `HdsiApp/SerialHost`、`ScriptedModels`，个人输出只更新 description；模型 stub 超过第二轮立即抛错，使旧实现的循环有界。一次 `host.start()` 后断言预约 completed、description 已更新、`turns.length===1`、`narrative/personal_chat` 各一次，无新输入、无预约导致的 NOW deadline。关闭自主/环境非本用例调度或断言 deadline 大于 NOW，不能因正常自主 deadline 非空误报。
-- [ ] **Step 3 — 写规划／恢复边界失败回归。** 在 `tasks.test.ts` 断言消费后 description-only 预约不参与 `arrangeSleep`，显式未来改期参与；在投影／提交测试中将提交 clock 推进到10:06仍断言10:05改期 pending。保留 `review-fixes.test.ts` 的 create NOW 和未来 deferred 检查，并测试最终 kind 改变时上述规则。磁盘恢复夹具保存旧frozenResult及非null post.result、注入提交前失败，重启后任务只提交一次并按新状态矩阵完成，候选nextState/输出/turn.at逐字不变、模型调用0增量；已done的`finishPostprocessing`不再写任务。
-- [ ] **Step 4 — 跑红。** `npx vitest run tests/task-projection.test.ts tests/appointment-update-host.test.ts tests/tasks.test.ts`；期望新 helper 缺失／状态为 pending 而非 completed 的定向失败，记录实际失败原因。
-- [ ] **Step 5 — 实现纯投影并接线。** 先按原始行保存 Map，用 completed 集合得默认状态，再应用 patch 的显式未来重排判定；cancel覆盖默认完成。改 `applyTasks`、`finishPostprocessing`、睡眠投影和直接测试调用签名；保留 `assertMessageSources`，不改模型 schema。不要用更新先后顺序隐式表达消费规则。
-- [ ] **Step 6 — 跑绿。** `npx vitest run tests/task-projection.test.ts tests/appointment-update-host.test.ts tests/tasks.test.ts tests/review-fixes.test.ts tests/review-recovery.test.ts tests/chat-active-consistency.test.ts`；确认新 Host 回归完成且未触发限轮保护。
-- [ ] **Step 7 — 单独提交。** 仅暂存本任务列出的源码与测试（不暂存其他工作者文件），`git commit -m "fix: complete consumed appointments after metadata updates"`。向 D 交接表中的已消费更新规则；本 commit 不依赖性能优化或数据迁移。
+- [x] **Step 1 — 写纯投影失败回归。** `task-projection.test.ts` 表驱动覆盖上表所有行。固定 `turnAt='2026-10-07T10:00:00+08:00'`，旧预约 at=该值，同 epoch 替换为 `'2026-10-07T02:00:00Z'`；过去09:59、同刻10:00、未来10:05分别断言 completed/completed/pending。旧 cancelled 的 completedTaskIds 和旧 completed 的未来 update 均不变成 pending；输入数组深比较不变。
+- [x] **Step 2 — 写真实调用链失败回归。** `appointment-update-host.test.ts` 采用 `setup`、真实 `HdsiApp/SerialHost`、`ScriptedModels`，个人输出只更新 description；模型 stub 超过第二轮立即抛错，使旧实现的循环有界。一次 `host.start()` 后断言预约 completed、description 已更新、`turns.length===1`、`narrative/personal_chat` 各一次，无新输入、无预约导致的 NOW deadline。关闭自主/环境非本用例调度或断言 deadline 大于 NOW，不能因正常自主 deadline 非空误报。
+- [x] **Step 3 — 写规划／恢复边界失败回归。** 在 `tasks.test.ts` 断言消费后 description-only 预约不参与 `arrangeSleep`，显式未来改期参与；在投影／提交测试中将提交 clock 推进到10:06仍断言10:05改期 pending。保留 `review-fixes.test.ts` 的 create NOW 和未来 deferred 检查，并测试最终 kind 改变时上述规则。磁盘恢复夹具保存旧frozenResult及非null post.result、注入提交前失败，重启后任务只提交一次并按新状态矩阵完成，候选nextState/输出/turn.at逐字不变、模型调用0增量；已done的`finishPostprocessing`不再写任务。
+- [x] **Step 4 — 跑红。** `npx vitest run tests/task-projection.test.ts tests/appointment-update-host.test.ts tests/tasks.test.ts`；期望新 helper 缺失／状态为 pending 而非 completed 的定向失败，记录实际失败原因。
+- [x] **Step 5 — 实现纯投影并接线。** 先按原始行保存 Map，用 completed 集合得默认状态，再应用 patch 的显式未来重排判定；cancel覆盖默认完成。改 `applyTasks`、`finishPostprocessing`、睡眠投影和直接测试调用签名；保留 `assertMessageSources`，不改模型 schema。不要用更新先后顺序隐式表达消费规则。
+- [x] **Step 6 — 跑绿。** `npx vitest run tests/task-projection.test.ts tests/appointment-update-host.test.ts tests/tasks.test.ts tests/review-fixes.test.ts tests/review-recovery.test.ts tests/chat-active-consistency.test.ts`；确认新 Host 回归完成且未触发限轮保护。
+- [x] **Step 7 — 单独提交。** 仅暂存本任务列出的源码与测试（不暂存其他工作者文件），`git commit -m "fix: complete consumed appointments after metadata updates"`。向 D 交接表中的已消费更新规则；本 commit 不依赖性能优化或数据迁移。
 
 ## R2：暂停后再次检查异步选择边界
 
@@ -124,12 +124,12 @@ export function applyTasks(d: Dependencies, candidate: TurnCandidate, turnAt: IS
 
 **Interfaces:** 不新增公开 API。保持 `SerialHost.pause(): Promise<void>`、`resume(): Promise<void>`、`Scheduler.collectReady(...)` 与 `collectWaitingContinuation(...)` 签名。两个 await 返回后，进入 `continueWaitingTurn`／`runTurn` 前执行 `if (this.stopped || d.storage.runtime().paused) break`。此检查到调用之间不插入新的 await；已经进入 app 的处理不再次用 pause 中断。
 
-- [ ] **Step 1 — 写两个选择窗口失败用例。** 用与审核相同的确定性交错：保存到期预约；`const starting=host.start(); const pausing=host.pause(); await Promise.all([starting,pausing]);`。断言调用 pause 时模型0次／新故事0条，之后仍0次／0条、预约pending；`resume()`后只消费一次。等待轮用合法 `replyFreshness.state='waiting'` 夹具，pause后保留原 ID、generation、scope、quietUntil，既不切 event也不普通续算；resume后恰好接管一次。
-- [ ] **Step 2 — 写在途与输入保留正向用例。** 在 narrative 已进入的 deferred gate 上暂停，gate释放后原轮完成生成／发送／后处理，新增到期预约或新输入不另开轮；暂停期间 `acceptInput` 保存并合批，resume后按原规则消费。等待轮已进入 `continueWaitingTurn` 后 pause同样允许当前续算完成。断言 pause 不调用模型 abort，保留既有环境 ready暂停不提交测试。
-- [ ] **Step 3 — 跑红。** `npx vitest run tests/host-pause-selection.test.ts`；旧实现应在“暂停后新增模型调用／generation变化”断言失败，正向在途合同不能以取消请求来修绿。
-- [ ] **Step 4 — 添加两处门禁。** 在 `pump` 的等待续算和普通 `collectReady` 后统一复查 paused/stopped，保留现有环境 openBatch／unfinished 门禁以及已开始恢复的执行行为。
-- [ ] **Step 5 — 跑绿。** `npx vitest run tests/host-pause-selection.test.ts tests/reply-freshness-host.test.ts tests/environment-async-host-gates.test.ts tests/graceful-stop-host.test.ts tests/appointment-update-host.test.ts`。测试说明明确这是 API微任务交错，不能写成已复现QQ暂停命令竞态。
-- [ ] **Step 6 — 单独提交。** `git add src/host/runtime.ts tests/host-pause-selection.test.ts`，`git commit -m "fix: recheck pause before starting selected host work"`。
+- [x] **Step 1 — 写两个选择窗口失败用例。** 用与审核相同的确定性交错：保存到期预约；`const starting=host.start(); const pausing=host.pause(); await Promise.all([starting,pausing]);`。断言调用 pause 时模型0次／新故事0条，之后仍0次／0条、预约pending；`resume()`后只消费一次。等待轮用合法 `replyFreshness.state='waiting'` 夹具，pause后保留原 ID、generation、scope、quietUntil，既不切 event也不普通续算；resume后恰好接管一次。
+- [x] **Step 2 — 写在途与输入保留正向用例。** 在 narrative 已进入的 deferred gate 上暂停，gate释放后原轮完成生成／发送／后处理，新增到期预约或新输入不另开轮；暂停期间 `acceptInput` 保存并合批，resume后按原规则消费。等待轮已进入 `continueWaitingTurn` 后 pause同样允许当前续算完成。断言 pause 不调用模型 abort，保留既有环境 ready暂停不提交测试。
+- [x] **Step 3 — 跑红。** `npx vitest run tests/host-pause-selection.test.ts`；旧实现应在“暂停后新增模型调用／generation变化”断言失败，正向在途合同不能以取消请求来修绿。
+- [x] **Step 4 — 添加两处门禁。** 在 `pump` 的等待续算和普通 `collectReady` 后统一复查 paused/stopped，保留现有环境 openBatch／unfinished 门禁以及已开始恢复的执行行为。
+- [x] **Step 5 — 跑绿。** `npx vitest run tests/host-pause-selection.test.ts tests/reply-freshness-host.test.ts tests/environment-async-host-gates.test.ts tests/graceful-stop-host.test.ts tests/appointment-update-host.test.ts`。测试说明明确这是 API微任务交错，不能写成已复现QQ暂停命令竞态。
+- [x] **Step 6 — 单独提交。** `git add src/host/runtime.ts tests/host-pause-selection.test.ts`，`git commit -m "fix: recheck pause before starting selected host work"`。
 
 ## R3：pending 工作集与单次调度复用
 

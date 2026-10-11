@@ -10,9 +10,9 @@ V0.5整理当前实现：普通最近4个完整对话段、活动完整授权原
 
 前批交付为[当前审核改进T1～T9](docs/archive/records/current-audit-improvements-20261009/DELIVERY.md)。此前REVIEW26的107／620、ASTRA T1～T13的121／681和R1的122／693保留各批历史含义。ASTRA随后已独立重跑137文件776项并[确认关闭](docs/archive/reviews/post-t1-t9-20261009/REVIEW.md)。环境异步E1～E5及交付后R1／R2、只读启动检查修复均已完成，最终148文件826项及离线验收通过，该批见[修复与正式升级交付](docs/v0.5/records/environment-post-delivery-fixes-20261009/DELIVERY.md)；初批过程见[本批记录](docs/v0.5/records/environment-async-20261009/README.md)。旧证据仍按原批次解释。
 
-此前加入三条固定回复规则及程序选择的图片／表情分支，纯附件可落库、收尾可已读不回，该批150文件840项见[回复规则交付](docs/v0.5/records/reply-guidance-20261009/DELIVERY.md)。后续图片输入／本地搜索及复核修复已交付，最新代码验收175文件920项，见[交付](docs/v0.5/records/image-search-post-review-fixes-20261010/DELIVERY.md)。配置启用不作为新增在线验收。
+此前加入三条固定回复规则及程序选择的图片／表情分支，纯附件可落库、收尾可已读不回，该批150文件840项见[回复规则交付](docs/v0.5/records/reply-guidance-20261009/DELIVERY.md)。后续图片输入／本地搜索及复核修复已交付，该批验收为175文件920项，见[交付](docs/v0.5/records/image-search-post-review-fixes-20261010/DELIVERY.md)。各批最新状态以[版本索引](docs/v0.5/README.md)为准，配置启用不作为新增在线验收。
 
-最新普通回复跟进新消息T1～T5已完成，184文件990项及离线检查通过，独立复核7文件44项和三组边界探针通过，见[交付](docs/v0.5/records/chat-reply-freshness-20261010/DELIVERY.md)。发送尝试前收到追加输入会等待并重新生成；首次尝试后保留冻结尾段，未知结果沿用重试。源码合并不等同正在运行的服务已更新；正式部署状态见交付记录。
+普通回复跟进新消息T1～T5已完成，该批184文件990项及离线检查通过，独立复核7文件44项和三组边界探针通过，见[交付](docs/v0.5/records/chat-reply-freshness-20261010/DELIVERY.md)。发送尝试前收到追加输入会等待并重新生成；首次尝试后保留冻结尾段，未知结果沿用重试。源码合并不等同正在运行的服务已更新；正式部署状态见交付记录。
 
 新增[安全停止交付](docs/v0.5/records/graceful-stop-20261010/DELIVERY.md)：stop-hdsi.cmd等待当前故事整轮和世界／学校、记忆、取图在途阶段保存；187文件1004项与类型／构建／演示／插件验收通过，独立审查补修已关闭。正式部署状态见交付，服务由用户启动。后续[停止失败传播R1](docs/v0.5/records/graceful-stop-r1-20261010/README.md)补齐浏览器关闭失败返回错误且不退出的合同。
 
@@ -103,7 +103,7 @@ npm run memory:capacity -- runtime/data/hdsi-remake.sqlite --config config.local
 npm run dialogue:migrate -- --database runtime/data/hdsi-remake.sqlite --config config.local.json --check
 ```
 
-环境异步升级是独立的1→2迁移，不会由启动自动执行。本次开发只升级测试夹具，正式库是否升级由部署时决定：
+环境异步升级是独立的1→2迁移，不会由启动自动执行。初批开发只升级测试夹具；本项目正式库后来已在2026-10-09停服备份升级，见本节开头记录。以下命令用于其他仍为旧版本的库，不要求本项目重复apply：
 ```powershell
 npm run migrate:environment-async -- --database runtime/data/hdsi-remake.sqlite --check
 npm run migrate:environment-async -- --database runtime/data/hdsi-remake.sqlite --apply --stopped --backup-dir runtime/archive/restore/environment-async-backups
@@ -136,6 +136,19 @@ check不写业务数据；apply备份并事务重建普通索引，保留原消�
 
 最近普通升级备份及配套回退代码的原记录见[实施日志任务20](docs/archive/topics/prompt-context/PROMPT_CONTEXT_OPTIMIZATION_V0.1_IMPLEMENTATION_LOG_20261008.md)。备份现收纳于runtime/archive/restore，按迁移清单查新路径。回退用配套代码和完整备份，不直接拿新库运行旧门禁。
 
+### 已完成任务的恢复载荷回收
+
+`memory:compact-payloads`用于回收已完成记忆任务和明确终态owner的网页checkpoint；不删除记忆正文、网页材料或未完成任务的恢复输入。先用显式数据库路径只读检查，再在HDSI已安全停止后选择apply：
+
+```powershell
+npm run memory:compact-payloads -- runtime/data/hdsi-remake.sqlite --dry-run
+npm run memory:compact-payloads -- runtime/data/hdsi-remake.sqlite --apply --stopped --batch-size 50 --max-batches 20
+```
+
+默认每批50条、每次最多20批；`hasMore:true`表示仍有残余，可按相同参数续跑，已清行不会重复修改。每批事务提交，中断只回滚当前批。`--stopped`是操作者确认，不会替你检测或停止进程。无可回收项时不创建备份；有残余时首次写入前将数据库及实际存在的WAL／SHM一起保存到数据库旁`backups/memory-payloads/<uuid>/`。可传`--backup-dir <目录>`，工具仍在其下新建唯一uuid子目录，并返回`backupPath`。
+
+回退需停服并恢复同一备份组的DB/WAL/SHM及配套代码，不能将旧主DB和新WAL混用；恢复会舍弃备份后的业务。命令不执行VACUUM，逻辑载荷减少不保证磁盘文件立刻缩小。环境准备载荷和其他格式处理以各自显式工具范围为准，不因这项回收自动迁移。
+
 ## 6. 图库维护
 
 新增或重建先停止HDSI：
@@ -146,6 +159,10 @@ npm run stickers -- rebuild - config.local.json runtime/data/hdsi-remake.sqlite
 ```
 
 新图描述后再编码；重建沿旧文字／标签，不重识图。更换模型、端点或维度需显式重建图库，素材ID和图片文件保持可用。细节见[素材文档](docs/v0.5/subsystems/REMAKE_V0.5_EXPRESSION_STICKERS.md)、[迁移记录](docs/archive/topics/stickers/STICKER_MIGRATION.md)。
+
+`import`按配置提供网页搜索：启用browser时，CLI独立启动headless浏览器，默认启动等待60000ms，页面操作继续使用原配置预算；关闭搜索时不加载浏览器。`rebuild`只调用Embedding，不创建网页会话或视觉模型。CLI不启动故事或QQ；退出前等待自有页面排空、关闭浏览器上下文，再关闭数据库。启动、模型或清理失败均非零退出并保留错误原因；若描述／入库已经成功而最后清理失败，已保存素材不会自动撤销，重跑前先核对结果。离线合成回归不代表真实图片描述质量已验收。
+
+启动预算覆盖整个上下文启动。若底层浏览器获取在超时后才返回，保留的收尾任务会关闭迟到资源，不再访问已关闭数据库；正常退出按canvas页面、浏览器、数据库顺序等待实际异步关闭完成。
 
 `npm run check:models`会发固定测试提示及素材测试查询，是显式在线验证；普通启动检查不联网。其他`--online`验收也使用模型与认证，报告有明确数据范围，不能当成离线命令。
 
@@ -163,7 +180,7 @@ npm run stickers -- rebuild - config.local.json runtime/data/hdsi-remake.sqlite
 
 ## 8. 当前文档与复盘
 
-[V0.5总架构](docs/v0.5/architecture/REMAKE_V0.5.md)＋其8份子系统＋[实现对应](docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md)是当前说明。本批代码与部署进度见[查看资格交付](docs/v0.5/records/phone-access-20261010/DELIVERY.md)；既有回复规则证据见[回复规则交付](docs/v0.5/records/reply-guidance-20261009/DELIVERY.md)；正式升级证据见[交付后修复与正式升级](docs/v0.5/records/environment-post-delivery-fixes-20261009/DELIVERY.md)；原E阶段证据在[环境异步交付](docs/v0.5/records/environment-async-20261009/DELIVERY.md)和[复核关闭](docs/v0.5/records/environment-async-20261009/REVIEW_CLOSURE.md)；版本重写过程在[文档修订日志](docs/archive/records/V0.5_DOCUMENT_REWRITE_LOG_20261009.md)。
+[V0.5总架构](docs/v0.5/architecture/REMAKE_V0.5.md)＋其8份子系统＋[实现对应](docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md)是当前说明。最新代码、审核与部署进度统一见[版本索引](docs/v0.5/README.md)；查看资格该批见[交付](docs/v0.5/records/phone-access-20261010/DELIVERY.md)，回复规则该批见[交付](docs/v0.5/records/reply-guidance-20261009/DELIVERY.md)，正式升级见[交付后修复与正式升级](docs/v0.5/records/environment-post-delivery-fixes-20261009/DELIVERY.md)。原E阶段证据在[环境异步交付](docs/v0.5/records/environment-async-20261009/DELIVERY.md)和[复核关闭](docs/v0.5/records/environment-async-20261009/REVIEW_CLOSURE.md)；版本重写过程在[文档修订日志](docs/archive/records/V0.5_DOCUMENT_REWRITE_LOG_20261009.md)。
 
 文档分类与新建原则见[文档总入口](docs/README.md)和[目录原则](docs/DIRECTORY_POLICY.md)。当前说明、最新交付和最终复核在docs/v0.5；过期说明、已完成合同、旧审核和过程日志在docs/archive。进行中的计划单独保留在当前plans，完成后按目录原则移入历史合同；最新交付见V0.5索引。
 

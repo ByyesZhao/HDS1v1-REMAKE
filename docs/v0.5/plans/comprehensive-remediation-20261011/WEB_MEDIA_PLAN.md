@@ -50,12 +50,12 @@ W1～W3 先通过再开展性能任务。W4/W5 不与其他 agent 同时修改 `
 
 **Interfaces:** 新 `WebProviderPage={title:string;body:string;bodyFormat:'text'}`；`WebSearchProvider.read(url,signal?):Promise<WebProviderPage>`。`normalizeMaterial` 只接收并正规化纯文本（压空白、URL、codepoint 计数），不剥标签、不解实体。旧 HTML 清理规则移到显式 `htmlToWebText(html:string):string`；HTML fixture 在适配边界先调用它，生产 browser 直接返回 `bodyFormat:'text'`。没有默认 `html`、自动猜测、可选 format 或运行时故事降级。`extractReadablePage` 的返回类型是 `WebProviderPage`；BROWSER_EXTRACTOR_VERSION 由 `dom-v2/readability-0.6.0` 升为 `dom-v3/readability-0.6.0`（W3沿用本批v3），让 provider signature 不跨提取语义混用缓存。
 
-- [ ] **写回归。** `browser_plain_text_survives_service_normalization` 经 linkedom → `extractDomEvidence` → managed provider → `WebSearchService`；HTML实体承载 `关系：a < b && c > d。`、`List<String>`、字面 `<nav>示例</nav>`、可见 `&lt;`。断言最终 body 含上述逐字内容、真正 nav 不在正文，counters=`{successReads:1,failures:0}`，模型 completion envelope 中材料相同。
-- [ ] **写边界测试。** `html_adapter_cleans_markup_once` 把原 web-content HTML 测试改为显式先适配；保留长尾 `😀尾部标记`、`body.length>12000`、codepoint 数、`empty body` 断言。`plain_text_does_not_decode_entities_again` 断言输入字面 `&lt;` 仍是 `&lt;`。
-- [ ] **跑红。** `npx vitest run tests/web-content.test.ts tests/browser-web-integration.test.ts`；基线应在纯文字保真断言失败，而不是 fixture 装配失败。
-- [ ] **实现边界。** 按上述签名分离纯文本与显式 HTML adapter；一次性更新 provider 实现与 fake，不对既存 `web_materials` 重新清理，也不声称能恢复已损坏正文。
-- [ ] **跑绿。** 同命令，加 `npx vitest run tests/browser-search-provider.test.ts tests/web-session.test.ts tests/web-provider.test.ts`、`npm run typecheck`；所有用例通过，provider 返回类型无隐式兼容洞。
-- [ ] **提交。** `fix: preserve extracted web plain text`；只列出本任务实际变动文件暂存。同步网页文档提取器版本与纯文本边界，保留历史审核原文。
+- [x] **写回归。** `browser_plain_text_survives_service_normalization` 经 linkedom → `extractDomEvidence` → managed provider → `WebSearchService`；HTML实体承载 `关系：a < b && c > d。`、`List<String>`、字面 `<nav>示例</nav>`、可见 `&lt;`。断言最终 body 含上述逐字内容、真正 nav 不在正文，counters=`{successReads:1,failures:0}`，模型 completion envelope 中材料相同。
+- [x] **写边界测试。** `html_adapter_cleans_markup_once` 把原 web-content HTML 测试改为显式先适配；保留长尾 `😀尾部标记`、`body.length>12000`、codepoint 数、`empty body` 断言。`plain_text_does_not_decode_entities_again` 断言输入字面 `&lt;` 仍是 `&lt;`。
+- [x] **跑红。** `npx vitest run tests/web-content.test.ts tests/browser-web-integration.test.ts`；基线应在纯文字保真断言失败，而不是 fixture 装配失败。
+- [x] **实现边界。** 按上述签名分离纯文本与显式 HTML adapter；一次性更新 provider 实现与 fake，不对既存 `web_materials` 重新清理，也不声称能恢复已损坏正文。
+- [x] **跑绿。** 同命令，加 `npx vitest run tests/browser-search-provider.test.ts tests/web-session.test.ts tests/web-provider.test.ts`、`npm run typecheck`；所有用例通过，provider 返回类型无隐式兼容洞。
+- [x] **提交。** `fix: preserve extracted web plain text`；只列出本任务实际变动文件暂存。同步网页文档提取器版本与纯文本边界，保留历史审核原文。
 
 ## W2：图库 CLI 按用途装配，import 保留 browser 搜索
 
@@ -65,13 +65,13 @@ W1～W3 先通过再开展性能任务。W4/W5 不与其他 agent 同时修改 `
 
 **Interfaces:** `createStickerWebRuntime(storage:Storage,settings:StorySettings,clock:Clock,options?:{startupTimeoutMs?:number}):Promise<{web:WebSearchService;dispose():Promise<void>}>`。默认启动预算60000ms，页面预算继续使用 `settings.webSearch.browser`（不互相重置）。false 分支直接 `assembleWeb`，不 require browser；true/unconfigured 保留明确失败；true/browser 等 ready 后创建 `createManagedBrowserProvider(createKoishiBrowserPort(...),settings.webSearch.browser)`。HTTP 通过 `createRequire` 锚定仓库 `runtime/package.json` 读取已有 `@koishijs/plugin-http`，Koishi／Puppeteer用项目包；路径相对模块位置而非调用者 cwd。不安装第二套浏览器／新依赖、不改现有正式配置。
 
-- [ ] **写真实 CLI 回归。** `rebuild_with_enabled_browser_never_creates_web_or_vision`：子进程、临时配置设置true/browser，预置一条合成sticker，fake Embedding；断言 exit=0，ID/path/description不变、向量更新，browser factory=0、vision=0、web sessions=0。
-- [ ] **写 import 测试。** `import_with_enabled_browser_completes_tool_roundtrip`：合成PNG，fake视觉模型先请求 `webRead` 再返回description，替换Puppeteer服务只提供合成DOM；断言真实CLI exit=0，1条sticker、1次Embedding、1次实际页面读取、视觉请求2次，第二请求带正文；阶段独立20/40，ownerType=`asset`；外网请求0。
-- [ ] **写生命周期测试。** `import_browser_start_reject_preserves_original_error`、`import_browser_start_timeout_closes_context`、`import_failure_drains_pages_before_closing_storage`、`disabled_import_never_loads_browser`。分别断言原错误+exit1、测试启动预算100ms后settle、managed.dispose完成在storage.close之前且无关库后写入、关闭模式browser require/factory均0；重复dispose仅关闭一次。fake记录adapter/Host构造次数均0。迟到建页与close失败由现有slots测例验证，CLI不得先关库再让cleanup写。
-- [ ] **跑红。** `npx vitest run tests/stickers-cli.test.ts tests/sticker-web-runtime.test.ts`；基线rebuild/import在“provider not configured”失败。
-- [ ] **实现分支。** 在脚本中先判断rebuild；import才创建独立runtime。创建失败由factory逆序关闭已取得资源；主finally完成asset owner释放、checkpoint压缩、managed.dispose、Context.stop（含Puppeteer附带canvas scope既有处理）后关Storage。保留原失败原因，cleanup失败附加诊断并非零退出；成功不吞清理失败。
-- [ ] **跑绿和更新命令说明。** 同命令＋`npx vitest run tests/stickers.test.ts tests/web-deployment.test.ts tests/local-web-validation-startup.test.ts`。README保留现有参数顺序，说明import可按配置搜索、独立headless browser、启动预算、失败非零，rebuild只需Embedding；继续要求导入／重建前停止故事，不能以本次测试证明在线视觉效果。
-- [ ] **提交。** `fix: assemble sticker CLI dependencies by command`。不运行指向默认正式库的无参数CLI来验收。
+- [x] **写真实 CLI 回归。** `rebuild_with_enabled_browser_never_creates_web_or_vision`：子进程、临时配置设置true/browser，预置一条合成sticker，fake Embedding；断言 exit=0，ID/path/description不变、向量更新，browser factory=0、vision=0、web sessions=0。
+- [x] **写 import 测试。** `import_with_enabled_browser_completes_tool_roundtrip`：合成PNG，fake视觉模型先请求 `webRead` 再返回description，替换Puppeteer服务只提供合成DOM；断言真实CLI exit=0，1条sticker、1次Embedding、1次实际页面读取、视觉请求2次，第二请求带正文；阶段独立20/40，ownerType=`asset`；外网请求0。
+- [x] **写生命周期测试。** `import_browser_start_reject_preserves_original_error`、`import_browser_start_timeout_closes_context`、`import_failure_drains_pages_before_closing_storage`、`disabled_import_never_loads_browser`。分别断言原错误+exit1、测试启动预算100ms后settle、managed.dispose完成在storage.close之前且无关库后写入、关闭模式browser require/factory均0；重复dispose仅关闭一次。fake记录adapter/Host构造次数均0。迟到建页与close失败由现有slots测例验证，CLI不得先关库再让cleanup写。
+- [x] **跑红。** `npx vitest run tests/stickers-cli.test.ts tests/sticker-web-runtime.test.ts`；基线rebuild/import在“provider not configured”失败。
+- [x] **实现分支。** 在脚本中先判断rebuild；import才创建独立runtime。创建失败由factory逆序关闭已取得资源；主finally完成asset owner释放、checkpoint压缩、managed.dispose、Context.stop（含Puppeteer附带canvas scope既有处理）后关Storage。保留原失败原因，cleanup失败附加诊断并非零退出；成功不吞清理失败。
+- [x] **跑绿和更新命令说明。** 同命令＋`npx vitest run tests/stickers.test.ts tests/web-deployment.test.ts tests/local-web-validation-startup.test.ts`。README保留现有参数顺序，说明import可按配置搜索、独立headless browser、启动预算、失败非零，rebuild只需Embedding；继续要求导入／重建前停止故事，不能以本次测试证明在线视觉效果。
+- [x] **提交。** `fix: assemble sticker CLI dependencies by command`。不运行指向默认正式库的无参数CLI来验收。
 
 ## W3：提取互不重叠的正文子树
 
@@ -79,11 +79,11 @@ W1～W3 先通过再开展性能任务。W4/W5 不与其他 agent 同时修改 `
 
 **Interfaces:** 保持 `extractDomEvidence`、`extractReadablePage`；算法仍先 article 再 main/[role=main] 再 Readability。每档在 cleaned clone 上筛 `hasBodyEvidence`，仅保留没有“同档且通过证据筛选”的祖先的候选，按DOM顺序拼接。选择顶层有效候选，不能按文字相同去重，也不把main强行覆盖article优先级。
 
-- [ ] **写回归。** `nested_articles_emit_descendant_text_once`、`nested_main_role_main_emit_descendant_text_once`：内层唯一标记各只出现1次。`sibling_articles_keep_identical_paragraphs`：两个兄弟article各一段相同文字，最终出现2次。`non_body_candidate_does_not_hide_valid_descendant`：无效／清理后的候选不妨碍有效子树；隐藏／登录区域内文字仍0次。
-- [ ] **跑红。** `npx vitest run tests/browser-page-extraction.test.ts tests/browser-visible-dom.test.ts`，前两项在occurrence=2处失败。
-- [ ] **实现候选过滤。** 在原extract循环中按包含关系过滤；只改子树选择，不加长度阈值，不改source标签；BROWSER_EXTRACTOR_VERSION保持W1的v3。
-- [ ] **跑绿。** 同命令＋`npx vitest run tests/browser-web-integration.test.ts tests/browser-koishi-port.test.ts`；长正文尾、动态就绪、登录墙均保持。
-- [ ] **提交。** `fix: avoid overlapping browser body containers`。
+- [x] **写回归。** `nested_articles_emit_descendant_text_once`、`nested_main_role_main_emit_descendant_text_once`：内层唯一标记各只出现1次。`sibling_articles_keep_identical_paragraphs`：两个兄弟article各一段相同文字，最终出现2次。`non_body_candidate_does_not_hide_valid_descendant`：无效／清理后的候选不妨碍有效子树；隐藏／登录区域内文字仍0次。
+- [x] **跑红。** `npx vitest run tests/browser-page-extraction.test.ts tests/browser-visible-dom.test.ts`，前两项在occurrence=2处失败。
+- [x] **实现候选过滤。** 在原extract循环中按包含关系过滤；只改子树选择，不加长度阈值，不改source标签；BROWSER_EXTRACTOR_VERSION保持W1的v3。
+- [x] **跑绿。** 同命令＋`npx vitest run tests/browser-web-integration.test.ts tests/browser-koishi-port.test.ts`；长正文尾、动态就绪、登录墙均保持。
+- [x] **提交。** `fix: avoid overlapping browser body containers`。
 
 ## W4：用轻量查询读取控制信息，暂不改变 JSON 格式
 
@@ -110,13 +110,13 @@ materials(runId: string, ids?: readonly string[]): WebMaterial[];
 
 `state` SQL只投影ref/counters/metrics/ordinal；`checkpoint`只投影checkpoint；`materialMetadata`只投影元数据，不能选整条data再JSON.parse。`materials`一次查询指定run全部材料或IDs，返回持久插入顺序；ids=[]返回[]，不能解释为全部。`snapshot()`仍是显式完整诊断接口，W4不删除它。增加非唯一表达式索引 `web_materials_run_url` on `(json_extract(data,'$.runId'),json_extract(data,'$.material.url'))`，只在正常可写Store构造安装；只读检查不安装。
 
-- [ ] **写读放大回归。** `control_reads_parse_zero_body_characters` 使用已落盘20×100000字符材料和大checkpoint；对JSON.parse输入中专用正文标记统计，不统计测试自身解析；调用state、materialMetadata、providedUrls、quota判断、markProvided。断言计数正确、正文JSON.parse字符=0、`snapshot`调用=0。`mark_provided_updates_only_flags_and_source_metadata`断言材料body/hash/readAt与firstOperationId不变，重复调用只1条本人来源；未知ID事务不部分登记。
-- [ ] **写原子性回归。** `commit_step_uses_url_metadata_and_rolls_back_atomically`：注入op保存失败，材料/计数/confirmedSteps全部回滚；确认同一步两次、同URL新read op都只计1次成功。`completed_operation_replay_uses_current_counters`：后续已读更多页面，再重放旧op，正文/停止原因仍旧结果，counters是当前累计值，provider=0。`organize_loads_source_materials_once_per_run`构造同run两个实际本人来源和未提供材料，断言snapshot=0、materials查询1次、输出sourceId/material绑定及原顺序不变、无未提供材料串入。
-- [ ] **跑红。** `npx vitest run tests/web-light-state.test.ts tests/web-store.test.ts tests/web-model-tools.test.ts tests/web-memory-sources.test.ts`；基线无轻量接口／仍解析正文。
-- [ ] **实现SQL控制通道。** quota、target、URL查重和providedUrls改用投影。beginOperation只原子增加ordinal；incrementMetric只更新相应JSON字段；commitStep原子更新计数/操作/材料；markProvided用SQL json_set标志而不重写正文；所有session更新不经 `SELECT data`把大checkpoint带回JS。SQL JSON函数在SQLite内部解析仍计作存储工作，不宣称其耗时为零。
-- [ ] **实现调用方改用窄接口。** ModelClient启动只读一次checkpoint；perform直接取单op，每轮state+materials，不扫描operations；环境startOne/invalidate及旧runtime的repair读取改用checkpoint。organize的privateLookup读取改用checkpoint，selfWebReadSources先按runId聚合materialIds，再每run调用一次materials(ids)，最终按原source顺序绑定。`rg -n '\.snapshot\(' src/web src/model src/environment src/memory/organize.ts`检查热路径只剩显式诊断定义，不能留下“为读一个字段先inflate全部”的包装。
-- [ ] **跑绿。** 同定向命令＋`npx vitest run tests/web-session.test.ts tests/web-recovery.test.ts tests/environment-async-tools.test.ts tests/environment-async-provenance.test.ts tests/web-status.test.ts`、`npm run typecheck`。20/40、cacheHits/provider calls、lookup/repair/provided资格不变。
-- [ ] **提交。** `perf: project web control state without body snapshots`。这一提交保留旧JSON格式，允许单独发布；W5成本目标不能算作W4成果。
+- [x] **写读放大回归。** `control_reads_parse_zero_body_characters` 使用已落盘20×100000字符材料和大checkpoint；对JSON.parse输入中专用正文标记统计，不统计测试自身解析；调用state、materialMetadata、providedUrls、quota判断、markProvided。断言计数正确、正文JSON.parse字符=0、`snapshot`调用=0。`mark_provided_updates_only_flags_and_source_metadata`断言材料body/hash/readAt与firstOperationId不变，重复调用只1条本人来源；未知ID事务不部分登记。
+- [x] **写原子性回归。** `commit_step_uses_url_metadata_and_rolls_back_atomically`：注入op保存失败，材料/计数/confirmedSteps全部回滚；确认同一步两次、同URL新read op都只计1次成功。`completed_operation_replay_uses_current_counters`：后续已读更多页面，再重放旧op，正文/停止原因仍旧结果，counters是当前累计值，provider=0。`organize_loads_source_materials_once_per_run`构造同run两个实际本人来源和未提供材料，断言snapshot=0、materials查询1次、输出sourceId/material绑定及原顺序不变、无未提供材料串入。
+- [x] **跑红。** `npx vitest run tests/web-light-state.test.ts tests/web-store.test.ts tests/web-model-tools.test.ts tests/web-memory-sources.test.ts`；基线无轻量接口／仍解析正文。
+- [x] **实现SQL控制通道。** quota、target、URL查重和providedUrls改用投影。beginOperation只原子增加ordinal；incrementMetric只更新相应JSON字段；commitStep原子更新计数/操作/材料；markProvided用SQL json_set标志而不重写正文；所有session更新不经 `SELECT data`把大checkpoint带回JS。SQL JSON函数在SQLite内部解析仍计作存储工作，不宣称其耗时为零。
+- [x] **实现调用方改用窄接口。** ModelClient启动只读一次checkpoint；perform直接取单op，每轮state+materials，不扫描operations；环境startOne/invalidate及旧runtime的repair读取改用checkpoint。organize的privateLookup读取改用checkpoint，selfWebReadSources先按runId聚合materialIds，再每run调用一次materials(ids)，最终按原source顺序绑定。`rg -n '\.snapshot\(' src/web src/model src/environment src/memory/organize.ts`检查热路径只剩显式诊断定义，不能留下“为读一个字段先inflate全部”的包装。
+- [x] **跑绿。** 同定向命令＋`npx vitest run tests/web-session.test.ts tests/web-recovery.test.ts tests/environment-async-tools.test.ts tests/environment-async-provenance.test.ts tests/web-status.test.ts`、`npm run typecheck`。20/40、cacheHits/provider calls、lookup/repair/provided资格不变。
+- [x] **提交。** `perf: project web control state without body snapshots`。这一提交保留旧JSON格式，允许单独发布；W5成本目标不能算作W4成果。
 
 ## W5：正文引用 v2、旧任务恢复与显式迁移
 
@@ -201,12 +201,12 @@ materials(runId: string, ids?: readonly string[]): WebMaterial[];
 
 `IncomingMediaService`冻结pending后、查同hash观察缓存前acquire；取得租约立即进入try/finally，try首行检查signal，包住cache分支、共享observations promise、observe/model修补与工具续调用，finally释放，确认观察落库前再次检查signal。冻结ready/unrecognized和confirmed历史仍原早退，不碰原图。pending即使关闭新图开关或已有同hash观察仍acquire验证冻结ref，缺失文件仍报错且不能写ready／改查新的sourceUrl。data URL不进数据库、checkpoint、普通文字context或跨观察全局长期缓存。
 
-- [ ] **写定量回归。** `ready_asset_one_read_one_encoding_per_observation`用1,000,008字节合成PNG，真实prepareForTurn→ModelClient→ChatCompletionsTransport配假fetch；断言完整readFile=1、base64编码=1、模型请求=1、data URL=`'data:image/png;base64,'+bytes.toString('base64')`，释放后active leases=0。用模块mock计I/O与编码，不把测试期望自身toString计入。
-- [ ] **写续调用／缓存测试。** `image_tool_repair_roundtrip_reuses_payload_lease`多次transport仍只1读1编码；`cached_observation_validates_pending_ref_without_encoding`断言1读0编码0模型；`missing_pending_asset_never_becomes_ready_from_cache`断言报错、pending保持；`frozen_ready_needs_no_image_file`删除可清理文件后读取既有观察仍0读。
-- [ ] **写并发释放测试。** `concurrent_same_hash_leases_share_bytes_and_protect_retire`用两个attachment同hash、可控read/观察promise；1次读取，任一未释放retire=false，最后释放且业务保护解除才可retire。`observation_failure_and_stop_release_payload`对模型reject/取消/格式限额分别断言释放，后续恢复可重新读取且不复用已释放URL；graceful stop等待在途观察完成，关库后写入0。
-- [ ] **跑红。** `npx vitest run tests/incoming-media-asset-lease.test.ts tests/incoming-media-assets.test.ts tests/incoming-media-turn.test.ts tests/incoming-image-model.test.ts`，基线重复resolve/编码或无租约断言失败。
-- [ ] **实现租约。** 用现有jobs/saves/deleting/uses机制衔接；先占uses再异步read防删除竞态，read失败回滚引用且map移除，等待删除结束后重新检查ready。每个持有者自己finally释放，不能把共享promise首个调用者的finally作为所有人释放点；无新增byte长度／token限制，不改变识别版本。
-- [ ] **跑绿并提交。** 同命令＋`npx vitest run tests/incoming-media-cleanup.test.ts tests/incoming-media-onebot-review.test.ts`和`npm run typecheck`；提交 `perf: share image bytes within observation leases`。报告实际读/编码次数，不声称验证真实视觉效果。
+- [x] **写定量回归。** `ready_asset_one_read_one_encoding_per_observation`用1,000,008字节合成PNG，真实prepareForTurn→ModelClient→ChatCompletionsTransport配假fetch；断言完整readFile=1、base64编码=1、模型请求=1、data URL=`'data:image/png;base64,'+bytes.toString('base64')`，释放后active leases=0。用模块mock计I/O与编码，不把测试期望自身toString计入。
+- [x] **写续调用／缓存测试。** `image_tool_repair_roundtrip_reuses_payload_lease`多次transport仍只1读1编码；`cached_observation_validates_pending_ref_without_encoding`断言1读0编码0模型；`missing_pending_asset_never_becomes_ready_from_cache`断言报错、pending保持；`frozen_ready_needs_no_image_file`删除可清理文件后读取既有观察仍0读。
+- [x] **写并发释放测试。** `concurrent_same_hash_leases_share_bytes_and_protect_retire`用两个attachment同hash、可控read/观察promise；1次读取，任一未释放retire=false，最后释放且业务保护解除才可retire。`observation_failure_and_stop_release_payload`对模型reject/取消/格式限额分别断言释放，后续恢复可重新读取且不复用已释放URL；graceful stop等待在途观察完成，关库后写入0。
+- [x] **跑红。** `npx vitest run tests/incoming-media-asset-lease.test.ts tests/incoming-media-assets.test.ts tests/incoming-media-turn.test.ts tests/incoming-image-model.test.ts`，基线重复resolve/编码或无租约断言失败。
+- [x] **实现租约。** 用现有jobs/saves/deleting/uses机制衔接；先占uses再异步read防删除竞态，read失败回滚引用且map移除，等待删除结束后重新检查ready。每个持有者自己finally释放，不能把共享promise首个调用者的finally作为所有人释放点；无新增byte长度／token限制，不改变识别版本。
+- [x] **跑绿并提交。** 同命令＋`npx vitest run tests/incoming-media-cleanup.test.ts tests/incoming-media-onebot-review.test.ts`和`npm run typecheck`；提交 `perf: share image bytes within observation leases`。报告实际读/编码次数，不声称验证真实视觉效果。
 
 ## W7：环境终态 owner 在旧工作结算后统一收尾
 

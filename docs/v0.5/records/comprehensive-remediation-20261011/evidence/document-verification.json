@@ -1,0 +1,32 @@
+{
+  "scope": "Local Markdown links and heading anchors in this implementation change; not product validation.",
+  "files": [
+    "README.md",
+    "docs/v0.5/README.md",
+    "docs/v0.5/plans/README.md",
+    "docs/v0.5/plans/comprehensive-remediation-20261011/DELIVERY_PLAN.md",
+    "docs/v0.5/plans/comprehensive-remediation-20261011/MEMORY_PLAN.md",
+    "docs/v0.5/plans/comprehensive-remediation-20261011/README.md",
+    "docs/v0.5/plans/comprehensive-remediation-20261011/RUNTIME_PLAN.md",
+    "docs/v0.5/plans/comprehensive-remediation-20261011/WEB_MEDIA_PLAN.md",
+    "docs/v0.5/records/comprehensive-remediation-20261011/reviews/M1-A.md",
+    "docs/v0.5/records/comprehensive-remediation-20261011/reviews/W2.md",
+    "docs/v0.5/records/comprehensive-remediation-20261011/reviews/W4.md",
+    "docs/v0.5/records/comprehensive-remediation-20261011/reviews/W6.md",
+    "docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md",
+    "docs/v0.5/subsystems/REMAKE_V0.5_EXPRESSION_STICKERS.md",
+    "docs/v0.5/subsystems/REMAKE_V0.5_SCHEDULING.md",
+    "docs/v0.5/subsystems/REMAKE_V0.5_WEB_SEARCH.md",
+    "docs\\v0.5\\records\\comprehensive-remediation-20261011\\BATCH_A.md",
+    "docs\\v0.5\\records\\comprehensive-remediation-20261011\\README.md",
+    "docs\\v0.5\\records\\comprehensive-remediation-20261011\\reviews\\M1-A.md",
+    "docs\\v0.5\\records\\comprehensive-remediation-20261011\\reviews\\R1-R2.md",
+    "docs\\v0.5\\records\\comprehensive-remediation-20261011\\reviews\\V0.md",
+    "docs\\v0.5\\records\\comprehensive-remediation-20261011\\reviews\\W1-W3.md",
+    "docs\\v0.5\\records\\comprehensive-remediation-20261011\\reviews\\W2.md",
+    "docs\\v0.5\\records\\comprehensive-remediation-20261011\\reviews\\W4.md",
+    "docs\\v0.5\\records\\comprehensive-remediation-20261011\\reviews\\W6.md"
+  ],
+  "linksChecked": 292,
+  "errors": []
+}

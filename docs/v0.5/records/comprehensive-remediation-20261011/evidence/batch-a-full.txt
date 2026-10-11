@@ -1,0 +1,106 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 test
+npm notice run vitest run --reporter=dot
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+···································································································------------------xx····················································stdout | tests/local-web-validation-startup.test.ts > standalone validation settles and writes report on browser reject
+[E] app Error: SYNTHETIC_BROWSER_START_FAILURE
+        at Browser.start (D:/HDSI-remake/tests/local-web-validation-startup.test.ts:6:149)
+        at D:\HDSI-remake\node_modules\@cordisjs\core\lib\index.cjs:1213:18
+        at processTicksAndRejections (node:internal/process/task_queues:104:5)
+
+······································stdout | tests/sticker-web-runtime.test.ts > import browser reject settles and closes isolated context
+[E] app Error: SYNTHETIC_BROWSER_START_FAILURE
+        at Browser.start (D:/HDSI-remake/tests/sticker-web-runtime.test.ts:16:149)
+        at D:\HDSI-remake\node_modules\@cordisjs\core\lib\index.cjs:1213:18
+        at processTicksAndRejections (node:internal/process/task_queues:104:5)
+
+··stdout | tests/sticker-web-runtime.test.ts > cleanup failure still stops Context and retains startup error (true)
+[E] app Error: ORIGINAL_START_FAILURE
+        at D:/HDSI-remake/tests/sticker-web-runtime.test.ts:36:21
+        at file:///D:/HDSI-remake/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:2869:63
+        at file:///D:/HDSI-remake/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:1628:35
+        at file:///D:/HDSI-remake/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:2783:26
+        at file:///D:/HDSI-remake/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:3321:20
+        at new Promise (<anonymous>)
+        at runWithCancel (file:///D:/HDSI-remake/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:3316:10)
+        at file:///D:/HDSI-remake/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:3301:20
+        at new Promise (<anonymous>)
+        at runWithTimeout (file:///D:/HDSI-remake/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:3259:10)
+
+·····································stdout | tests/dialogue-upgrade.test.ts > legacy_30_maps_to_four_episodes and explicit settings win without activating budgets
+HDSI: recentMessagesLimit 已替换为完整对话段窗口，缺省4段／15分钟。
+HDSI: recentMessagesLimit 已替换为完整对话段窗口，缺省4段／15分钟。
+
+···························································································································································································································································································································································································································································································stdout | tests/browser-web-plugin-extra.test.ts > failed HDSI startup is reported and acquired instance closes exactly once
+[E] hdsi-browser Error: synthetic host startup failure
+        at Object.start (D:/HDSI-remake/tests/browser-web-plugin-extra.test.ts:9:110)
+        at D:/HDSI-remake/src/deployment/browser-runtime.ts:22:24
+        at processTicksAndRejections (node:internal/process/task_queues:104:5)
+        at D:/HDSI-remake/src/deployment/browser-runtime.ts:12:91
+
+stdout | tests/browser-web-plugin-extra.test.ts > rejecting browser service preserves original Koishi error and never opens a story runtime
+[E] app Error: synthetic browser startup failure
+        at D:/HDSI-remake/tests/browser-web-plugin-extra.test.ts:13:55
+        at file:///D:/HDSI-remake/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:1628:35
+        at file:///D:/HDSI-remake/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:2783:26
+        at file:///D:/HDSI-remake/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:3321:20
+        at new Promise (<anonymous>)
+        at runWithCancel (file:///D:/HDSI-remake/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:3316:10)
+        at file:///D:/HDSI-remake/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:3301:20
+        at new Promise (<anonymous>)
+        at runWithTimeout (file:///D:/HDSI-remake/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:3259:10)
+        at file:///D:/HDSI-remake/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:3882:64
+
+·················································································································································································································································································································································································
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/browser-visible-dom.test.ts [ tests/browser-visible-dom.test.ts ]
+Error: Failed to launch the browser process!
+[1011/093711.715:ERROR:third_party\crashpad\crashpad\util\win\registration_protocol_win.cc:136] TransactNamedPipe: 管道已结束。 (0x6D)
+[1011/093711.745:ERROR:third_party\crashpad\crashpad\client\crashpad_client_win.cc:142] crash server failed to launch, self-terminating
+
+
+TROUBLESHOOTING: https://pptr.dev/troubleshooting
+
+ ❯ Interface.onClose node_modules/@puppeteer/browsers/src/launch.ts:436:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/runtime-check-readonly.test.ts > launcher readonly check reads schema 3 without installing missing auxiliary indexes
+Error: EPERM: operation not permitted, symlink 'D:\HDSI-remake\runtime\node_modules' -> 'D:\HDSI-remake\.tmp\comprehensive-remediation-tests\hdsi-launcher-readonly-RDqZVG\runtime\node_modules'
+ ❯ tests/runtime-check-readonly.test.ts:12:3
+     10|   mkdirSync(runtime,{recursive:true});writeFileSync(join(runtime,'pack…
+     11|   copyFileSync(resolve('runtime/check.cjs'),join(runtime,'check.cjs'));
+     12|   symlinkSync(resolve('runtime/node_modules'),join(runtime,'node_modul…
+       |   ^
+     13|   const testLib=process.env.HDSI_TEST_LIB_DIR??resolve('lib');
+     14|   symlinkSync(testLib,join(root,'lib'),'junction');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  tests/runtime-check-readonly.test.ts > launcher readonly check reads schema 2 without installing missing auxiliary indexes
+Error: EPERM: operation not permitted, symlink 'D:\HDSI-remake\runtime\node_modules' -> 'D:\HDSI-remake\.tmp\comprehensive-remediation-tests\hdsi-launcher-readonly-k7Uy3K\runtime\node_modules'
+ ❯ tests/runtime-check-readonly.test.ts:12:3
+     10|   mkdirSync(runtime,{recursive:true});writeFileSync(join(runtime,'pack…
+     11|   copyFileSync(resolve('runtime/check.cjs'),join(runtime,'check.cjs'));
+     12|   symlinkSync(resolve('runtime/node_modules'),join(runtime,'node_modul…
+       |   ^
+     13|   const testLib=process.env.HDSI_TEST_LIB_DIR??resolve('lib');
+     14|   symlinkSync(testLib,join(root,'lib'),'junction');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  2 failed | 193 passed (195)
+      Tests  2 failed | 1072 passed | 18 skipped (1092)
+   Start at  09:36:07
+   Duration  151.49s (tests 78%, import 20%, transform 2%, worker 1%)
+
+    Isolate  195 workers spawned · ~126ms startup each (spawn + environment, per file)
+             at least ~24.46s faster with isolate: false — reuses workers across files instead of one per file
+

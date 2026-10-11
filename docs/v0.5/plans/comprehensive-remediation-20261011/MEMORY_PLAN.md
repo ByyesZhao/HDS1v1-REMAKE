@@ -93,13 +93,13 @@
 - Produces `summaryRepairPolicyPair(short:MemoryPolicyRow,long:MemoryPolicyRow|null):boolean`；既有 `summaryRepairPair(short:MemoryCandidate,long:MemoryCandidate|null)` 保持类型／调用兼容，断言两者等价。`summaryRepairBasis` 参数收窄为 `Pick<OwnerVersion,'revision'|'stateVersion'>` 即可接受两种输入，序列化内容不变。
 - Changes `MemoryMaintenance.incrementalCandidates(reserved:Set<string>):MemoryPolicyRow[]`；先过滤 dirty／reservation 资格，再沿既有 `store.owner(ref)` 读取这些可用主项完整 owner，之后才调用 `selectBatch`／`buildSnapshot`，保持字符软目标基于完整正文。不把元数据当 MemoryCandidate 强转，也不新增这条路径的全文读取预算。
 
-- [ ] **Step 1: 写失败测试。** `policy_projection_matches_content_and_source_predicates` 对 `''`、空格、`\t\n`、`\u00a0\u2003\ufeff`、中文正文、缺 content 但有 value、空/单项 sourceIds 逐项断言 `row.hasContent === (content??value??'').trim().length>0` 与 `row.hasSources === sourceIds.length>0`；`expect('content' in row).toBe(false)`、`expect('sourceIds' in row).toBe(false)`，正文放入 4096 字符尾部标记，断言快照 JSON 不包含该标记。
-- [ ] **Step 2: 写 canonical／repair 等价测试。** `policy_canonical_modes_match_existing_readers` 构造 long A、merged B→A、learned C→B、两 short→B/C、跨 details／memories 同名 ID、跨 learned／memories 同名 ID、缺 target；分别与旧 `metadataCanonical(memoryMetadata(db),id)`、`store.canonical(id)` 比较最终 ID／null。`policy_summary_repair_matches_full_owner_pair` 对短期缺正文、双方无源、长期 durable／active／discarded、同修复版本逐项比较资格与 basis。
-- [ ] **Step 3: 运行 `npx vitest run tests/memory-policy-snapshot.test.ts`，预期新模块／导出缺失而失败。** 保留失败摘要到实施记录，不以类型断言跳过失败。
-- [ ] **Step 4: 实现以上投影和 Map。** 三池各一次列投影＋一次 sqlite_master 表清单，支持只读检查所用的旧缺表库；不 `SELECT data`。查询取得的数据与 `policyRow` 输出保持字段／缺省一致。替换 owner 时同步该 owner 在 rows 和各索引的位置，保留三池原顺序；跨表同 ID 时 legacyById 的获胜行仍由原表顺序决定，不能因较早表更新而覆盖较晚表。只允许更新本快照已存在的 owner。
-- [ ] **Step 5: 将 incrementalCandidates 改为单快照读取。** 仍按 dirtyOwners 原顺序、pending／reservation 条件过滤；canonical 调用传 `'metadata'`。新增 `incremental_candidates_hydrate_full_text_before_batch_selection`，设置 40 个主项且 `batchItems=20`，断言进入 batch 字符筛选的是完整正文、模型输入尾部标记存在、未选主项仍 pending，现有依赖闭包不被裁掉。
-- [ ] **Step 6: 运行 `npx vitest run tests/memory-policy-snapshot.test.ts tests/memory-pending-refresh.test.ts tests/memory-batch-characters.test.ts` 及 `npm run typecheck`，预期全通过。**
-- [ ] **Step 7: 独立 commit `refactor(memory): add explicit policy metadata snapshots`。** 仅暂存本 Task 的实际变更文件；可单独回滚，不触及容量／检索行为。
+- [x] **Step 1: 写失败测试。** `policy_projection_matches_content_and_source_predicates` 对 `''`、空格、`\t\n`、`\u00a0\u2003\ufeff`、中文正文、缺 content 但有 value、空/单项 sourceIds 逐项断言 `row.hasContent === (content??value??'').trim().length>0` 与 `row.hasSources === sourceIds.length>0`；`expect('content' in row).toBe(false)`、`expect('sourceIds' in row).toBe(false)`，正文放入 4096 字符尾部标记，断言快照 JSON 不包含该标记。
+- [x] **Step 2: 写 canonical／repair 等价测试。** `policy_canonical_modes_match_existing_readers` 构造 long A、merged B→A、learned C→B、两 short→B/C、跨 details／memories 同名 ID、跨 learned／memories 同名 ID、缺 target；分别与旧 `metadataCanonical(memoryMetadata(db),id)`、`store.canonical(id)` 比较最终 ID／null。`policy_summary_repair_matches_full_owner_pair` 对短期缺正文、双方无源、长期 durable／active／discarded、同修复版本逐项比较资格与 basis。
+- [x] **Step 3: 运行 `npx vitest run tests/memory-policy-snapshot.test.ts`，预期新模块／导出缺失而失败。** 保留失败摘要到实施记录，不以类型断言跳过失败。
+- [x] **Step 4: 实现以上投影和 Map。** 三池各一次列投影＋一次 sqlite_master 表清单，支持只读检查所用的旧缺表库；不 `SELECT data`。查询取得的数据与 `policyRow` 输出保持字段／缺省一致。替换 owner 时同步该 owner 在 rows 和各索引的位置，保留三池原顺序；跨表同 ID 时 legacyById 的获胜行仍由原表顺序决定，不能因较早表更新而覆盖较晚表。只允许更新本快照已存在的 owner。
+- [x] **Step 5: 将 incrementalCandidates 改为单快照读取。** 仍按 dirtyOwners 原顺序、pending／reservation 条件过滤；canonical 调用传 `'metadata'`。新增 `incremental_candidates_hydrate_full_text_before_batch_selection`，设置 40 个主项且 `batchItems=20`，断言进入 batch 字符筛选的是完整正文、模型输入尾部标记存在、未选主项仍 pending，现有依赖闭包不被裁掉。
+- [x] **Step 6: 运行 `npx vitest run tests/memory-policy-snapshot.test.ts tests/memory-pending-refresh.test.ts tests/memory-batch-characters.test.ts` 及 `npm run typecheck`，预期全通过。**
+- [x] **Step 7: 独立 commit `refactor(memory): add explicit policy metadata snapshots`。** 仅暂存本 Task 的实际变更文件；可单独回滚，不触及容量／检索行为。
 
 ### Task M1-B：容量无变化快路径与纯值排序
 

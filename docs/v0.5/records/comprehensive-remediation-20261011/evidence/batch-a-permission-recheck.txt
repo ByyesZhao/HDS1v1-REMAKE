@@ -1,0 +1,12 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/browser-visible-dom.test.ts tests/runtime-check-readonly.test.ts --reporter=dot
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+····················
+
+ Test Files  2 passed (2)
+      Tests  20 passed (20)
+   Start at  09:39:09
+   Duration  5.49s (tests 95%, transform 3%, import 2%)
+

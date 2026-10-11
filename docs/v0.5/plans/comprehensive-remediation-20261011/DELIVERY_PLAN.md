@@ -32,9 +32,9 @@
 
 **接口：**只对验收工具支持环境变量`HDSI_TEST_LIB_DIR`，值为隔离构建的绝对目录。`runtime/plugin-smoke.cjs`从该目录require `index.js`和`time.js`；未设置时保持现有`../lib`。readonly测试的合成目录junction也指向该目录，未设置时仍指向现有`lib`。不得让正式插件运行依赖这个测试变量。
 
-- [ ] **1. 失败回归。** `smoke_uses_requested_build_path`构造临时最小模块标记或子进程，确认设置变量时确实选择该目录，不误加载根lib；`readonly_fixture_uses_same_build`断言synthetic检查使用同一编译版本。只检验路径分派，不再复制所有业务smoke。
-- [ ] **2. 实现并绿测。** 该能力只影响验收脚本，路径缺文件明确报错，不能默默fallback到旧lib。执行`npx vitest run tests/plugin-smoke-build-path.test.ts`。
-- [ ] **3. 独立提交。** 默认正式行为完全不变。后续V1始终显式设置变量；在隔离worktree执行时也沿用相同验收方式。
+- [x] **1. 失败回归。** `smoke_uses_requested_build_path`构造临时最小模块标记或子进程，确认设置变量时确实选择该目录，不误加载根lib；`readonly_fixture_uses_same_build`断言synthetic检查使用同一编译版本。只检验路径分派，不再复制所有业务smoke。
+- [x] **2. 实现并绿测。** 该能力只影响验收脚本，路径缺文件明确报错，不能默默fallback到旧lib。执行`npx vitest run tests/plugin-smoke-build-path.test.ts`。
+- [x] **3. 独立提交。** 默认正式行为完全不变。后续V1始终显式设置变量；在隔离worktree执行时也沿用相同验收方式。
 
 ## D1：补齐当前文档与维护入口
 
