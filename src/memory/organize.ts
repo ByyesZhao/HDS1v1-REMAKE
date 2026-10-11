@@ -3,7 +3,8 @@ import {isStageModelInput} from '../model/context-types';
 import {assertActiveWindow,assertMessageSources} from '../dialogue/active-consistency';
 import {activityContextMessages} from '../dialogue/activity-context';
 import { stageInput } from '../model/context-views';
-import type { MemoryResult, TurnRecord, TurnCandidate } from '../types';
+import type { ISOTime, MemoryResult, ScheduledTask, TurnRecord, TurnCandidate } from '../types';
+import { projectTaskChanges } from '../host/task-projection';
 import type { Dependencies } from '../app';
 import { memoryTask } from '../model/contracts';
 import { ContextBuilder } from './context';
@@ -57,19 +58,13 @@ export function applyMemory(d: Dependencies, turnId: string, result: MemoryResul
   (d.memoryLifecycle??new MemoryLifecycle(d.memoryStore??new MemoryStore(d.storage))).apply(result,turnId,at,sources,selfSources.map(s=>s.id));
 }
 
-export function applyTasks(d: Dependencies, candidate: TurnCandidate): void {
-  const explicit = new Set(candidate.taskChanges.filter(c => c.action !== 'create').map(c => c.id));
-  for (const id of candidate.completedTaskIds) {
-    const old = d.storage.read('tasks', id);
-    if (old && !explicit.has(id)) d.storage.save('tasks', id, { ...old, status: 'completed' });
+export function applyTasks(d: Dependencies, candidate: TurnCandidate, turnAt: ISOTime): void {
+  const relatedIds = new Set([...candidate.completedTaskIds, ...candidate.taskChanges.filter(c => c.action !== 'create').map(c => c.id)]);
+  const original: ScheduledTask[] = [];
+  for (const id of relatedIds) {
+    const task = d.storage.read('tasks', id);
+    if (task) original.push(task);
   }
   assertMessageSources(d.storage,candidate.taskChanges.flatMap(c=>c.action==='cancel'?[]:c.task.messageIds??[]));
-  candidate.taskChanges.forEach(change => {
-    if (change.action === 'create') {
-      d.storage.save('tasks', change.id!, { ...change.task, id: change.id!, status: 'pending' });
-    } else {
-      const old = d.storage.read('tasks', change.id)!;
-      d.storage.save('tasks', change.id, change.action === 'cancel' ? { ...old, status: 'cancelled' } : { ...old, ...change.task, status: 'pending' });
-    }
-  });
+  for (const task of projectTaskChanges(original, candidate.taskChanges, candidate.completedTaskIds, turnAt)) d.storage.save('tasks', task.id, task);
 }

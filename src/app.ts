@@ -15,6 +15,7 @@ import type { SchoolStore } from './school/store';
 import type { AppConfig } from './config';
 import type { Clock, Random, ModelRunner, Sender, TurnRequest, TurnCandidate, OutboxItem, PersonalResult, UtteranceIntent } from './types';
 import { canRead, isSleeping, arrangeSleep, autonomousMinutes, maintainTask } from './host/state';
+import { projectTaskChanges } from './host/task-projection';
 import { runNarrative } from './directors/narrative';
 import { runPersonal } from './directors/personal';
 import { runExpression } from './output/expression';
@@ -243,20 +244,12 @@ export async function generateTurn(d: Dependencies, request: TurnRequest, turnId
   } else if (change?.action === 'end') {
     state.scene.mode = 'chat'; state.scene.shared = null;
   }
-  const changesMorningAppointment = candidate.taskChanges.some(c => c.action === 'create' ? c.task.kind === 'appointment' : c.action === 'update' && allTasks.some(t => t.id === c.id && t.kind === 'appointment'));
+  const changesMorningAppointment = candidate.taskChanges.some(c => c.action === 'create' ? c.task.kind === 'appointment' : c.action === 'update' && (c.task.kind === 'appointment' || allTasks.some(t => t.id === c.id && t.kind === 'appointment')));
   const expiredSharedSleep = shared && change?.action === 'end' && !!state.sleep && due(state.sleep.wakeAt, at);
   if (expiredSharedSleep) state.sleep = null;
   if (waking || personal?.sleepPreference || changesMorningAppointment || (!shared && !state.sleep)) {
     // Apply task changes in the workspace before considering next-morning appointments.
-    const plannedTasks = allTasks.filter(t => !candidate.completedTaskIds.includes(t.id)).map(t => structuredClone(t));
-    for (const c of candidate.taskChanges) {
-      if (c.action === 'create') plannedTasks.push({ ...c.task, id: c.id!, status: 'pending' });
-      else {
-        const old = plannedTasks.find(t => t.id === c.id) ?? allTasks.find(t => t.id === c.id);
-        if (old && c.action === 'update') { const i = plannedTasks.findIndex(t => t.id === c.id); if (i >= 0) plannedTasks[i] = { ...old, ...c.task }; else plannedTasks.push({ ...old, ...c.task }); }
-        if (old && c.action === 'cancel') { const i = plannedTasks.findIndex(t => t.id === c.id); if (i >= 0) plannedTasks.splice(i, 1); }
-      }
-    }
+    const plannedTasks = projectTaskChanges(allTasks, candidate.taskChanges, candidate.completedTaskIds, at).filter(t => t.status === 'pending');
     state.sleep = arrangeSleep(state, at, d.config, d.random, plannedTasks, personal?.sleepPreference, waking);
   }
   const payloads: Array<{ kind: OutboxItem['kind']; content: string }> = [];

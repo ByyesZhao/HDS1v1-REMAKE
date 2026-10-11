@@ -1,0 +1,94 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/task-projection.test.ts tests/appointment-update-host.test.ts tests/tasks.test.ts
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ❯ tests/appointment-update-host.test.ts (3 tests | 2 failed) 605ms
+   × starts the real Host once and consumes a description-only appointment without another turn or NOW deadline 35ms
+   × recovers an old frozen candidate and stored post result exactly once: metadata-only 288ms
+ ❯ tests/tasks.test.ts (5 tests | 1 failed) 72ms
+   × uses projected appointment lifecycle for sleep planning: consumed description only 29ms
+ ❯ tests/task-projection.test.ts (0 test)
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/task-projection.test.ts [ tests/task-projection.test.ts ]
+Error: Cannot find module '../src/host/task-projection' imported from D:/HDSI-remake/tests/task-projection.test.ts
+ ❯ tests/task-projection.test.ts:2:1
+      1| import { expect, it } from 'vitest';
+      2| import { projectTaskChanges } from '../src/host/task-projection';
+       | ^
+      3| import type { ScheduledTask, TaskChange } from '../src/types';
+      4| import { NOW } from './helpers';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/appointment-update-host.test.ts > starts the real Host once and consumes a description-only appointment without another turn or NOW deadline
+AssertionError: expected { id: 'appointment', …(4) } to match object { status: 'completed', …(1) }
+(3 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "description": "新描述",
+-   "status": "completed",
++   "status": "pending",
+  }
+
+ ❯ tests/appointment-update-host.test.ts:26:52
+     24|   try {
+     25|     await host.start();
+     26|     expect(d.storage.read('tasks', 'appointment')).toMatchObject({ sta…
+       |                                                    ^
+     27|     expect(d.storage.all('turns')).toHaveLength(1);
+     28|     expect(d.models.calls.filter(c => c.name === 'narrative')).toHaveL…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  tests/appointment-update-host.test.ts > recovers an old frozen candidate and stored post result exactly once: metadata-only
+AssertionError: expected { id: 'appointment', …(4) } to match object { description: '新描述', …(1) }
+(3 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "description": "新描述",
+-   "status": "completed",
++   "status": "pending",
+  }
+
+ ❯ tests/appointment-update-host.test.ts:74:52
+     72|     const app = new HdsiApp(d); await app.resumeUnfinishedTurn(); awai…
+     73|     await finishPostprocessing(d, d.storage.read('turns', record.id)!);
+     74|     expect(d.storage.read('tasks', 'appointment')).toMatchObject({ ...…
+       |                                                    ^
+     75|     expect(taskWrites).toBe(1); expect(observedCandidates).toEqual([fr…
+     76|     expect(d.storage.read('turns', record.id)).toMatchObject({ done: t…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  tests/tasks.test.ts > uses projected appointment lifecycle for sleep planning: consumed description only
+AssertionError: expected 1791415800000 to be 1791419400000 // Object.is equality
+
+- Expected
++ Received
+
+- 1791419400000
++ 1791415800000
+
+ ❯ tests/tasks.test.ts:16:69
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  3 failed (3)
+      Tests  3 failed | 5 passed (8)
+   Start at  09:28:33
+   Duration  1.81s (tests 48%, transform 27%, import 24%, worker 1%)
+

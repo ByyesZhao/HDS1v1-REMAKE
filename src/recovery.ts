@@ -99,7 +99,7 @@ export async function finishPostprocessing(d: Dependencies, turn: TurnRecord): P
     c.experiences.forEach(e => d.storage.save('experiences', e.id, e));
     applySchoolCommits(d.storage,c,turn.id);
     if (!turn.environmentKind) d.storage.set('character', c.nextState);
-    applyTasks(d, c);
+    applyTasks(d, c, current.at);
     c.visibleMessageIds.forEach(id => {
       const m = d.storage.read('messages', id)!;
       d.storage.save('messages',id,{...m,seenTurnId:m.seenTurnId??turn.id});

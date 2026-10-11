@@ -3,6 +3,33 @@ import { HdsiApp, generateTurn } from '../src/app';
 import { Scheduler } from '../src/host/scheduler';
 import { setup, saveInput, NOW, narrative } from './helpers';
 
+it('shortens existing sleep for an explicit future check_messages to appointment rescheduling', async () => {
+  const d = setup();
+  try {
+    saveInput(d.storage, 'a', '先前的问题');
+    d.storage.save('messages', 'a', { ...d.storage.read('messages', 'a')!, seenTurnId: 'old' });
+    d.storage.set('character', { ...d.storage.character(), sleep: { sleepAt: '2026-10-07T23:30:00+08:00', wakeAt: '2026-10-08T08:30:00+08:00' } });
+    d.storage.save('tasks', 'check', { id: 'check', kind: 'check_messages', at: NOW, description: '稍后回应', checkReason: 'deferred_reply', messageIds: ['a'], status: 'pending' });
+    d.models.outputs.personal_chat = { emotions: [], reply: { decision: 'none' }, taskChanges: [{ action: 'update', id: 'check', task: { kind: 'appointment', at: '2026-10-08T08:00:00+08:00' } }] };
+    const generated = await generateTurn(d, { inputMessageIds: [], taskIds: ['check'], triggerKinds: ['check_messages'] }, 'kind-projection');
+    expect(Date.parse(generated.candidate.nextState.sleep!.wakeAt)).toBe(Date.parse('2026-10-08T07:00:00+08:00'));
+  } finally { d.storage.close(); }
+});
+
+it.each([
+  { name: 'consumed description only', patch: { description: '描述更新' }, wakeAt: '2026-10-08T08:30:00+08:00' },
+  { name: 'explicit future rescheduling', patch: { at: '2026-10-08T08:00:00+08:00' }, wakeAt: '2026-10-08T07:00:00+08:00' },
+])('uses projected appointment lifecycle for sleep planning: $name', async ({ patch, wakeAt }) => {
+  const d = setup();
+  try {
+    // The explicit request supplies the consumed ID; a future row makes its participation in morning planning observable.
+    d.storage.save('tasks', 'morning', { id: 'morning', kind: 'appointment', at: '2026-10-08T08:30:00+08:00', description: '早上约定', status: 'pending' });
+    d.models.outputs.personal_chat = { emotions: [], reply: { decision: 'none' }, taskChanges: [{ action: 'update', id: 'morning', task: patch }], sleepPreference: { sleepAt: '2026-10-07T23:30:00+08:00', wakeAt: '2026-10-08T08:30:00+08:00', reason: '准备休息' } };
+    const generated = await generateTurn(d, { inputMessageIds: [], taskIds: ['morning'], triggerKinds: ['appointment'] }, 'sleep-projection');
+    expect(Date.parse(generated.candidate.nextState.sleep!.wakeAt)).toBe(Date.parse(wakeAt));
+  } finally { d.storage.close(); }
+});
+
 it('keeps seen input seen and updates the same deferred check on reconsideration', async () => {
   const d = setup(); saveInput(d.storage, 'a', '晚点回答我');
   d.models.outputs.personal_chat = { emotions: [], reply: { decision: 'later', reconsiderAt: '2026-10-07T10:15:00+08:00', intention: '晚点认真回答' }, taskChanges: [] };

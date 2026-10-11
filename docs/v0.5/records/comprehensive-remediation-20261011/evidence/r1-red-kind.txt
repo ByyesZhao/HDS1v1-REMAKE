@@ -1,0 +1,35 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/tasks.test.ts -t shortens existing sleep
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+ ❯ tests/tasks.test.ts (6 tests | 1 failed | 5 skipped) 30ms
+   × shortens existing sleep for an explicit future check_messages to appointment rescheduling 29ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/tasks.test.ts > shortens existing sleep for an explicit future check_messages to appointment rescheduling
+AssertionError: expected 1791419400000 to be 1791414000000 // Object.is equality
+
+- Expected
++ Received
+
+- 1791414000000
++ 1791419400000
+
+ ❯ tests/tasks.test.ts:15:69
+     13|     d.models.outputs.personal_chat = { emotions: [], reply: { decision…
+     14|     const generated = await generateTurn(d, { inputMessageIds: [], tas…
+     15|     expect(Date.parse(generated.candidate.nextState.sleep!.wakeAt)).to…
+       |                                                                     ^
+     16|   } finally { d.storage.close(); }
+     17| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 5 skipped (6)
+   Start at  09:29:45
+   Duration  782ms (transform 64%, import 30%, tests 5%, worker 1%)
+

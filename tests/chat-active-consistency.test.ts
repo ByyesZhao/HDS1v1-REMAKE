@@ -18,7 +18,7 @@ it('old warning becomes blocking when consumed as a required or source message; 
 it.each(['task','memory','detail','learned'])('new %s protection blocks an old orphan and rolls back the write',kind=>{
  const d=modern();orphan(d);const store=new MemoryStore(d.storage);
  expect(()=>d.storage.transaction(()=>{
- if(kind==='task')applyTasks({...d} as any,{completedTaskIds:[],taskChanges:[{action:'create',id:'task',task:{kind:'check_messages',at:NOW,description:'重新回应',checkReason:'deferred_reply',messageIds:['orphan']}}]} as any);
+ if(kind==='task')applyTasks({...d} as any,{completedTaskIds:[],taskChanges:[{action:'create',id:'task',task:{kind:'check_messages',at:NOW,description:'重新回应',checkReason:'deferred_reply',messageIds:['orphan']}}]} as any,NOW);
  else store.saveOwner(store.makeOwner({ownerType:kind==='memory'?'long':kind as any,ownerId:'new'},{content:'引用',sourceIds:['orphan'],key:kind==='detail'?'phone':undefined,value:kind==='detail'?'A':undefined},NOW));
  })).toThrow(/orphan/);d.storage.close();
 });

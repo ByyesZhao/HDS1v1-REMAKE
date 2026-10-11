@@ -1,0 +1,14 @@
+npm notice run koishi-plugin-hdsi-remake@0.2.0 npx
+npm notice run vitest run tests/task-projection.test.ts tests/appointment-update-host.test.ts tests/tasks.test.ts tests/review-fixes.test.ts tests/review-recovery.test.ts tests/chat-active-consistency.test.ts
+
+ RUN  v5.0.3 D:/HDSI-remake
+
+
+ Test Files  6 passed (6)
+      Tests  65 passed (65)
+   Start at  09:29:55
+   Duration  3.68s (tests 51%, import 31%, transform 17%, worker 1%)
+
+    Isolate  6 workers spawned · ~137ms startup each (spawn + environment, per file)
+             at least ~684ms faster with isolate: false — reuses workers across files instead of one per file
+
