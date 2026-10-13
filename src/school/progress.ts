@@ -33,7 +33,11 @@ export function prepareSchoolCommits(storage:Storage,turn:TurnRecord,narrative:N
   observations.push({via:draft.via,sourceId:draft.sourceId,snapshots,happenedAt:e.happenedAt,experienceId:e.id});
  }
  const visibleSnapshots=personalSchoolContext(storage,observations,'').knownSnapshots;
- for(const draft of narrative.researchProgress??[]){const e=experience(draft.experienceIndex),atTime=personalSchoolContext(storage,observations.filter(o=>milliseconds(o.happenedAt)<=milliseconds(e.happenedAt)),'').knownSnapshots,task=atTime.find(s=>s.entityKind==='plan_item'&&s.entityId===draft.taskId&&s.value.kind==='research');if(!task)throw Error('research progress requires known research task');
+ for(const draft of narrative.researchProgress??[]){
+  const e=experience(draft.experienceIndex),atTime=personalSchoolContext(storage,observations.filter(o=>milliseconds(o.happenedAt)<=milliseconds(e.happenedAt)),'').knownSnapshots;
+  const task=atTime.find(s=>s.entityKind==='plan_item'&&s.entityId===draft.taskId);
+  if(!task||task.entityKind!=='plan_item')throw Error(`researchProgress.taskId ${JSON.stringify(draft.taskId)}: unknown research task; requires an already known or actually observed plan_item`);
+  if(task.value.kind!=='research')throw Error(`researchProgress.taskId ${JSON.stringify(draft.taskId)}: task kind ${JSON.stringify(task.value.kind)} is not research; only kind="research" is allowed; omit researchProgress for this task`);
   if(progress.some(p=>p.taskId===draft.taskId&&p.experienceId===e.id&&p.kind===draft.kind))throw Error('duplicate research progress');
   progress.push({taskId:draft.taskId,kind:draft.kind,summary:draft.summary,happenedAt:e.happenedAt,experienceId:e.id});
  }
