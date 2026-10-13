@@ -112,4 +112,3 @@ it.each([false,true])('disk_waking_attempted_or_silent_sealed_candidate_does_not
  x.clock.advance(600_000);x.reopen();x.requests.length=0;x.setResponse(async r=>{if(r.task.name!=='memory')throw Error('sealed candidate must not regenerate');return emptyMemory;});await new HdsiApp(x.deps()).resumeUnfinishedTurn();expect(x.requests.map(r=>r.task.name)).toEqual(['memory']);expect(x.db().read('turns',turn.id)).toMatchObject({at:AT,done:true});expect(x.sender.sent.map(i=>i.payload)).toEqual(attempted?['已尝试的合成输出']:[]);expect(x.db().read('school_notices',REF.noticeId)!.readAt).toBe(SLEEP.wakeAt);
  }finally{x.close();}
 });
-
