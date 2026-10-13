@@ -115,3 +115,10 @@ it('defaults omitted effort to high and rejects unsupported effort values', asyn
   });
   await expect(withSettings(sample => { sample.models.world.reasoningEffort = 'normal'; }, async () => {})).rejects.toThrow(/reasoningEffort/);
 });
+
+it('consolidation_retry_settings_default_validate_and_preserve_index_timeout',async()=>{
+ await withSettings(s=>{delete s.memory;},async s=>{expect(s.memory).toMatchObject({consolidationTimeoutMs:600000,consolidationMaxRetries:2,backgroundTimeoutMs:120000,retryDelayMs:300000});});
+ await withSettings(s=>{s.memory={consolidationTimeoutMs:17,consolidationMaxRetries:0};},async s=>{expect(s.memory).toMatchObject({consolidationTimeoutMs:17,consolidationMaxRetries:0,backgroundTimeoutMs:120000});});
+ for(const n of [-1,1.5])await expect(withSettings(s=>{s.memory={consolidationMaxRetries:n};},async()=>{})).rejects.toThrow();
+ await expect(withSettings(s=>{s.memory={consolidationTimeoutMs:0};},async()=>{})).rejects.toThrow();
+});

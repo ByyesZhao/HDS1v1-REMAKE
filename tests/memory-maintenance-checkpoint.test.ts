@@ -38,7 +38,7 @@ function fixture(transport:Transport,path=':memory:',withWeb=true,backgroundTime
  const store=new MemoryStore(storage);store.migrate(clock.now());
  const life=new MemoryLifecycle(store),index=new MemoryIndex(store,{model:'offline',embed:async()=>[1,0]},{clock});
  const web=new WebSearchService(new WebSearchStore(storage),undefined,clock);
- const client=new ModelClient(transport),maintenance=new MemoryMaintenance(store,life,index,client,{clock,web:withWeb?web:undefined,retryDelayMs:1000,backgroundTimeoutMs,onReady});
+ const client=new ModelClient(transport),maintenance=new MemoryMaintenance(store,life,index,client,{clock,web:withWeb?web:undefined,retryDelayMs:1000,backgroundTimeoutMs,consolidationTimeoutMs:backgroundTimeoutMs,onReady});
  const d={storage,clock,store,life,index,web,client,maintenance};resources.push(d);return d;
 }
 type Fixture=ReturnType<typeof fixture>;
@@ -128,7 +128,7 @@ it.each([true,false])('compacts a prepared result and retries its application wi
  const row=seed(d);expect(d.maintenance.startOne(d.clock.now())).toBe(true);await until(()=>!d.maintenance.inFlight);
  const ready=job(d);expect(ready.status).toBe('ready');expect(ready.result).toHaveLength(1);expect(requests).toHaveLength(2);
  if(withWeb){
-  const after=d.web.store.snapshot(phase(d).runId);expect(savedBeforeCleanup!.checkpoint).toMatchObject({repairCount:1});
+  const after=d.web.store.snapshot(phase(d).runId);expect(savedBeforeCleanup!.checkpoint).toBeNull();
   expect(after.checkpoint).toBeNull();expect(withoutCheckpoint(after)).toEqual(withoutCheckpoint(savedBeforeCleanup!));
   expect(after.operations).toHaveLength(1);expect(after.materials).toHaveLength(1);expect(after.counters).toEqual({successReads:1,failures:0});
  }else expect(d.storage.prepare('SELECT count(*) n FROM web_sessions').get()!.n).toBe(0);
@@ -180,7 +180,7 @@ it('does not reset the repair budget across background retries',async()=>{
  seed(d);expect(d.maintenance.startOne(d.clock.now())).toBe(true);await until(()=>!d.maintenance.inFlight);
  const first=job(d),cp=checkpoint(d);expect(cp).toMatchObject({repairCount:2,repair:requests[2].repair});expect(requests).toHaveLength(3);
  d.clock.advance(1000);expect(d.maintenance.startOne(d.clock.now())).toBe(true);await until(()=>!d.maintenance.inFlight);
- expect(requests).toHaveLength(4);expect(requests[3].repair).toEqual(requests[2].repair);expect(checkpoint(d)).toEqual(cp);
+ expect(requests).toHaveLength(4);expect(requests[3].repair).toEqual(requests[2].repair);expect(checkpoint(d)).toEqual({...cp,executionAttempt:{retryCycle:1,attemptId:job(d).attemptId}});
  expect(job(d).status).toBe('pending');expect(frozen(job(d))).toEqual(frozen(first));
  d.clock.advance(1000);expect(d.maintenance.startOne(d.clock.now())).toBe(true);await until(()=>!d.maintenance.inFlight);
  expect(requests).toHaveLength(5);expect(requests[4].repair).toEqual(requests[2].repair);

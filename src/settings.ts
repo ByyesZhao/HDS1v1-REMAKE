@@ -41,7 +41,7 @@ const memorySettings=z.object({
   idleMaintenanceMinutes:z.number().positive().default(15),maintenanceDuringSleep:z.boolean().default(true),
   contextLimits:z.object({alwaysIncludeCharactersLimit:nullableLimit,candidateItemsPerRoute:nullableLimit,detailItemsLimit:nullableLimit,shortItemsLimit:nullableLimit,longItemsLimit:nullableLimit,recentDialogueSegments:z.number().int().positive().default(4),dialogueIdleMinutes:z.number().positive().default(15)}).default({alwaysIncludeCharactersLimit:null,candidateItemsPerRoute:null,detailItemsLimit:null,shortItemsLimit:null,longItemsLimit:null,recentDialogueSegments:4,dialogueIdleMinutes:15}),
   batchItems:z.number().int().positive().default(20),batchCharacters:nullableLimit,
-  queryTimeoutMs:z.number().positive().default(1500),backgroundTimeoutMs:z.number().positive().default(120000),retryDelayMs:z.number().positive().default(300000),cacheSize:z.number().int().positive().default(256),cacheTtlMs:z.number().positive().default(600000),calibrationFile:z.string().optional(),
+  queryTimeoutMs:z.number().positive().default(1500),backgroundTimeoutMs:z.number().positive().default(120000),consolidationTimeoutMs:z.number().positive().default(600000),consolidationMaxRetries:z.number().int().nonnegative().default(2),retryDelayMs:z.number().positive().default(300000),cacheSize:z.number().int().positive().default(256),cacheTtlMs:z.number().positive().default(600000),calibrationFile:z.string().optional(),
 }).prefault({});
 export const memoryMaintenanceSettings=memorySettings;
 const settingsSchema = z.object({

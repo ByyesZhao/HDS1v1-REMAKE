@@ -108,7 +108,7 @@ export class MemoryStore {
         if(row.kind==='learned')row={...row,evidenceMemoryIds:[...new Set([row.canonicalMemoryId,...row.evidenceMemoryIds??[],...row.sourceIds].flatMap(id=>{if(!id)return [];const canonical=this.canonicalEvidence(id);return canonical?[canonical.id]:[];}))]};
         this.saveOwner(row);if(row.status==='active'||row.status==='durable')this.queueDirty(row,row.kind==='detail'?'detail':row.kind==='learned'?'learned':'event',at);
       }
-      for(const table of ['memory_index_jobs','memory_maintenance_jobs'] as const)for(const job of this.jobs<IndexJob|MaintenanceJob>(table))this.saveJob(table,{...job,status:job.status==='computing'?'pending':job.status});
+      for(const table of ['memory_index_jobs','memory_maintenance_jobs'] as const)for(const job of this.jobs<IndexJob|MaintenanceJob>(table))this.saveJob(table,{...job,status:table==='memory_index_jobs'&&job.status==='computing'?'pending':job.status});
       this.compactCompletedPayloads();
       const latest=(values:Array<string|null|undefined>)=>values.filter((v):v is string=>!!v).sort((a,b)=>milliseconds(b)-milliseconds(a))[0]??null;
       const messages=this.storage.prepare("SELECT json_extract(data,'$.direction') direction,json_extract(data,'$.receivedAt') at FROM messages").all();
@@ -189,7 +189,7 @@ export class MemoryStore {
       const snapshot=job.snapshot.filter(r=>`${r.ownerType}:${r.ownerId}`!==key),selectedIds=(job.selectedIds??job.snapshot.map(r=>r.id)).filter(id=>id!==owner.ownerId);
       const updated={...job,snapshot,selectedIds,readSet:job.readSet.filter(r=>`${r.ownerType}:${r.ownerId}`!==key),prunedOwnerKeys:[...new Set([...(job.prunedOwnerKeys??[]),key])],result,staleUnitKeys:[...new Set([...job.staleUnitKeys,...stale])]};
       for(const r of job.snapshot.filter(r=>selectedIds.includes(r.id)))this.releaseDirty(r);
-      if(!selectedIds.length||job.status==='ready'&&updated.appliedUnitKeys.length+updated.staleUnitKeys.length===(result?.length??0))updated.status='done';
+      if(job.status!=='failed'&&(!selectedIds.length||job.status==='ready'&&updated.appliedUnitKeys.length+updated.staleUnitKeys.length===(result?.length??0)))updated.status='done';
       this.saveJob('memory_maintenance_jobs',updated);
     }
   }
@@ -205,11 +205,11 @@ export class MemoryStore {
     this.storage.prepare('DELETE FROM memory_dirty_owners WHERE id=?').run(`${owner.ownerType}:${owner.ownerId}`);
     this.storage.prepare("DELETE FROM memory_audit_reports WHERE EXISTS(SELECT 1 FROM json_each(data,'$.readSet') r WHERE json_extract(r.value,'$.ownerType')=? AND json_extract(r.value,'$.ownerId')=?)").run(owner.ownerType,owner.ownerId);
   }
-  private compactMaintenanceCheckpoint(jobId:string):void {
+  compactMaintenanceCheckpoint(jobId:string):void {
     if(this.storage.prepare("SELECT 1 FROM sqlite_master WHERE name='web_sessions'").get())archiveAndClearCheckpoints(this.storage,this.history,"json_extract(data,'$.ref.ownerType')='maintenance' AND json_extract(data,'$.ref.ownerId')=?",[jobId],'completed');
   }
   activeMaintenanceJobsReferencing(owner:MemoryOwnerRef):MaintenanceJob[]{
-    return this.storage.prepare("SELECT data FROM memory_maintenance_jobs WHERE json_extract(data,'$.status') IN ('pending','computing','ready') AND (EXISTS(SELECT 1 FROM json_each(data,'$.readSet') r WHERE json_extract(r.value,'$.ownerType')=? AND json_extract(r.value,'$.ownerId')=?) OR EXISTS(SELECT 1 FROM json_each(data,'$.snapshot') r WHERE json_extract(r.value,'$.ownerType')=? AND json_extract(r.value,'$.ownerId')=?)) ORDER BY julianday(json_extract(data,'$.createdAt')),id").all(owner.ownerType,owner.ownerId,owner.ownerType,owner.ownerId).map(r=>({kind:'consolidation',prunedOwnerKeys:[],...JSON.parse(String(r.data))}));
+    return this.storage.prepare("SELECT data FROM memory_maintenance_jobs WHERE json_extract(data,'$.status') IN ('pending','computing','ready','failed') AND (EXISTS(SELECT 1 FROM json_each(data,'$.readSet') r WHERE json_extract(r.value,'$.ownerType')=? AND json_extract(r.value,'$.ownerId')=?) OR EXISTS(SELECT 1 FROM json_each(data,'$.snapshot') r WHERE json_extract(r.value,'$.ownerType')=? AND json_extract(r.value,'$.ownerId')=?)) ORDER BY julianday(json_extract(data,'$.createdAt')),id").all(owner.ownerType,owner.ownerId,owner.ownerType,owner.ownerId).map(r=>({kind:'consolidation',prunedOwnerKeys:[],...JSON.parse(String(r.data))}));
   }
   compactCompletedPayloads(limit=50):CompletedPayloadCompactionReport{return compactCompletedPayloads(this.storage,limit);}
   projections(canonicalMemoryId:string):MemoryCandidate[]{return this.storage.prepare("SELECT data FROM learned_background WHERE json_extract(data,'$.canonicalMemoryId')=? AND json_extract(data,'$.status')='active' ORDER BY rowid").all(canonicalMemoryId).map(r=>memoryOwnerData(JSON.parse(String(r.data))));}
@@ -217,7 +217,7 @@ export class MemoryStore {
     return this.storage.prepare("SELECT data FROM memories WHERE json_extract(data,'$.status')='active' AND ((json_extract(data,'$.kind')='short' AND julianday(json_extract(data,'$.shortExpiresAt'))<=julianday(?) AND (json_extract(data,'$.consolidatedRevision') IS NULL OR json_extract(data,'$.consolidatedRevision')!=json_extract(data,'$.revision'))) OR (json_extract(data,'$.kind')='long' AND julianday(json_extract(data,'$.createdAt'))<=julianday(?) AND json_extract(data,'$.totalAwakenings')>=30 AND (json_extract(data,'$.evaluatedEvidenceVersion') IS NULL OR json_extract(data,'$.evaluatedEvidenceVersion')<json_extract(data,'$.stateVersion')))) ORDER BY julianday(json_extract(data,'$.createdAt')),id").all(cutoff,cutoff).map(r=>memoryOwnerData(JSON.parse(String(r.data)))).filter(r=>r.kind!=='long'||promotionEligible(r,cutoff));
   }
   job<T>(table:JobTable,id:string):T|null {const row=parse<T>(this.storage.prepare(`SELECT data FROM ${table} WHERE id=?`).get(id));return row&&table==='memory_maintenance_jobs'?{kind:'consolidation',prunedOwnerKeys:[],...row}:row;}
-  jobs<T>(table:JobTable,statuses?:Array<'pending'|'computing'|'ready'|'done'>):T[]{
+  jobs<T>(table:JobTable,statuses?:Array<'pending'|'computing'|'ready'|'done'|'failed'>):T[]{
     const where=statuses?` WHERE json_extract(data,'$.status') IN (${statuses.map(()=>'?').join(',')})`:'';
     return this.storage.prepare(`SELECT data FROM ${table}${where} ORDER BY julianday(json_extract(data,'$.createdAt')),id`).all(...statuses??[]).map(r=>table==='memory_maintenance_jobs'?{kind:'consolidation',prunedOwnerKeys:[],...JSON.parse(String(r.data))}:JSON.parse(String(r.data)));
   }

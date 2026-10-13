@@ -53,7 +53,8 @@ export interface Runtime {
   openBatch: { id: string; readyAt: ISOTime } | null; pendingBatchIds: string[]; paused: boolean;
   contactMisses: number; stickerMisses: number; nextWorldAt: ISOTime | null; nextSchoolAt: ISOTime | null;
   lastError: string | null;
-  lastFailure?:{kind:'context_limit'|'request'|'error';task?:string;stage:'generation'|'sending'|'postprocessing';at:ISOTime;safeSummary:string}|null;
+  maintenancePause?:{jobId:string;retryCycle:number;task:string;at:ISOTime;safeSummary:string;notification:'pending'|'attempted'|'sent'|'failed'}|null;
+  lastFailure?:{kind:'context_limit'|'request'|'error';task?:string;stage:'generation'|'sending'|'postprocessing'|'maintenance';jobId?:string;retryCycle?:number;at:ISOTime;safeSummary:string}|null;
   nextMaintenanceAt: string | null;
   sharedActivityVersion: 1 | null; sharedClock: SharedClock | null;
   environmentPlanningVersion:1|2|null; nextEnvironmentAt:ISOTime|null;
