@@ -1,6 +1,6 @@
 # 当前模型调用与网页搜索配置参考
 
-2026-10-13本批新增整合／审核执行参数：memory.consolidationTimeoutMs=600000、consolidationMaxRetries=2为Schema缺省值；索引继续backgroundTimeoutMs=120000，重试等待retryDelayMs=300000。首次＋最多2次自动重试约束后台执行周期，不是HTTP数，repairLimit=2及网页20／40累计预算不变。审核仍用memory_audit提示／资料投影，实际任务名及连接仍为memory_consolidation；未增加模型连接或改模型／强度。本次不读取私有配置，正式生效值待[部署记录](../records/memory-retry-waking-20261013/DELIVERY.md)证实，下列旧白名单不证明新增参数已经部署。
+2026-10-13本批新增整合／审核执行参数：memory.consolidationTimeoutMs=600000、consolidationMaxRetries=2为Schema缺省值；索引继续backgroundTimeoutMs=120000，重试等待retryDelayMs=300000。首次＋最多2次自动重试约束后台执行周期，不是HTTP数，repairLimit=2及网页20／40累计预算不变。审核仍用memory_audit提示／资料投影，实际任务名及连接仍为memory_consolidation；未增加模型连接或改模型／强度。上海时间11:32正式部署已显式写入600000／2，另两项保持120000／300000，其余解析配置完全相同；[部署记录](../records/memory-retry-waking-20261013/DELIVERY.md)及白名单摘要记录实际核验，原始私有配置不入Git。服务保持停止，参数将在用户手动启动后使用；下列旧白名单仍只证明各自原核对日期。
 
 核对日期：2026-10-11，最近基线`9f3c73f`。返回[版本索引](../README.md)。本轮[交叉核对](../records/document-code-crosscheck-20261011/README.md)在上一轮[静态核对](../records/document-post-remediation-sync-20261011/README.md)基础上修正图片验收超时范围，通过类型检查及定向离线测试；未读取私有配置、认证、原背景或正式数据库，未运行服务或模型／搜索请求。下列本地模型、搜索／图片开关与业务参数沿用2026-10-11、源码基线`65f0785`时解析的[配置白名单](../records/document-current-sync-20261011/evidence/effective-models.json)；同日10:43:28（上海时间）的[部署指纹](../records/comprehensive-remediation-20261011/evidence/deployment-postcheck.json)记录两份配置在该部署前后hash相同，不能把它称为本轮重新核验。[配置启用记录](../records/feature-enablement-20261010/README.md)保留启用经过。
 

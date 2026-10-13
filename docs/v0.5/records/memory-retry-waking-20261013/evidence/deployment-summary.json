@@ -1,0 +1,119 @@
+{
+  "checkedAt": "2026-10-13T03:32:59.092Z",
+  "acceptedSourceCommit": "a4e781f0d671bb122e9d42684f76a32ca2222fa8",
+  "integratedMainAtDeployment": "bc452422c1178c7c62ba45194f1e198f46f0f57e",
+  "gracefulStopExitCode": 0,
+  "backup": {
+    "relativePath": "runtime/archive/batches/20261013-memory-retry-waking/20261013T032243621Z-b8083e79a8524fe79ac16adaf3ef290f",
+    "manifestSha256": "b2e14a0d5362c78de4a2ae0fc63e2559c998a15e01ddfefe16007716d00ec537",
+    "verified": true,
+    "oldLibFileCount": 246
+  },
+  "deployed": {
+    "at": "2026-10-13T03:32:47.4071826Z",
+    "libFileCount": 248,
+    "acceptedManifestSha256": "69f6020958c24b5b41e6a195480ba1f65b3ce7f2036688512e590c7eac267231",
+    "libManifestSha256": "c6aa8f23433b23cfa337b3191690710d18673e68e571a70816e0baf5a5218174",
+    "parameters": {
+      "consolidationTimeoutMs": 600000,
+      "consolidationMaxRetries": 2,
+      "backgroundTimeoutMs": 120000,
+      "retryDelayMs": 300000
+    },
+    "unrelatedParsedConfigUnchanged": true
+  },
+  "check": {
+    "command": "start-hdsi.cmd --check",
+    "exitCode": 0,
+    "networkRequestsMade": false
+  },
+  "preserved": {
+    "rowFingerprintsUnchanged": true,
+    "outboxRowsUnchanged": true,
+    "protocolVersions": {
+      "memorySchemaVersion": 3,
+      "dialogueContextVersion": 2,
+      "sharedActivityVersion": 1,
+      "environmentPlanningVersion": 2,
+      "memoryCapacityVersion": 1
+    },
+    "paused": true,
+    "unfinishedTurnCount": 1,
+    "narrativeCheckpointRepairCount": 2,
+    "maintenanceStatusCounts": {
+      "done": 11
+    },
+    "outboxStatusCounts": {
+      "confirmed": 137
+    },
+    "modelRunRecordsTablePresent": false,
+    "files": {
+      "runtime/data/hdsi-remake.sqlite": {
+        "before": {
+          "exists": true,
+          "bytes": 12496896,
+          "sha256": "8c15f33e4e59ed9e91fda384c94dbc0b7560d98066b49f7892c0ca0fe395878d"
+        },
+        "after": {
+          "exists": true,
+          "bytes": 12496896,
+          "sha256": "8c15f33e4e59ed9e91fda384c94dbc0b7560d98066b49f7892c0ca0fe395878d"
+        },
+        "unchanged": true
+      },
+      "runtime/data/hdsi-remake.sqlite-wal": {
+        "before": {
+          "exists": true,
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "after": {
+          "exists": true,
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "unchanged": true
+      },
+      "runtime/data/hdsi-remake.sqlite-shm": {
+        "before": {
+          "exists": true,
+          "bytes": 32768,
+          "sha256": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb"
+        },
+        "after": {
+          "exists": true,
+          "bytes": 32768,
+          "sha256": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb"
+        },
+        "unchanged": true
+      },
+      "runtime/koishi.yml": {
+        "before": {
+          "exists": true,
+          "bytes": 649,
+          "sha256": "9c9d932103879723b8bf44e78f34174394413379fd80c92aaefa3d48f141f019"
+        },
+        "after": {
+          "exists": true,
+          "bytes": 649,
+          "sha256": "9c9d932103879723b8bf44e78f34174394413379fd80c92aaefa3d48f141f019"
+        },
+        "unchanged": true
+      }
+    }
+  },
+  "stopped": {
+    "checkedAt": "2026-10-13T03:33:25.5538060Z",
+    "descriptorAbsent": true,
+    "remainingTrackedProcesses": 0,
+    "possibleWorkers": 0,
+    "listenersOnServicePorts": 0
+  },
+  "deploymentInterruption": {
+    "reason": "PowerShell converted null File.Replace backup path to empty string",
+    "resolved": true,
+    "resolution": "Config-only recovery with a new explicit atomic backup path; actual replacement overload verified on synthetic files; lib, config, data and backups reverified."
+  },
+  "serviceStarted": false,
+  "resumeExecuted": false
+}
