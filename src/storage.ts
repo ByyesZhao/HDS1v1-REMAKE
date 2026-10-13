@@ -24,12 +24,14 @@ export const isUnfinishedTurn=(t:TurnRecord)=>!t.done&&t.legacyDisposition!=='su
 export const environmentTables = ['environment_batches','environment_steps','school_plans','school_plan_items','school_instances','school_notices','school_knowledge','school_progress','school_weeks'] as const;
 tables.push('message_attachments','image_assets','image_observations',...environmentTables,'dialogue_episodes','dialogue_activity_links','chat_episodes','chat_index_metadata');
 export class Storage {
+  static initializeModelRunHistory(storage:Pick<Storage,'prepare'>):void {storage.prepare('CREATE TABLE IF NOT EXISTS model_run_records(id TEXT PRIMARY KEY,data TEXT NOT NULL)').run();}
   private readonly db: DatabaseSync;
   constructor(path: string,options:{readOnly?:boolean;dialogueIdleMinutes?:number}={}) {
     if (!options.readOnly&&path !== ':memory:') mkdirSync(dirname(path), { recursive: true });
     this.db = new DatabaseSync(path,{readOnly:options.readOnly??false});
     this.db.function('hdsi_epoch_ms',{deterministic:true},value=>{const n=typeof value==='string'?Date.parse(value):NaN;return Number.isFinite(n)?n:null;});
     if(options.readOnly)return;
+    Storage.initializeModelRunHistory(this);
     this.db.exec('PRAGMA journal_mode = WAL; PRAGMA synchronous = FULL;');
     this.db.exec('CREATE TABLE IF NOT EXISTS state (key TEXT PRIMARY KEY, data TEXT NOT NULL)');
     for (const table of tables) this.db.exec(`CREATE TABLE IF NOT EXISTS ${table} (id TEXT PRIMARY KEY, data TEXT NOT NULL)`);

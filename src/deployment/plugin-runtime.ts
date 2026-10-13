@@ -1,3 +1,4 @@
+import {ModelRunHistory} from '../model/run-history';
 import {dirname,join} from 'node:path';
 import {IncomingMediaStore} from '../input-media/store';
 import {IncomingAssets,AttachmentResolver} from '../input-media/assets';
@@ -79,7 +80,7 @@ export function createPluginRuntimeSync(ctx:Context,config:Config,settings:Story
   }
   const mediaStore=new IncomingMediaStore(storage);
   const mediaAssets=new IncomingAssets(mediaStore,join(dirname(databasePath),'incoming-media'),new AttachmentResolver(fetch,async file=>{const b=bot() as unknown as {getImage?:(file:string)=>Promise<{url?:string;base64?:string}>;internal?:{getImage?:(file:string)=>Promise<{url?:string;base64?:string}>}};const api=b.internal?.getImage?b.internal:b;return api.getImage?api.getImage(file):{};}));
-  const models = new ModelClient(new ChatCompletionsTransport(task => connectionFor(settings, task),fetch,ref=>mediaAssets.resolveImageAsset(ref)));
+  const models = new ModelClient(new ChatCompletionsTransport(task => connectionFor(settings, task),fetch,ref=>mediaAssets.resolveImageAsset(ref)),undefined,2,new ModelRunHistory(storage,clock));
   const web=assembleWeb(storage,settings,clock,managedBrowser?.provider);
   const incomingMedia=new IncomingMediaService(mediaStore,mediaAssets,models,{enabled:settings.visualInput.enabled,recentSegments:settings.memory.contextLimits.recentDialogueSegments},web);
   void incomingMedia.primeStickerObservations();

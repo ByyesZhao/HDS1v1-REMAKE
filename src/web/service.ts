@@ -1,3 +1,4 @@
+import type {CheckpointArchiveReason} from '../model/run-history';
 import {hydrateResult} from './persistence';
 import { createHash } from 'node:crypto';
 import type { Clock } from '../types';
@@ -71,13 +72,13 @@ export class WebSearchService {
   releaseOwner(ownerType:ModelRunRef['ownerType'],ownerId:string):void {this.cache.delete(`${ownerType}:${ownerId}`);}
   // The caller must settle the owner's entire execution before entering here.
   // Web locks alone do not cover model checkpoint writes or cancellation finally blocks.
-  finalizeOwner(ownerType:ModelRunRef['ownerType'],ownerId:string):Promise<void> {
+  finalizeOwner(ownerType:ModelRunRef['ownerType'],ownerId:string,reason:CheckpointArchiveReason='completed'):Promise<void> {
     const key=`${ownerType}:${ownerId}`,existing=this.finalizations.get(key);if(existing)return existing;
     const pending=this.store.ownerRunIds(ownerType,ownerId).flatMap(id=>{const lock=this.locks.get(id);return lock?[lock]:[];});
-    const finalization=Promise.allSettled(pending).then(()=>{this.releaseOwner(ownerType,ownerId);this.compactOwnerCheckpoint(ownerType,ownerId);}).finally(()=>{this.finalizations.delete(key);});
+    const finalization=Promise.allSettled(pending).then(()=>{this.releaseOwner(ownerType,ownerId);this.compactOwnerCheckpoint(ownerType,ownerId,reason);}).finally(()=>{this.finalizations.delete(key);});
     this.finalizations.set(key,finalization);return finalization;
   }
-  compactOwnerCheckpoint(ownerType:ModelRunRef['ownerType'],ownerId:string):void {this.store.compactOwnerCheckpoint(ownerType,ownerId);}
+  compactOwnerCheckpoint(ownerType:ModelRunRef['ownerType'],ownerId:string,reason:CheckpointArchiveReason='completed'):void {this.store.compactOwnerCheckpoint(ownerType,ownerId,reason);}
   statusSummary(currentOwners:readonly import('./types').WebOwnerRef[]){return {...this.store.statusSummary(currentOwners),enabled:this.config.enabled,limits:{successReads:this.config.maxSuccessReads,failures:this.config.maxFailures}};}
   status(){return this.store.operationalStatus();}
 }

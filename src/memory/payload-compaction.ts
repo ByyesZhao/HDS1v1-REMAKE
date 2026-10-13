@@ -1,3 +1,5 @@
+import {ModelRunHistory,archiveAndClearCheckpoints} from '../model/run-history';
+import {systemClock} from '../time';
 import type {StatementSync} from 'node:sqlite';
 import type {ISOTime} from '../types';
 import type {EnvironmentStep} from '../environment/types';
@@ -42,8 +44,9 @@ export function compactCompletedPayloads(db:PayloadConnection,limit=50,options:P
  const present=tables(db),updated={indexJobs:0,maintenanceJobs:0,postJobs:0,webSessions:0,environmentSteps:0};let totalUpdated=0;
  const selectedSpecs=specs(present);
  for(const s of selectedSpecs){if(!present.has(s.table)||totalUpdated===limit)continue;
-  const result=db.prepare(`UPDATE ${s.table} SET data=${s.set} WHERE id IN (SELECT id FROM ${s.table} WHERE ${s.where} ORDER BY id LIMIT ?) AND ${s.where}`).run(limit-totalUpdated);
-  updated[s.key]=Number(result.changes);totalUpdated+=updated[s.key];
+  if(s.table==='web_sessions'){updated.webSessions=archiveAndClearCheckpoints(db,new ModelRunHistory(db,options.at?{now:()=>options.at!}:systemClock),s.where,[],'compacted',limit-totalUpdated);}
+  else{const result=db.prepare(`UPDATE ${s.table} SET data=${s.set} WHERE id IN (SELECT id FROM ${s.table} WHERE ${s.where} ORDER BY id LIMIT ?) AND ${s.where}`).run(limit-totalUpdated);updated[s.key]=Number(result.changes);}
+  totalUpdated+=updated[s.key];
  }
  if(options.includeEnvironment&&present.has('environment_steps')&&totalUpdated<limit){
   const rows=db.prepare(`SELECT id,data FROM environment_steps WHERE ${environmentResidual} ORDER BY id LIMIT ?`).all(limit-totalUpdated);

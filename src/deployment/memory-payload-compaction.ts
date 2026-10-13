@@ -1,3 +1,4 @@
+import {Storage} from '../storage';
 import {DatabaseSync} from 'node:sqlite';
 import {copyFileSync,existsSync,mkdirSync} from 'node:fs';
 import {basename,dirname,join} from 'node:path';
@@ -12,6 +13,6 @@ export function compactMemoryPayloads(path:string,options:{stopped:boolean;batch
  if(!Object.values(before).some(Boolean))return {before,after:before,batches:0,totalUpdated:0,hasMore:false,backupPath:null};
  const backupPath=join(options.backupDirectory??join(dirname(path),'backups','memory-payloads'),randomUUID());mkdirSync(backupPath,{recursive:true});for(const suffix of ['','-wal','-shm'])if(existsSync(path+suffix))copyFileSync(path+suffix,join(backupPath,basename(path)+suffix));
  const db=new DatabaseSync(path);let batches=0,totalUpdated=0,hasMore=true;
- try{installPayloadIndexes(db,options);while(batches<maxBatches&&hasMore){db.exec('BEGIN IMMEDIATE');try{const report=compactCompletedPayloads(db,batchSize,{includeEnvironment:options.includeEnvironment,at});db.exec('COMMIT');batches++;totalUpdated+=report.totalUpdated;hasMore=report.hasMore;}catch(error){db.exec('ROLLBACK');throw error;}}}finally{db.close();}
+ try{Storage.initializeModelRunHistory(db);installPayloadIndexes(db,options);while(batches<maxBatches&&hasMore){db.exec('BEGIN IMMEDIATE');try{const report=compactCompletedPayloads(db,batchSize,{includeEnvironment:options.includeEnvironment,at});db.exec('COMMIT');batches++;totalUpdated+=report.totalUpdated;hasMore=report.hasMore;}catch(error){db.exec('ROLLBACK');throw error;}}}finally{db.close();}
  return {before,after:inspectCompletedPayloads(path,options),batches,totalUpdated,hasMore,backupPath};
 }

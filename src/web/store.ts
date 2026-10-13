@@ -1,3 +1,5 @@
+import {ModelRunHistory,archiveAndClearCheckpoints,withModelHistorySavepoint,type CheckpointArchiveReason} from '../model/run-history';
+import {systemClock} from '../time';
 import {decodeCheckpoint,decodeOperation,hydrateResult,toResultRef} from './persistence';
 import {webCheckpointIndex} from '../memory/payload-compaction';
 import { randomUUID } from 'node:crypto';
@@ -7,7 +9,7 @@ type Table='web_sessions'|'web_operations'|'web_materials'|'self_web_read_source
 interface SessionData {ref:ModelRunRef;counters:WebSearchCounters;nextOperationOrdinal:number;checkpoint:WebModelCheckpoint|null;metrics:WebSessionMetrics}
 interface MaterialData {runId:string;material:WebMaterial;firstOperationId:string;provided:boolean}
 export class WebSearchStore {
-  constructor(public readonly storage:Storage){
+  constructor(public readonly storage:Storage,private history=new ModelRunHistory(storage,systemClock)){
     for(const table of ['web_sessions','web_operations','web_materials','self_web_read_sources'])storage.prepare(`CREATE TABLE IF NOT EXISTS ${table}(id TEXT PRIMARY KEY,data TEXT NOT NULL)`).run();
     storage.prepare(webCheckpointIndex).run();
     storage.prepare("CREATE UNIQUE INDEX IF NOT EXISTS web_stage_identity ON web_sessions(json_extract(data,'$.ref.ownerType'),json_extract(data,'$.ref.ownerId'),json_extract(data,'$.ref.stageKey'))").run();
@@ -64,12 +66,11 @@ export class WebSearchStore {
   }
   finishOperation(runId:string,id:string,response:WebSearchResponse):void {this.storage.transaction(()=>{const op=this.operationState(runId,id);this.saveOperation({...op,status:'done',response:toResultRef(response)});});}
   saveCheckpoint(runId:string,checkpoint:WebModelCheckpoint):void {if(checkpoint.formatVersion!==2)throw Error("new web checkpoint must use formatVersion 2");const result=this.storage.prepare("UPDATE web_sessions SET data=json_set(data,'$.checkpoint',json(?)) WHERE id=?").run(JSON.stringify(checkpoint),runId);if(!result.changes)throw new Error('unknown web session');}
-  compactStages(ownerType:ModelRunRef['ownerType'],ownerId:string,stageKeys:readonly string[]):void {
-    const update=this.storage.prepare("UPDATE web_sessions SET data=json_set(data,'$.checkpoint',NULL) WHERE json_extract(data,'$.ref.ownerType')=? AND json_extract(data,'$.ref.ownerId')=? AND json_extract(data,'$.ref.stageKey')=? AND json_extract(data,'$.checkpoint') IS NOT NULL");
-    for(const key of stageKeys)update.run(ownerType,ownerId,key);
+  compactStages(ownerType:ModelRunRef['ownerType'],ownerId:string,stageKeys:readonly string[],reason:CheckpointArchiveReason='superseded'):void {
+    withModelHistorySavepoint(this.storage,()=>{for(const key of stageKeys)archiveAndClearCheckpoints(this.storage,this.history,"json_extract(data,'$.ref.ownerType')=? AND json_extract(data,'$.ref.ownerId')=? AND json_extract(data,'$.ref.stageKey')=?",[ownerType,ownerId,key],reason);});
   }
-  compactOwnerCheckpoint(ownerType:ModelRunRef['ownerType'],ownerId:string):void {
-    this.storage.prepare("UPDATE web_sessions SET data=json_set(data,'$.checkpoint',NULL) WHERE json_extract(data,'$.ref.ownerType')=? AND json_extract(data,'$.ref.ownerId')=? AND json_extract(data,'$.checkpoint') IS NOT NULL").run(ownerType,ownerId);
+  compactOwnerCheckpoint(ownerType:ModelRunRef['ownerType'],ownerId:string,reason:CheckpointArchiveReason='completed'):void {
+    archiveAndClearCheckpoints(this.storage,this.history,"json_extract(data,'$.ref.ownerType')=? AND json_extract(data,'$.ref.ownerId')=?",[ownerType,ownerId],reason);
   }
   ownerRunIds(ownerType:ModelRunRef['ownerType'],ownerId:string):string[] {
     return this.storage.prepare("SELECT json_extract(data,'$.ref.runId') runId FROM web_sessions WHERE json_extract(data,'$.ref.ownerType')=? AND json_extract(data,'$.ref.ownerId')=?").all(ownerType,ownerId).map(row=>String(row.runId));

@@ -19,6 +19,7 @@ it.each([3,2])('launcher readonly check reads schema %i without installing missi
   writeFileSync(join(root,'no-network.cjs'),"global.fetch=()=>{throw Error('network forbidden in launcher check fixture');};");
   const s=new Storage(database);const memories=new MemoryStore(s);memories.migrate(NOW);s.set('memory_schema_version',version);
   for(const row of s.prepare("SELECT name FROM sqlite_master WHERE type='index' AND name LIKE '%_residual'").all())s.prepare('DROP INDEX "'+String(row.name).replaceAll('"','""')+'"').run();
+  s.prepare('DROP TABLE model_run_records').run();
   s.close();const before=readFileSync(database);
   const result=spawnSync(process.execPath,['--require',join(root,'no-network.cjs'),join(runtime,'check.cjs')],{cwd:root,encoding:'utf8',timeout:12000,env:{...process.env,DEEPSEEK_API_KEY:'synthetic-key',QWEN_API_KEY:'synthetic-key'}});
   expect(result.error).toBeUndefined();
@@ -26,7 +27,7 @@ it.each([3,2])('launcher readonly check reads schema %i without installing missi
   else{expect(result.status).not.toBe(0);expect(result.stderr).toContain('memory:migrate');}
   expect(readFileSync(database)).toEqual(before);
   const readonly=new Storage(database,{readOnly:true});
-  try{expect(readonly.prepare("SELECT name FROM sqlite_master WHERE type='index' AND name LIKE '%_residual'").all()).toHaveLength(0);}
+  try{expect(readonly.hasTable('model_run_records')).toBe(false);expect(readonly.prepare("SELECT name FROM sqlite_master WHERE type='index' AND name LIKE '%_residual'").all()).toHaveLength(0);}
   finally{readonly.close();}
  }finally{
   const within=relative(resolve(tmpdir()),resolve(root));if(within.startsWith('..'))throw Error('fixture outside temporary directory');

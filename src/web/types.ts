@@ -16,7 +16,7 @@ export interface LegacyWebModelCheckpoint {lookupRequest?:import('../memory/type
 export type LegacyWebOperationRecord=WebOperationRecord;
 export type WebToolResultRef=Omit<WebSearchResponse,'materials'>&{materialIds:string[]};
 export type WebOperationState=Omit<WebOperationRecord,'response'>&{formatVersion:2;response:WebToolResultRef|null};
-export type WebModelCheckpoint=Omit<LegacyWebModelCheckpoint,'toolResults'>&{formatVersion:2;toolResults:WebToolResultRef[]};
+export type WebModelCheckpoint=Omit<LegacyWebModelCheckpoint,'toolResults'>&{formatVersion:2;toolResults:WebToolResultRef[];executionAttempt?:{retryCycle:number;attemptId:string}};
 export interface WebSessionMetrics {cacheHits:number;providerSearchCalls:number;providerReadCalls:number}
 export interface WebSessionState {ref:ModelRunRef;counters:WebSearchCounters;metrics:WebSessionMetrics;nextOperationOrdinal:number}
 export type WebMaterialMetadata=Omit<WebMaterial,'body'>&{firstOperationId:string;provided:boolean};

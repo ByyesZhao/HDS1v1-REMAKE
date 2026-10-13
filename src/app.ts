@@ -64,7 +64,7 @@ export class HdsiApp {
     let turn!:TurnRecord;
     d.storage.transaction(()=>{
       const {dialogueBinding,chatBinding,activityContext,autonomousIntervalMinutes,...previous}=d.storage.read('turns',turnId)!;
-      d.web?.store.compactStages('turn',turnId,replyBusinessStageKeys(previous.replyFreshness!.generation));
+      d.web?.store.compactStages('turn',turnId,replyBusinessStageKeys(previous.replyFreshness!.generation),'superseded');
       turn={...previous,at:d.clock.now(),inputMessageIds:request.inputMessageIds,triggerTaskIds:request.taskIds,triggerKinds:request.triggerKinds,batchIds:request.batchIds??[],entryMode:d.storage.character().scene.mode,sharedMeta:request.sharedMeta??null,schoolNoticeRefs:request.schoolNoticeRefs??[],replyFreshness:{...previous.replyFreshness!,generation:previous.replyFreshness!.generation+1,scope,inputRevision:request.replyInputRevision??previous.replyFreshness!.inputRevision,state:'generating',quietUntil:null,firstAttemptAt:null,personalRunId:null}};
       if(turn.dialogueWindowVersion===2){turn.chatBinding=d.chat!.bindTurn(turn);turn.activityContext=selectActivityContext(d.storage,turn);}else turn.dialogueBinding=d.dialogue!.bindTurn(turn);
       d.storage.save('turns',turnId,turn);recordReplyTrace(d.storage,turnId,d.clock.now(),{event:'rebound'});assertActiveWindow(d.storage,{requiredMessageIds:turn.inputMessageIds});

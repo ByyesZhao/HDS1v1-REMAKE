@@ -125,7 +125,7 @@ export async function finishPostprocessing(d: Dependencies, turn: TurnRecord): P
     if(!turn.environmentKind){d.memoryIdle?.record('story',completedAt);if(activityChanged(beforeState,d.storage.character()))d.memoryIdle?.record('activity',completedAt);}
     d.storage.save('turns', turn.id, { ...current, done: true, completedAt, frozenResult: null });
     const completedPost=d.storage.read('post_jobs',turn.id)!;d.storage.save('post_jobs',turn.id,{...completedPost,result:null});
-    d.web?.compactOwnerCheckpoint('turn',turn.id);
+    d.web?.compactOwnerCheckpoint('turn',turn.id,'completed');
     if(d.storage.runtime().dialogueContextVersion===2)d.chat?.closeDue(completedAt);else d.dialogue?.closeDue(completedAt);
     assertActiveWindow(d.storage,{requiredMessageIds:c.visibleMessageIds});
   });

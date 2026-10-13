@@ -29,7 +29,7 @@ it.each(['expired_ready_step_schedules_cleanup_before_stale_return','reconcile_c
  p.reconcile(NOW);
  if(route==='committed_owner_uses_same_finalizer')expect(p.applyReady(step.id,NOW)).toBe('applied');
  else{d.clock.advance(86400000);if(route==='scheduler_supersede_is_observed_by_preparation')ensureEnvironmentBatch(d.storage,d.config,d.clock.now());if(route==='expired_ready_step_schedules_cleanup_before_stale_return')expect(p.applyReady(step.id,d.clock.now())).toBe('stale');else p.reconcile(d.clock.now());}
- await p.wait();expect(d.web.store.checkpoint(ref.runId)).toBeNull();expect(d.environmentStore.step(step.id)!.preparationSnapshot).toBeNull();await p.stop();d.storage.close();
+ await p.wait();expect(d.web.store.checkpoint(ref.runId)).toBeNull();expect(JSON.parse(String(d.storage.prepare("SELECT data FROM model_run_records WHERE json_extract(data,'$.runId')=?").get(ref.runId)!.data))).toMatchObject({reason:route==='committed_owner_uses_same_finalizer'?'completed':'superseded'});expect(d.environmentStore.step(step.id)!.preparationSnapshot).toBeNull();await p.stop();d.storage.close();
 });
 
 it('failed_finalization_is_observable_and_retains_observed_id_for_explicit_retry',async()=>{
@@ -68,5 +68,5 @@ it.each(['already-terminal','expired-before','expired-error','expired-result'] a
  const {d,step}=asyncFixture(),snapshot=freezeEnvironmentSnapshot(d,step,NOW);d.environmentStore.saveStep({...step,preparationVersion:0,inputSnapshot:snapshot.input,status:route==='already-terminal'?'superseded':'pending'});const ref=savedWeb(d,step);
  if(route==='expired-before')d.clock.advance(86400000);
  await runEnvironmentStep(d,step.id,async()=>{if(route.startsWith('expired-'))d.clock.advance(86400000);if(route==='expired-error')throw new ModelRequestError('transport');return {stage:'world',changes:[]};});
- expect(d.web.store.checkpoint(ref.runId)).toBeNull();expect(d.environmentStore.step(step.id)?.inputSnapshot).toEqual(snapshot.input);expect(d.environmentStore.step(step.id)?.terminalAudit).toBeUndefined();d.storage.close();
+ expect(d.web.store.checkpoint(ref.runId)).toBeNull();expect(JSON.parse(String(d.storage.prepare("SELECT data FROM model_run_records WHERE json_extract(data,'$.runId')=?").get(ref.runId)!.data))).toMatchObject({reason:'superseded'});expect(d.environmentStore.step(step.id)?.inputSnapshot).toEqual(snapshot.input);expect(d.environmentStore.step(step.id)?.terminalAudit).toBeUndefined();d.storage.close();
 });

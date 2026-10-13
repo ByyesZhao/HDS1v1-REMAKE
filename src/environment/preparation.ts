@@ -51,7 +51,7 @@ export class EnvironmentPreparation {
  const step=this.d.environmentStore.step(stepId);
  if(!step||this.active?.stepId===stepId||step.status!=='committed'&&step.status!=='superseded')return;
  this.compactTerminalPayload(stepId,this.d.clock.now());
- await this.d.web?.finalizeOwner('environment',stepId);
+ await this.d.web?.finalizeOwner('environment',stepId,step.status==='superseded'?'superseded':'completed');
  this.observedStepIds.delete(stepId);
  }
  private scheduleTerminalFinalization(stepId:string,settled?:Promise<void>):void{

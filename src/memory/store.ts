@@ -1,3 +1,5 @@
+import {ModelRunHistory,archiveAndClearCheckpoints,withModelHistorySavepoint} from '../model/run-history';
+import {systemClock} from '../time';
 import {compactCompletedPayloads,installPayloadIndexes,type CompletedPayloadCompactionReport} from './payload-compaction';
 import {assertMessageSources} from '../dialogue/active-consistency';
 import { Storage } from '../storage';
@@ -16,7 +18,7 @@ export function memoryIndexText(owner:MemoryCandidate):string {
   return owner.ownerType==='detail'?`${owner.key}\n${owner.aliases?.join(' ')??''}\n${owner.value}`:`${owner.content}\n${owner.topics.join(' ')}\n${owner.feelingSummary}\n${owner.projectionBasis?.content??''}`;
 }
 export class MemoryStore {
-  constructor(public readonly storage:Storage) {
+  constructor(public readonly storage:Storage,private history=new ModelRunHistory(storage,systemClock)) {
     for(const table of ['learned_background','memory_retention_grants','memory_index_jobs','memory_maintenance_jobs','memory_dirty_owners','memory_audit_reports']) storage.prepare(`CREATE TABLE IF NOT EXISTS ${table}(id TEXT PRIMARY KEY,data TEXT NOT NULL)`).run();
     storage.prepare('CREATE TABLE IF NOT EXISTS memory_awakenings(canonicalMemoryId TEXT NOT NULL,localDate TEXT NOT NULL,firstEffectiveAt TEXT NOT NULL,turnId TEXT NOT NULL,sourceIds TEXT NOT NULL,PRIMARY KEY(canonicalMemoryId,localDate))').run();
     storage.prepare('CREATE TABLE IF NOT EXISTS memory_index(ownerType TEXT NOT NULL,ownerId TEXT NOT NULL,revision INTEGER NOT NULL,configSignature TEXT NOT NULL,vector BLOB NOT NULL,PRIMARY KEY(ownerType,ownerId,revision,configSignature))').run();
@@ -170,8 +172,11 @@ export class MemoryStore {
   saveJob<T extends {id:string}>(table:JobTable,job:T):void {
     let data:any=table==='memory_maintenance_jobs'?{kind:'consolidation',prunedOwnerKeys:[],...job}:job;
     if(data.status==='done')data=table==='memory_maintenance_jobs'?{...data,snapshot:[],readSet:[],result:null}:{...data,text:'',result:undefined};
-    this.storage.prepare(`INSERT INTO ${table}(id,data) VALUES(?,?) ON CONFLICT(id) DO UPDATE SET data=excluded.data`).run(job.id,JSON.stringify(data));
-    if(table==='memory_maintenance_jobs'&&data.status==='done')this.compactMaintenanceCheckpoint(job.id);
+    const save=()=>{
+      this.storage.prepare(`INSERT INTO ${table}(id,data) VALUES(?,?) ON CONFLICT(id) DO UPDATE SET data=excluded.data`).run(job.id,JSON.stringify(data));
+      if(table==='memory_maintenance_jobs'&&data.status==='done')this.compactMaintenanceCheckpoint(job.id);
+    };
+    if(table==='memory_maintenance_jobs'&&data.status==='done')withModelHistorySavepoint(this.storage,save);else save();
   }
   pruneOwnerFromJobs(owner:MemoryOwnerRef,at:string):void {
     const key=`${owner.ownerType}:${owner.ownerId}`;
@@ -201,7 +206,7 @@ export class MemoryStore {
     this.storage.prepare("DELETE FROM memory_audit_reports WHERE EXISTS(SELECT 1 FROM json_each(data,'$.readSet') r WHERE json_extract(r.value,'$.ownerType')=? AND json_extract(r.value,'$.ownerId')=?)").run(owner.ownerType,owner.ownerId);
   }
   private compactMaintenanceCheckpoint(jobId:string):void {
-    if(this.storage.prepare("SELECT 1 FROM sqlite_master WHERE name='web_sessions'").get())this.storage.prepare("UPDATE web_sessions SET data=json_set(data,'$.checkpoint',NULL) WHERE json_extract(data,'$.ref.ownerType')='maintenance' AND json_extract(data,'$.ref.ownerId')=? AND json_extract(data,'$.checkpoint') IS NOT NULL").run(jobId);
+    if(this.storage.prepare("SELECT 1 FROM sqlite_master WHERE name='web_sessions'").get())archiveAndClearCheckpoints(this.storage,this.history,"json_extract(data,'$.ref.ownerType')='maintenance' AND json_extract(data,'$.ref.ownerId')=?",[jobId],'completed');
   }
   activeMaintenanceJobsReferencing(owner:MemoryOwnerRef):MaintenanceJob[]{
     return this.storage.prepare("SELECT data FROM memory_maintenance_jobs WHERE json_extract(data,'$.status') IN ('pending','computing','ready') AND (EXISTS(SELECT 1 FROM json_each(data,'$.readSet') r WHERE json_extract(r.value,'$.ownerType')=? AND json_extract(r.value,'$.ownerId')=?) OR EXISTS(SELECT 1 FROM json_each(data,'$.snapshot') r WHERE json_extract(r.value,'$.ownerType')=? AND json_extract(r.value,'$.ownerId')=?)) ORDER BY julianday(json_extract(data,'$.createdAt')),id").all(owner.ownerType,owner.ownerId,owner.ownerType,owner.ownerId).map(r=>({kind:'consolidation',prunedOwnerKeys:[],...JSON.parse(String(r.data))}));

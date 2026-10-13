@@ -5,6 +5,7 @@ import {countCompletedPayloads,compactCompletedPayloads,installPayloadIndexes} f
 import {freezeEnvironmentSnapshot,digest} from '../src/environment/snapshot';
 import type {EnvironmentStep} from '../src/environment/types';
 import {DatabaseSync} from 'node:sqlite';
+import {Storage} from '../src/storage';
 import {vi} from 'vitest';
 it('bounded old compaction visits each residual once and keeps recovery bodies',()=>{
  const d=fixture(),web=new WebSearchStore(d.storage);d.storage.save('turns','done',{id:'done',done:true} as any);d.storage.save('turns','pending',{id:'pending',done:false} as any);
@@ -72,6 +73,7 @@ it('environment opt-in does not create missing legacy tables or accept an uncont
 it('legacy web checkpoints only use owner tables that exist',()=>{
  const db=new DatabaseSync(':memory:');try{
   db.exec('CREATE TABLE web_sessions(id TEXT PRIMARY KEY,data TEXT NOT NULL); CREATE TABLE turns(id TEXT PRIMARY KEY,data TEXT NOT NULL); CREATE TABLE memory_maintenance_jobs(id TEXT PRIMARY KEY,data TEXT NOT NULL)');
+  Storage.initializeModelRunHistory(db);
   db.prepare('INSERT INTO turns VALUES(?,?)').run('done-turn',JSON.stringify({done:true}));
   db.prepare('INSERT INTO memory_maintenance_jobs VALUES(?,?)').run('done-job',JSON.stringify({status:'done'}));
   const originals=new Map<string,string>();

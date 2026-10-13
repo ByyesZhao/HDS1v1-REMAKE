@@ -71,3 +71,12 @@ it('environment backup contains existing WAL and SHM and reopens original payloa
   const backup=new DatabaseSync(join(result.backupPath!,'db.sqlite'),{readOnly:true});try{expect(backup.prepare("SELECT data FROM environment_steps WHERE id='terminal-0'").get()!.data).toBe(raw.get('terminal-0'));expect(businessRows(backup)).toEqual(business);}finally{backup.close();}
  }finally{db.close();}
 });
+it('legacy CLI dry-run preserves missing history; apply archives before checkpoint deletion',()=>{
+ const {path}=seed(),db=new DatabaseSync(path);db.exec('DROP TABLE model_run_records; CREATE TABLE web_sessions(id TEXT PRIMARY KEY,data TEXT NOT NULL)');
+ const checkpoint={formatVersion:2,input:{body:'legacy private evidence'},repairCount:2,lookupUsed:false,pendingOperationId:null,toolResults:[],repair:{original:'last saved repair',errors:'invalid'}};
+ db.prepare('INSERT INTO turns VALUES(?,?)').run('done-turn',JSON.stringify({id:'done-turn',done:true}));db.prepare('INSERT INTO web_sessions VALUES(?,?)').run('legacy-run',JSON.stringify({ref:{runId:'legacy-run',ownerType:'turn',ownerId:'done-turn',stageKey:'narrative',taskName:'narrative',ordinal:1},checkpoint}));db.close();const bytes=readFileSync(path);
+ const output=execFileSync(process.execPath,['--import','tsx','scripts/compact-memory-payloads.ts',path],{encoding:'utf8'});expect(JSON.parse(output)).toMatchObject({mode:'dry-run',webSessions:1});expect(readFileSync(path)).toEqual(bytes);
+ const readonly=new Storage(path,{readOnly:true});expect(readonly.hasTable('model_run_records')).toBe(false);readonly.close();
+ const result=compactMemoryPayloads(path,{stopped:true});expect(result).toMatchObject({totalUpdated:8,after:{webSessions:0}});
+ const read=new Storage(path,{readOnly:true});try{expect(JSON.parse(String(read.prepare('SELECT data FROM model_run_records').get()!.data))).toMatchObject({type:'checkpoint',reason:'compacted',checkpoint});expect(JSON.parse(String(read.prepare('SELECT data FROM web_sessions').get()!.data)).checkpoint).toBeNull();}finally{read.close();}
+});

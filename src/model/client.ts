@@ -1,3 +1,5 @@
+import {randomUUID} from 'node:crypto';
+import {ModelRunHistory} from './run-history';
 import {hydrateResult,toResultRef} from '../web/persistence';
 import { buildCompletionEnvelope } from './resource-pool';
 import { isStageModelInput } from './context-types';
@@ -22,15 +24,16 @@ function contextLimit(code:string|undefined,message:string):boolean {
   return code==='context_length_exceeded'||/\bcontext length (?:is )?exceeded\b/i.test(message)||/\bmaximum context length is \d+ tokens\b/i.test(message);
 }
 export class ModelClient implements ModelRunner {
-  constructor(private transport: Transport, private lookupDetails?: (query: string) => unknown, private repairLimit = 2) {}
+  constructor(private transport: Transport, private lookupDetails?: (query: string) => unknown, private repairLimit = 2, private history?:ModelRunHistory) {}
   async runModel<T>(task: ModelTask<T>, input: unknown, options: ModelRunOptions = {}): Promise<T> {
     options.signal?.throwIfAborted();
+    const invocationId=randomUUID(),ref=options.runRef??options.web?.ref,runId=ref?.runId??invocationId;let responseSequence=0;
     const policy=task.promptPolicy??buildPromptPolicy(task.name as PromptStage,factsFromInput(input));
     const selectedTask=task.promptPolicy?task:{...task,promptPolicy:policy,prompt:task.prompt+'\n'+policyRules(policy)};
     const web=options.web;
     const checkpoint:WebModelCheckpoint=web?.checkpoint()??{formatVersion:2,input,repairCount:0,lookupUsed:false,pendingOperationId:null,toolResults:[]};
     // Regeneration uses the current business input; the phase identity and confirmed tool progress survive.
-    checkpoint.input=input;
+    checkpoint.input=input;if(options.executionAttempt)checkpoint.executionAttempt={...options.executionAttempt};
     const materialPool=new Map((web?.materials()??[]).map(m=>[m.id,m]));
     const hydrate=(ref:import('../web/types').WebToolResultRef)=>{try{return hydrateResult(ref,materialPool);}catch(error){throw Error(`web run ${web?.id}: ${error instanceof Error?error.message:String(error)}`);}};
     // Validate durable recovery references before replacing a legacy checkpoint or doing new work.
@@ -40,6 +43,7 @@ export class ModelClient implements ModelRunner {
       for(const id of pending.materialIds)if(!materialPool.has(id))throw Error(`web run ${web!.id}: missing web material ${id}`);
       if(pending.response)hydrate(pending.response);
     }
+    const failure=(stage:string,category:string,error:string,rawResponse?:unknown)=>this.history?.recordFailure({invocationId,responseSequence,runId,taskName:task.name,...(ref?{ownerType:ref.ownerType,ownerId:ref.ownerId,stageKey:ref.stageKey}:{}),...options.executionAttempt,stage,category,error,checkpoint,rawResponse});
     const save=()=>{options.signal?.throwIfAborted();web?.saveCheckpoint(checkpoint);};
     const lookup = options.lookup === undefined
       ? this.lookupDetails && (async (request: LookupRequest) => this.lookupDetails!(typeof request === 'string' ? request : request.query))
@@ -59,7 +63,7 @@ export class ModelClient implements ModelRunner {
       const quota=!!web&&!!state&&(state.counters.successReads>=web.limits.successReads||state.counters.failures>=web.limits.failures);
       const tools={web:!!web?.available&&!quota,lookup:!!lookup&&!checkpoint.lookupUsed};
       const materials=[...materialPool.values()];
-      const raw=await this.transport.complete({task:selectedTask,input,repair:checkpoint.repair,lookupResult:checkpoint.privateLookupResult,tools,webMaterials:materials,webResults:checkpoint.toolResults.map(hydrate),webStatus:state?{counters:state.counters,stopReason:quota?'quota':null}:undefined},{signal:options.signal});
+      let raw:unknown;responseSequence++;try{raw=await this.transport.complete({task:selectedTask,input,repair:checkpoint.repair,lookupResult:checkpoint.privateLookupResult,tools,webMaterials:materials,webResults:checkpoint.toolResults.map(hydrate),webStatus:state?{counters:state.counters,stopReason:quota?'quota':null}:undefined},{signal:options.signal});}catch(error){failure('transport',options.signal?.aborted?'interrupted':error instanceof ModelRequestError?error.kind:'request',error instanceof ModelRequestError?error.message:'model transport failed');throw error;}
       options.signal?.throwIfAborted();if(materials.length)web!.markProvided(materials.map(m=>m.id));
       let value:any,operation:ReturnType<typeof parseWebTool>;
       try {
@@ -73,6 +77,7 @@ export class ModelClient implements ModelRunner {
       } catch (error) {
         if (options.signal?.aborted) throw error;
         const errors=error instanceof Error?error.message:String(error);
+        failure('parse','format',errors,raw);
         if(checkpoint.repairCount>=this.repairLimit)throw new ModelFormatError(`${task.name}: ${errors}`);
         checkpoint.repairCount++;checkpoint.repair={original:raw,errors};save();continue;
       }
@@ -131,4 +136,3 @@ export class ChatCompletionsTransport implements Transport {
   }
 }
 const lookupRequestSchema=z.union([z.string(),z.object({query:z.string(),scope:z.enum(['current','archive']),includeDetailHistory:z.boolean()})]);
-
