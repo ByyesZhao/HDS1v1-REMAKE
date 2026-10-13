@@ -1,0 +1,32 @@
+{
+  "baseline": "2eba393cc93b0915ef5b04ba4b3775a3211433ed",
+  "scope": "Inline local Markdown links and heading anchors in docs/v0.5 plus root and docs indexes; documentation-only changes; historical evidence unchanged.",
+  "markdownFiles": 162,
+  "linksChecked": 1336,
+  "errors": [],
+  "nonDocumentationChanges": [],
+  "changedHistoricalEvidence": [],
+  "changedFiles": [
+    "docs/v0.5/README.md",
+    "docs/v0.5/architecture/REMAKE_V0.5.md",
+    "docs/v0.5/records/README.md",
+    "docs/v0.5/records/document-code-crosscheck-20261013/README.md",
+    "docs/v0.5/records/document-code-crosscheck-20261013/evidence/document-verification.json",
+    "docs/v0.5/records/document-code-crosscheck-20261013/evidence/verify-docs.cjs",
+    "docs/v0.5/reference/BACKGROUND_VIEW_MAPPING_20261008.md",
+    "docs/v0.5/reference/MODEL_CALLS_AND_WEB_OPTIONS_20261009.md",
+    "docs/v0.5/reference/V0.5_IMPLEMENTATION_MAP_20261009.md",
+    "docs/v0.5/subsystems/REMAKE_V0.5_CONTEXT.md",
+    "docs/v0.5/subsystems/REMAKE_V0.5_DIRECTORS.md",
+    "docs/v0.5/subsystems/REMAKE_V0.5_EXPRESSION_STICKERS.md",
+    "docs/v0.5/subsystems/REMAKE_V0.5_MEMORY.md",
+    "docs/v0.5/subsystems/REMAKE_V0.5_RECOVERY.md",
+    "docs/v0.5/subsystems/REMAKE_V0.5_SCHEDULING.md",
+    "docs/v0.5/subsystems/REMAKE_V0.5_SHARED_ACTIVITY.md",
+    "docs/v0.5/subsystems/REMAKE_V0.5_WEB_SEARCH.md"
+  ],
+  "whitespaceCheck": {
+    "exitCode": 0,
+    "output": ""
+  }
+}

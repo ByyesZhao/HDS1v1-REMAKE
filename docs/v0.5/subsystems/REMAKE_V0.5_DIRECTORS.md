@@ -2,7 +2,7 @@
 
 2026-10-13新增起床时间规则核对，见[本批记录](../records/memory-retry-waking-20261013/README.md)；本批源实现及完整离线验收完成；正式部署／Git状态以交付为准。其余规则保留下列核对日期。
 
-核对日期：2026-10-11。返回[总架构](../architecture/REMAKE_V0.5.md)。本文描述当前导演职责和环境流程，不要求另建独立进程。
+核对日期：2026-10-13。返回[总架构](../architecture/REMAKE_V0.5.md)。本文描述当前导演职责和环境流程，不要求另建独立进程。
 
 ## 1. 分层职责
 
@@ -93,7 +93,7 @@
 
 起床轮的narrative输入保留原sleepAt／wakeAt，与学校校验使用相同睡眠事实。waking只说明本轮终点到达或越过wakeAt，不授权提前醒。阅读经历必须落在from～at内、不早于publishAt与releasedAt、符合当时实际手机权限；普通非shared状态拒绝半开区间[sleepAt,wakeAt)内阅读，合法睡前阅读仍允许。醒后最早wakeAt可读，不要求happenedAt精确等于带毫秒turn.at。
 
-成功叙事并通过学校校验后才给personal及候选状态清除已经结束的sleep；正式角色仍在原B事务中提交，轮尾继续安排下一晚睡眠。未尝试且未封口的失败轮按恢复时刻重生成，但保留narrative runId和repairCount=2；合法首稿可以继续，再次非法首稿立即失败，不获得新的修补预算。已尝试候选与outputComplete沉默轮仍按原合同接续。实现／恢复边界见[本批交付](../records/memory-retry-waking-20261013/DELIVERY.md)。
+成功叙事并通过学校校验后才给personal及候选状态清除已经结束的sleep；正式角色仍在原B事务中提交，轮尾继续安排下一晚睡眠。因学校阅读时间校验耗尽两次修补、尚未尝试发送且未封口的起床失败轮，按恢复时刻重生成，但保留narrative runId和repairCount=2；合法首稿可以继续，再次非法首稿立即失败，不获得新的修补预算。已尝试候选与outputComplete沉默轮仍按原合同接续。实现／恢复边界见[本批交付](../records/memory-retry-waking-20261013/DELIVERY.md)。
 
 获知和经历正式提交后才成为稳定角色知识；关联活动ID本身不证明获知。同一实体只在实际获知候选中按公开版本、记录版本、获知时间和稳定顺序选取；旧课次现场事实保持历史版本，但不能回退已读的新计划。本轮投影和提交后的查询使用同一规则。
 

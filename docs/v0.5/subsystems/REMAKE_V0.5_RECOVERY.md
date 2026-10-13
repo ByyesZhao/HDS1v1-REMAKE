@@ -2,7 +2,7 @@
 
 2026-10-13新增规则核对：有限整合执行、持久通知与不可变取证，见[本批记录](../records/memory-retry-waking-20261013/README.md)。本批源实现及完整离线验收完成，正式部署／Git状态单列，未执行人工resume。
 
-核对日期：2026-10-11。返回[总架构](../architecture/REMAKE_V0.5.md)。恢复目标是保留已经公开的内容，接续未完成阶段，并让正式效果只提交一次。
+核对日期：2026-10-13。返回[总架构](../architecture/REMAKE_V0.5.md)。恢复目标是保留已经公开的内容，接续未完成阶段，并让正式效果只提交一次。
 
 ## 1. 合同与有限修补
 
@@ -112,6 +112,8 @@
 
 新完成done维护任务清除其网页checkpoint前先归档；pending／computing／failed未完成现场保留，ready结构化结果继续用于应用重试。逐条删除只读取引用该owner的活动任务，晚到结果仍受墓碑与持久状态门禁约束。旧终态恢复正文可用独立载荷回收工具在停服后分批压缩：默认处理索引text/result、维护snapshot/readSet/result、已完成轮post.result及终态owner网页checkpoint；显式`--include-environment`再包含准备版本1环境终态正文和审计摘要。所有选中类别共用每批默认50行，一次默认20批；不足以完成时返回hasMore，可续跑，不删消息、身份、来源、统计或未完成恢复正文。缺失owner表无法证明终态的网页checkpoint保留；工具不会为旧库补建环境表。命令、DB/WAL/SHM完整备份与代码配套恢复见[README](../../../README.md)。
 
+载荷回收压缩的是已终态的活动恢复载荷；网页checkpoint先写入§13的不可变历史再清空活动字段。历史中的输入及模型响应不随回收或记忆删除而消失，因此回收完成不表示整库已删除所有旧正文或保证数据库文件缩小。
+
 旧未完成故事先恢复，后在无后台 prepare 的空档执行进程一次性记忆依据补齐；缺主事件仅报告，已开始或 ready 的后台输入不改，依赖变化由应用门禁判 stale。
 
 ## 8. 历史库与配置改变
@@ -169,7 +171,7 @@ replyTrace只保存选择ID、集合指纹、代际、输入版本、等待期�
 
 ## 13. 不可变模型错误与checkpoint取证
 
-可写Storage增量创建model_run_records(id TEXT PRIMARY KEY, data TEXT NOT NULL)，不提升既有持久协议版本，不回填无法还原的旧历史。ModelClient每次调用产生独立诊断invocationId，failure ID由invocationId、响应序号与类别组成；业务runId／stageKey和修补预算仍原样接续。每份无效响应在检查repairLimit之前保存，包含耗尽预算的最后一稿；前台恢复沿同runId再失败也不会覆盖先前记录。维护执行错误另关联jobId、retryCycle与attemptId。
+可写Storage增量创建model_run_records(id TEXT PRIMARY KEY, data TEXT NOT NULL)，不提升既有持久协议版本，不回填无法还原的旧历史。调用失败的逐响应留存需要向ModelClient注入ModelRunHistory；正式插件已注入，素材CLI等独立脚本未统一注入，不能据此宣称所有CLI调用都有这份历史。已接入历史的ModelClient每次调用产生独立诊断invocationId，failure ID由invocationId、响应序号与类别组成；业务runId／stageKey和修补预算仍原样接续。每份无效响应在检查repairLimit之前保存，包含耗尽预算的最后一稿；前台恢复沿同runId再失败也不会覆盖先前记录。维护执行错误另关联jobId、retryCycle与attemptId。
 
 维护执行的不可变failure category明确区分prepare、archive、apply、timeout和interrupted。未知准备／transport异常不保留任意错误字符串，只记通用准备失败；已知安全ModelRequestError／ModelFormatError和本地归档／应用Error.message经认证字段、Bearer／Basic、常见key／token／password／secret、sk-key及URL用户信息脱敏，正文规范化并限2000字符后加短阶段前缀。不存stack、cause、任意对象属性或transport headers。这些细节仅留私有历史；job.lastError、runtime、通知和status继续使用通用安全摘要。成功重试或人工resume不会抹掉历史诊断；原ModelClient无效raw／checkpoint留存仍按既有取证合同，不宣称任意字符串都能自动识别为秘密。传输错误只保存安全分类／摘要，不包含认证头；不记录token用量或计费。
 

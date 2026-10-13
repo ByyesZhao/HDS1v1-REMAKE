@@ -1,8 +1,10 @@
 # HDSI V0.5：当前文档与审核入口
 
+最新完整文档核对：[2026-10-13文档与代码核对](records/document-code-crosscheck-20261013/README.md)，基线`2eba393`。总架构、8份子系统、3份参考已对照最新源码与既有测试，补齐持久历史／清理边界、模型记录器覆盖范围、起床与调度说明，修正待部署字样及最新交付导航。本轮只更新文档，未重跑产品测试、读取私有配置或操作服务；下列产品验收和部署仍按各自记录日期解释。
+
 最新整合批次：[记忆重试与起床时间边界](records/memory-retry-waking-20261013/README.md)，M1／M2／W1源实现及完整离线验收完成，独立最终复核批准a4e781f并关闭F1／F2。223文件1491项通过、0失败、2项既有跳过（总1493项）；typecheck／build／demo通过，插件合同2文件10项通过，双场景smoke各四阶段提交通过。600秒／首次＋2次自动重试、持久取证及起床输入规则见当前子系统；部署、Git及未启动／未resume范围见[交付](records/memory-retry-waking-20261013/DELIVERY.md)。
 
-此前完整文档核对：[当前代码交叉核对](records/document-code-crosscheck-20261011/README.md)，基线`9f3c73f`，产品代码与`d0a9963`相同。本轮复核现行架构、8份子系统、3份参考，补齐共同活动提交时序、验收超时范围和导航状态，并通过类型检查及4文件35项定向测试；下列历史产品测试、配置核对和部署结果仍按各自记录日期解释。上一轮见[整改后当前说明复核](records/document-post-remediation-sync-20261011/README.md)。
+此前完整文档核对：[当前代码交叉核对](records/document-code-crosscheck-20261011/README.md)，基线`9f3c73f`，产品代码与`d0a9963`相同。该次复核现行架构、8份子系统、3份参考，补齐共同活动提交时序、验收超时范围和导航状态，并通过类型检查及4文件35项定向测试；下列历史产品测试、配置核对和部署结果仍按各自记录日期解释。上一轮见[整改后当前说明复核](records/document-post-remediation-sync-20261011/README.md)。
 
 前次：[综合审核整改交付](records/comprehensive-remediation-20261011/DELIVERY.md)。5项错误修复、流程／性能改进、离线检索工具与独立复核完成；最终217文件1370项及工程门通过。正式部署和最终服务状态以交付页为准；[实施包](plans/comprehensive-remediation-20261011/README.md)保留已完成步骤和未执行的条件在线实验。
 
@@ -41,6 +43,7 @@
 
 | 材料 | 状态 |
 | --- | --- |
+| [最新文档与代码核对](records/document-code-crosscheck-20261013/README.md) | 2eba393基线；12份现行说明及导航核对，修正跨章节遗漏／过宽表述，全部本地链接与标题锚点检查见记录；只改文档 |
 | [记忆重试与起床边界交付](records/memory-retry-waking-20261013/DELIVERY.md) | 223文件1491项通过、0失败、2项既有跳过（总1493项）；typecheck／build／demo通过，插件合同2文件10项通过，双场景smoke各四阶段提交通过；a4e781f独立复核批准，部署／Git及未启动／未resume事实见交付 |
 | [当前代码交叉核对](records/document-code-crosscheck-20261011/README.md) | 9f3c73f基线；修正文档边界与导航，类型检查及4文件35项定向测试通过；未重新核对私有配置或部署 |
 | [整改后当前文档核对](records/document-post-remediation-sync-20261011/README.md) | 5b92794基线；现行说明与源码及导航复核，纯文档更新，不重跑此前产品测试或部署 |

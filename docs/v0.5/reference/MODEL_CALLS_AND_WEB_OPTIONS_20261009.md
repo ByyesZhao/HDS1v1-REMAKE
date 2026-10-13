@@ -1,8 +1,8 @@
 # 当前模型调用与网页搜索配置参考
 
-2026-10-13本批新增整合／审核执行参数：memory.consolidationTimeoutMs=600000、consolidationMaxRetries=2为Schema缺省值；索引继续backgroundTimeoutMs=120000，重试等待retryDelayMs=300000。首次＋最多2次自动重试约束后台执行周期，不是HTTP数，repairLimit=2及网页20／40累计预算不变。审核仍用memory_audit提示／资料投影，实际任务名及连接仍为memory_consolidation；未增加模型连接或改模型／强度。上海时间11:32正式部署已显式写入600000／2，另两项保持120000／300000，其余解析配置完全相同；[部署记录](../records/memory-retry-waking-20261013/DELIVERY.md)及白名单摘要记录实际核验，原始私有配置不入Git。服务保持停止，参数将在用户手动启动后使用；下列旧白名单仍只证明各自原核对日期。
+2026-10-13本批新增整合／审核执行参数：memory.consolidationTimeoutMs=600000、consolidationMaxRetries=2为Schema缺省值；索引继续backgroundTimeoutMs=120000，重试等待retryDelayMs=300000。整合／审核的600000ms覆盖一次后台准备中的模型调用、网页续调用和格式修补，续调用不重新计时。首次＋最多2次自动重试约束后台执行周期，不是HTTP数；默认第三次失败使该任务failed并暂停运行，人工resume仅重开记录的失败任务周期，同jobId／runId及repairLimit=2、网页20／40累计预算保留。审核仍用memory_audit提示／资料投影，实际任务名及连接仍为memory_consolidation；未增加模型连接或改模型／强度。上海时间11:32正式部署已显式写入600000／2，另两项保持120000／300000，其余解析配置完全相同；[部署记录](../records/memory-retry-waking-20261013/DELIVERY.md)及白名单摘要记录实际核验，原始私有配置不入Git。该记录截至2026-10-13上海时间11:33:25确认服务停止，未执行启动或人工resume；不代表本次文档核对时的进程状态。下列旧白名单仍只证明各自原核对日期。
 
-核对日期：2026-10-11，最近基线`9f3c73f`。返回[版本索引](../README.md)。本轮[交叉核对](../records/document-code-crosscheck-20261011/README.md)在上一轮[静态核对](../records/document-post-remediation-sync-20261011/README.md)基础上修正图片验收超时范围，通过类型检查及定向离线测试；未读取私有配置、认证、原背景或正式数据库，未运行服务或模型／搜索请求。下列本地模型、搜索／图片开关与业务参数沿用2026-10-11、源码基线`65f0785`时解析的[配置白名单](../records/document-current-sync-20261011/evidence/effective-models.json)；同日10:43:28（上海时间）的[部署指纹](../records/comprehensive-remediation-20261011/evidence/deployment-postcheck.json)记录两份配置在该部署前后hash相同，不能把它称为本轮重新核验。[配置启用记录](../records/feature-enablement-20261010/README.md)保留启用经过。
+核对日期：2026-10-13，源码基线`2eba393`。返回[版本索引](../README.md)。本轮仅[静态核对](../records/document-code-crosscheck-20261013/README.md)源码、既有测试与记录，未重跑产品测试，未读取私有配置、认证、原背景或正式数据库，未运行服务或模型／搜索请求。2026-10-11基线`9f3c73f`的[交叉核对](../records/document-code-crosscheck-20261011/README.md)曾在前轮[静态核对](../records/document-post-remediation-sync-20261011/README.md)基础上修正图片验收超时范围，并通过当时的类型检查及定向离线测试。下列本地模型、搜索／图片开关与业务参数沿用2026-10-11、源码基线`65f0785`时解析的[配置白名单](../records/document-current-sync-20261011/evidence/effective-models.json)；同日10:43:28（上海时间）的[部署指纹](../records/comprehensive-remediation-20261011/evidence/deployment-postcheck.json)记录两份配置在该部署前后hash相同，不能把它称为本轮重新核验。[配置启用记录](../records/feature-enablement-20261010/README.md)保留启用经过。
 
 ## 1. 本地部署配置的DeepSeek用途
 
@@ -39,6 +39,8 @@
 `src/settings.ts`选择连接，`src/model/client.ts`将其`model`和`reasoning_effort`发到`/chat/completions`。当前10个连接显式low、3个high。未配置强度时，学校连接默认low，其余连接默认high，不能把当前表格当成所有连接的Schema默认值。
 
 格式修补、细节补查后的继续生成、网页搜索／阅读后的继续生成以及对应请求重试，沿用原任务连接与思考强度，不切换其他模型。各阶段搜索计数也不会因此重置。
+
+正式插件装配的ModelClient已接入`ModelRunHistory`：传输失败与每次格式错误（含修补耗尽的最后无效响应）写入不可变`model_run_records`，关联run／owner／任务与可用的执行周期、attempt；格式错误保留原始响应及当时checkpoint，传输错误使用安全分类摘要。阶段／owner清理先在同一事务归档完整checkpoint，再清空活动指针，失败回滚。历史保留输入、补查、修补与材料引用，不自动检索、不自动过期，也不记录token或计费数；普通状态摘要不展示这些私有正文。独立工具是否记录逐次错误取决于是否注入历史记录器，当前`stickers` CLI没有注入，但其网页checkpoint清理仍归档。详见[持久历史交付](../records/memory-retry-waking-20261013/DELIVERY.md)。
 
 记忆`memoryEmbedding`与图库`embedding`当前均为`qwen3.7-text-embedding`、1024维，独立配置、独立用途；不调用DeepSeek，也没有DeepSeek思考强度。当前记忆`semantic=null`，纯语义查询标定尚未启用，不能据向量建索引就宣称正式检索已启用全部语义路径。
 
