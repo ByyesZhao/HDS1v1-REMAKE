@@ -1,0 +1,30 @@
+npm notice run koishi-plugin-hdsi-remake@0.5.1 test
+npm notice run vitest run tests/model-run-history.test.ts tests/web-persistence-v2.test.ts tests/web-recovery.test.ts tests/memory-maintenance-checkpoint.test.ts tests/memory-capacity-prune-race.test.ts tests/memory-payload-compaction.test.ts tests/memory-payload-compaction-cli.test.ts tests/runtime-check-readonly.test.ts tests/environment-web-finalization.test.ts tests/reply-freshness-turn.test.ts tests/recovery.test.ts
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/memory-retry-waking/HDSI-remake
+
+C:\Users\<user>\.codex\worktrees\memory-retry-waking\HDSI-remake\src\deployment\memory-payload-compaction.ts:9
+ if(options.stopped!==true)throw Error('Stop HDSI and supply --stopped before payload compaction');
+                                 ^
+
+Error: Stop HDSI and supply --stopped before payload compaction
+    at compactMemoryPayloads (C:\Users\<user>\.codex\worktrees\memory-retry-waking\HDSI-remake\src\deployment\memory-payload-compaction.ts:9:34)
+    at <anonymous> (C:\Users\<user>\.codex\worktrees\memory-retry-waking\HDSI-remake\scripts\compact-memory-payloads.ts:10:39)
+    at Object.<anonymous> (C:\Users\<user>\.codex\worktrees\memory-retry-waking\HDSI-remake\scripts\compact-memory-payloads.ts:11:104)
+    at Module._compile (node:internal/modules/cjs/loader:1929:14)
+    at Object.transformer (D:\HDSI-remake\node_modules\tsx\dist\register-B1c7OH6V.cjs:22:2188)
+    at Module.load (node:internal/modules/cjs/loader:1651:32)
+    at Module._load (node:internal/modules/cjs/loader:1443:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+    at loadCJSModuleWithModuleLoad (node:internal/modules/esm/translators:372:15)
+    at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:244:9)
+
+Node.js v24.21.0
+
+ Test Files  11 passed (11)
+      Tests  99 passed (99)
+   Start at  10:21:21
+   Duration  16.68s (tests 89%, import 7%, transform 4%)
+
+    Isolate  11 workers spawned · ~93ms startup each (spawn + environment, per file)
+             at least ~931ms faster with isolate: false — reuses workers across files instead of one per file

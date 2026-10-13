@@ -1,0 +1,12 @@
+{
+  "ok": true,
+  "documents": 13,
+  "checkedLocalLinks": 435,
+  "pendingPaths": [],
+  "failures": [],
+  "skippedOutsideScope": [
+    "examples/story.sample.json",
+    "runtime/archive/README.md"
+  ],
+  "allowPending": false
+}

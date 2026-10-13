@@ -1,0 +1,37 @@
+[
+  {
+    "exitCode": 0,
+    "startedAt": "2026-10-13T03:15:26.8690805Z",
+    "name": "final-typecheck",
+    "finishedAt": "2026-10-13T03:15:32.2519187Z"
+  },
+  {
+    "exitCode": 0,
+    "startedAt": "2026-10-13T03:15:32.2816820Z",
+    "name": "final-build",
+    "finishedAt": "2026-10-13T03:15:35.2821741Z"
+  },
+  {
+    "exitCode": 0,
+    "startedAt": "2026-10-13T03:15:35.2860181Z",
+    "name": "final-tests",
+    "finishedAt": "2026-10-13T03:19:15.5161111Z"
+  },
+  {
+    "exitCode": 0,
+    "startedAt": "2026-10-13T03:19:15.5186126Z",
+    "name": "final-demo",
+    "finishedAt": "2026-10-13T03:19:16.4385789Z"
+  },
+  {
+    "exitCode": 0,
+    "startedAt": "2026-10-13T03:19:16.4405291Z",
+    "name": "final-plugin-contract",
+    "finishedAt": "2026-10-13T03:19:19.3440381Z"
+  },
+  {
+    "exitCode": 0,
+    "finishedAt": "2026-10-13T03:19:20.5142582Z",
+    "name": "final-plugin-smoke"
+  }
+]

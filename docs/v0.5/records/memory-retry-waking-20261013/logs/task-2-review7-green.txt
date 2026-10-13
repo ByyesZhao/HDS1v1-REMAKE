@@ -1,0 +1,10 @@
+npm notice run koishi-plugin-hdsi-remake@0.5.1 test
+npm notice run vitest run tests/review7-maintenance.test.ts
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/memory-retry-waking/HDSI-remake
+
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  11:14:38
+   Duration  765ms (transform 65%, import 24%, tests 10%, worker 1%)

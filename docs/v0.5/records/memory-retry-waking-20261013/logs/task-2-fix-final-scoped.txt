@@ -1,0 +1,13 @@
+npm notice run koishi-plugin-hdsi-remake@0.5.1 test
+npm notice run vitest run tests/memory-maintenance-retry-limit.test.ts tests/memory-capacity-upgrade.test.ts tests/memory-projection-retrieval.test.ts tests/memory-v3-recovery.test.ts tests/memory-maintenance-checkpoint.test.ts tests/memory-idle-host.test.ts tests/memory-idle-recovery.test.ts tests/memory-idle-fairness.test.ts tests/memory-v3-maintenance.test.ts tests/model-settings.test.ts tests/memory-capacity-prune-race.test.ts tests/model-run-history.test.ts
+
+ RUN  v5.0.3 C:/Users/<user>/.codex/worktrees/memory-retry-waking/HDSI-remake
+
+
+ Test Files  12 passed (12)
+      Tests  134 passed (134)
+   Start at  11:04:06
+   Duration  15.70s (tests 85%, import 9%, transform 5%)
+
+    Isolate  12 workers spawned · ~94ms startup each (spawn + environment, per file)
+             at least ~1.03s faster with isolate: false — reuses workers across files instead of one per file

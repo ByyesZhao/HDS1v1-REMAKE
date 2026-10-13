@@ -1,0 +1,2 @@
+npm notice run koishi-plugin-hdsi-remake@0.5.1 build
+npm notice run tsc -p tsconfig.build.json

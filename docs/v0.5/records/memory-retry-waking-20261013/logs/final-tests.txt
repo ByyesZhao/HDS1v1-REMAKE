@@ -1,0 +1,20 @@
+npm notice run koishi-plugin-hdsi-remake@0.5.1 test
+npm notice run vitest run --reporter=json --outputFile=C:\Users\<user>\.codex\worktrees\memory-retry-waking\HDSI-remake\.tmp\memory-retry-waking-20261013\final-tests.json
+C:\Users\<user>\.codex\worktrees\memory-retry-waking\HDSI-remake\src\deployment\memory-payload-compaction.ts:9
+ if(options.stopped!==true)throw Error('Stop HDSI and supply --stopped before payload compaction');
+                                 ^
+
+Error: Stop HDSI and supply --stopped before payload compaction
+    at compactMemoryPayloads (C:\Users\<user>\.codex\worktrees\memory-retry-waking\HDSI-remake\src\deployment\memory-payload-compaction.ts:9:34)
+    at <anonymous> (C:\Users\<user>\.codex\worktrees\memory-retry-waking\HDSI-remake\scripts\compact-memory-payloads.ts:10:39)
+    at Object.<anonymous> (C:\Users\<user>\.codex\worktrees\memory-retry-waking\HDSI-remake\scripts\compact-memory-payloads.ts:11:104)
+    at Module._compile (node:internal/modules/cjs/loader:1929:14)
+    at Object.transformer (D:\HDSI-remake\node_modules\tsx\dist\register-B1c7OH6V.cjs:22:2188)
+    at Module.load (node:internal/modules/cjs/loader:1651:32)
+    at Module._load (node:internal/modules/cjs/loader:1443:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+    at loadCJSModuleWithModuleLoad (node:internal/modules/esm/translators:372:15)
+    at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:244:9)
+
+Node.js v24.21.0
+JSON report written to C:/Users/<user>/.codex/worktrees/memory-retry-waking/HDSI-remake/.tmp/memory-retry-waking-20261013/final-tests.json

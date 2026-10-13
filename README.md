@@ -1,5 +1,7 @@
 # HDSI 重制版 V0.5
 
+2026-10-13[记忆整合重试与起床边界修复](docs/v0.5/records/memory-retry-waking-20261013/README.md)已实现并完成离线验收：整合／audit 600秒、首次＋最多2次自动重试、耗尽全局暂停，包含错误／checkpoint取证及起床原睡眠输入。223文件1491项通过、0失败、2项既有跳过（总1493项）；typecheck／build／demo通过，插件合同2文件10项通过，双场景smoke各四阶段提交通过；独立复核关闭两项P2。正式部署与Git状态见交付记录；服务启动及人工resume未执行。
+
 单角色、一对一QQ生活模拟。当前架构入口为[总架构](docs/v0.5/architecture/REMAKE_V0.5.md)，子系统、源码对应与审核材料见[文档索引](docs/v0.5/README.md)。旧架构、已完成方案和旧日志已集中到[历史归档](docs/archive/README.md)，当前规则无需拼接多轮旧rebuttal。
 
 V0.5整理当前实现：普通最近4个完整对话段、活动完整授权原文和结束后记忆召回；7／90／3／30记忆周期及100／1000／500容量；每日06:00世界／校园／课题组／周增量链；普通最新输入15秒静默合批及首次发送前跟进新输入、共同60秒或全文`【推进】`，约10轮软收尾、20轮硬上限；冻结发送与按阶段恢复。
@@ -8,7 +10,7 @@ V0.5是架构文档版本；当前插件与运行包版本为0.5.1，Git版本�
 
 ## 1. 当前状态
 
-最新为[综合审核整改交付](docs/v0.5/records/comprehensive-remediation-20261011/DELIVERY.md)：5项代码问题及流程／性能改进已完成，217文件1370项全量、工程门与独立复核通过。Q2保持原检索参数，Q3仅交付离线工具。正式部署和最终服务状态以交付页记录为准。
+此前为[综合审核整改交付](docs/v0.5/records/comprehensive-remediation-20261011/DELIVERY.md)：5项代码问题及流程／性能改进已完成，217文件1370项全量、工程门与独立复核通过。Q2保持原检索参数，Q3仅交付离线工具。正式部署和最终服务状态以交付页记录为准。
 
 前批交付为[当前审核改进T1～T9](docs/archive/records/current-audit-improvements-20261009/DELIVERY.md)。此前REVIEW26的107／620、ASTRA T1～T13的121／681和R1的122／693保留各批历史含义。ASTRA随后已独立重跑137文件776项并[确认关闭](docs/archive/reviews/post-t1-t9-20261009/REVIEW.md)。环境异步E1～E5及交付后R1／R2、只读启动检查修复均已完成，最终148文件826项及离线验收通过，该批见[修复与正式升级交付](docs/v0.5/records/environment-post-delivery-fixes-20261009/DELIVERY.md)；初批过程见[本批记录](docs/v0.5/records/environment-async-20261009/README.md)。旧证据仍按原批次解释。
 
@@ -194,9 +196,9 @@ npm run stickers -- rebuild - config.local.json runtime/data/hdsi-remake.sqlite
 
 仅目标私聊的管理命令，不作为剧情输入：
 
-- `hdsi.status`：查看暂停、当前阶段、下一调度及维护／检索／页面额度；不展示查询、正文或密钥。
+- `hdsi.status`：查看暂停、当前阶段、下一调度及维护／检索／页面额度，含失败job、周期、执行／失败数和维护通知pending／attempted／sent／failed；不展示查询、正文或密钥。
 - `hdsi.pause`：停止新轮，正常在途轮可继续完成，输入继续保存。
-- `hdsi.resume`：解除暂停，先续办旧轮，再处理新事项。
+- `hdsi.resume`：显式解除暂停；如有维护暂停归属，只为记录的failed job／retryCycle开启新周期，保留同jobId／runId及原修补／工具预算，再先续办旧轮。启动不等于resume。
 
 活动控制全文`【推进】`跳过等待，线下`【动作：…】`表示动作尝试。角色能看到也可不回复。
 
