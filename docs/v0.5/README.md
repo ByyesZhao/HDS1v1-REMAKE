@@ -84,6 +84,8 @@
 
 ## 目录与后续工作
 
+已审核、待实施：[existingLongId 引用权限原计划](plans/existing-long-reference-20261013/README.md)与[审核后实施细节](reviews/existing-long-reference-20261013/EXECUTION_PLAN.md)。[审核](reviews/existing-long-reference-20261013/REVIEW.md)确认根因和方案B，提出2项P2（discarded目标最终校验、恢复权限发送投影）及1项P3（源码复现入口）修订；7文件51项既有回归、类型检查和合成探针通过，仅证明审核基线。原计划／脱敏诊断保持原样；本批产品未实施，未修改正式数据或运行状态。
+
 已实施并完成离线验收：[原记忆重试与起床计划](plans/memory-retry-waking-20261013/README.md)与[原计划审核](reviews/memory-retry-waking-20261013/REVIEW.md)保持原基线含义，正文未改写。R1～R4已纳入实现／回归，原R1～R4及后续F1／F2关闭范围见[新关闭映射](records/memory-retry-waking-20261013/REVIEW_CLOSURE.md)；原8文件58项和合成探针只证明计划审核基线。
 
 最新个人任务合同：[V2](plans/personal-task-contract-20261011/PLAN_V2.md)及[细化步骤](plans/personal-task-contract-20261011/EXECUTION_PLAN.md)已实施；预约专用输出、学校／消息流程及磁盘恢复验收通过，最终220文件1412项通过、2项既有跳过。独立复核与实际部署／服务状态见[交付](records/personal-task-contract-20261011/DELIVERY.md)。原方案、故障依据和审核保留原基线含义。
@@ -98,7 +100,7 @@
 | --- | --- |
 | `architecture/`、`subsystems/` | 当前架构及8份功能规则 |
 | `reference/` | 实现对应、配置和必要参考 |
-| [plans/](plans/README.md) | 已实施的记忆重试／起床修复及功能合同；各计划状态单列，原路径供追溯 |
+| [plans/](plans/README.md) | 已审核待实施的existingLongId修复及已实施功能合同；各计划状态单列，原路径供追溯 |
 | [records/](records/README.md) | 最近交付、过程、最终日志及目录整理 |
 | [reviews/](reviews/README.md) | 本批独立报告、探针和原始证据 |
 | [../archive/](../archive/README.md) | 已完成计划、被替代交付、旧审核和早期红绿日志 |

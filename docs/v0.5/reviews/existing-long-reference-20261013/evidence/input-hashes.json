@@ -1,0 +1,14 @@
+[
+  {
+    "path": "docs/v0.5/plans/existing-long-reference-20261013/README.md",
+    "sha256": "2f96d3ce22f110178454633f475efed6c9c5c082ae5eb9354ff047badc9be941"
+  },
+  {
+    "path": "docs/v0.5/plans/existing-long-reference-20261013/evidence/diagnosis.json",
+    "sha256": "51cbecd0628ecbcd08d86700fb9f17123562646b5ddb11868dc946efed219605"
+  },
+  {
+    "path": "docs/v0.5/plans/existing-long-reference-20261013/evidence/reproduce.cjs",
+    "sha256": "eeb1036a71e67e3f79e09f342485e507c0f6ebe10d73695d585e7905082df742"
+  }
+]

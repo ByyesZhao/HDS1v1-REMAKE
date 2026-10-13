@@ -1,0 +1,93 @@
+{
+  "sourceBaseline": "44cfdbd",
+  "implementation": "src (tsx/cjs)",
+  "postTargetCases": [
+    {
+      "change": "missing",
+      "error": "existingLongId: unknown memory",
+      "canonicalStillResolves": false,
+      "targetStatus": null,
+      "turnDone": false,
+      "savedPostResultRetained": true,
+      "createdShort": false,
+      "modelCalls": 0,
+      "senderCalls": 0,
+      "paused": true
+    },
+    {
+      "change": "discarded",
+      "error": null,
+      "canonicalStillResolves": true,
+      "targetStatus": "discarded",
+      "turnDone": true,
+      "savedPostResultRetained": false,
+      "createdShort": true,
+      "modelCalls": 0,
+      "senderCalls": 0,
+      "paused": false
+    }
+  ],
+  "restoredLookup": [
+    {
+      "format": "raw",
+      "scope": "synthetic proposed permission field, existing transport/recovery code",
+      "inputPermissions": {
+        "shortUpdateIds": [
+          "S"
+        ],
+        "longAwakenIds": [],
+        "existingLongIds": [
+          "L"
+        ]
+      },
+      "lookupPermissions": {
+        "shortUpdateIds": [],
+        "longAwakenIds": [
+          "UNPROVIDED"
+        ],
+        "existingLongIds": [
+          "UNPROVIDED"
+        ]
+      },
+      "providedOwnerIds": [
+        "S"
+      ],
+      "calls": 1,
+      "lookupCalls": 0,
+      "repairCount": 1,
+      "lookupUsed": true
+    },
+    {
+      "format": "projected",
+      "scope": "synthetic proposed permission field, existing transport/recovery code",
+      "inputPermissions": {
+        "shortUpdateIds": [
+          "S"
+        ],
+        "longAwakenIds": [],
+        "existingLongIds": [
+          "L"
+        ]
+      },
+      "lookupPermissions": {
+        "shortUpdateIds": [],
+        "longAwakenIds": [
+          "UNPROVIDED"
+        ],
+        "existingLongIds": [
+          "UNPROVIDED"
+        ]
+      },
+      "providedOwnerIds": [
+        "S"
+      ],
+      "calls": 1,
+      "lookupCalls": 0,
+      "repairCount": 1,
+      "lookupUsed": true
+    }
+  ],
+  "productionDatabaseOpened": false,
+  "realNetworkRequests": 0,
+  "baselineAssertionsPassed": true
+}

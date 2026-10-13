@@ -1,0 +1,31 @@
+{
+  "implementation": "src (tsx/cjs)",
+  "expectedBugReproduced": true,
+  "fixture": "synthetic",
+  "currentOrganizeMemory": {
+    "accepted": false,
+    "error": "memory: existingLongId: unknown memory ID"
+  },
+  "bugReproduced": true,
+  "providedKinds": [
+    "short"
+  ],
+  "directLongIds": [],
+  "transferredLinkedId": "preview-L",
+  "relatedIdOnlyProbe": {
+    "accepted": true
+  },
+  "inventedIdProbe": {
+    "accepted": false,
+    "error": "existingLongId: unknown memory ID"
+  },
+  "application": {
+    "linkedToOriginal": true,
+    "separateLongCreated": false,
+    "retentionUnchanged": true,
+    "progressTimeUnchanged": true,
+    "awakeningsUnchanged": true
+  },
+  "productionDatabaseOpened": false,
+  "networkRequests": 0
+}

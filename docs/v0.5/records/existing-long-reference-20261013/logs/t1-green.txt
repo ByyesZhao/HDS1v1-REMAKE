@@ -1,0 +1,11 @@
+npm notice run koishi-plugin-hdsi-remake@0.5.1 test
+npm notice run vitest run tests/memory-reference-permissions.test.ts tests/review26-memory-create.test.ts tests/memory-event-time.test.ts --maxWorkers=1
+
+ RUN  v5.0.3 D:/HDSI-remake/.tmp/existing-long-reference-052
+
+
+ Test Files  3 passed (3)
+      Tests  36 passed (36)
+   Start at  13:46:10
+   Duration  1.22s (import 45%, transform 31%, tests 22%, worker 2%)
+

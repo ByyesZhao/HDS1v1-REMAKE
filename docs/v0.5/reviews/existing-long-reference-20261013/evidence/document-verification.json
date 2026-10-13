@@ -1,0 +1,37 @@
+{
+  "baseline": "44cfdbdf2e137a4f699728d4f42659bcb89dec31",
+  "scope": "V0.5 links/anchors; original SOL package hashes; only review package, original untracked SOL package, and three indexes allowed.",
+  "markdownFiles": 166,
+  "linksChecked": 1417,
+  "errors": [],
+  "changedOriginalInputs": [],
+  "unexpectedChanges": [],
+  "changedFiles": [
+    "docs/v0.5/README.md",
+    "docs/v0.5/plans/README.md",
+    "docs/v0.5/plans/existing-long-reference-20261013/README.md",
+    "docs/v0.5/plans/existing-long-reference-20261013/evidence/diagnosis.json",
+    "docs/v0.5/plans/existing-long-reference-20261013/evidence/reproduce.cjs",
+    "docs/v0.5/reviews/README.md",
+    "docs/v0.5/reviews/existing-long-reference-20261013/EXECUTION_PLAN.md",
+    "docs/v0.5/reviews/existing-long-reference-20261013/REVIEW.md",
+    "docs/v0.5/reviews/existing-long-reference-20261013/evidence/boundary-results.json",
+    "docs/v0.5/reviews/existing-long-reference-20261013/evidence/document-verification.json",
+    "docs/v0.5/reviews/existing-long-reference-20261013/evidence/input-hashes.json",
+    "docs/v0.5/reviews/existing-long-reference-20261013/evidence/original-reproduction.json",
+    "docs/v0.5/reviews/existing-long-reference-20261013/evidence/reproduce-from-source.cjs",
+    "docs/v0.5/reviews/existing-long-reference-20261013/evidence/review-boundaries.cjs",
+    "docs/v0.5/reviews/existing-long-reference-20261013/evidence/source-reproduction.json",
+    "docs/v0.5/reviews/existing-long-reference-20261013/evidence/verify-review.cjs",
+    "docs/v0.5/reviews/existing-long-reference-20261013/logs/baseline-tests.txt",
+    "docs/v0.5/reviews/existing-long-reference-20261013/logs/typecheck.txt"
+  ],
+  "whitespaceCheck": {
+    "exitCode": 0,
+    "output": ""
+  },
+  "newReviewWhitespace": {
+    "filesChecked": 12,
+    "errors": []
+  }
+}

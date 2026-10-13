@@ -1,0 +1,57 @@
+{
+  "date": "2026-10-13",
+  "timezone": "Asia/Shanghai",
+  "sourceBaseline": "44cfdbdf2e137a4f699728d4f42659bcb89dec31",
+  "status": "diagnosed_not_implemented",
+  "occurrence": {
+    "localTime": "2026-10-13 12:54:08.943 +08:00",
+    "phase": "memory",
+    "error": "existingLongId: unknown memory ID",
+    "initialProvidedOwnerCounts": {
+      "short": 2,
+      "long": 0,
+      "learned": 0
+    },
+    "lookupUsed": false,
+    "referencedIdWasProvidedAs": "short.linkedLongId",
+    "targetExistedBeforeRun": true,
+    "targetKind": "long",
+    "targetMergedInto": null,
+    "targetRetainedFrom": "2026-10-19T06:27:52.133Z",
+    "turnAt": "2026-10-13T04:52:37.890Z",
+    "directLongWhitelist": [],
+    "repairCountBefore": 0,
+    "repairCountAtSuccess": 1,
+    "turnCommitted": true,
+    "originalLongLinkRetained": false,
+    "separateLongCreated": true
+  },
+  "observedOfflineReplay": {
+    "currentWhitelist": "rejected_same_error",
+    "relatedIdOnlyWhitelist": "accepted",
+    "inventedId": "rejected",
+    "inMemoryApplication": {
+      "reusesExistingLong": true,
+      "createsSeparateLong": false,
+      "retainedFromUnchanged": true,
+      "expiresAtUnchanged": true,
+      "lastEventUpdateAtUnchanged": true,
+      "totalAwakeningsUnchanged": true
+    }
+  },
+  "existingTests": {
+    "command": "npm test -- tests/review26-memory-create.test.ts tests/context-channels.test.ts tests/prompt-context-views.test.ts --maxWorkers=1",
+    "files": 3,
+    "passed": 18,
+    "failed": 0,
+    "scope": "baseline_diagnostic_not_fix_acceptance"
+  },
+  "limits": {
+    "productChanges": false,
+    "productionWrites": false,
+    "noAutomaticHistoryMerge": true,
+    "notProofOfSemanticEventIdentity": true,
+    "rawResponsesPromptsPersonaAndCredentialsIncluded": false
+  },
+  "portableProbe": "node docs/v0.5/plans/existing-long-reference-20261013/evidence/reproduce.cjs"
+}

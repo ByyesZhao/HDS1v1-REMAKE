@@ -2,6 +2,8 @@
 
 返回[版本索引](../README.md)。
 
+[existingLongId引用权限计划审核](existing-long-reference-20261013/REVIEW.md)：2026-10-13，源码基线`44cfdbd`（0.5.1）。确认根因并保留方案B，2项P2修订覆盖discarded最终校验和恢复权限发送投影，1项P3修订改用源码复现；附[可交给SOL的实施细节](existing-long-reference-20261013/EXECUTION_PLAN.md)。既有7文件51项、类型检查和合成边界探针通过；产品尚未实施，原计划和诊断保持原样，未操作正式数据或服务。
+
 [记忆整合重试与起床时间边界计划审核](memory-retry-waking-20261013/REVIEW.md)：2026-10-13，源码基线`b730239`（0.5.1）。保留600秒、首次＋2次重试及耗尽全局暂停方向，提出4项P2修订：并发失败的暂停归属、归档异常传播、合法睡前阅读、失败记录唯一身份。现有8文件58项回归及合成边界探针通过；这是原基线的计划审核，正文与证据保留；随后源实现、两项P2补修及a4e781f完整离线验收／独立最终复核已完成，见[新交付](../records/memory-retry-waking-20261013/DELIVERY.md)和[R1～R4关闭映射](../records/memory-retry-waking-20261013/REVIEW_CLOSURE.md)，不能把原58项当本批最终数量。
 
 [个人导演任务合同方案审核](personal-task-contract-20261011/REVIEW.md)：2026-10-11，源码基线`9a14ea4`（0.5.1）。保留方案B，修正1项P2恢复边界问题，附[V2方案](../plans/personal-task-contract-20261011/PLAN_V2.md)与[细化实施文档](../plans/personal-task-contract-20261011/EXECUTION_PLAN.md)；现有6文件50项回归及离线恢复时间／角色探针通过。该记录仅表示审核、修订与执行细化时状态。随后T1～T4已实施，见[交付及最终独立复核](../records/personal-task-contract-20261011/DELIVERY.md)。

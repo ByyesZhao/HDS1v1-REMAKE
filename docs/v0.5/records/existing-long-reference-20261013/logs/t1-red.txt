@@ -1,0 +1,125 @@
+npm notice run koishi-plugin-hdsi-remake@0.5.1 test
+npm notice run vitest run tests/memory-reference-permissions.test.ts --maxWorkers=1
+
+ RUN  v5.0.3 D:/HDSI-remake/.tmp/existing-long-reference-052
+
+ ❯ tests/memory-reference-permissions.test.ts (18 tests | 15 failed) 70ms
+   ❯ memory reference operation permissions (18)
+     × linked preview create has separate permissions from awakening and legacy callers 11ms
+     × provided short authorizes its link but no direct long operations 23ms
+     × learned and merged aliases authorize only the provided identity 5ms
+     × rejects missing targets without partially extending arrays 4ms
+     × rejects wrong-kind targets without partially extending arrays 4ms
+     × rejects discarded targets without partially extending arrays 4ms
+     × rejects discarded-alias targets without partially extending arrays 3ms
+     × null links authorize only short update and snapshots are independent 3ms
+     × raw and projected rows decode without taking authority from claims or contextRefs 4ms
+     × rejects malformed recognized rows: {"retrieved":{}} 1ms
+     × rejects malformed recognized rows: {"retrieved":[{"id":"","kind":"short"}]} 1ms
+     × rejects malformed recognized rows: {"retrieved":[{"id":"S","kind":"short","linkedLongId":123}]} 1ms
+     × rejects malformed recognized rows: {"contextVersion":1,"resources":{"owners":{}}} 1ms
+     × rejects malformed recognized rows: {"retrieved":[null]} 1ms
+     × rejects malformed recognized rows: {"retrieved":[{"id":"L","kind":"mystery"}]} 1ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 15 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/memory-reference-permissions.test.ts > memory reference operation permissions > linked preview create has separate permissions from awakening and legacy callers
+AssertionError: expected [Function] to not throw an error but 'Error: existingLongId: unknown memory…' was thrown
+
+- Expected:
+undefined
+
++ Received:
+"Error: existingLongId: unknown memory ID"
+
+ ❯ tests/memory-reference-permissions.test.ts:21:71
+     19| describe('memory reference operation permissions',()=>{
+     20|  it('linked preview create has separate permissions from awakening and…
+     21|   expect(()=>memoryTask(['e'],[],['S'],[],['L']).parse(linked())).not.…
+       |                                                                       ^
+     22|   expect(()=>memoryTask(['e'],[],['S'],[],['L']).parse(awaken())).toTh…
+     23|   expect(()=>memoryTask(['e'],[],['S']).parse(linked())).toThrow();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/15]⎯
+
+ FAIL  tests/memory-reference-permissions.test.ts > memory reference operation permissions > provided short authorizes its link but no direct long operations
+Error: Cannot find module '/src/memory/references' imported from D:/HDSI-remake/.tmp/existing-long-reference-052/tests/memory-reference-permissions.test.ts
+ ❯ tests/memory-reference-permissions.test.ts:35:80
+     33|  });
+     34|  it('provided short authorizes its link but no direct long operations'…
+     35|   const {store,short}=fixture(),p=empty();const {extendMemoryWritePerm…
+       |                                                                                ^
+     36|   extendMemoryWritePermissions(store,p,[short,short]);
+     37|   expect(p).toEqual({shortUpdateIds:['S'],longAwakenIds:[],existingLon…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/15]⎯
+
+ FAIL  tests/memory-reference-permissions.test.ts > memory reference operation permissions > learned and merged aliases authorize only the provided identity
+Error: Cannot find module '/src/memory/references' imported from D:/HDSI-remake/.tmp/existing-long-reference-052/tests/memory-reference-permissions.test.ts
+ ❯ tests/memory-reference-permissions.test.ts:40:79
+     38|  });
+     39|  it('learned and merged aliases authorize only the provided identity',…
+     40|   const {store,long}=fixture(),p=empty();const {extendMemoryWritePermi…
+       |                                                                               ^
+     41|   const alias={...long,id:'A',ownerId:'A',status:'merged' as const,mer…
+     42|   const learned=store.makeOwner({ownerType:'learned',ownerId:'P'},{con…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/15]⎯
+
+ FAIL  tests/memory-reference-permissions.test.ts > memory reference operation permissions > rejects missing targets without partially extending arrays
+ FAIL  tests/memory-reference-permissions.test.ts > memory reference operation permissions > rejects wrong-kind targets without partially extending arrays
+ FAIL  tests/memory-reference-permissions.test.ts > memory reference operation permissions > rejects discarded targets without partially extending arrays
+ FAIL  tests/memory-reference-permissions.test.ts > memory reference operation permissions > rejects discarded-alias targets without partially extending arrays
+Error: Cannot find module '/src/memory/references' imported from D:/HDSI-remake/.tmp/existing-long-reference-052/tests/memory-reference-permissions.test.ts
+ ❯ tests/memory-reference-permissions.test.ts:51:88
+     49|  });
+     50|  it.each(['missing','wrong-kind','discarded','discarded-alias'])('reje…
+     51|   const {store,long,short,db}=fixture(),p=empty();const {extendMemoryW…
+       |                                                                                        ^
+     52|   if(kind==='missing')db.remove('memories','L');
+     53|   else if(kind==='wrong-kind')store.saveOwner({...long,kind:'short'} a…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/15]⎯
+
+ FAIL  tests/memory-reference-permissions.test.ts > memory reference operation permissions > null links authorize only short update and snapshots are independent
+Error: Cannot find module '/src/memory/references' imported from D:/HDSI-remake/.tmp/existing-long-reference-052/tests/memory-reference-permissions.test.ts
+ ❯ tests/memory-reference-permissions.test.ts:59:111
+     57|  });
+     58|  it('null links authorize only short update and snapshots are independ…
+     59|   const {store,short}=fixture(),p=empty();const {extendMemoryWritePerm…
+       |                                                                                                               ^
+     60|   extendMemoryWritePermissions(store,p,[{...short,linkedLongId:null}])…
+     61|   s.shortUpdateIds.push('U');expect(p).toEqual({shortUpdateIds:['S'],l…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/15]⎯
+
+ FAIL  tests/memory-reference-permissions.test.ts > memory reference operation permissions > raw and projected rows decode without taking authority from claims or contextRefs
+Error: Cannot find module '/src/memory/references' imported from D:/HDSI-remake/.tmp/existing-long-reference-052/tests/memory-reference-permissions.test.ts
+ ❯ tests/memory-reference-permissions.test.ts:64:55
+     62|  });
+     63|  it('raw and projected rows decode without taking authority from claim…
+     64|   const {short}=fixture();const {memoryReferenceRows}=await api();
+       |                                                       ^
+     65|   expect(memoryReferenceRows({retrieved:[short,{id:'d',kind:'detail'}]…
+     66|   expect(memoryReferenceRows({contextVersion:1,context:{},resources:{o…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/15]⎯
+
+ FAIL  tests/memory-reference-permissions.test.ts > memory reference operation permissions > rejects malformed recognized rows: {"retrieved":{}}
+ FAIL  tests/memory-reference-permissions.test.ts > memory reference operation permissions > rejects malformed recognized rows: {"retrieved":[{"id":"","kind":"short"}]}
+ FAIL  tests/memory-reference-permissions.test.ts > memory reference operation permissions > rejects malformed recognized rows: {"retrieved":[{"id":"S","kind":"short","linkedLongId":123}]}
+ FAIL  tests/memory-reference-permissions.test.ts > memory reference operation permissions > rejects malformed recognized rows: {"contextVersion":1,"resources":{"owners":{}}}
+ FAIL  tests/memory-reference-permissions.test.ts > memory reference operation permissions > rejects malformed recognized rows: {"retrieved":[null]}
+ FAIL  tests/memory-reference-permissions.test.ts > memory reference operation permissions > rejects malformed recognized rows: {"retrieved":[{"id":"L","kind":"mystery"}]}
+Error: Cannot find module '/src/memory/references' imported from D:/HDSI-remake/.tmp/existing-long-reference-052/tests/memory-reference-permissions.test.ts
+ ❯ tests/memory-reference-permissions.test.ts:70:31
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/15]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  15 failed | 3 passed (18)
+   Start at  13:44:55
+   Duration  519ms (transform 44%, import 35%, tests 20%, worker 1%)
+
