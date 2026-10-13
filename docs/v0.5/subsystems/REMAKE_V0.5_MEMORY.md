@@ -120,6 +120,8 @@ Q1／Q2离线评估的裁决为`keep_current`：候选未达到质量门槛，�
 | 普通长期占用 | 1000条，含尚未生效的预备摘要 | 容量退出或90天到期，成为归档 |
 | 普通归档 | 500条，归档最长90天 | 超量或归档到期时清除无保护内容 |
 
+这些默认目标由`memory.capacity`配置；三个数量上限及`archiveRetentionDays`均可设为`null`，分别关闭对应数量限制或归档年龄清理，不取消普通长期本身的90天保留规则或引用保护。
+
 短期容量提前退出时，可把对应预备摘要提前生效。普通长期容量退出不会删除原始消息／经历；归档仍可通过授权回忆检索，真实重谈可恢复。
 
 活跃退出优先级为：普通重要度先于高重要度→有效唤醒更少→衰减更高→最近有意义更新更早→事件发生更早→创建更早→稳定身份。不是单凭“最老”或只看“最低唤醒”。
@@ -144,7 +146,7 @@ Q1／Q2离线评估的裁决为`keep_current`：候选未达到质量门槛，�
 
 默认查询Embedding等待1.5秒。整合与固定审核（audit）共用memory.consolidationTimeoutMs=600000，首次失败后最多自动重试consolidationMaxRetries=2次，默认等retryDelayMs=300000再按空闲／睡眠资格执行；索引仍用backgroundTimeoutMs=120000。这是后台执行周期限额，不是HTTP总请求数：格式修补仍为2次，本地补查与网页20／40额度跨同runId接续，不因后台重试或人工恢复重置。验收工具默认300秒与运行限时分开。
 
-维护任务持久保存retryCycle、executionAttemptCount、failureCount、attemptId、settledAttemptId和failedAt。派发前登记执行身份；准备、归档或提交失败在同一attempt只结算一次。计算成功和中间单元提交不清零失败数；ready提交／归档失败复用已保存结果，再次执行只重试归档和提交。第三次失败将任务置failed、retryAt=null，并与全局暂停及独立runtime.maintenancePause归属一起提交。failed仍保留选中对象预留，不能换jobId绕过预算。
+维护任务持久保存retryCycle、executionAttemptCount、failureCount、attemptId、settledAttemptId和failedAt。派发前登记执行身份；准备、归档或提交失败在同一attempt只结算一次。计算成功和中间单元提交不清零失败数；ready提交／归档失败复用已保存结果，再次执行只重试归档和提交。累计失败达到`consolidationMaxRetries + 1`时（默认第三次），任务置failed、retryAt=null，并与全局暂停及独立runtime.maintenancePause归属一起提交；配置为0则首次失败即耗尽。failed仍保留选中对象预留，不能换jobId绕过预算。
 
 Host沿前台串行边界报告“记忆整合重试耗尽，程序已暂停”，每job／retryCycle最多一次自动发送尝试，先持久登记attempted再发送，随后保存sent或failed；崩溃窗口不保证外部必达。status展示失败任务、周期、执行／失败数和通知状态。前台随后失败可更新最近错误，但保留维护暂停归属；人工resume只为被记录的job／周期开启新周期，保持jobId、runId和修补／工具预算，其余failed不清零。重启不是resume。无法可靠写入计数、历史或通知状态时明确报告存储故障并停止派发；不能靠无人等待的Promise或静默重试继续运行。Host保留storageError独立于已消费的错误队列，先等所有在途工作排空，再使安全停止返回存储故障。
 

@@ -1,6 +1,6 @@
 # HDSI V0.5：总架构
 
-核对日期：2026-10-13，最近[文档与代码核对](../records/document-code-crosscheck-20261013/README.md)基线为`2eba393`。本文是当前已实现系统的逻辑总览，包含个人任务合同、记忆维护有限重试及起床时间边界。版本0.5统一架构文档口径；不据文档新增模型、改动运行规则或升级数据。
+核对日期：2026-10-13，最近[文档与代码复核](../records/document-code-recheck-20261013/README.md)基线为`705cccd`；[前轮核对](../records/document-code-crosscheck-20261013/README.md)保留原基线。本文是当前已实现系统的逻辑总览，包含个人任务合同、记忆维护有限重试及起床时间边界。版本0.5统一架构文档口径；不据文档新增模型、改动运行规则或升级数据。
 
 本文只说明系统职责、规则、机制和流程。源码、配置键、数据版本与验证证据集中在[实现对应与现状](../reference/V0.5_IMPLEMENTATION_MAP_20261009.md)，部署见[README](../../../README.md)。旧REMAKE_V0.2系列和历次方案、细化、执行计划保留为历史与技术追溯材料。
 
@@ -107,7 +107,7 @@ flowchart TD
 
 基础记录每个实际故事轮完成；深度合并、压缩和固定信息审核等待最近输入、确认输出、故事完成或活动变化后空闲15分钟。新对话和事件刷新等待，共同活动期间不做深度整理。索引准备和机械清理不等同于深度整理。
 
-整合与固定信息审核的后台准备默认限时600秒，首次执行失败后最多自动重试2次，重试仍需满足原空闲与前台资格。第三次失败暂停整个系统并保留任务、结果和恢复现场；重启不清次数，人工恢复才为所属失败任务开启新周期，原格式修补与网页预算不重置。已有结果的归档／提交重试复用结果，不重新生成。
+整合与固定信息审核的后台准备默认限时600秒，首次执行失败后默认最多自动重试2次，重试仍需满足原空闲与前台资格。达到配置的失败上限（自动重试次数加1，默认第三次失败）后暂停整个系统并保留任务、结果和恢复现场；重启不清次数，人工恢复才为所属失败任务开启新周期，原格式修补与网页预算不重置。已有结果的归档／提交重试复用结果，不重新生成。
 
 详细短期默认7天；同时建立简要长期摘要，普通经历通常在短期退出后生效，重要经历可以立即生效。长期默认90天，真实重谈按不同有效日期计数，三次可续期，累计30个有效日期进入常驻审核。作者背景、具体细节、常驻经历和多事件稳定认识分开保存。
 
@@ -138,7 +138,7 @@ flowchart TD
 | [网页搜索](../subsystems/REMAKE_V0.5_WEB_SEARCH.md) | 20／40独立计数、缓存、恢复与本人查阅 |
 | [报错与恢复](../subsystems/REMAKE_V0.5_RECOVERY.md) | 修补、暂停、生成／发送／提交及环境／后台恢复 |
 
-实现和验收限制见[对应清单](../reference/V0.5_IMPLEMENTATION_MAP_20261009.md)，完整阅读顺序见[当前索引](../README.md)。最新代码交付与复核见[记忆重试与起床边界](../records/memory-retry-waking-20261013/DELIVERY.md)，此前[个人任务合同](../records/personal-task-contract-20261011/DELIVERY.md)、[综合整改](../records/comprehensive-remediation-20261011/README.md)、[导演联网软提示](../records/runtime-web-guidance-20261011/README.md)、[动作限定线下](../records/offline-action-only-20261010/README.md)、[安全停止R1](../records/graceful-stop-r1-20261010/DELIVERY.md)及[回复新鲜度](../records/chat-reply-freshness-20261010/DELIVERY.md)仍属当前能力。本轮[文档核对](../records/document-code-crosscheck-20261013/README.md)只修订说明与导航，历史产品验收、配置和部署证据仍按各自日期解释。旧修订／检查记录在[历史归档](../../archive/README.md)，目录原则见[文档规范](../../DIRECTORY_POLICY.md)。
+实现和验收限制见[对应清单](../reference/V0.5_IMPLEMENTATION_MAP_20261009.md)，完整阅读顺序见[当前索引](../README.md)。最新代码交付与复核见[记忆重试与起床边界](../records/memory-retry-waking-20261013/DELIVERY.md)，此前[个人任务合同](../records/personal-task-contract-20261011/DELIVERY.md)、[综合整改](../records/comprehensive-remediation-20261011/README.md)、[导演联网软提示](../records/runtime-web-guidance-20261011/README.md)、[动作限定线下](../records/offline-action-only-20261010/README.md)、[安全停止R1](../records/graceful-stop-r1-20261010/DELIVERY.md)及[回复新鲜度](../records/chat-reply-freshness-20261010/DELIVERY.md)仍属当前能力。本轮[文档复核](../records/document-code-recheck-20261013/README.md)只修订说明与导航，历史产品验收、配置和部署证据仍按各自日期解释。旧修订／检查记录在[历史归档](../../archive/README.md)，目录原则见[文档规范](../../DIRECTORY_POLICY.md)。
 
 ## 安全停止规则
 
