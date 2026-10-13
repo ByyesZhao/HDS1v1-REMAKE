@@ -5,6 +5,7 @@ import {MemoryLifecycle} from '../src/memory/lifecycle';
 import {MemoryIndex} from '../src/memory/index';
 import {MemoryMaintenance} from '../src/memory/maintenance';
 import {consolidationTask} from '../src/model/contracts';
+import {ModelRunHistory} from '../src/model/run-history';
 import {SerialHost} from '../src/host/runtime';
 import {HdsiApp} from '../src/app';
 import {NOW,setup} from './helpers';
@@ -19,8 +20,9 @@ function ready(d:ReturnType<typeof create>,id='a'){
 }
 it('rolls back a partially written unit, preserves it for delayed application and allows another ready job meanwhile',async()=>{
  const d=create(),a=ready(d),b=ready(d,'b'),save=d.store.saveOwner.bind(d.store);let fail=true;vi.spyOn(d.store,'saveOwner').mockImplementation(row=>{save(row);if(row.id==='a'&&fail)throw Error('synthetic apply failure');});
- expect(d.maintenance.applyOneReady(NOW)).toBe('none');expect(d.store.owner(a)!.content).toBe('旧手机记录');const job=d.store.job<any>('memory_maintenance_jobs','a');expect(job.status).toBe('ready');expect(job.appliedUnitKeys).toEqual([]);expect(job.staleUnitKeys).toEqual([]);expect(job.retryAt).toBe(addMs(NOW,300000));expect(job.lastError).toContain('apply failure');
+ expect(d.maintenance.applyOneReady(NOW)).toBe('none');expect(d.store.owner(a)!.content).toBe('旧手机记录');const job=d.store.job<any>('memory_maintenance_jobs','a');expect(job.status).toBe('ready');expect(job.appliedUnitKeys).toEqual([]);expect(job.staleUnitKeys).toEqual([]);expect(job.retryAt).toBe(addMs(NOW,300000));expect(job.lastError).toBe('记忆整合执行失败，等待重试');
  expect(d.maintenance.applyOneReady(NOW)).toBe('applied');expect(d.store.owner(b)!.content).toBe('新手机记录');expect(d.maintenance.startOne(NOW)).toBe(true);await new Promise<void>(resolve=>setImmediate(resolve));expect(d.maintenance.applyOneReady(NOW)).toBe('applied');expect(d.maintenance.nextDeadline(NOW)).toBe(addMs(NOW,300000));fail=false;expect(d.maintenance.applyOneReady(addMs(NOW,299999))).toBe('none');expect(d.maintenance.applyOneReady(addMs(NOW,300000))).toBe('applied');expect(d.store.owner(a)!.content).toBe('新手机记录');expect(d.store.job<any>('memory_maintenance_jobs','a').lastError).toBeNull();
+ const failures=new ModelRunHistory(d.storage,{now:()=>NOW}).list({ownerType:'maintenance',ownerId:'a'}).filter(record=>record.type==='failure'&&record.stage==='maintenance');expect(failures).toEqual([expect.objectContaining({category:'apply',error:expect.stringContaining('synthetic apply failure')})]);
 });
 it('an index-application failure rolls back its vector and waits rather than recomputing the prepared embedding',()=>{
  const d=create(),row=d.store.makeOwner({ownerType:'detail',ownerId:'phone'},{content:'手机型号',key:'phone',value:'A'},NOW);d.store.saveOwner(row);d.store.queueIndex(row,NOW,d.index.configSignature);const job=d.store.jobs<any>('memory_index_jobs')[0];d.store.saveJob('memory_index_jobs',{...job,status:'ready',result:[1,0]});const save=d.store.saveJob.bind(d.store);let fail=true;vi.spyOn(d.store,'saveJob').mockImplementation((table,value:any)=>{if(fail&&value.status==='done')throw Error('synthetic done failure');save(table,value);});
