@@ -28,7 +28,7 @@ export class MemoryLifecycle {
         const id=`${turnId}:short:${createIndex++}`;
         if(this.store.owner({ownerType:'short',ownerId:id}))continue;
         const existing=change.existingLongId?this.store.canonical(change.existingLongId):null;
-        if(change.existingLongId&&(!existing||existing.kind!=='long'))throw new Error('existingLongId: unknown memory');
+        if(change.existingLongId&&(!existing||existing.kind!=='long'||existing.status==='discarded'))throw new Error('existingLongId: target missing, invalid or discarded');
         const longId=existing?.id??`${id}:long`;
         const short=this.store.makeOwner({ownerType:'short',ownerId:id},{content:change.content,eventSummary:change.eventSummary,feelingSummary:change.feelingSummary,topics:change.topics,sourceIds:change.sourceIds,importance:change.importance,...resolveCreateEventRange(change,existing,at),shortExpiresAt:addMs(at,7*day),linkedLongId:longId},at);
         this.store.saveOwner(short);this.store.queueIndex(short,at);this.store.queueDirty(short,'event',at);

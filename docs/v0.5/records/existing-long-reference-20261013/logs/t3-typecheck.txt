@@ -1,0 +1,6 @@
+npm notice run koishi-plugin-hdsi-remake@0.5.1 typecheck
+npm notice run tsc --noEmit
+tests/memory-existing-long-recovery.test.ts(27,203): error TS2322: Type '{ input: { old: true; }; repairCount: number; lookupUsed: true; pendingOperationId: null; toolResults: never[]; }' is not assignable to type 'WebModelCheckpoint | (Omit<LegacyWebModelCheckpoint, "toolResults"> & { formatVersion: 2; toolResults: WebToolResultRef[]; executionAttempt?: { ...; } | undefined; }) | undefined'.
+  Type '{ input: { old: true; }; repairCount: number; lookupUsed: true; pendingOperationId: null; toolResults: never[]; }' is not assignable to type 'Omit<LegacyWebModelCheckpoint, "toolResults"> & { formatVersion: 2; toolResults: WebToolResultRef[]; executionAttempt?: { ...; } | undefined; }'.
+    Property 'formatVersion' is missing in type '{ input: { old: true; }; repairCount: number; lookupUsed: true; pendingOperationId: null; toolResults: never[]; }' but required in type '{ formatVersion: 2; toolResults: WebToolResultRef[]; executionAttempt?: { retryCycle: number; attemptId: string; } | undefined; }'.
+tests/memory-existing-long-recovery.test.ts(77,144): error TS2683: 'this' implicitly has type 'any' because it does not have a type annotation.

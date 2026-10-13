@@ -1,0 +1,50 @@
+npm notice run koishi-plugin-hdsi-remake@0.5.1 test
+npm notice run vitest run tests/memory-existing-long-recovery.test.ts --maxWorkers=1
+
+ RUN  v5.0.3 D:/HDSI-remake/.tmp/existing-long-reference-052
+
+ ❯ tests/memory-existing-long-recovery.test.ts (12 tests | 3 failed) 3471ms
+   ❯ linked memory final commit and disk recovery (12)
+     × saved result rejects discarded after disk reopen and rolls back earlier changes 321ms
+     × saved result rejects discarded-alias after disk reopen and rolls back earlier changes 310ms
+     × disk recovery preserves web 1/1 and only the remaining repair allowance 282ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/memory-existing-long-recovery.test.ts > linked memory final commit and disk recovery > saved result rejects discarded after disk reopen and rolls back earlier changes
+ FAIL  tests/memory-existing-long-recovery.test.ts > linked memory final commit and disk recovery > saved result rejects discarded-alias after disk reopen and rolls back earlier changes
+AssertionError: promise resolved "undefined" instead of rejecting
+
+- Expected:
+Error {
+  "message": "rejected promise",
+}
+
++ Received:
+undefined
+
+ ❯ tests/memory-existing-long-recovery.test.ts:41:59
+     39|   else {d.store.saveOwner({...d.long,status:'discarded'});if(kind==='d…
+     40|   const beforeHistory=history(d);close(d);d=use({path,seed:false});
+     41|   await expect(new HdsiApp(d.deps).resumeUnfinishedTurn()).rejects.toT…
+       |                                                           ^
+     42|   expect(d.deps.storage.read('turns',d.turn.id)?.done).toBe(false);
+     43|   expect(d.deps.storage.read('post_jobs',d.turn.id)?.result).toEqual(s…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/memory-existing-long-recovery.test.ts > linked memory final commit and disk recovery > disk recovery preserves web 1/1 and only the remaining repair allowance
+TypeError: Cannot read properties of undefined (reading 'signal')
+ ❯ WebSearchService.execute src/web/service.ts:36:13
+
+ ❯ src/web/service.ts:22:178
+ ❯ tests/memory-existing-long-recovery.test.ts:89:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 9 passed (12)
+   Start at  13:54:36
+   Duration  4.22s (tests 85%, transform 11%, import 4%)
+
