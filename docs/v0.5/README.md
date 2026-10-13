@@ -1,115 +1,53 @@
 # HDSI V0.5：当前文档与审核入口
 
-最新完整文档复核：[2026-10-13最新代码复核](records/document-code-recheck-20261013/README.md)，基线`705cccd`，开始时本地／远端main一致。总架构、8份子系统、3份参考已对照源码与既有测试，澄清可配置失败阈值、容量null、基础记忆背景、睡眠调度和搜索／传输边界；本轮只改文档，类型检查及定向验证见记录，未读取私有配置或操作服务。
+当前代码基线为`7138aad`，包版本0.5.2。V0.5是文档体系版本，数据库协议各自独立；版本对应见[实现清单](reference/V0.5_IMPLEMENTATION_MAP_20261009.md#3-版本不能混同)。本次[文档核对](records/document-current-architecture-20261013/README.md)覆盖总架构、8份子系统和3份参考。
 
-前轮完整文档核对：[2026-10-13文档与代码核对](records/document-code-crosscheck-20261013/README.md)，基线`2eba393`。该轮补齐持久历史／清理边界、模型记录器覆盖范围、起床与调度说明，修正待部署字样及最新交付导航；当时未重跑产品测试。下列产品验收和部署仍按各自记录日期解释。
-
-最新整合批次：[记忆重试与起床时间边界](records/memory-retry-waking-20261013/README.md)，M1／M2／W1源实现及完整离线验收完成，独立最终复核批准a4e781f并关闭F1／F2。223文件1491项通过、0失败、2项既有跳过（总1493项）；typecheck／build／demo通过，插件合同2文件10项通过，双场景smoke各四阶段提交通过。600秒／首次＋2次自动重试、持久取证及起床输入规则见当前子系统；部署、Git及未启动／未resume范围见[交付](records/memory-retry-waking-20261013/DELIVERY.md)。
-
-此前完整文档核对：[当前代码交叉核对](records/document-code-crosscheck-20261011/README.md)，基线`9f3c73f`，产品代码与`d0a9963`相同。该次复核现行架构、8份子系统、3份参考，补齐共同活动提交时序、验收超时范围和导航状态，并通过类型检查及4文件35项定向测试；下列历史产品测试、配置核对和部署结果仍按各自记录日期解释。上一轮见[整改后当前说明复核](records/document-post-remediation-sync-20261011/README.md)。
-
-前次：[综合审核整改交付](records/comprehensive-remediation-20261011/DELIVERY.md)。5项错误修复、流程／性能改进、离线检索工具与独立复核完成；最终217文件1370项及工程门通过。正式部署和最终服务状态以交付页为准；[实施包](plans/comprehensive-remediation-20261011/README.md)保留已完成步骤和未执行的条件在线实验。
-
-整改来源：[2026-10-11 文档／代码／性能审核](reviews/comprehensive-audit-20261011/README.md)，基线 `ce7e88e`。该基线发现的4项P2、1项P3代码问题及2类文档问题已关闭，证据以上方综合整改交付为准。原报告保留触发条件、离线探针与改进优先级；189文件1034项是原基线的分次验收记录。暂停缺口仅在Host API交错层复现，线上命令窗口未验证。
-
-此前同日文档核对的源码基线为`65f0785`，[原记录](records/document-current-sync-20261011/README.md)覆盖总架构、8份子系统、3份参考与导航，仅描述当时文档核对。当前整改后的规则、维护命令与验收以上方交付为准；旧批次的“只改文档”不描述本轮产品实施。
-
-此前代码交付[导演联网软提示](records/runtime-web-guidance-20261011/README.md)：仅在实际工具可用时建议世界导演查阅当日重要新闻、三类个人导演按兴趣／需要查阅。此前[动作限定线下](records/offline-action-only-20261010/README.md)将动作表达限定在线下共同活动。[安全停止R1](records/graceful-stop-r1-20261010/DELIVERY.md)与[回复新鲜度T1～T5](records/chat-reply-freshness-20261010/DELIVERY.md)也已交付。各批结果和未验证范围单列在下表及实现对应中；停服／手动重启说明表达部署当时状态，不用于判断当前服务是否运行。
-
-此前[交付后复核](reviews/freshness-graceful-stop-20261010/REVIEW.md)以086cd07为基线：普通回复新鲜度可接受；安全停止原有1项P2（浏览器关闭失败被吞掉，仍报告成功并退出），现已修复，附[修复执行方案](reviews/freshness-graceful-stop-20261010/FIX_PLAN.md)。原组合探针在086cd07复现缺陷，在R1后转绿；原审核及失败日志保留历史含义，修复、独立复核补修与部署状态以[关闭记录](records/graceful-stop-r1-20261010/README.md)为准。
-
-此前[文档同步](records/document-current-sync-20261010/README.md)以源码726eb00为基线，前次[文档核对](records/document-final-audit-20261010/README.md)和[图片／搜索修复交付](records/image-search-post-review-fixes-20261010/DELIVERY.md)保留原基线、原证据及未执行范围，不以本批覆盖历史结论。
-
-默认提供整个 `docs/v0.5/`，从本文件阅读，并附[目录原则](../DIRECTORY_POLICY.md)。当前功能说明为以下10份；归档仅按疑点查阅。
+总架构和子系统只描述当前结构、规则、实现及仍适用的兼容行为。新增能力直接融入所属章节，不在文末累积版本补丁、部署过程或历次测试数字；更新经过、代码基线和验证证据放在records／reviews，原计划保留其编写时含义。
 
 ## 当前说明与阅读顺序
 
-| 顺序 | 材料 | 审核重点 |
+| 顺序 | 材料 | 内容 |
 | --- | --- | --- |
-| 1 | [总架构](architecture/REMAKE_V0.5.md) | 职责、规则、主流程 |
-| 2 | [导演与环境](subsystems/REMAKE_V0.5_DIRECTORS.md) | 四阶段依赖、冻结准备和串行提交 |
-| 3 | [调度与生活状态](subsystems/REMAKE_V0.5_SCHEDULING.md) | 合批、优先级、三槽等待、睡眠和预约 |
-| 4 | [记忆](subsystems/REMAKE_V0.5_MEMORY.md) | 来源、生命周期、容量、空闲整理 |
-| 5 | [共同活动](subsystems/REMAKE_V0.5_SHARED_ACTIVITY.md) | 公开、动作、代写、推进和归属 |
-| 6 | [提示与上下文](subsystems/REMAKE_V0.5_CONTEXT.md) | 四段、活动原文、权限和检索 |
-| 7 | [表达与表情](subsystems/REMAKE_V0.5_EXPRESSION_STICKERS.md) | 意图、分段、概率和图库 |
-| 8 | [网页搜索](subsystems/REMAKE_V0.5_WEB_SEARCH.md) | 20／40、缓存、本人查阅和checkpoint |
-| 9 | [报错与恢复](subsystems/REMAKE_V0.5_RECOVERY.md) | 修补、冻结发送、恢复、lease和版本兼容 |
-| 10 | [实现对应与现状](reference/V0.5_IMPLEMENTATION_MAP_20261009.md) | 源码、配置、差异和验证范围 |
-
-背景用途参考为[已批准映射](reference/BACKGROUND_VIEW_MAPPING_20261008.md)，不是新审批。运行和显式升级命令见[项目README](../../README.md)。
-
-各模型用途及搜索配置见[模型调用与网页搜索参考](reference/MODEL_CALLS_AND_WEB_OPTIONS_20261009.md)。此前2026-10-11的[配置白名单](records/document-current-sync-20261011/evidence/effective-models.json)记录13个已配置连接均Flash，10个low／3个high；用户图观察未单独覆盖，复用Flash/high。此前按用户要求[打开新图识别和Bing搜索](records/feature-enablement-20261010/README.md)，搜索provider为browser，Koishi已配置Puppeteer；综合整改部署记录确认配置文件未改。本轮只核对代码与文档，未重新解析私有配置；配置启用不等于服务已经启动或真实在线质量已验收。
+| 1 | [总架构](architecture/REMAKE_V0.5.md) | 系统职责、关系和故事主流程 |
+| 2 | [导演与环境](subsystems/REMAKE_V0.5_DIRECTORS.md) | 环境链、叙事／个人分工及角色获知 |
+| 3 | [调度与生活状态](subsystems/REMAKE_V0.5_SCHEDULING.md) | 合批、优先级、三槽、预约、睡眠与概率 |
+| 4 | [记忆与固定信息](subsystems/REMAKE_V0.5_MEMORY.md) | 来源、三类操作权限、生命周期、检索和容量 |
+| 5 | [共同活动](subsystems/REMAKE_V0.5_SHARED_ACTIVITY.md) | 公开、动作、代写、时钟、收尾及活动归属 |
+| 6 | [提示与上下文](subsystems/REMAKE_V0.5_CONTEXT.md) | 可见范围、原文窗口、资料池及权限投影 |
+| 7 | [表达与表情素材](subsystems/REMAKE_V0.5_EXPRESSION_STICKERS.md) | 意图保真、分段、图库及用户图片 |
+| 8 | [网页搜索](subsystems/REMAKE_V0.5_WEB_SEARCH.md) | provider、20／40、缓存、本人查阅及恢复 |
+| 9 | [报错与恢复](subsystems/REMAKE_V0.5_RECOVERY.md) | 修补、暂停、提交、补查／保存结果恢复与安全停止 |
+| 10 | [实现对应](reference/V0.5_IMPLEMENTATION_MAP_20261009.md) | 源码、协议版本、参数和验证边界 |
+| 11 | [模型调用与搜索配置](reference/MODEL_CALLS_AND_WEB_OPTIONS_20261009.md) | 连接键、用途、默认值及有日期的部署配置证据 |
+| 12 | [背景用途映射](reference/BACKGROUND_VIEW_MAPPING_20261008.md) | 批准映射、加载及缺失事实初始化规则 |
 
 ## 最新交付与审核
 
-| 材料 | 状态 |
+| 材料 | 状态与范围 |
 | --- | --- |
-| [最新代码与文档复核](records/document-code-recheck-20261013/README.md) | 705cccd基线；12份现行说明及导航复核，澄清配置／调度／搜索边界；类型检查与既有定向测试通过，链接检查见记录；只改文档 |
-| [前轮文档与代码核对](records/document-code-crosscheck-20261013/README.md) | 2eba393基线；12份现行说明及导航核对，修正跨章节遗漏／过宽表述，全部本地链接与标题锚点检查见记录；只改文档 |
-| [记忆重试与起床边界交付](records/memory-retry-waking-20261013/DELIVERY.md) | 223文件1491项通过、0失败、2项既有跳过（总1493项）；typecheck／build／demo通过，插件合同2文件10项通过，双场景smoke各四阶段提交通过；a4e781f独立复核批准，部署／Git及未启动／未resume事实见交付 |
-| [当前代码交叉核对](records/document-code-crosscheck-20261011/README.md) | 9f3c73f基线；修正文档边界与导航，类型检查及4文件35项定向测试通过；未重新核对私有配置或部署 |
-| [整改后当前文档核对](records/document-post-remediation-sync-20261011/README.md) | 5b92794基线；现行说明与源码及导航复核，纯文档更新，不重跑此前产品测试或部署 |
-| [综合审核整改交付](records/comprehensive-remediation-20261011/DELIVERY.md) | 217文件1370项、工程检查与独立复核通过；350合成样本成本比较、恢复矩阵及Q1/Q2完成，Q3工具完成而线上未执行；正式部署状态见交付 |
-| [此前同日文档同步](records/document-current-sync-20261011/README.md) | 65f0785基线；规则／配置／导航重新对照，只修当前说明与入口，历史证据保留 |
-| [导演联网软提示交付](records/runtime-web-guidance-20261011/README.md) | 世界新闻及三类个人兴趣建议，仅实际工具可用时注入；189文件1034项和工程检查通过，已停服构建部署，真实搜索行为待正常运行观察 |
-| [动作限定线下交付](records/offline-action-only-20261010/README.md) | 程序选择合同并检查公共动作包装；189文件1034项及工程检查、复核通过，已停服构建部署 |
-| [安全停止R1交付](records/graceful-stop-r1-20261010/DELIVERY.md) | 浏览器关闭失败传播；188文件1009项及工程检查、定向回归／原审核探针通过；已完成停服编译部署 |
-| [此前文档同步](records/document-current-sync-20261010/README.md) | 726eb00基线；保留当时的配置白名单和链接检查，不代替本次核对 |
-| [新鲜度／安全停止交付后复核](reviews/freshness-graceful-stop-20261010/REVIEW.md)及[修复执行方案](reviews/freshness-graceful-stop-20261010/FIX_PLAN.md) | 新鲜度未发现需修复问题；安全停止R1原为P2，后续修复见[记录](records/graceful-stop-r1-20261010/README.md)，原基线的真实HTTP与离线页面槽组合探针确认错误成功退出，R1后转绿；既有187文件1004项经分次复验通过 |
-| [普通回复新鲜度方案审核](reviews/chat-reply-freshness-20261010/REVIEW.md)与[细化执行方案](reviews/chat-reply-freshness-20261010/EXECUTION_PLAN.md) | 保留方案 B，补齐等待／事件接管、业务代际、图片冻结、资格重选 4 项合同；原基线8文件35项为方案审核证据；T1～T5现已实现，该批990项及部署边界见[交付](records/chat-reply-freshness-20261010/DELIVERY.md) |
-| [回复错位诊断](records/chat-reply-order-20261010/README.md)与[改动方案](plans/chat-reply-freshness-20261010/README.md) | 修复前诊断：15秒正确，但生成输入固定，旧候选仍发送；原调查未改产品／服务。T1～T5已改为首次发送尝试前遇新输入等待并重算，见新鲜度交付 |
-| [查看消息资格交付](records/phone-access-20261010/DELIVERY.md)及[独立复核关闭](records/phone-access-20261010/REVIEW_CLOSURE.md) | 新规则已实施，合同／协议2／磁盘恢复及停服修复工具有回归；最终测试与正式部署状态见交付页 |
-| [查看消息资格计划审核](reviews/phone-access-20261010/PLAN_REVIEW.md) | 设计可继续，无阻断问题；1处非阻断验收措辞澄清，审核时既有定向回归5文件／23项通过；新规则现已实施，见交付记录 |
-| [首次QQ连接排查](records/onebot-connection-20261010/README.md) | 连接方向已修正；用户重启后确认管理命令回复，四阶段环境任务已提交；用户随后已确认普通聊天正常回复；图片与实际搜索的在线质量未由本次核对验证 |
-| [图片／搜索正式配置启用](records/feature-enablement-20261010/README.md) | 两项开关打开、browser／Bing与Puppeteer就绪配置；只读启动检查通过，仍由用户手动启动／重启 |
-| [前次文档核对](records/document-final-audit-20261010/README.md) | c4477da原基线的规则与配置核对；保留当时结果，当前内容以本次文档同步为准 |
-| [图片／搜索修复交付](records/image-search-post-review-fixes-20261010/DELIVERY.md) | R1～R5与失败回归；dom-v2；175文件920项、类型/构建/demo/双场景smoke通过；一次独立审查补修完成（原报告与TDD关闭分别保留） |
-| [图片／搜索交付后复核](reviews/image-search-post-implementation-20261010/REVIEW.md)及[修复执行方案](reviews/image-search-post-implementation-20261010/FIX_PLAN.md) | 基线2a2e77e；4 P2／1 P3已修，关闭与新证据见[交付](records/image-search-post-review-fixes-20261010/DELIVERY.md)；含真实App／Chrome／Koishi离线复现；主体架构保留 |
-| [图片输入交付](records/image-input-20261009/DELIVERY.md) | I1～I6、权限历史观察、冻结恢复、原图清理与显式只读检查；真实图片模型质量未执行 |
-| [本地浏览器搜索交付](records/local-browser-search-20261009/DELIVERY.md) | S1～S5、页槽排空、DOM提取、原工具计数与服务生命周期；Bing公开完整验收通过，DuckDuckGo验证码失败保留 |
-| [此前文档与模型连接核对](records/document-model-audit-20261009/README.md) | 2026-10-09基线的静态记录；当前配置及文档以本次核对为准 |
-| [回复规则历史交付](records/reply-guidance-20261009/DELIVERY.md) | 三条固定口语规则、第四条程序附件分支、纯图输入与沉默控制；150文件840项；无正式迁移或在线调用 |
-| [前批修复／正式升级交付](records/environment-post-delivery-fixes-20261009/DELIVERY.md) | R1／R2及只读启动检查关闭；原批148文件826项；正式库环境2、67图库完整保留 |
-| [R1／R2独立差异复核](reviews/environment-async-20261009/post-delivery/FIX_DIFF_REVIEW.md) | 7文件40项、无新发现；未覆盖后续启动检查附加修复和正式部署 |
-| [交付后复核与修复实施方案](reviews/environment-async-20261009/post-delivery/REVIEW.md) | 基线cc963f8的原报告；1 P2／1 P3现已关闭，原复现／未勾选清单保留历史含义 |
-| [E阶段交付与复跑](records/environment-async-20261009/DELIVERY.md) | 已交付；前台聊天、环境准备、记忆准备可并行等待，业务写入仍串行 |
-| [实施过程](records/environment-async-20261009/IMPLEMENTATION_LOG.md) | E1～E5、失败回归、裁决和验证 |
-| [独立复核原报告](reviews/environment-async-20261009/INDEPENDENT_REVIEW.md) | 基线272437f→2a6b981，1 Important／1 Minor；原结论保留 |
-| [修复关闭说明](records/environment-async-20261009/REVIEW_CLOSURE.md) | 两项已修，新增3项回归及全量804项通过；未冒充第二次独立重审 |
-| [工作量证据](records/environment-async-20261009/evidence/workload-final.json) | H=0／90／180，每档5样本，15/15聊天先于环境响应完成 |
-| [目录整理记录](records/document-organization-20261009/README.md) | 前批整理范围与原迁移清单 |
+| [当前架构文档核对](records/document-current-architecture-20261013/README.md) | 7138aad基线；整合关联记忆权限和恢复规则，分离现行说明与变更记录；类型检查、7文件79项定向回归及源码修复探针通过 |
+| [existingLongId修复与0.5.2交付](records/existing-long-reference-20261013/README.md) | 三类引用权限、确认lookup投影和discarded提交门禁已实现；该批完整验收226文件1530项通过、2项既有跳过；部署及最终停止事实见原记录 |
+| [该批独立代码复核](records/existing-long-reference-20261013/INDEPENDENT_REVIEW.md) | 无发现；原计划审核R1～R3的关闭证据在交付中逐项列明 |
+| [原计划](plans/existing-long-reference-20261013/README.md)与[原审核／实施细节](reviews/existing-long-reference-20261013/REVIEW.md) | 保留修复前基线、原证据及设计过程，不把其中“待实施”解释为当前代码状态 |
 
-环境新库版本2；旧库必须显式停服备份升级，旧冻结任务保留串行兼容。**正式库已显式停服备份升级1→2**；[部署及只读复核摘要](records/environment-post-delivery-fixes-20261009/evidence/formal-upgrade-summary.json)与[检查后指纹](records/environment-post-delivery-fixes-20261009/evidence/formal-postcheck.json)确认图库及非协议数据保持。T1～T9的137／776与其ASTRA复核已收进[历史记录](../archive/records/)和[历史审核](../archive/reviews/)，各自只证明原基线。
+此前的记忆重试／起床边界、个人任务合同、综合整改、回复新鲜度、图片／搜索及环境交付均从[记录索引](records/README.md)追溯。历次文档复核也在该索引保留，不叠加为当前架构正文。各批验收数字只表示其原基线，本次定向核对不代替0.5.2完整验收，也不判断当前服务是否运行。
 
 ## 目录与后续工作
 
-已实施：[existingLongId引用权限修复与0.5.2交付](records/existing-long-reference-20261013/README.md)。create关联／awaken／short更新权限分离；Astra两项P2及一项P3均纳入实现与回归，独立代码复核无发现。完整工程验收、正式部署与Git状态以交付记录为准；原[计划](plans/existing-long-reference-20261013/README.md)及[审核](reviews/existing-long-reference-20261013/REVIEW.md)保持原基线含义。
-
-已实施并完成离线验收：[原记忆重试与起床计划](plans/memory-retry-waking-20261013/README.md)与[原计划审核](reviews/memory-retry-waking-20261013/REVIEW.md)保持原基线含义，正文未改写。R1～R4已纳入实现／回归，原R1～R4及后续F1／F2关闭范围见[新关闭映射](records/memory-retry-waking-20261013/REVIEW_CLOSURE.md)；原8文件58项和合成探针只证明计划审核基线。
-
-最新个人任务合同：[V2](plans/personal-task-contract-20261011/PLAN_V2.md)及[细化步骤](plans/personal-task-contract-20261011/EXECUTION_PLAN.md)已实施；预约专用输出、学校／消息流程及磁盘恢复验收通过，最终220文件1412项通过、2项既有跳过。独立复核与实际部署／服务状态见[交付](records/personal-task-contract-20261011/DELIVERY.md)。原方案、故障依据和审核保留原基线含义。
-
-此前已执行合同：[普通聊天回复跟进新消息](plans/chat-reply-freshness-20261010/README.md)及[细化方案 T1～T5](reviews/chat-reply-freshness-20261010/EXECUTION_PLAN.md)。新规则已实现；原诊断和审核探针保留旧基线，工程交付、独立复核及部署状态见[记录](records/chat-reply-freshness-20261010/README.md)。
-
-此前已执行合同：[查看消息资格与专注场景](plans/phone-access-20261010/README.md)。针对首次聊天中普通文献整理被设为无结束时间不可读状态的问题，已区分查看资格与回应意愿，并强制不可读活动指定结束时间；代码及正式停服修正已完成，实际状态和未验证范围见[交付](records/phone-access-20261010/DELIVERY.md)。
-
-上述回复新鲜度和查看资格的计划与审核保留编写时状态；相关实施和部署已经完成。安全停止R1依据[修复执行方案](reviews/freshness-graceful-stop-20261010/FIX_PLAN.md)也已关闭。综合整改离线合同现已实施，条件语义在线实验未执行，见本页顶部交付。
-
 | 目录 | 用途 |
 | --- | --- |
-| `architecture/`、`subsystems/` | 当前架构及8份功能规则 |
-| `reference/` | 实现对应、配置和必要参考 |
-| [plans/](plans/README.md) | existingLongId原计划及其他功能合同；各计划状态单列，原路径供追溯 |
-| [records/](records/README.md) | 最近交付、过程、最终日志及目录整理 |
-| [reviews/](reviews/README.md) | 本批独立报告、探针和原始证据 |
-| [../archive/](../archive/README.md) | 已完成计划、被替代交付、旧审核和早期红绿日志 |
-| [runtime/archive/](../../runtime/archive/README.md) | 本地完整回退资料与历史测试产物，默认不送审／入Git |
+| architecture／subsystems | 当前总架构及8份子系统规则 |
+| reference | 实现定位、配置含义、兼容和验证边界 |
+| [plans](plans/README.md) | 实施合同、待执行工作；已完成合同以索引中的交付状态为准 |
+| [records](records/README.md) | 交付、文档修订、部署及实际验证过程 |
+| [reviews](reviews/README.md) | 审核结论、关闭映射和原始探针 |
+| [docs/archive](../archive/README.md) | 历史架构、被替代计划、审核与日志 |
+| [runtime/archive](../../runtime/archive/README.md) | 本地完整回退资料及历史测试产物，默认不送审／入Git |
 
-按[目录原则](../DIRECTORY_POLICY.md)维护功能规则，按任务收纳过程，关闭后归档合同并更新导航。此前移动见[E阶段迁移清单](records/environment-async-20261009/evidence/document-moves.json)；本次没有移动目录或改写原始证据。历史日志和JSON保持产生时内容。
+按[目录原则](../DIRECTORY_POLICY.md)维护。原计划、审核、日志和JSON保留产生时内容；当前规则更新后，以记录说明变更及验证范围。记忆检索的条件在线实验等独立后续工作继续以[计划索引](plans/README.md)为准，不能随母任务完成一起标为已验证。
 
 ## 验证与送审范围
 
-本地browser provider已接入，正式配置已启用Bing搜索和新图识别，已完成编译部署。实际使用需HDSI运行且Puppeteer服务就绪，文档不判断当前进程状态。Bing公开候选和正文读取已通过此前工程验收，实际模型续调用质量未验证；记忆 `semantic=null`，纯语义标定未启用。真实QQ持续收发、供应商模型质量、新图在线描述及数月运行未由本批验证。环境准备有同步冻结／提交成本，合成样本不证明所有查询恒定时间。
+默认提供整个docs/v0.5，从本页阅读；审代码时同时提供src、tests、scripts、包和锁文件、公开样例、runtime/check.cjs、runtime/plugin-smoke*.cjs及启动／停止cmd。原缺陷探针按报告指定基线运行，修复后的验收按交付命令运行。
 
-审代码时另提供 `src/`、`tests/`、`scripts/`、包和锁文件、公开样例、`runtime/check.cjs`、`runtime/plugin-smoke*.cjs`和启动／停止cmd。密钥、私有配置、正式库、人物背景及 `runtime/archive/`不属默认送审材料。旧复现按报告指定基线运行，不要求修复后的代码仍重现旧错误。
+源码默认值与有日期的私有配置摘要分开解释。本轮未读取密钥、私有配置、人物正文或正式库，也未启动、停止、部署或调用在线模型／QQ；历史部署和在线验证以各自记录为准。供应商质量、真实视觉效果、长期收发及性能上限不能仅由离线回归推定。

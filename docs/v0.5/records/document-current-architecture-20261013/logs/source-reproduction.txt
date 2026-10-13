@@ -1,0 +1,30 @@
+{
+  "implementation": "src (tsx/cjs)",
+  "expectedBugReproduced": false,
+  "fixture": "synthetic",
+  "currentOrganizeMemory": {
+    "accepted": true
+  },
+  "bugReproduced": false,
+  "providedKinds": [
+    "short"
+  ],
+  "directLongIds": [],
+  "transferredLinkedId": "preview-L",
+  "relatedIdOnlyProbe": {
+    "accepted": true
+  },
+  "inventedIdProbe": {
+    "accepted": false,
+    "error": "existingLongId: ID outside provided create-link permissions"
+  },
+  "application": {
+    "linkedToOriginal": true,
+    "separateLongCreated": false,
+    "retentionUnchanged": true,
+    "progressTimeUnchanged": true,
+    "awakeningsUnchanged": true
+  },
+  "productionDatabaseOpened": false,
+  "networkRequests": 0
+}

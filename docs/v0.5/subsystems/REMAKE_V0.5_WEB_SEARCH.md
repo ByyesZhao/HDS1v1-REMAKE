@@ -1,20 +1,20 @@
 # HDSI V0.5：网页搜索
 
-核对日期：2026-10-13，源码基线`2eba393`。本轮仅对项目源码、既有测试与记录作[静态核对](../records/document-code-crosscheck-20261013/README.md)，未重跑产品测试或在线验收；[2026-10-11静态核对](../records/document-post-remediation-sync-20261011/README.md)保留为历史证据。返回[总架构](../architecture/REMAKE_V0.5.md)。搜索是共用能力模块，各逻辑模型阶段拥有独立资格、正文集合与计数。
+返回[总架构](../architecture/REMAKE_V0.5.md)。搜索是共用能力模块，各逻辑模型阶段拥有独立资格、正文集合与计数。
 
 ## 1. 接入状态
 
-已实现模型工具、独立会话、20／40、缓存、结果不足和恢复，以及本地浏览器 provider。provider 可选 unconfigured 或 browser，browser 可选 Bing／DuckDuckGo。2026-10-11[前次配置白名单](../records/document-current-sync-20261011/evidence/effective-models.json)记录正式配置为enabled=true、provider=browser、engine=bing；Schema缺省仍为关闭／未配置。同日10:43:28（上海时间）的[部署指纹](../records/comprehensive-remediation-20261011/evidence/deployment-postcheck.json)记录故事／Koishi配置在该部署前后未变，本轮未重新读取私有配置。Koishi的Puppeteer与本机Chrome已在此前启用时静态核对；用户启动／重启且服务就绪后才创建故事实例。见[配置启用记录](../records/feature-enablement-20261010/README.md)。
+搜索模块提供模型工具、独立会话、20／40额度、缓存和恢复。provider可选unconfigured或browser，browser可选Bing／DuckDuckGo；Schema缺省为关闭／未配置。启用browser时，运行装配等待Koishi的Puppeteer服务就绪后才创建故事实例，服务丢失和关闭按[恢复§10](REMAKE_V0.5_RECOVERY.md#10-图片与浏览器恢复)处理。配置键及部署配置说明见[模型与搜索参考](../reference/MODEL_CALLS_AND_WEB_OPTIONS_20261009.md)。
 
 浏览器搜索一页返回候选，再读目标完整正文；候选标题／摘要不当正文。article/main还需非纯链接、非仅标题的正文证据，结构性status加载壳继续等待；短正文不加字数阈值。正文按 article、main、Readability 提取，不无条件使用整页 body；导航、页脚、验证／登录壳不能冒充正文。动态主体和页面内导航切换共用原操作时限。旧 webSources 不作兜底；不调用 DeepSeek 原生搜索或付费 API，没有隐藏翻页、换引擎、RSS 或重试。
 
 provider 的 read 返回必填 `bodyFormat:'text'`，正文已在适配边界转换为纯文本。`normalizeMaterial` 仅正规化空白、URL并计 Unicode codepoint，不剥标签、不再次解实体；HTML来源必须显式先调用 `htmlToWebText`。DOM中的比较式、泛型、字面标签和实体文字因此原样保留，已有材料不重新清理。每档正文候选在清理后筛选证据，只拼接没有同档有效祖先的顶层子树，按DOM顺序保留；兄弟节点的真实重复文字不去重。
 
-提取时先在仍连接的原DOM判断计算样式及祖先隐藏，再清理对应克隆；隐藏正文、访问墙、结果项和空态不作证据。存在可见凭据表单时去除登录区域（含标题和引导）；区域边界也必须依据清理后仍有真实正文的独立主体，空main、只有标题／链接或隐藏加载内容不作豁免。只有区域外独立正文才能解除登录墙。当前提取器版本dom-v3/readability-0.6.0，纯文本与嵌套提取修复见[综合整改复核](../records/comprehensive-remediation-20261011/reviews/W1-W3.md)。独立验收脚本启动默认等待60000ms，服务失败或未就绪也会清理并落盘失败；该启动预算不改变产品页面预算。见[此前修复交付](../records/image-search-post-review-fixes-20261010/DELIVERY.md)。
+提取时先在仍连接的原DOM判断计算样式及祖先隐藏，再清理对应克隆；隐藏正文、访问墙、结果项和空态不作证据。存在可见凭据表单时去除登录区域（含标题和引导）；区域边界也必须依据清理后仍有真实正文的独立主体，空main、只有标题／链接或隐藏加载内容不作豁免。只有区域外独立正文才能解除登录墙。当前提取器版本为dom-v3/readability-0.6.0。
 
 所有阶段共用本实例页槽，默认同时分配读取页的上限1、每次页面操作60000ms，含排队、建页、导航及主体等待。取消可先返回，但直到迟到 factory 和真实 close 结算才释放资源；无法证明已关闭则阻挡继续分配／实例替换。只关闭本插件自有页面；该页产生的popup关闭也纳入同一预约的排空，关闭失败且无法证明消失时不得释放预约。
 
-真实公开验收：Bing 返回候选并读取中文／英文目标正文；合成动态／登录页另行验证。DuckDuckGo 当时返回验证码，保留失败报告，不自动绕过或切换。见[搜索交付](../records/local-browser-search-20261009/DELIVERY.md)。这不是现实新闻质量或模型搜索续调用的在线验收。
+验证码、登录墙或无法取得正文的页面返回失败；不自动绕过、换引擎或把候选摘要当作正文。
 
 ## 2. 谁可以使用
 
@@ -37,7 +37,7 @@ provider 的 read 返回必填 `bodyFormat:'text'`，正文已在适配边界转
 - 失败未到40且成功未到20，可继续尝试其他候选或新查询。
 - 达到失败40，即使成功不足20也停止；达到成功20同样停止。
 
-候选列表去重复后逐页尝试。搜索请求可以要求多个成功页面，失败继续补尝试直到满足、候选耗尽或到限；不能以“一页失败”为由禁止剩余额度内继续查询。同阶段新搜索跳过已取得正文的候选，继续找未读页；如果候选全都已读且本次没有新正文，返回“结果不足”并计一次`no_candidates`失败。预算尚未耗尽时，显式`webRead`重读已取得页面则返回原材料、不增加成功计数；重放同一已确认操作也不重复计数。见[本轮复核](../records/document-code-recheck-20261013/README.md)。
+候选列表去重复后逐页尝试。搜索请求可以要求多个成功页面，失败继续补尝试直到满足、候选耗尽或到限；不能以“一页失败”为由禁止剩余额度内继续查询。同阶段新搜索跳过已取得正文的候选，继续找未读页；如果候选全都已读且本次没有新正文，返回“结果不足”并计一次`no_candidates`失败。预算尚未耗尽时，显式`webRead`重读已取得页面则返回原材料、不增加成功计数；重放同一已确认操作也不重复计数。
 
 ## 4. 缓存B
 
@@ -71,7 +71,7 @@ provider 的 read 返回必填 `bodyFormat:'text'`，正文已在适配边界转
 
 阶段、操作、已确认页、计数及模型工具检查点持久保存。中断后同一阶段接续，已确认步骤不重计；未确认操作可能重新执行，不能保证供应商实际请求绝对一次。
 
-当前“压缩／清空checkpoint”均先把完整检查点不可变归档到`model_run_records`，再清空`web_sessions.checkpoint`活动指针；按阶段换代、owner收尾、维护完成及离线载荷回收共用这一规则。归档与清空在同一事务／SAVEPOINT内，归档失败保留活动检查点。归档保留输入、补查、修补及工具材料引用，旧版内嵌正文也原样保留；历史不自动注入新模型调用，不因载荷回收或记忆正文清理而删除，目前无自动过期机制。因此这里的压缩不再代表消除全部历史模型载荷，见[持久历史交付](../records/memory-retry-waking-20261013/DELIVERY.md)。
+当前“压缩／清空checkpoint”均先把完整检查点不可变归档到`model_run_records`，再清空`web_sessions.checkpoint`活动指针；按阶段换代、owner收尾、维护完成及离线载荷回收共用这一规则。归档与清空在同一事务／SAVEPOINT内，归档失败保留活动检查点。归档保留输入、补查、修补及工具材料引用，旧版内嵌正文也原样保留；历史不自动注入新模型调用，不因载荷回收或记忆正文清理而删除，目前无自动过期机制。活动指针压缩不等于删除历史模型载荷，见[恢复§13](REMAKE_V0.5_RECOVERY.md#13-不可变模型错误与checkpoint取证)。
 
 新写入的操作与模型检查点使用 formatVersion=2，工具结果只保存材料引用；完整页面正文保留在 web_materials。模型调用仍得到完整材料与工具结果，不减少页面额度或正文长度。单次模型调用复用已加载材料，部分完成操作恢复时只补读新增材料。旧版内嵌正文格式可直接兼容读取，不在只读时回写；恢复遇到材料引用缺失时，在首次检查点写入或供应商请求前报出 run／material ID，保留原检查点，不用新网页替代原事实。
 
@@ -81,11 +81,11 @@ provider 的 read 返回必填 `bodyFormat:'text'`，正文已在适配边界转
 
 `memory:compact-payloads`默认可回收已确认完成的turn／maintenance及committed／superseded环境owner的网页checkpoint；缺失owner表／记录、未完成owner和asset不据类型或时间推断完成。额外的`--include-environment`仅控制preparationVersion=1终态环境步骤的inputSnapshot／preparationSnapshot／frozenResult回收，并保留terminalAudit，不是开放环境网页checkpoint清理的必要条件。该工具不删除网页材料、操作、计数或本人来源；参数及事务边界见[实现对应§5](../reference/V0.5_IMPLEMENTATION_MAP_20261009.md#5-运行参数)。
 
-环境步骤进入 committed／superseded 后，其网页 owner 要等同一步骤的旧生成器、finally 和已排队网页操作全部结束，再释放该 owner 缓存并清空 checkpoint。同一 owner 的并发收尾共享一个承诺；其他 owner 的缓存、已持久化材料、操作、额度与本人查阅来源保留。前台调度只登记收尾，不等待旧 provider；环境 wait／stop 负责排空后来由 finally 登记的清理。暂停、停止、重试及代际失效本身不构成终态，未完成任务继续保留恢复材料；不在启动时扫描全部历史终态。清理写入错误会传给调用者，不能作为清理成功，详见[独立复核](../records/comprehensive-remediation-20261011/reviews/W7.md)。
+环境步骤进入 committed／superseded 后，其网页 owner 要等同一步骤的旧生成器、finally 和已排队网页操作全部结束，再释放该 owner 缓存并清空 checkpoint。同一 owner 的并发收尾共享一个承诺；其他 owner 的缓存、已持久化材料、操作、额度与本人查阅来源保留。前台调度只登记收尾，不等待旧 provider；环境 wait／stop 负责排空后来由 finally 登记的清理。暂停、停止、重试及代际失效本身不构成终态，未完成任务继续保留恢复材料；不在启动时扫描全部历史终态。清理写入错误会传给调用者，不能作为清理成功，详见[恢复§12](REMAKE_V0.5_RECOVERY.md#12-显式安全停止)。
 
 已经冻结剧情／发送的恢复不重新搜索来改稿。同输入的未发送恢复仍沿用同阶段工具进度和权限；新普通业务重新选择则使用reply:generation:stage:taskName阶段身份，旧lookup、修补及工具正文不自动注入。新代际各阶段有独立20／40额度，同代际失败／重启不重置。旧业务checkpoint在改绑事务压缩，计数／操作／材料／来源保留，incoming_image阶段不在该清理范围。主体公开缓存仍可显式复用，首次命中新阶段计一次成功。阶段完成后压缩检查点，保留需要的来源与统计。后台维护准备失败／停止保留完整阶段进度，只有最新持久任务 ready／done 才压缩，见[恢复§7](REMAKE_V0.5_RECOVERY.md#7-后台记忆恢复)。
 
-Bing 的公开页面可达性／正文读取和资源排空已做独立验收；真实模型工具续调用、全部网站可达性和正式长期运行未验收。公开网页验收不发送角色背景、聊天、图片或密钥。
+可达性和正文提取依赖目标网站，支持provider不保证每个站点可读或网页信息准确；验证范围由[实现对应](../reference/V0.5_IMPLEMENTATION_MAP_20261009.md)导航到独立记录。
 
 ## 8. 状态展示
 
