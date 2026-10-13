@@ -149,12 +149,12 @@ export function expressionTask(mode = 'chat'): ModelTask<ExpressionResult> {
     if (!offline) result.parts.forEach((part, i) => requireControl(!hasActionMarker(part.content), `parts.${i}.content`, 'action markers require shared_offline output'));
   });
 }
-export function memoryTask(sourceIds: string[], memoryIds: string[], shortIds:string[]=[],selfReadIds:string[]=[]): ModelTask<MemoryResult> {
+export function memoryTask(sourceIds: string[], memoryIds: string[], shortIds:string[]=[],selfReadIds:string[]=[],existingLongIds:string[]=memoryIds): ModelTask<MemoryResult> {
   return modelTask('memory', memory, (r: MemoryResult) => {
     const validateSources = (ids: string[], allowed=sourceIds) => requireControl(ids.length>0&&ids.every(id => allowed.includes(id)), 'sourceIds', 'unknown current source ID');
     const touched=new Set<string>();const refs=new Set<string>();
     r.shortTermChanges.forEach(c=>requireControl(!!c.eventSummary.trim()||!!c.feelingSummary.trim(),'summary','eventSummary or feelingSummary must be meaningful'));
-    r.shortTermChanges.forEach(c=>{validateSources(c.sourceIds,[...sourceIds,...selfReadIds]);if(c.action==='update'){requireControl(shortIds.includes(c.id)&&!touched.has(c.id),'shortTermChanges.id','unknown or duplicate memory ID');touched.add(c.id);}else{requireControl(!refs.has(c.clientRef),'shortTermChanges.clientRef','duplicate clientRef');refs.add(c.clientRef);if(c.existingLongId){requireControl(memoryIds.includes(c.existingLongId),'existingLongId','unknown memory ID');requireControl(typeof c.hasNewEventProgress==='boolean','shortTermChanges.hasNewEventProgress','required for existingLongId');}}});
+    r.shortTermChanges.forEach(c=>{validateSources(c.sourceIds,[...sourceIds,...selfReadIds]);if(c.action==='update'){requireControl(shortIds.includes(c.id)&&!touched.has(c.id),'shortTermChanges.id','unknown or duplicate memory ID');touched.add(c.id);}else{requireControl(!refs.has(c.clientRef),'shortTermChanges.clientRef','duplicate clientRef');refs.add(c.clientRef);if(c.existingLongId){requireControl(existingLongIds.includes(c.existingLongId),'existingLongId','ID outside provided create-link permissions');requireControl(typeof c.hasNewEventProgress==='boolean','shortTermChanges.hasNewEventProgress','required for existingLongId');}}});
     r.detailChanges.forEach(d=>validateSources(d.sourceIds));
     const awakened=new Set<string>();r.longTermChanges.forEach(c=>{validateSources(c.sourceIds);requireControl(memoryIds.includes(c.id)&&!awakened.has(c.id),'longTermChanges.id','unknown or duplicate memory ID');awakened.add(c.id);});
   });
