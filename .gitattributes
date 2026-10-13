@@ -1,3 +1,7 @@
 # Retrieval artifacts are frozen by their exact byte hashes.
 tests/fixtures/memory-retrieval-*.json text eol=lf
 docs/v0.5/records/comprehensive-remediation-20261011/evidence/*.json text eol=lf
+
+# Preserve the byte-hashed plan and review inputs when checking out on Windows.
+docs/v0.5/plans/existing-long-reference-20261013/** text eol=lf
+docs/v0.5/reviews/existing-long-reference-20261013/** text eol=lf

@@ -180,3 +180,9 @@ replyTrace只保存选择ID、集合指纹、代际、输入版本、等待期�
 历史保存完整输入、repair、lookup和工具结果／材料引用；网页materials、operations、本人查阅来源和图片观察记录不因归档删除。原图片资产生命周期照旧，不承诺永久保存已清理像素。success、resume、purgeOwner、载荷压缩及重启均不删除取证历史；本批没有自动过期，也不把历史自动检索到新模型上下文。恢复仍只读活动checkpoint，历史只供显式取证。
 
 只读Storage和ModelRunHistory构造器不执行DDL；旧库缺表时显式list返回空。旧库直接尝试清checkpoint而没有历史表则失败保留现场。memory:compact-payloads的可写apply受控初始化历史表，dry-run不建表；备份先于写入。数据库、备份、历史响应与正文保持私有，不进入Git。
+
+## 14. existingLongId与确认lookup恢复（0.5.2）
+
+基础memory恢复先由实际初始行构建三份操作权限，只有lookupPending不为true且存在确认privateLookupResult时，才从确认行扩权。旧raw／StageModelInput的权限声明被程序累计快照覆盖，保存到当前活动checkpoint后才进入ModelClient；只更改privateLookupResult，保留其他进度与原预算。归一化保存失败保留原checkpoint并沿原失败路径暂停，不发送后续模型请求，不读取或修改不可变历史来补权。
+
+已有post.result沿原apply直接复用，不重parse新版模型合同、不生成新结果、不重发。关联create在幂等跳过后、创建short前拒绝discarded规范目标；missing、错误类型及其别名同样不能落库。同批先前变化随事务回滚，保存结果保留。旧缺progress字段继续按原false处理；done轮不重新打开，正式旧潜在重复记忆不自动合并。详见[交付与关闭证据](../records/existing-long-reference-20261013/README.md)。

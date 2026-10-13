@@ -1,0 +1,27 @@
+{
+  "checkedAt": "2026-10-13T06:09:27.374Z",
+  "baseline": "44cfdbdf2e137a4f699728d4f42659bcb89dec31",
+  "markdownFiles": 168,
+  "linksChecked": 1434,
+  "errors": [],
+  "originalInputCount": 3,
+  "changedInputs": [],
+  "versions": [
+    {
+      "file": "package.json",
+      "version": "0.5.2"
+    },
+    {
+      "file": "package-lock.json",
+      "version": "0.5.2"
+    },
+    {
+      "file": "runtime/package.json",
+      "version": "0.5.2"
+    },
+    {
+      "file": "runtime/package-lock.json",
+      "version": "0.5.2"
+    }
+  ]
+}

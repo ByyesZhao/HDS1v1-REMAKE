@@ -164,3 +164,11 @@ Host沿前台串行边界报告“记忆整合重试耗尽，程序已暂停”�
 ## 11. 用户图片来源
 
 合法本轮图片的观察可作为对应messageId的内容来提取记忆，仍必须引用本轮合法来源。附件ID、观察ref、内容hash不是新增来源ID；历史图片只随授权原文辅助理解，不扩大新来源集合。未识别图不编造画面。incoming_image搜索不是自主生活本人查阅来源，不凭它直接造新记忆。原图库向量与入站观察独立，不因入站识别而重新编码旧素材。
+
+## 11. 基础提取的关联引用权限（0.5.2）
+
+基础memory的短期更新、长期唤醒和create关联分别使用shortUpdateIds、longAwakenIds、existingLongIds。直接提供的short可授权其真实linkedLongId用于create复用同事件；预备long仍不提前进入普通长期检索，关联本身不授予awaken或新的事实来源。直接long／learned及merged别名保持原提供ID，按原canonical解析，不凭可见的canonicalMemoryId字符串扩权。
+
+初始投影的权限快照保持；成功lookup提供更新后的累计快照，以其作为当前操作说明。确认lookup恢复从实际行重建权限，覆盖并保存当前活动checkpoint的lookup投影后才调用模型；pending查询只在实际结果确认后扩权。旧自称权限数组、contextRefs及model_run_records历史不授予新ID，原runId、修补／lookup及网页额度不重置。
+
+最终提交仍在原故事事务内再次解析关联目标。missing、错误类型或discarded规范目标（含别名指向discarded）拒绝并回滚，保留post.result；不另建long、重生成或重发。旧已保存合法结果缺hasNewEventProgress仍按原false语义，已完成轮不重开。详见[本批交付](../records/existing-long-reference-20261013/README.md)。

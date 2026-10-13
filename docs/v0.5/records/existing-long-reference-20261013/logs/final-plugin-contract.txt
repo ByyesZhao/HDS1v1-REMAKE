@@ -1,0 +1,11 @@
+npm notice run koishi-plugin-hdsi-remake@0.5.2 test
+npm notice run vitest run tests/plugin-smoke-contract.test.ts tests/plugin-smoke-build-path.test.ts --maxWorkers=1
+
+ RUN  v5.0.3 D:/HDSI-remake/.tmp/existing-long-reference-052
+
+
+ Test Files  2 passed (2)
+      Tests  10 passed (10)
+   Start at  14:05:02
+   Duration  2.86s (tests 90%, import 5%, transform 5%)
+

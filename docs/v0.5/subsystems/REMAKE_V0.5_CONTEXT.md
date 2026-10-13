@@ -117,3 +117,9 @@ T1～T9的ASTRA合成补验把窗口SQL与完整调用成本分开：选中窗�
 ## 普通回复新输入换代
 
 最新普通合批成熟后重新构建真实DTO，保留四段与可见权限；普通主叙事仍不读未看私信。尚未尝试的过时候选及旧intent不会进入新表达或提交。附件ready/unrecognized/pending保留原冻结身份，只通过新DTO有权使用的消息注入；事件接管不默认带旧聊天或其观察。来源只在最终有效代际提交。见[回归与交付](../records/chat-reply-freshness-20261010/DELIVERY.md)。
+
+## 10. 基础记忆操作权限投影（0.5.2）
+
+memory阶段在input.context.memoryWritePermissions提供shortUpdateIds、longAwakenIds和existingLongIds；有lookupResult.context.memoryWritePermissions时，该累计快照是当前操作说明，初始快照仍保留。程序校验使用同源的三个独立集合，快照自身不能反向授予权限。
+
+仅提供short时，它的真实linkedLongId可用于create复用预备long，仍不能用于awaken；目标正文不因关联自动加入普通检索。learned.canonicalMemoryId及其他关系元数据不能自行转为操作ID。确认lookup恢复支持旧raw／投影两种格式，按实际行归一化活动checkpoint后再发送；视觉包装、学校资料和既有资源池继续保留。详情见[交付](../records/existing-long-reference-20261013/README.md)。
