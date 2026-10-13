@@ -48,12 +48,12 @@ it('host restores frozen foreground before repair and defers repair during backg
  const life=new MemoryLifecycle(store),order:string[]=[];const repair=life.repairLearnedProjections.bind(life);
  life.repairLearnedProjections=t=>{order.push('repair');return repair(t);};
  let inFlight=true;
- const maintenance={get inFlight(){return inFlight;},applyOneReady:()=> 'none',startOne:()=>false,stop:async()=>{}} as any;
+ const maintenance={get inFlight(){return inFlight;},hasStorageFault:false,storageError:undefined,takeError:()=>undefined,applyOneReady:()=> 'none',startOne:()=>false,stop:async()=>{}} as any;
  const app=new HdsiApp({...d,memoryStore:store,memoryLifecycle:life,maintenance});
  d.storage.save('turns','frozen',{id:'frozen',at,done:false,inputMessageIds:[],dialogueWindowVersion:1,dialogueBinding:{episodeId:null,holdReply:false},frozenResult:{sentinel:'unchanged'}} as any);
  app.resumeUnfinishedTurn=async()=>{expect(store.owner({ownerType:'learned',ownerId:'old'})?.projectionBasis).toBeUndefined();expect((d.storage.read('turns','frozen')?.frozenResult as any).sentinel).toBe('unchanged');order.push('resume');d.storage.remove('turns','frozen');};
- const host=new SerialHost(app,{timers:false});await host.start();expect(order).toEqual(['resume']);
- inFlight=false;await host.wake();expect(order).toEqual(['resume','repair']);await host.wake();expect(order).toEqual(['resume','repair']);await host.stop();d.storage.close();
+ const errors:unknown[]=[],host=new SerialHost(app,{timers:false,onError:error=>errors.push(error)});try{await host.start();expect(order).toEqual(['resume']);
+ inFlight=false;await host.wake();expect(order).toEqual(['resume','repair']);await host.wake();expect(order).toEqual(['resume','repair']);expect(errors).toEqual([]);}finally{await host.stop();d.storage.close();}
 });
 it('repair keeps started and ready maintenance snapshots frozen',()=>{
  const {store,life}=setup();store.saveOwner(store.makeOwner({ownerType:'learned',ownerId:'old'},{content:'结论',canonicalMemoryId:'one'},at));

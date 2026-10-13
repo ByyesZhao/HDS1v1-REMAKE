@@ -13,6 +13,22 @@ import { phaseOptions } from '../web/phases';
 import {readMemoryPolicySnapshot,policyCanonical,type MemoryPolicyRow} from './policy-snapshot';
 import {promotionEligible} from './capacity';
 import {ModelRunHistory} from '../model/run-history';
+import {ModelRequestError,ModelFormatError} from '../model/client';
+type FailurePhase='prepare'|'archive'|'apply'|'timeout'|'interrupted';
+function failureDiagnostic(error:unknown,phase:FailurePhase):string {
+  if(phase==='timeout'||phase==='interrupted')return `maintenance execution ${phase==='timeout'?'timed out':'interrupted'}`;
+  // Unknown preparation errors can originate in transports and contain credentials.
+  // Only known sanitized model errors and local archive/apply messages are retained.
+  if(!(error instanceof Error)||phase==='prepare'&&!(error instanceof ModelRequestError)&&!(error instanceof ModelFormatError))return 'maintenance model preparation failed';
+  const message=error.message
+    .replace(/((?:proxy-)?authorization\s*[:=]\s*)[^\r\n;]+/gi,'$1[redacted]')
+    .replace(/\b(?:Bearer|Basic)\s+[^\s;]+/gi,'[authorization redacted]')
+    .replace(/((?:api[_-]?key|access[_-]?token|token|password|secret)\s*[:=]\s*)["']?[^"'\s;,&]+/gi,'$1[redacted]')
+    .replace(/\bsk-[a-zA-Z0-9_-]+\b/g,'[redacted]')
+    .replace(/(https?:\/\/)[^/\s@]+@/gi,'$1[redacted]@')
+    .replace(/[\r\n\t]+/g,' ').slice(0,2000);
+  return `${phase}: ${message}`;
+}
 export class MaintenanceExhaustedError extends Error {
   constructor(readonly jobId:string,readonly retryCycle:number){super('记忆整合重试耗尽，程序已暂停');}
 }
@@ -27,6 +43,7 @@ export class MemoryMaintenance {
   private backendRequests=0;
   private errors:unknown[]=[];
   private storageFault=false;
+  private storageFailure:Error|undefined;
   private webOwner:import('../web/types').WebOwnerRef|null=null;
   currentWebOwner(){return this.webOwner;}
   constructor(private store:MemoryStore,private lifecycle:MemoryLifecycle,private index:MemoryIndex,private models:ModelRunner,private options:MaintenanceOptions){
@@ -49,7 +66,7 @@ export class MemoryMaintenance {
     const next={...current,executionAttemptCount:current.executionAttemptCount!+1,attemptId:randomUUID(),retryAt:null};
     this.store.saveJob('memory_maintenance_jobs',next);return next;
   }
-  private fail(job:MaintenanceJob,error:unknown,now:string,category='execution'):void {
+  private fail(job:MaintenanceJob,error:unknown,now:string,category:FailurePhase='prepare'):void {
     this.store.storage.transaction(()=>{
       const latest=this.store.job<MaintenanceJob>('memory_maintenance_jobs',job.id);
       if(!latest||latest.status==='done'||latest.status==='failed')return;
@@ -60,14 +77,15 @@ export class MemoryMaintenance {
       const task='memory_consolidation'; // Audit uses this same model contract name.
       const safeSummary=terminal?'记忆整合重试耗尽，程序已暂停':category==='interrupted'?'记忆整合执行中断，等待重试':'记忆整合执行失败，等待重试';
       const ref=this.options.web?.store.openStage('maintenance',job.id,'consolidation',task);
-      new ModelRunHistory(this.store.storage,this.options.clock).recordFailure({invocationId:`maintenance:${job.id}:${current.retryCycle}:${job.attemptId}`,responseSequence:0,runId:ref?.runId??`maintenance:${job.id}`,ownerType:'maintenance',ownerId:job.id,stageKey:'consolidation',taskName:task,retryCycle:current.retryCycle,attemptId:job.attemptId!,stage:'maintenance',category,error:safeSummary});
-      this.store.saveJob('memory_maintenance_jobs',{...current,failureCount,settledAttemptId:job.attemptId,status:terminal?'failed':current.result===null?'pending':'ready',retryAt:terminal?null:addMs(now,this.options.retryDelayMs??300000),failedAt:terminal?now:null,lastError:error instanceof Error?error.message:String(error)});
+      new ModelRunHistory(this.store.storage,this.options.clock).recordFailure({invocationId:`maintenance:${job.id}:${current.retryCycle}:${job.attemptId}`,responseSequence:0,runId:ref?.runId??`maintenance:${job.id}`,ownerType:'maintenance',ownerId:job.id,stageKey:'consolidation',taskName:task,retryCycle:current.retryCycle,attemptId:job.attemptId!,stage:'maintenance',category,error:failureDiagnostic(error,category)});
+      this.store.saveJob('memory_maintenance_jobs',{...current,failureCount,settledAttemptId:job.attemptId,status:terminal?'failed':current.result===null?'pending':'ready',retryAt:terminal?null:addMs(now,this.options.retryDelayMs??300000),failedAt:terminal?now:null,lastError:safeSummary});
       if(terminal){const runtime=this.store.storage.runtime();this.store.storage.set('runtime',{...runtime,paused:true,lastError:safeSummary,lastFailure:{kind:'error',task,stage:'maintenance',jobId:job.id,retryCycle:current.retryCycle,at:now,safeSummary},maintenancePause:{jobId:job.id,retryCycle:current.retryCycle!,task,at:now,safeSummary,notification:'pending'}});}
     });
   }
   private fatal(error:unknown):void {
     this.storageFault=true;
     const fault=new Error('记忆维护存储故障，已停止派发',{cause:error});
+    this.storageFailure??=fault;
     this.errors.push(fault);
     try{this.store.storage.set('runtime',{...this.store.storage.runtime(),paused:true,lastError:fault.message});}catch(persistenceError){this.errors.push(new Error('无法持久化维护暂停状态',{cause:persistenceError}));}
   }
@@ -101,6 +119,7 @@ export class MemoryMaintenance {
       this.store.storage.set('runtime',{...runtime,paused:false,lastError:null,lastFailure:null,maintenancePause:null});
     });
   }
+  get storageError(){return this.storageFailure;}
   get hasStorageFault(){return this.storageFault;}
   private notify():void {try{this.options.onReady?.();}catch(error){this.fatal(error);}}
   get inFlight(){return this.active!==null;}
@@ -215,6 +234,7 @@ export class MemoryMaintenance {
     return true;
   }
   private async prepare(work:Work,controller:AbortController):Promise<void>{
+    let phase:FailurePhase='prepare';
     let timer:ReturnType<typeof setTimeout>|undefined;
     let onAbort!:()=>void;
     const cancelled=new Promise<never>((_,reject)=>{onAbort=()=>reject(controller.signal.reason??new Error('backend cancelled'));controller.signal.addEventListener('abort',onAbort,{once:true});});
@@ -234,13 +254,13 @@ export class MemoryMaintenance {
         const staleUnitKeys=[...new Set([...current.staleUnitKeys,...invalid.map(u=>u.unitKey)])];
         const clean=units.map(u=>invalid.includes(u)?{unitKey:u.unitKey,action:u.action,ids:[],readSet:[],sourceIds:[]}:u);
         this.store.saveJob(work.table,{...current,status:'ready',result:clean,staleUnitKeys,lastError:null,retryAt:null});
-        this.store.compactMaintenanceCheckpoint(current.id);
+        phase='archive';this.store.compactMaintenanceCheckpoint(current.id);phase='apply';
         if(clean.every(u=>staleUnitKeys.includes(u.unitKey)))this.store.saveJob(work.table,{...this.store.job<MaintenanceJob>(work.table,current.id)!,status:'done'});
       }
       this.notify();
     }catch(error){
       if(!this.stopped){
-        if(work.table==='memory_maintenance_jobs')this.fail(work.job,error,this.options.clock.now(),controller.signal.aborted?'timeout':'execution');
+        if(work.table==='memory_maintenance_jobs')this.fail(work.job,error,this.options.clock.now(),controller.signal.aborted?'timeout':phase);
         else {const current=this.store.job<IndexJob>(work.table,work.job.id);if(current&&current.status!=='done')this.store.saveJob(work.table,{...current,status:'pending',retryAt:addMs(this.options.clock.now(),this.options.retryDelayMs??300000),lastError:error instanceof Error?error.message:String(error)});}
         this.notify();
       }
@@ -253,6 +273,7 @@ export class MemoryMaintenance {
   private applyReady(now:string):'applied'|'stale'|'none' {
     if(this.stopped||this.draining||this.blocked())return 'none';const works=this.work();let work=works.find(w=>w.job.status==='ready'&&this.due(w.job,now)&&this.eligible(w,now))??works.find(w=>w.table==='memory_index_jobs'&&w.job.status==='pending'&&w.job.configSignature!==this.index.configSignature&&this.due(w.job,now));if(!work)return 'none';
     try{if(work.table==='memory_maintenance_jobs')work={...work,job:this.store.storage.transaction(()=>this.beginAttempt(work!.job as MaintenanceJob))};}catch(error){this.fatal(error);return 'none';}
+    let phase:FailurePhase='archive';
     try{return this.store.storage.transaction(()=>{
       if(work.table==='memory_index_jobs'){
         const owner=this.store.owner(work.job.owner),valid=owner&&owner.revision===work.job.owner.revision&&owner.status!=='merged'&&owner.status!=='discarded'&&work.job.configSignature===this.index.configSignature;
@@ -260,7 +281,7 @@ export class MemoryMaintenance {
         else if(owner&&owner.status!=='merged'&&owner.status!=='discarded')this.store.queueIndex(owner,now,this.index.configSignature);
         this.store.saveJob(work.table,{...work.job,status:'done',completionReason:valid?'applied':'stale',completedAt:now,retryAt:null,lastError:null});return valid?'applied':'stale';
       }
-      this.store.compactMaintenanceCheckpoint(work.job.id);
+      this.store.compactMaintenanceCheckpoint(work.job.id);phase='apply';
       const job=work.job,unit=job.result!.find(u=>!job.appliedUnitKeys.includes(u.unitKey)&&!job.staleUnitKeys.includes(u.unitKey));
       if(!unit){this.store.saveJob(work.table,{...job,status:'done',retryAt:null,lastError:null});this.options.web?.releaseOwner('maintenance',job.id);return 'none';}
       const valid=unit.readSet.every(ref=>{const r=this.store.owner(ref);return r&&r.status!=='merged'&&r.status!=='discarded'&&r.stateVersion===ref.stateVersion&&r.revision===ref.revision;})&&unit.ids.every(id=>{const r=job.snapshot.find(r=>r.id===id);return !!r&&!!this.store.owner(r);})&&(!unit.canonicalId||unit.readSet.some(r=>r.ownerId===unit.canonicalId)&&!!this.store.canonical(unit.canonicalId));
@@ -276,7 +297,7 @@ export class MemoryMaintenance {
       if(updated.appliedUnitKeys.length+updated.staleUnitKeys.length===job.result!.length)updated.status='done';this.store.saveJob(work.table,updated);if(updated.status==='done')this.options.web?.releaseOwner('maintenance',job.id);return applicable?'applied':'stale';
     });}catch(error){
       // The entire application transaction has already rolled back. Preserve its prepared result.
-      try{if(work.table==='memory_maintenance_jobs')this.fail(work.job,error,now);else this.store.saveJob(work.table,{...work.job,retryAt:addMs(now,this.options.retryDelayMs??300000),lastError:error instanceof Error?error.message:String(error)});}catch(persistenceError){this.fatal(persistenceError);}
+      try{if(work.table==='memory_maintenance_jobs')this.fail(work.job,error,now,phase);else this.store.saveJob(work.table,{...work.job,retryAt:addMs(now,this.options.retryDelayMs??300000),lastError:error instanceof Error?error.message:String(error)});}catch(persistenceError){this.fatal(persistenceError);}
       this.notify();
       return 'none';
     }

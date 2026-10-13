@@ -166,6 +166,10 @@ export class SerialHost {
     const errors:unknown[]=settled.flatMap(result=>result.status==='rejected'?[result.reason]:[]);
     for(let error=this.environment.takeError();error!==undefined;error=this.environment.takeError())errors.push(error);
     for(let error=this.app.dependencies.maintenance?.takeError();error!==undefined;error=this.app.dependencies.maintenance?.takeError()){try{await this.reportMaintenanceError(error);}catch(reportError){errors.push(reportError);}}
+    // Logging consumes takeError(), but an unaccounted storage failure still makes
+    // shutdown fail after every foreground/environment/background drain has settled.
+    const storageError=this.app.dependencies.maintenance?.storageError;
+    if(storageError&&!errors.includes(storageError))errors.push(storageError);
     if(errors.length===1)throw errors[0];
     if(errors.length)throw new AggregateError(errors,'HDSI shutdown failed after draining work');
   }

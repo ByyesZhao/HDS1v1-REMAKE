@@ -11,10 +11,11 @@ import {MemoryStore} from '../src/memory/store';
 import {MemoryLifecycle} from '../src/memory/lifecycle';
 import {MemoryIndex} from '../src/memory/index';
 import {MemoryMaintenance,type MaintenanceOptions} from '../src/memory/maintenance';
-import {ModelClient,type Transport} from '../src/model/client';
+import {ModelClient,ModelRequestError,type Transport} from '../src/model/client';
 import {ModelRunHistory} from '../src/model/run-history';
 import {WebSearchStore} from '../src/web/store';
 import {WebSearchService} from '../src/web/service';
+import {EnvironmentPreparation} from '../src/environment/preparation';
 import {SerialHost} from '../src/host/runtime';
 import {HdsiApp} from '../src/app';
 import type {MaintenanceJob} from '../src/memory/types';
@@ -217,4 +218,44 @@ it('unpersistable_pause_still_blocks_foreground_on_repeated_host_wake',async()=>
  d.storage.prepare("CREATE TRIGGER fail_pause BEFORE UPDATE ON state WHEN NEW.key='runtime' AND json_extract(NEW.data,'$.paused')=1 BEGIN SELECT RAISE(ABORT,'pause unavailable'); END").run();
  d.maintenance.startOne(d.clock.now());await until(()=>!d.maintenance.inFlight);expect(d.storage.runtime().paused).toBe(false);
  await d.host.acceptInput({id:'after-storage-fault',content:'hello',receivedAt:d.clock.now()});d.clock.advance(15000);for(let n=0;n<4;n++)await d.host.wake();expect(frontCalls).toBe(0);expect(d.storage.unfinishedTurn()).toBeNull();
+});
+
+it.each([false,true])('graceful_stop_rejects_previously_consumed_storage_fault_after_all_drains (pauseWriteFails=%s)',async pauseWriteFails=>{
+ const d=create();seed(d);d.storage.prepare("CREATE TRIGGER fail_accounting BEFORE INSERT ON model_run_records BEGIN SELECT RAISE(ABORT,'history unavailable'); END").run();
+ if(pauseWriteFails)d.storage.prepare("CREATE TRIGGER fail_pause BEFORE UPDATE ON state WHEN NEW.key='runtime' AND json_extract(NEW.data,'$.paused')=1 BEGIN SELECT RAISE(ABORT,'pause unavailable'); END").run();
+ d.maintenance.startOne(d.clock.now());await settled(d);for(let n=0;n<3;n++)await d.host.wake();expect(d.maintenance.hasStorageFault).toBe(true);expect(d.maintenance.takeError()).toBeUndefined();expect(d.errors.length).toBeGreaterThan(0);
+ const backgroundGate=deferred<void>(),environmentGate=deferred<void>(),backgroundStop=d.maintenance.stop.bind(d.maintenance),environmentStop=EnvironmentPreparation.prototype.stop;
+ vi.spyOn(d.maintenance,'stop').mockImplementation(async options=>{await backgroundStop(options);await backgroundGate.promise;});
+ vi.spyOn(EnvironmentPreparation.prototype,'stop').mockImplementation(async function(this:EnvironmentPreparation,options){await environmentStop.call(this,options);await environmentGate.promise;});
+ let result:'pending'|'resolved'|'rejected'='pending';let fault:unknown;const stopping=d.host.stop({graceful:true}).then(()=>{result='resolved';},error=>{result='rejected';fault=error;});
+ await new Promise<void>(r=>setImmediate(r));expect(result).toBe('pending');backgroundGate.resolve();await new Promise<void>(r=>setImmediate(r));expect(result).toBe('pending');environmentGate.resolve();await stopping;
+ expect(result).toBe('rejected');expect(fault).toBeInstanceOf(Error);expect((fault as Error).message).toMatch(/存储故障/);expect(d.maintenance.takeError()).toBeUndefined();
+});
+it.each([{phase:'archive',recovery:'retry'},{phase:'archive',recovery:'resume'},{phase:'apply',recovery:'retry'},{phase:'apply',recovery:'resume'}] as const)('immutable $phase diagnostic survives $recovery and successful completion',async({phase,recovery})=>{
+ let calls=0;const d=create({complete:async()=>{calls++;return good;}},':memory:',{consolidationMaxRetries:recovery==='resume'?0:2});seed(d);
+ const detail=phase==='archive'?'specific archive failure':'specific commit failure';
+ d.storage.prepare(phase==='archive'?"CREATE TRIGGER fail_diagnostic BEFORE INSERT ON model_run_records WHEN json_extract(NEW.data,'$.type')='checkpoint' BEGIN SELECT RAISE(ABORT,'specific archive failure'); END":"CREATE TRIGGER fail_diagnostic BEFORE UPDATE ON memory_maintenance_jobs WHEN json_array_length(NEW.data,'$.appliedUnitKeys')>0 BEGIN SELECT RAISE(ABORT,'specific commit failure'); END").run();
+ d.maintenance.startOne(d.clock.now());await settled(d);expect(job(d)).toMatchObject({status:recovery==='resume'?'failed':'ready',failureCount:1});
+ expect(await d.host.status()).not.toContain(detail);expect(JSON.stringify(d.storage.runtime())).not.toContain(detail);
+ d.storage.prepare('DROP TRIGGER fail_diagnostic').run();if(recovery==='resume')await d.host.resume();else{d.clock.advance(300000);await d.host.wake();}
+ expect(job(d)).toMatchObject({status:'done',lastError:null});expect(calls).toBe(1);
+ const records=new ModelRunHistory(d.storage,d.clock).list({ownerType:'maintenance',ownerId:'job'}).filter(r=>r.type==='failure'&&r.stage==='maintenance');expect(records).toHaveLength(1);expect(records[0]).toMatchObject({category:phase,error:expect.stringContaining(detail),retryCycle:1,attemptId:expect.any(String)});
+});
+it('unknown_transport_secret_is_not_copied_to_executor_history_or_public_status',async()=>{
+ const secret='maintenance-secret-canary',d=create({complete:async()=>{throw Error('Authorization: Bearer '+secret);}});seed(d);d.maintenance.startOne(d.clock.now());await settled(d);
+ const history=new ModelRunHistory(d.storage,d.clock).list({ownerType:'maintenance',ownerId:'job'});expect(JSON.stringify(history)).not.toContain(secret);expect(JSON.stringify(job(d))).not.toContain(secret);expect(await d.host.status()).not.toContain(secret);expect(JSON.stringify(d.storage.runtime())).not.toContain(secret);
+ expect(history.filter(r=>r.type==='failure'&&r.stage==='maintenance')).toEqual([expect.objectContaining({category:'prepare',error:expect.stringContaining('preparation failed')})]);
+});
+it('safe_model_request_classification_is_retained_with_prepare_phase',async()=>{
+ const d=create({complete:async()=>{throw new ModelRequestError('memory_consolidation: model HTTP 401 (request)',{httpStatus:401,kind:'request',taskName:'memory_consolidation'});}});seed(d);d.maintenance.startOne(d.clock.now());await settled(d);
+ expect(new ModelRunHistory(d.storage,d.clock).list({ownerType:'maintenance',ownerId:'job'}).filter(r=>r.type==='failure'&&r.stage==='maintenance')).toEqual([expect.objectContaining({category:'prepare',error:expect.stringContaining('HTTP 401')})]);
+});
+
+it('local_archive_diagnostic_preserves_cause_but_redacts_credentials_and_bounds_size',async()=>{
+ const d=create({complete:async()=>good});seed(d);
+ const detail='specific archive failure; Authorization: Bearer local-bearer-canary; api_key=local-key-canary; url=https://user:local-password-canary@example.test/; '+ 'x'.repeat(2500);
+ d.storage.prepare("CREATE TRIGGER fail_safe_detail BEFORE INSERT ON model_run_records WHEN json_extract(NEW.data,'$.type')='checkpoint' BEGIN SELECT RAISE(ABORT,'"+detail+"'); END").run();d.maintenance.startOne(d.clock.now());await settled(d);
+ const records=new ModelRunHistory(d.storage,d.clock).list({ownerType:'maintenance',ownerId:'job'}).filter(r=>r.type==='failure'&&r.stage==='maintenance');expect(records).toHaveLength(1);
+ const record=records[0];expect(record).toMatchObject({category:'archive',error:expect.stringContaining('specific archive failure')});if(record.type!=='failure')throw Error('expected failure');
+ for(const secret of ['local-bearer-canary','local-key-canary','local-password-canary'])expect(record.error).not.toContain(secret);expect(record.error.length).toBeLessThanOrEqual(2100);expect(await d.host.status()).not.toContain('specific archive failure');
 });
