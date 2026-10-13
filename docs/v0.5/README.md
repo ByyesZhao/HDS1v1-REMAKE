@@ -75,6 +75,8 @@
 
 ## 目录与后续工作
 
+当前待修订：[记忆整合重试与起床修复计划](plans/memory-retry-waking-20261013/README.md)，包含600秒限时、首次执行＋最多2次重试、历史错误／checkpoint保留及起床时间边界。用户已确认重试耗尽后整体暂停HDSI、保留现场并手动恢复；[计划审核](reviews/memory-retry-waking-20261013/REVIEW.md)提出4项P2修订，现有8文件58项及合成探针仅为审核证据。产品尚未实施，原计划正文、配置、正式数据和暂停状态未改。
+
 最新个人任务合同：[V2](plans/personal-task-contract-20261011/PLAN_V2.md)及[细化步骤](plans/personal-task-contract-20261011/EXECUTION_PLAN.md)已实施；预约专用输出、学校／消息流程及磁盘恢复验收通过，最终220文件1412项通过、2项既有跳过。独立复核与实际部署／服务状态见[交付](records/personal-task-contract-20261011/DELIVERY.md)。原方案、故障依据和审核保留原基线含义。
 
 此前已执行合同：[普通聊天回复跟进新消息](plans/chat-reply-freshness-20261010/README.md)及[细化方案 T1～T5](reviews/chat-reply-freshness-20261010/EXECUTION_PLAN.md)。新规则已实现；原诊断和审核探针保留旧基线，工程交付、独立复核及部署状态见[记录](records/chat-reply-freshness-20261010/README.md)。
@@ -87,7 +89,7 @@
 | --- | --- |
 | `architecture/`、`subsystems/` | 当前架构及8份功能规则 |
 | `reference/` | 实现对应、配置和必要参考 |
-| [plans/](plans/README.md) | 已实施的个人任务合同修复，以及最近已执行的功能合同；各计划状态单列，原路径供追溯 |
+| [plans/](plans/README.md) | 待审核的记忆重试／起床修复及已实施功能合同；各计划状态单列，原路径供追溯 |
 | [records/](records/README.md) | 最近交付、过程、最终日志及目录整理 |
 | [reviews/](reviews/README.md) | 本批独立报告、探针和原始证据 |
 | [../archive/](../archive/README.md) | 已完成计划、被替代交付、旧审核和早期红绿日志 |

@@ -2,6 +2,8 @@
 
 返回[版本索引](../README.md)。
 
+当前待修订：[记忆整合重试与起床时间边界修复（2026-10-13）](memory-retry-waking-20261013/README.md)。拟设整合限时600秒、最多2次自动重试后报错停止，保留历史错误／checkpoint并修复起床通知获知边界；不记录token用量。[计划审核](../reviews/memory-retry-waking-20261013/REVIEW.md)提出4项P2修订并附验收要求，原方案正文保留；产品尚未实施，配置及当前暂停状态未修改。
+
 当前已实施：[个人导演任务合同V2](personal-task-contract-20261011/PLAN_V2.md)及[细化步骤](personal-task-contract-20261011/EXECUTION_PLAN.md)，T1～T4离线验收通过。实际结果与现场状态见[交付](../records/personal-task-contract-20261011/DELIVERY.md)；[原方案](personal-task-contract-20261011/README.md)与[审核](../reviews/personal-task-contract-20261011/REVIEW.md)保留历史含义。
 
 前次已实施离线合同：[综合审核整改执行包（2026-10-11）](comprehensive-remediation-20261011/README.md)。错误修复、流程／性能优化、Q1/Q2评估及Q3离线工具已完成；条件语义在线实验未执行，暂保留执行包路径供后续使用。实际验收与部署状态见[交付](../records/comprehensive-remediation-20261011/DELIVERY.md)。

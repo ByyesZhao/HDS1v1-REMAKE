@@ -1,0 +1,112 @@
+{
+  "reviewedAt": "2026-10-13T02:05:20.277Z",
+  "baseline": "b73023971d4050fddde0be0ec22779c316143399",
+  "status": "plan-review-only",
+  "originalPlan": {
+    "file": "docs/v0.5/plans/memory-retry-waking-20261013/README.md",
+    "sha256": "91b0b90b221c11f7a29c73e41dfcad1859daec958d28764cfbd6722e89150561",
+    "unchanged": true
+  },
+  "baselineTests": {
+    "success": true,
+    "passedFiles": 8,
+    "passedTests": 58,
+    "failedTests": 0,
+    "files": [
+      {
+        "name": "memory-capacity-prune-race.test.ts",
+        "status": "passed",
+        "tests": 5
+      },
+      {
+        "name": "memory-idle-host.test.ts",
+        "status": "passed",
+        "tests": 6
+      },
+      {
+        "name": "memory-idle-recovery.test.ts",
+        "status": "passed",
+        "tests": 3
+      },
+      {
+        "name": "memory-maintenance-checkpoint.test.ts",
+        "status": "passed",
+        "tests": 12
+      },
+      {
+        "name": "model-settings.test.ts",
+        "status": "passed",
+        "tests": 13
+      },
+      {
+        "name": "web-persistence-v2.test.ts",
+        "status": "passed",
+        "tests": 14
+      },
+      {
+        "name": "world-school-personal-reminder.test.ts",
+        "status": "passed",
+        "tests": 1
+      },
+      {
+        "name": "world-school-review14-time.test.ts",
+        "status": "passed",
+        "tests": 4
+      }
+    ],
+    "report": "docs/v0.5/reviews/memory-retry-waking-20261013/evidence/baseline-tests.json"
+  },
+  "syntheticProbe": {
+    "passed": true,
+    "report": "docs/v0.5/reviews/memory-retry-waking-20261013/evidence/plan-boundary-probe.json",
+    "scope": "Current code integration boundaries; synthetic injection does not implement or accept the proposed fixes."
+  },
+  "documentationChecks": {
+    "documents": [
+      "docs/v0.5/reviews/memory-retry-waking-20261013/REVIEW.md",
+      "docs/v0.5/reviews/README.md",
+      "docs/v0.5/plans/README.md",
+      "docs/v0.5/README.md",
+      "docs/v0.5/plans/memory-retry-waking-20261013/README.md"
+    ],
+    "localLinksChecked": 184,
+    "missingLinks": 0,
+    "trailingWhitespace": false,
+    "gitDiffCheck": "passed"
+  },
+  "changeScope": {
+    "trackedChanges": [
+      "docs/v0.5/README.md",
+      "docs/v0.5/plans/README.md",
+      "docs/v0.5/reviews/README.md"
+    ],
+    "untrackedChangesAtVerification": [
+      "docs/v0.5/plans/memory-retry-waking-20261013/README.md",
+      "docs/v0.5/reviews/memory-retry-waking-20261013/REVIEW.md",
+      "docs/v0.5/reviews/memory-retry-waking-20261013/evidence/baseline-tests.json",
+      "docs/v0.5/reviews/memory-retry-waking-20261013/evidence/plan-boundary-probe.json",
+      "docs/v0.5/reviews/memory-retry-waking-20261013/evidence/plan-boundary-probe.ts"
+    ],
+    "productCodeModified": false,
+    "originalPlanModified": false,
+    "productionDataOrConfigAccessed": false,
+    "onlineModelsOrRealSenderUsed": false,
+    "productionServiceOperated": false,
+    "gitCommitOrPushPerformed": false,
+    "note": "The plan directory and edits to version/plans indexes existed before review; review files and review navigation are this task output."
+  },
+  "evidence": [
+    {
+      "file": "docs/v0.5/reviews/memory-retry-waking-20261013/evidence/baseline-tests.json",
+      "sha256": "ada754000341581550656d75a36011103deacae5d78eb0ddc104a1d385685125"
+    },
+    {
+      "file": "docs/v0.5/reviews/memory-retry-waking-20261013/evidence/plan-boundary-probe.ts",
+      "sha256": "0d86b4beb17c2ff9a29629fff7ac89bd5c8f11913748a20a88e820b1b0322d4b"
+    },
+    {
+      "file": "docs/v0.5/reviews/memory-retry-waking-20261013/evidence/plan-boundary-probe.json",
+      "sha256": "7ab57cfe9a67e301e28c8f2458cbffac03e33a7162c2923f0dc3e46a174a9ce7"
+    }
+  ]
+}

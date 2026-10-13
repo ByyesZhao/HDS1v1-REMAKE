@@ -1,0 +1,46 @@
+{
+  "baseline": "b73023971d4050fddde0be0ec22779c316143399",
+  "passed": true,
+  "scope": "Review of current code boundaries only; synthetic in-memory fixtures, fake models and sender, no production data or network.",
+  "waking": {
+    "preSleepReadingAllowed": true,
+    "duringSleepReadingRejected": true,
+    "exactWakeBeforeTurnMillisecondAllowed": true,
+    "narrativeInputHasWaking": true,
+    "narrativeInputSleep": null,
+    "savedSleepStillPresent": true,
+    "personalInputSleep": null,
+    "candidateRetainsNextNightSchedule": true,
+    "note": "Existing input mismatch is reproduced. The proposed unconditional wakeAt lower bound would newly reject this valid pre-sleep experience."
+  },
+  "archiveFailure": {
+    "escapedError": "synthetic archive write failure",
+    "jobStatus": "ready",
+    "jobLastError": null,
+    "paused": false,
+    "checkpointPreserved": true,
+    "readySignals": 1,
+    "modelCalls": 1,
+    "note": "Failure injected into the existing finalizer; no history feature is implemented. The active promise rejects outside prepare catch."
+  },
+  "failureOwnership": {
+    "paused": true,
+    "finalFailureStage": "generation",
+    "finalFailureHasJobId": false,
+    "maintenanceJobStillFailed": true,
+    "fakeErrorNotices": 1,
+    "note": "Proposed M2 state is synthetically injected. Current foreground catch replaces lastFailure; this is an integration risk, not a test of a yet-unimplemented M2."
+  },
+  "invocationIdentity": {
+    "sameBusinessRunId": true,
+    "responsesPerInvocation": [
+      3,
+      1
+    ],
+    "repairCount": 2,
+    "maintenanceExecutionAttemptAbsent": true,
+    "lastSavedInvalidOrdinal": 2,
+    "actuallyObservedInvalidResponses": 4,
+    "note": "Both foreground invocations lack a maintenance attemptId. A diagnostic invocation ID is needed for globally unique failure records; no history records are fabricated here."
+  }
+}
