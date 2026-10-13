@@ -126,7 +126,8 @@ export async function generateTurn(d: Dependencies, request: TurnRequest, turnId
   if(currentTurn?.replyFreshness){if(currentTurn.replyFreshness.scope==='ordinary'&&!canRead(d.storage.character(),d.clock.now()))throw new ReplySuperseded();d.storage.save('turns',turnId,{...currentTurn,replyFreshness:{...currentTurn.replyFreshness,personalRunId:null}});}
   const phase=(stage:string,task:string,options:import('./memory/types').ModelRunOptions={})=>turnPhaseOptions(d.web,d.storage.read('turns',turnId)??({id:turnId} as TurnRecord),stage,task,options);
   const models=withTurnVisualContext(d.models,d.incomingMedia,turnId);
-  const state = structuredClone(d.storage.character());
+  const stateBefore = structuredClone(d.storage.character());
+  const state = structuredClone(stateBefore);
   const entryMode = state.scene.mode;
   const shared = hasValidSharedScene(state);
   const runtime = d.storage.runtime();
@@ -158,8 +159,7 @@ export async function generateTurn(d: Dependencies, request: TurnRequest, turnId
   check();
   const recent = narrativeHistory.recent;
   const waking = !shared && (request.triggerKinds.includes('sleep') || !!state.sleep && due(state.sleep.wakeAt, at));
-  if (waking) state.sleep = null;
-  const narrativeInput = { dialogueWindowVersion,currentActivityMessages:activityContextMessages(d.storage,activityContext,shared?'narrative_shared':'narrative',shared?messages.map(m=>m.id):[]),from: state.narratedUntil, at, background: d.config.background, state, waking, events,school:schoolContext, dueTasks: tasks, recent, history: narrativeHistory,
+  const narrativeInput = { dialogueWindowVersion,currentActivityMessages:activityContextMessages(d.storage,activityContext,shared?'narrative_shared':'narrative',shared?messages.map(m=>m.id):[]),from: state.narratedUntil, at, background: d.config.background, state: stateBefore, waking, events,school:schoolContext, dueTasks: tasks, recent, history: narrativeHistory,
     ...(shared ? { visibleMessages: messages, sharedMeta: request.sharedMeta, remainingSteps: request.sharedMeta ? request.sharedMeta.maxSteps - request.sharedMeta.stepNumber : null } : {}) };
   if(shared)await stage('incoming_image',async()=>d.incomingMedia?.prepareForTurn(turnId,messages.map(m=>m.id)));
   check();
@@ -168,6 +168,8 @@ export async function generateTurn(d: Dependencies, request: TurnRequest, turnId
   check();
   const experiences=narrative.experiences.map(e=>({...e,id:randomUUID()}));
   const schoolCommits=prepareSchoolCommits(d.storage,schoolTurn,narrative,experiences);
+  // Narrative and school validation retain the original sleep facts; personal sees only ongoing sleep.
+  if (waking && state.sleep && due(state.sleep.wakeAt, at)) state.sleep = null;
   state.narratedUntil = at;
   state.scene.description = narrative.currentScene.description;
   state.scene.activity = narrative.currentScene.activity;
