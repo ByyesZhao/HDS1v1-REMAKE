@@ -1,0 +1,85 @@
+npm notice run koishi-plugin-hdsi-remake@0.5.1 test
+npm notice run vitest run tests/memory-existing-long-flow.test.ts --maxWorkers=1
+
+ RUN  v5.0.3 D:/HDSI-remake/.tmp/existing-long-reference-052
+
+ ❯ tests/memory-existing-long-flow.test.ts (9 tests | 8 failed) 91ms
+   ❯ memory create link context and HTTP permissions (9)
+     × real retrieval reuses preview on first response, progress=false 37ms
+     × real retrieval reuses preview on first response, progress=true 7ms
+     × lookup transmits cumulative permissions through visual wrapper=false 8ms
+     × lookup transmits cumulative permissions through visual wrapper=true 7ms
+     × restored raw lookup rewrites actual permissions and preserves budget 8ms
+     × restored projected lookup rewrites actual permissions and preserves budget 5ms
+     × confirmed claims without rows cannot authorize an existing database ID 6ms
+     × related preview is still not authorized for awaken even after lookup 6ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 8 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/memory-existing-long-flow.test.ts > memory create link context and HTTP permissions > real retrieval reuses preview on first response, progress=false
+ FAIL  tests/memory-existing-long-flow.test.ts > memory create link context and HTTP permissions > real retrieval reuses preview on first response, progress=true
+Error: memory: existingLongId: ID outside provided create-link permissions
+ ❯ ModelClient.runModel src/model/client.ts:81:59
+     79|         const errors=error instanceof Error?error.message:String(error…
+     80|         failure('parse','format',errors,raw);
+     81|         if(checkpoint.repairCount>=this.repairLimit)throw new ModelFor…
+       |                                                           ^
+     82|         checkpoint.repairCount++;checkpoint.repair={original:raw,error…
+     83|       }
+ ❯ tests/memory-existing-long-flow.test.ts:14:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/8]⎯
+
+ FAIL  tests/memory-existing-long-flow.test.ts > memory create link context and HTTP permissions > lookup transmits cumulative permissions through visual wrapper=false
+ FAIL  tests/memory-existing-long-flow.test.ts > memory create link context and HTTP permissions > lookup transmits cumulative permissions through visual wrapper=true
+Error: memory: existingLongId: ID outside provided create-link permissions
+ ❯ ModelClient.runModel src/model/client.ts:81:59
+     79|         const errors=error instanceof Error?error.message:String(error…
+     80|         failure('parse','format',errors,raw);
+     81|         if(checkpoint.repairCount>=this.repairLimit)throw new ModelFor…
+       |                                                           ^
+     82|         checkpoint.repairCount++;checkpoint.repair={original:raw,error…
+     83|       }
+ ❯ tests/memory-existing-long-flow.test.ts:30:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/8]⎯
+
+ FAIL  tests/memory-existing-long-flow.test.ts > memory create link context and HTTP permissions > restored raw lookup rewrites actual permissions and preserves budget
+ FAIL  tests/memory-existing-long-flow.test.ts > memory create link context and HTTP permissions > restored projected lookup rewrites actual permissions and preserves budget
+Error: memory: existingLongId: ID outside provided create-link permissions
+ ❯ ModelClient.runModel src/model/client.ts:81:59
+     79|         const errors=error instanceof Error?error.message:String(error…
+     80|         failure('parse','format',errors,raw);
+     81|         if(checkpoint.repairCount>=this.repairLimit)throw new ModelFor…
+       |                                                           ^
+     82|         checkpoint.repairCount++;checkpoint.repair={original:raw,error…
+     83|       }
+ ❯ tests/memory-existing-long-flow.test.ts:42:64
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/8]⎯
+
+ FAIL  tests/memory-existing-long-flow.test.ts > memory create link context and HTTP permissions > confirmed claims without rows cannot authorize an existing database ID
+TypeError: Cannot read properties of undefined (reading 'memoryWritePermissions')
+ ❯ tests/memory-existing-long-flow.test.ts:54:46
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/8]⎯
+
+ FAIL  tests/memory-existing-long-flow.test.ts > memory create link context and HTTP permissions > related preview is still not authorized for awaken even after lookup
+TypeError: Cannot read properties of undefined (reading 'longAwakenIds')
+ ❯ tests/memory-existing-long-flow.test.ts:65:69
+     63|   d.responses.splice(0,1,{lookupDetails:QUERY},{schemaVersion:3,shortT…
+     64|   await expect(organizeMemory(d.deps,d.turn)).rejects.toThrow(/longTer…
+     65|   expect(d.envelopes[1].lookupResult.context.memoryWritePermissions.lo…
+       |                                                                     ^
+     66|  });
+     67| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/8]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  8 failed | 1 passed (9)
+   Start at  13:49:47
+   Duration  719ms (transform 56%, import 28%, tests 15%, worker 1%)
+

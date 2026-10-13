@@ -1,5 +1,7 @@
 import {withTurnVisualContext} from '../input-media/context';
-import {isStageModelInput} from '../model/context-types';
+import {isStageModelInput,type StageModelInput} from '../model/context-types';
+import type {MemoryWritePermissions} from './types';
+import {memoryReferenceRows,extendMemoryWritePermissions,snapshotMemoryWritePermissions} from './references';
 import {assertActiveWindow,assertMessageSources} from '../dialogue/active-consistency';
 import {activityContextMessages} from '../dialogue/activity-context';
 import { stageInput } from '../model/context-views';
@@ -16,6 +18,15 @@ import {personalSchoolContext} from '../school/context';
 
 export function currentSelfWebReads(d:Dependencies,turnId:string) {return (d.web?.selfReadSources(turnId)??d.getSelfWebReadSources?.(turnId)??[]).filter(s=>{const f=d.storage.read('turns',turnId)?.replyFreshness;return s.turnId===turnId&&s.phase==='personal_life'&&s.sourceKind==='self_web_read'&&(!f||s.runId===f.personalRunId);});}
 
+function projectMemoryLookupResult(result:unknown,permissions:MemoryWritePermissions):StageModelInput {
+  if(!result||typeof result!=='object'||Array.isArray(result))throw Error('memory reference: invalid lookup context');
+  memoryReferenceRows(result);
+  if(isStageModelInput(result)&&(!result.context||typeof result.context!=='object'||Array.isArray(result.context)||!result.roles||typeof result.roles!=='object'||!['messages','tasks','owners','materials'].every(k=>Array.isArray(result.resources[k as keyof typeof result.resources]))))throw Error('memory reference: invalid projected lookup context');
+  const projected=stageInput('memory',structuredClone(result));
+  projected.context.memoryWritePermissions=snapshotMemoryWritePermissions(permissions);
+  return projected;
+}
+
 export async function organizeMemory(d: Dependencies, turn: TurnRecord): Promise<MemoryResult> {
   const c = turn.frozenResult!;
   assertActiveWindow(d.storage,{requiredMessageIds:[...c.visibleMessageIds,...c.reconsiderMessageIds]});
@@ -30,15 +41,26 @@ export async function organizeMemory(d: Dependencies, turn: TurnRecord): Promise
   base.dialogueWindowVersion=turn.dialogueWindowVersion??1;
   const context = await builder.buildForMemory(base);
   const memories = context.retrieved;
-  const shortIds=memories.filter(m=>m.ownerType==='short').map(m=>m.id);
-  const longIds=memories.filter(m=>m.ownerType==='long'||m.ownerType==='learned').map(m=>m.id);
-  const options=turnPhaseOptions(d.web,turn,'memory','memory',{lookup:async q=>{const result={...await builder.lookupForMemory(q,base),school:personalSchoolContext(d.storage,c.schoolObservations??[],typeof q==='string'?q:q.query)};includeLookupIds(result);return result;}});
-  function includeLookupIds(result:unknown){const rows=isStageModelInput(result)?result.resources.owners:result&&typeof result==='object'&&'retrieved' in result&&Array.isArray(result.retrieved)?result.retrieved:[];for(const row of rows){const ids=row.kind==='short'?shortIds:longIds;if(['short','long','learned'].includes(row.kind)&&!ids.includes(row.id))ids.push(row.id);}}
-  includeLookupIds(options.web?.checkpoint()?.privateLookupResult);
+  const permissions:MemoryWritePermissions={shortUpdateIds:[],longAwakenIds:[],existingLongIds:[]};
+  const includeReferences=(result:unknown)=>extendMemoryWritePermissions(builder.retrieval.store,permissions,memoryReferenceRows(result));
+  includeReferences(stageInput('memory',{retrieved:memories}));
+  const initialPermissions=snapshotMemoryWritePermissions(permissions);
+  const options=turnPhaseOptions(d.web,turn,'memory','memory',{lookup:async q=>{
+    const result={...await builder.lookupForMemory(q,base),school:personalSchoolContext(d.storage,c.schoolObservations??[],typeof q==='string'?q:q.query)};
+    includeReferences(result);return projectMemoryLookupResult(result,permissions);
+  }});
+  const checkpoint=options.web?.checkpoint();
+  if(checkpoint&&checkpoint.lookupPending!==true&&checkpoint.privateLookupResult!==undefined&&checkpoint.privateLookupResult!==null){
+    includeReferences(checkpoint.privateLookupResult);
+    // A confirmed lookup will not call the callback again. Rewrite its active
+    // projection as well as parser authority before ModelClient sends it.
+    options.web!.saveCheckpoint({...checkpoint,privateLookupResult:projectMemoryLookupResult(checkpoint.privateLookupResult,permissions)});
+  }
   const materialIdsByRun=new Map<string,string[]>();
   for(const source of selfWebReadSources){const ids=materialIdsByRun.get(source.runId)??[];ids.push(source.materialId);materialIdsByRun.set(source.runId,ids);}
   const materialsByRun=new Map([...materialIdsByRun].map(([runId,ids])=>[runId,new Map((d.web?.store.materials(runId,ids)??[]).map(material=>[material.id,material]))]));
-  return withTurnVisualContext(d.models,d.incomingMedia,turn.id).runModel(memoryTask(sourceIds,longIds,shortIds,selfWebReadSources.map(s=>s.id)), stageInput('memory',{
+  return withTurnVisualContext(d.models,d.incomingMedia,turn.id).runModel(memoryTask(sourceIds,permissions.longAwakenIds,permissions.shortUpdateIds,selfWebReadSources.map(s=>s.id),permissions.existingLongIds), stageInput('memory',{
+    memoryWritePermissions:initialPermissions,
     dialogueWindowVersion:turn.dialogueWindowVersion??1,currentActivityMessages:turn.dialogueWindowVersion===2?activityContextMessages(d.storage,turn.activityContext,'memory',c.visibleMessageIds):[],at: turn.at, background: d.config.background, experiences: c.experiences, visibleMessages, reconsiderMessages, outgoing,
     school:personalSchoolContext(d.storage,c.schoolObservations??[],query),
     arrangementsAndIntent: { plan: c.nextState.plan, tasks: c.taskChanges, outline: c.narrative && 'outline' in c.narrative ? c.narrative.outline : null },

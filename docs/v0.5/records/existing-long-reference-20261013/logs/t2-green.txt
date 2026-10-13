@@ -1,0 +1,14 @@
+npm notice run koishi-plugin-hdsi-remake@0.5.1 test
+npm notice run vitest run tests/memory-existing-long-flow.test.ts tests/memory-reference-permissions.test.ts tests/context-channels.test.ts tests/prompt-context-views.test.ts tests/prompt-context-transport.test.ts tests/web-memory-sources.test.ts tests/activity-memory-context.test.ts --maxWorkers=1
+
+ RUN  v5.0.3 D:/HDSI-remake/.tmp/existing-long-reference-052
+
+
+ Test Files  7 passed (7)
+      Tests  50 passed (50)
+   Start at  13:51:35
+   Duration  2.57s (import 48%, transform 30%, tests 21%, worker 2%)
+
+    Isolate  7 workers spawned · ~111ms startup each (spawn + environment, per file)
+             at least ~668ms faster with isolate: false — reuses workers across files instead of one per file
+
