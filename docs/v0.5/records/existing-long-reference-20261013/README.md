@@ -1,6 +1,6 @@
 # existingLongId 修复与0.5.2交付
 
-日期：2026-10-13（上海时间）。状态：**产品实现、完整离线验收及独立代码复核通过；正式部署进行中**。
+日期：2026-10-13（上海时间）。状态：**产品实现、完整离线验收及独立代码复核通过；已安全停止、备份并部署0.5.2，等待用户手动重启**。本页随main与v0.5.2最终发布提交交付。
 源码起点：`44cfdbd`；T1 `ac47cc6`、T2 `56d657b`、T3 `de597fe`。原计划、Astra审核和原始证据保留原基线。
 
 本批独立区分shortUpdateIds、longAwakenIds和existingLongIds；允许基础memory复用已提供short的合法关联preview long，保持普通检索生效门禁和awaken权限。确认lookup恢复同时重建活动checkpoint中的累计权限投影；最终apply拒绝discarded规范目标，保存post结果的恢复也不能绕过。
@@ -23,9 +23,21 @@
 
 第一次完整运行1508通过、3项断言失败、21项未运行／跳过：Chrome套件beforeAll受沙箱阻挡，19项没有执行；只读launcher的2项目录联接亦被沙箱拒绝；另1项旧memory-final-review断言仍读取raw.retrieved。原[失败JSON](logs/final-tests.json)保留。旧断言改为检查实际标准投影和三权限集合，原恢复／无二次lookup断言保留；放行受控Chrome及临时联接后[3文件26项复验](logs/full-failure-recheck.txt)通过，随后全量重新通过。未改产品代码来绕过环境限制。
 
-全部产品验证使用合成库、假HTTP和sender，不进行供应商或QQ在线验收。[文档检查](evidence/document-verification.json)验证168份Markdown、1434本地链接及标题锚点，错误0；原计划3份输入字节指纹保持。隔离目录仅复制本机runtime/archive/README.md用于校验既有本地导航，没有复制私有历史数据。
+全部产品验证使用合成库、假HTTP和sender，不进行供应商或QQ在线验收。[文档检查](evidence/document-verification.json)验证168份Markdown、1446本地链接及标题锚点，错误0；原计划3份输入字节指纹保持。隔离目录仅复制本机runtime/archive/README.md用于校验既有本地导航，没有复制私有历史数据。
 
 ## 正式部署与Git
 
-安全停止、进程／端口确认、一致备份、构建校验、只读check、数据状态对照、最终commit/tag/远端SHA及服务状态在完成后补齐。当前不声明已经部署或推送。
+| 项目 | 已验证结果 |
+| --- | --- |
+| 安全停止 | 2026-10-13上海时间14:10完成；[stop退出0](logs/deployment-stop.txt)，14:11确认原主进程／浏览器均退出，5141无监听、stop描述文件不存在 |
+| 一致备份 | 14:13停服备份DB及实际存在的WAL／SHM、旧lib、配置和包文件，逐文件SHA256匹配；另保留用户原计划／审核草稿与原现场lib |
+| 正式部署 | 14:14将已验收构建部署到主目录lib，250文件与f491050验收构建逐一SHA256一致；包和锁文件均为0.5.2 |
+| 只读检查 | [start-hdsi.cmd --check](logs/deployment-check.txt)退出0、无网络；实际插件入口为主目录lib/index.js、67图库可用 |
+| 数据保留 | [部署摘要](evidence/deployment-summary.json)确认DB／WAL／SHM和两份配置文件指纹保持，42张表全部行指纹保持，SQLite quick_check=ok；paused=false、未完成轮0、137条输出均confirmed、11维护及222索引任务均done |
+| Git集成 | main从44cfdbd快进到验收发布f491050；本页及部署证据作为后续最终文档提交，发布main及注解标签v0.5.2，最终SHA以本地／远端main与标签核对为准 |
+| 服务状态 | 已停止，不代为重启或resume；SnowLuma未停止。用户自行运行start-hdsi.cmd启动 |
+
+私有备份位于runtime/archive/batches/20261013-existing-long-reference/2026-10-13T061337745Z-b0ed6e0a；manifest SHA256为5696f274a1507abaa7f00e1d2410b2a77722dd347f9b73474b7603ecae30e3ae。原现场lib另保留于同备份retired-live-lib。原未提交计划／审核先一致复制后保留到Git stash，三个原计划输入的字节指纹仍一致；不覆盖用户材料。
+
+后续回退须先停服，保存当时新现场，再恢复该一致备份及配套旧代码／配置；不能直接覆盖重启后产生的新故事数据。本批没有修改或合并此前的潜在重复记忆，真实供应商质量及长期在线效果未在离线验收中证明。
 

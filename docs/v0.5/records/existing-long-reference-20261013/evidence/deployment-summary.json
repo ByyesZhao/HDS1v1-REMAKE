@@ -1,0 +1,67 @@
+{
+  "checkedAt": "2026-10-13T06:16:16.597Z",
+  "version": "0.5.2",
+  "acceptedCommit": "f491050cbdf79cc77c601578d4718d31ef93c591",
+  "backup": {
+    "relativePath": "runtime/archive/batches/20261013-existing-long-reference/2026-10-13T061337745Z-b0ed6e0a",
+    "manifestSha256": "5696f274a1507abaa7f00e1d2410b2a77722dd347f9b73474b7603ecae30e3ae",
+    "verified": true
+  },
+  "safeStop": {
+    "exitCode": 0,
+    "originalProcessesExited": true,
+    "port5141Listeners": 0,
+    "stopDescriptorPresent": false
+  },
+  "deployedLib": {
+    "files": 250,
+    "allAcceptedHashesMatch": true
+  },
+  "readonlyCheck": {
+    "exitCode": 0,
+    "networkRequests": 0
+  },
+  "preserved": {
+    "fileHashesUnchanged": true,
+    "allTableRowsUnchanged": true,
+    "state": {
+      "paused": false,
+      "lastFailure": null,
+      "maintenancePause": null,
+      "unfinished": 0,
+      "outbox": [
+        {
+          "status": "confirmed",
+          "n": 137
+        }
+      ],
+      "maintenance": [
+        {
+          "status": "done",
+          "n": 11
+        }
+      ],
+      "index": [
+        {
+          "status": "done",
+          "n": 222
+        }
+      ]
+    },
+    "checkedTableCount": 42
+  },
+  "integrity": [
+    {
+      "quick_check": "ok"
+    }
+  ],
+  "versions": {
+    "package.json": "0.5.2",
+    "package-lock.json": "0.5.2",
+    "runtime/package.json": "0.5.2",
+    "runtime/package-lock.json": "0.5.2"
+  },
+  "serviceRestarted": false,
+  "resumeExecuted": false,
+  "historicalMemoriesMerged": false
+}
