@@ -176,7 +176,20 @@ export function environmentTask(kind: 'world' | 'school', old: EnvironmentEvent[
 }
 
 export function consolidationTask(snapshot:MemoryCandidate[],selectedIds:string[],kind:'consolidation'|'audit'='consolidation',evaluationAt?:string):ModelTask<MaintenanceUnit[]> {
-  const unit=z.object({unitKey:text.min(1),action:z.enum(['refine','merge','merge_short','discard','promote','retain','review_detail','review_learned']),readOwners:z.array(text).min(1),ids:z.array(text).min(1),sourceIds:z.array(text),canonicalId:text.optional(),canonicalShortId:text.optional(),targetId:text.optional(),decision:z.enum(['retain','report_conflict','suggest_revision','suggest_withdrawal']).optional(),content:text.optional(),eventSummary:text.optional(),feelingSummary:text.optional(),learnedKind:z.enum(['durable_experience','stable_understanding']).optional(),alwaysInclude:z.boolean().optional(),reason:text.optional()});
+  const base=z.object({unitKey:text.min(1),readOwners:z.array(text).min(1),ids:z.array(text).min(1),sourceIds:z.array(text),canonicalId:text.optional(),canonicalShortId:text.optional(),targetId:text.optional(),decision:z.enum(['retain','report_conflict','suggest_revision','suggest_withdrawal']).optional(),content:text.optional(),eventSummary:text.optional(),feelingSummary:text.optional(),learnedKind:z.enum(['durable_experience','stable_understanding']).optional(),alwaysInclude:z.boolean().optional(),reason:text.optional()});
+  const body=text.regex(/\S/,'content must contain non-whitespace text');
+  const sourced={sourceIds:z.array(text).min(1)};
+  // Generate the model schema and parse responses from the same action-specific requirements.
+  const unit=z.discriminatedUnion('action',[
+    base.extend({action:z.literal('refine'),...sourced,content:body.describe('必填：精炼后的长期简要正文，可合并事件及感受摘要；不能只给eventSummary/feelingSummary。')}),
+    base.extend({action:z.literal('merge'),...sourced,canonicalId:text.min(1),content:body.describe('必填：同一事件合并后的长期简要正文。')}),
+    base.extend({action:z.literal('merge_short'),...sourced,content:body.describe('必填：合并后的短期详细正文；不是简要摘要。'),eventSummary:body,feelingSummary:text}),
+    base.extend({action:z.literal('promote'),...sourced,content:body.describe('必填：晋升后的常驻经验或稳定认识正文。'),learnedKind:z.enum(['durable_experience','stable_understanding'])}),
+    base.extend({action:z.literal('retain')}),
+    base.extend({action:z.literal('discard')}),
+    base.extend({action:z.literal('review_detail'),targetId:text.min(1),decision:z.enum(['retain','report_conflict'])}),
+    base.extend({action:z.literal('review_learned'),targetId:text.min(1),decision:z.enum(['retain','suggest_revision','suggest_withdrawal'])}),
+  ]);
   const schema=z.object({units:z.array(unit)});
   return {name:'memory_consolidation',prompt:kind==='audit'?prompts.memory_audit:prompts.memory_consolidation,schema:z.toJSONSchema(schema),parse(value:unknown){
     const parsed=schema.parse(value),touched=new Set<string>(),unitKeys=new Set<string>(),covered=new Set<string>();
@@ -199,7 +212,6 @@ export function consolidationTask(snapshot:MemoryCandidate[],selectedIds:string[
       const isolatedOwners=kind==='audit'?u.ids:effectiveReadOwners;
       requireControl(isolatedOwners.every(id=>!touched.has(id)),'ids','duplicate or overlapping unit');isolatedOwners.forEach(id=>touched.add(id));u.ids.forEach(id=>covered.add(id));
       requireControl(u.sourceIds.every(id=>sources.has(id)),'sourceIds','unknown snapshot source');
-      if(['refine','merge','merge_short','promote'].includes(u.action)){requireControl(typeof u.content==='string'&&u.content.trim().length>0,'content','required');requireControl(u.sourceIds.length>0,'sourceIds','required');}
       if(['refine','discard','merge'].includes(u.action))for(const id of u.ids){const row=available.get(id)!;if(row.kind==='short'&&row.linkedLongId)requireControl(u.ids.includes(row.linkedLongId),'ids','linked long must be in the same unit');}
       if(u.action==='discard')requireControl(u.ids.every(id=>available.get(id)!.totalAwakenings===0),'discard','cannot discard awakened memory');
       if(u.action==='merge'){requireControl(!!u.canonicalId&&u.ids.includes(u.canonicalId)&&available.get(u.canonicalId)?.kind==='long','canonicalId','long identity required in merge inputs');requireControl(u.ids.filter(id=>available.get(id)!.kind==='long').length>=2,'ids','merge requires at least two long identities');}

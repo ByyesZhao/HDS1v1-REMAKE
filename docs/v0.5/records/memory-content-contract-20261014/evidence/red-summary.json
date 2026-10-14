@@ -1,0 +1,14 @@
+{
+  "success": false,
+  "files": 1,
+  "passed": 1,
+  "failed": 5,
+  "skipped": 0,
+  "failures": [
+    "advertises mandatory content for refine and accepts its valid historical sources",
+    "advertises mandatory content for merge and accepts its valid historical sources",
+    "advertises mandatory content for merge_short and accepts its valid historical sources",
+    "advertises mandatory content for promote and accepts its valid historical sources",
+    "rejects the observed refine shape with summaries but no content in the advertised schema"
+  ]
+}

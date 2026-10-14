@@ -14,7 +14,7 @@ V0.5整理当前实现：普通最近4个完整对话段、活动完整授权原
 
 V0.5是架构文档版本；当前插件与运行包版本为0.5.3，Git版本标签为v0.5.3。数据库各子系统版本保持原协议，环境异步协议2新库默认启用；旧库须显式升级。正式库已按后续授权备份升级环境规划至2，原数据保留；2026-10-10又按用户要求启用新图识别及Bing搜索，见[配置记录](docs/v0.5/records/feature-enablement-20261010/README.md)。
 
-记忆整合业务ID／资源引用修复见[0.5.3交付记录](docs/v0.5/records/memory-owner-reference-20261014/README.md)。
+记忆整合业务ID／资源引用修复见[0.5.3交付记录](docs/v0.5/records/memory-owner-reference-20261014/README.md)。同版本后续的[正文必填合同修复](docs/v0.5/records/memory-content-contract-20261014/README.md)在main交付，原v0.5.3发布标签保留。
 
 ## 1. 当前状态
 

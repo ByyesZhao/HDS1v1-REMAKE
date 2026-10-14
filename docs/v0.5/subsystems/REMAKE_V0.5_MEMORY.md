@@ -152,6 +152,8 @@
 
 整合／固定审核输入中，resources.owners的id为业务身份，ref及roles引用用于定位正文。模型输出readOwners、ids、canonicalId、canonicalShortId、targetId使用业务id，sourceIds使用合法历史来源。合同仅对readOwners兼容冻结任务快照内可精确对应的ref，归一化为业务id后再校验写集合、重叠、来源及完整覆盖；未知或其他版本引用仍拒绝，不从当前库补权限。
 
+整合输出按action区分合同，模型JSON Schema与响应解析使用同一份结构要求。refine／merge／merge_short／promote必须有非空白content与至少一个历史sourceIds；refine、merge的content为long简要正文，merge_short为short详细合并正文，promote为常驻经验或认识正文。eventSummary／feelingSummary不能替代refine.content。merge_short另要求非空白eventSummary和字符串feelingSummary（允许空感受），merge要求canonicalId，promote要求learnedKind。retain／discard不强制正文；固定审核的targetId、decision及非retain的依据条件仍按审核规则校验。
+
 ## 10. 后台提交与恢复
 
 基础提取属于本轮后处理，失败会保留已发送内容并暂停故事。后台索引／深度整理有一个异步准备槽，计算结果先保存，再逐单元应用。

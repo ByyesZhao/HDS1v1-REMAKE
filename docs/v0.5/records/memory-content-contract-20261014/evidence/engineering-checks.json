@@ -1,0 +1,16 @@
+{
+  "version": "0.5.3",
+  "typecheck": {
+    "exitCode": 0
+  },
+  "build": {
+    "exitCode": 0
+  },
+  "productScope": [
+    "src/model/contracts.ts",
+    "src/model/prompts.ts"
+  ],
+  "formalDataMigration": false,
+  "formatBudgetChanged": false,
+  "modelOrApiConfigurationChanged": false
+}

@@ -1,0 +1,21 @@
+{
+  "checkedAt": "2026-10-14T04:20:17.673Z",
+  "offline": true,
+  "databaseReadOnly": true,
+  "networkRequests": 0,
+  "failureAt": "2026-10-14T03:55:23.210Z",
+  "oldAdvertisedSchemaAccepted": true,
+  "newAdvertisedSchemaAccepted": false,
+  "newIssues": [
+    {
+      "path": [
+        "units",
+        2
+      ],
+      "code": "invalid_union",
+      "message": "Invalid input"
+    }
+  ],
+  "explicitContentExampleAccepted": true,
+  "formalResultApplied": false
+}
