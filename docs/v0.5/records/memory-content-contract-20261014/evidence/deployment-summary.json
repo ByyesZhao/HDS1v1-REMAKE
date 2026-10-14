@@ -1,0 +1,69 @@
+{
+  "checkedAt": "2026-10-14T04:25:16.656Z",
+  "version": "0.5.3",
+  "acceptedCommit": "dcd9d8c5d58aaa7fb355521c375fedcfa03c8842",
+  "backup": {
+    "relativePath": "runtime/archive/batches/20261014-memory-content-contract-053/2026-10-14T042449506Z-3ca0d78a",
+    "manifestSha256": "db41337bbe4b94b2f7a411e6778313b5cc6193df62f2ee61cbdadf6fda7a4804",
+    "verified": true
+  },
+  "safeStop": {
+    "checkedAt": "2026-10-14T04:24:49.4385040Z",
+    "exitCode": 0,
+    "originalProcessesExited": true,
+    "port5141Listeners": 0,
+    "stopDescriptorPresent": false,
+    "remainingProcesses": []
+  },
+  "deployedLib": {
+    "files": 250,
+    "allAcceptedHashesMatch": true
+  },
+  "readonlyCheck": {
+    "exitCode": 0,
+    "networkRequests": 0
+  },
+  "preserved": {
+    "fileHashesUnchanged": true,
+    "allTableRowsUnchanged": true,
+    "state": {
+      "paused": false,
+      "lastFailure": null,
+      "maintenancePause": null,
+      "unfinished": 0,
+      "outbox": [
+        {
+          "status": "confirmed",
+          "n": 153
+        }
+      ],
+      "maintenance": [
+        {
+          "status": "done",
+          "n": 15
+        }
+      ],
+      "index": [
+        {
+          "status": "done",
+          "n": 264
+        }
+      ]
+    },
+    "checkedTableCount": 42
+  },
+  "integrity": [
+    {
+      "quick_check": "ok"
+    }
+  ],
+  "versions": {
+    "package.json": "0.5.3",
+    "package-lock.json": "0.5.3",
+    "runtime/package.json": "0.5.3",
+    "runtime/package-lock.json": "0.5.3"
+  },
+  "serviceRestarted": false,
+  "resumeExecuted": false,
+  "historicalMemoriesMerged": false
+}

@@ -32,3 +32,11 @@
 类型检查与构建通过，6 文件 76 项定向回归通过，见[定向摘要](evidence/targeted-summary.json)、[先失败的回归](evidence/red-summary.json)及[工程检查](evidence/engineering-checks.json)。[真实失败响应检查](evidence/saved-response-schema-check.json)确认原约定不一致已关闭。
 
 [独立产品审查](INDEPENDENT_REVIEW.md)无 P0–P3 发现，1232 组新旧解析变体保持接受结果一致。[全量验收](evidence/full-test-summary.json)：229 文件、1560 项通过，0 失败、2 项既有跳过。正式部署以本目录证据及部署记录为准。离线验收不代替用户重启后的真实运行观察。
+
+## 正式部署
+
+已验收源码 `dcd9d8c`，包版本 0.5.3；原版本标签保留，后续修正在 main 推送。2026-10-14 12:24 安全退出 HDSI，12:25 完成正式部署。原服务及关联浏览器进程退出，5141 端口释放，停止控制文件移除。
+
+[部署证据](evidence/deployment-summary.json)：250 个 lib 文件与验收产物指纹一致；只读启动检查通过，无网络调用；42 张表以及数据库、配置文件指纹保持，quick_check=ok。备份位于 `runtime/archive/batches/20261014-memory-content-contract-053/2026-10-14T042449506Z-3ca0d78a`，清单 SHA256 为 `db41337bbe4b94b2f7a411e6778313b5cc6193df62f2ee61cbdadf6fda7a4804`。
+
+未重启服务或执行 resume，未修改正式任务或记忆。停服时 paused=false，15 个维护任务与264个索引任务全部完成，无未完成轮、失败任务或待确认消息。用户可直接手动运行 start-hdsi.cmd，按原调度继续；本次无需额外重开失败周期。真实模型遵守修订合同的效果须在重启后观察。
