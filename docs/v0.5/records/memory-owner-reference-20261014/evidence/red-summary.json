@@ -1,0 +1,15 @@
+{
+  "success": false,
+  "files": 2,
+  "passed": 39,
+  "failed": 6,
+  "skipped": 0,
+  "failures": [
+    "resumes a persisted failed owner with exhausted format budget and accepts its supplied read refs",
+    "accepts sent snapshot refs and mixed IDs while returning business IDs without mutating the response",
+    "still rejects writes outside normalized readOwners",
+    "detects overlapping units after one uses refs and the other uses business IDs",
+    "does not treat owner refs as write IDs or historical source IDs",
+    "supports refs for fixed-information audit without changing the target identity"
+  ]
+}

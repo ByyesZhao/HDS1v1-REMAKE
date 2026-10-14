@@ -7,8 +7,11 @@ import type { PromptStage,StageInputSnapshot,StageModelInput,OwnerViewPurpose,Mo
 import { isStageModelInput } from './context-types';
 import { ResourcePool } from './resource-pool';
 const unique=(ids:string[])=>[...new Set(ids)];
+export function ownerReference(row:Pick<MemoryCandidate,'ownerType'|'ownerId'|'revision'|'stateVersion'>):string {
+ return 'owner:'+createHash('sha256').update(JSON.stringify([row.ownerType,row.ownerId,row.revision,row.stateVersion])).digest('hex').slice(0,24);
+}
 export function projectOwner(row:MemoryCandidate,purpose:OwnerViewPurpose):ModelOwnerView {
- const ref='owner:'+createHash('sha256').update(JSON.stringify([row.ownerType,row.ownerId,row.revision,row.stateVersion])).digest('hex').slice(0,24);
+ const ref=ownerReference(row);
  const view:ModelOwnerView={ref,id:row.id,kind:row.kind,topics:row.topics,importance:row.importance,happenedAt:row.happenedAt};
  if(row.happenedUntil)view.happenedUntil=row.happenedUntil;
  if(row.kind==='detail'){view.key=row.key;view.value=row.value;view.aliases=row.aliases;view.effectiveAt=row.effectiveAt;if(row.content!==row.value)view.content=row.content;}

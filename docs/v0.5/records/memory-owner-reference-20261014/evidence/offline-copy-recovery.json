@@ -1,0 +1,36 @@
+{
+  "checkedAt": "2026-10-14T02:29:38.391Z",
+  "offline": true,
+  "formalDatabaseWritten": false,
+  "formalFilesUnchanged": true,
+  "networkRequests": 0,
+  "jobId": "f7669e69-96cd-4638-b417-48770a2a3681",
+  "restoredFormatBudget": 2,
+  "sameJobAndRun": true,
+  "frozenInputPreserved": true,
+  "modelResponsesReplayed": 1,
+  "status": "done",
+  "retryCycle": 2,
+  "executionAttemptCount": 1,
+  "failureCount": 0,
+  "appliedUnits": 10,
+  "staleUnits": 0,
+  "outcomes": [
+    "applied",
+    "applied",
+    "applied",
+    "applied",
+    "applied",
+    "applied",
+    "applied",
+    "applied",
+    "applied",
+    "applied"
+  ],
+  "paused": false,
+  "integrity": [
+    {
+      "quick_check": "ok"
+    }
+  ]
+}

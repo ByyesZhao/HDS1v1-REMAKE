@@ -2,7 +2,7 @@ import {afterEach,expect,it,vi} from 'vitest';
 import {mkdtempSync,rmSync} from 'node:fs';
 import {join,resolve,dirname} from 'node:path';
 import {tmpdir} from 'node:os';
-import {setup,narrative,silent,emptyMemory,ScriptedModels} from './helpers';
+import {setup,narrative,silent,emptyMemory,ScriptedModels,NOW} from './helpers';
 import {MemoryIdle} from '../src/memory/idle';
 import {Storage} from '../src/storage';
 import {EnvironmentStore} from '../src/environment/store';
@@ -19,6 +19,8 @@ import {EnvironmentPreparation} from '../src/environment/preparation';
 import {SerialHost} from '../src/host/runtime';
 import {HdsiApp} from '../src/app';
 import type {MaintenanceJob} from '../src/memory/types';
+import {stageInput} from '../src/model/context-views';
+import type {StageModelInput} from '../src/model/context-types';
 const all:Array<{host:SerialHost;storage:Storage}>=[],directories:string[]=[];
 afterEach(async()=>{for(const d of all.splice(0)){await d.host.stop().catch(()=>{});d.storage.close();}vi.restoreAllMocks();vi.useRealTimers();for(const path of directories.splice(0)){if(dirname(resolve(path))!==resolve(tmpdir()))throw Error('unsafe test cleanup');rmSync(path,{recursive:true,force:true});}});
 function disk(){const dir=mkdtempSync(join(tmpdir(),'hdsi-m2-'));directories.push(dir);return join(dir,'test.sqlite');}
@@ -76,6 +78,23 @@ it('manual_resume_opens_only_failed_owner_cycle',async()=>{
  // Prevent immediate model dispatch after resume so the reset can be observed.
  d.storage.set('runtime',{...d.storage.runtime(),openBatch:{id:'hold',readyAt:'2027-01-01T00:00:00Z'}});
  await d.host.resume();expect(job(d)).toMatchObject({status:'pending',retryCycle:2,executionAttemptCount:0,failureCount:0,failedAt:null});expect(job(d,'unrelated')).toMatchObject({retryCycle:4,failureCount:3});expect(d.storage.runtime()).toMatchObject({paused:false,maintenancePause:null,lastFailure:null});
+});
+it('resumes a persisted failed owner with exhausted format budget and accepts its supplied read refs',async()=>{
+ const path=disk(),d=create(undefined,path),old=seed(d,'job',{status:'failed',startedAt:NOW,retryCycle:1,executionAttemptCount:3,failureCount:3,failedAt:NOW});
+ const ref=d.web.store.openStage('maintenance','job','consolidation','memory_consolidation');
+ const input=stageInput('memory_consolidation',{snapshot:old.snapshot,selectedIds:['s'],cutoff:NOW});
+ d.web.store.saveCheckpoint(ref.runId,{formatVersion:2,input,repairCount:2,lookupUsed:false,pendingOperationId:null,toolResults:[],repair:{original:{units:[]},errors:'readOwners: unknown snapshot owner'}});
+ d.storage.set('runtime',{...d.storage.runtime(),paused:true,maintenancePause:{jobId:'job',retryCycle:1,task:'memory_consolidation',at:NOW,safeSummary:'记忆整合重试耗尽，程序已暂停',notification:'sent'}});
+ await d.host.stop();d.storage.close();all.splice(all.indexOf(d),1);
+ const e=create({complete:async request=>{
+  const resources=(request.input as StageModelInput).resources;
+  return {units:[{...good.units[0],readOwners:[resources.owners[0].ref]}]};
+ }},path);
+ await e.host.resume();await settled(e);await e.host.wake();
+ expect(job(e)).toMatchObject({status:'done',retryCycle:2,executionAttemptCount:1,failureCount:0,appliedUnitKeys:['keep']});
+ expect(e.storage.runtime()).toMatchObject({paused:false,maintenancePause:null});
+ expect(e.store.owner({ownerType:'short',ownerId:'s'})!.consolidatedRevision).toBe(1);
+ expect(e.web.store.snapshot(ref.runId).checkpoint).toBeNull();expect(e.sender.errors).toHaveLength(0);
 });
 it('archive_failure_after_prepare_preserves_ready_result_and_retries_without_model',async()=>{
  let calls=0;const d=create({complete:async()=>{calls++;return good;}});seed(d);

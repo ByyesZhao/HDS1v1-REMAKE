@@ -1,0 +1,230 @@
+{
+  "capturedAt": "2026-10-14T02:14:49.158Z",
+  "integrity": [
+    {
+      "quick_check": "ok"
+    }
+  ],
+  "runtime": {
+    "paused": true,
+    "lastError": "记忆整合重试耗尽，程序已暂停",
+    "lastFailure": {
+      "kind": "error",
+      "task": "memory_consolidation",
+      "stage": "maintenance",
+      "jobId": "f7669e69-96cd-4638-b417-48770a2a3681",
+      "retryCycle": 1,
+      "at": "2026-10-14T02:01:39.186Z",
+      "safeSummary": "记忆整合重试耗尽，程序已暂停"
+    },
+    "maintenancePause": {
+      "jobId": "f7669e69-96cd-4638-b417-48770a2a3681",
+      "retryCycle": 1,
+      "task": "memory_consolidation",
+      "at": "2026-10-14T02:01:39.186Z",
+      "safeSummary": "记忆整合重试耗尽，程序已暂停",
+      "notification": "sent"
+    }
+  },
+  "jobs": [
+    {
+      "id": "f7669e69-96cd-4638-b417-48770a2a3681",
+      "createdAt": "2026-10-14T01:43:23.768Z",
+      "startedAt": "2026-10-14T01:43:23.768Z",
+      "status": "failed",
+      "executionAttemptCount": 3,
+      "failureCount": 3,
+      "retryCycle": 1,
+      "failedAt": "2026-10-14T02:01:39.186Z",
+      "lastError": "记忆整合重试耗尽，程序已暂停",
+      "retryAt": null,
+      "appliedUnitKeys": [],
+      "staleUnitKeys": [],
+      "terminalNotices": [
+        {
+          "retryCycle": 1,
+          "attemptedAt": "2026-10-14T02:01:39.188Z",
+          "status": "sent"
+        }
+      ],
+      "selectedCount": 20,
+      "responses": [
+        {
+          "at": "2026-10-14T01:45:06.400Z",
+          "repairCount": 0,
+          "unitCount": 10,
+          "resourceCount": 21,
+          "snapshotCount": 21,
+          "readCount": 21,
+          "readBusinessIds": 0,
+          "readKnownRefs": 21,
+          "readUnknown": 0,
+          "writeCount": 21,
+          "writeBusinessIds": 21,
+          "writeKnownRefs": 0,
+          "originalReplay": {
+            "ok": false,
+            "error": "readOwners: unknown snapshot owner"
+          },
+          "readRefsMappedReplay": {
+            "ok": true,
+            "unitCount": 10
+          },
+          "repairFeedback": null
+        },
+        {
+          "at": "2026-10-14T01:46:35.599Z",
+          "repairCount": 1,
+          "unitCount": 10,
+          "resourceCount": 21,
+          "snapshotCount": 21,
+          "readCount": 20,
+          "readBusinessIds": 0,
+          "readKnownRefs": 20,
+          "readUnknown": 0,
+          "writeCount": 20,
+          "writeBusinessIds": 20,
+          "writeKnownRefs": 0,
+          "originalReplay": {
+            "ok": false,
+            "error": "readOwners: unknown snapshot owner"
+          },
+          "readRefsMappedReplay": {
+            "ok": true,
+            "unitCount": 10
+          },
+          "repairFeedback": "readOwners: unknown snapshot owner"
+        },
+        {
+          "at": "2026-10-14T01:49:07.992Z",
+          "repairCount": 2,
+          "unitCount": 10,
+          "resourceCount": 21,
+          "snapshotCount": 21,
+          "readCount": 21,
+          "readBusinessIds": 0,
+          "readKnownRefs": 21,
+          "readUnknown": 0,
+          "writeCount": 21,
+          "writeBusinessIds": 21,
+          "writeKnownRefs": 0,
+          "originalReplay": {
+            "ok": false,
+            "error": "readOwners: unknown snapshot owner"
+          },
+          "readRefsMappedReplay": {
+            "ok": true,
+            "unitCount": 10
+          },
+          "repairFeedback": "readOwners: unknown snapshot owner"
+        },
+        {
+          "at": "2026-10-14T01:55:18.496Z",
+          "repairCount": 2,
+          "unitCount": 10,
+          "resourceCount": 21,
+          "snapshotCount": 21,
+          "readCount": 20,
+          "readBusinessIds": 0,
+          "readKnownRefs": 20,
+          "readUnknown": 0,
+          "writeCount": 20,
+          "writeBusinessIds": 20,
+          "writeKnownRefs": 0,
+          "originalReplay": {
+            "ok": false,
+            "error": "readOwners: unknown snapshot owner"
+          },
+          "readRefsMappedReplay": {
+            "ok": true,
+            "unitCount": 10
+          },
+          "repairFeedback": "readOwners: unknown snapshot owner"
+        },
+        {
+          "at": "2026-10-14T02:01:39.184Z",
+          "repairCount": 2,
+          "unitCount": 10,
+          "resourceCount": 21,
+          "snapshotCount": 21,
+          "readCount": 20,
+          "readBusinessIds": 0,
+          "readKnownRefs": 20,
+          "readUnknown": 0,
+          "writeCount": 20,
+          "writeBusinessIds": 20,
+          "writeKnownRefs": 0,
+          "originalReplay": {
+            "ok": false,
+            "error": "readOwners: unknown snapshot owner"
+          },
+          "readRefsMappedReplay": {
+            "ok": true,
+            "unitCount": 10
+          },
+          "repairFeedback": "readOwners: unknown snapshot owner"
+        }
+      ],
+      "checkpoints": []
+    },
+    {
+      "id": "89b2fce5-3f31-4019-bf36-b03e47485fbb",
+      "createdAt": "2026-10-14T01:49:08.010Z",
+      "startedAt": "2026-10-14T01:49:08.010Z",
+      "status": "done",
+      "executionAttemptCount": 1,
+      "failureCount": 0,
+      "retryCycle": 1,
+      "failedAt": null,
+      "lastError": null,
+      "retryAt": null,
+      "appliedUnitKeys": [
+        "unit-09660332-short0",
+        "unit-09660332-short1",
+        "unit-ce8e3fef-short0",
+        "unit-ce8e3fef-short1",
+        "unit-49ea36f4-short0",
+        "unit-49ea36f4-short1"
+      ],
+      "staleUnitKeys": [],
+      "terminalNotices": null,
+      "selectedCount": 12,
+      "responses": [
+        {
+          "at": "2026-10-14T01:49:40.821Z",
+          "repairCount": 0,
+          "unitCount": 6,
+          "resourceCount": 12,
+          "snapshotCount": 0,
+          "readCount": 12,
+          "readBusinessIds": 0,
+          "readKnownRefs": 12,
+          "readUnknown": 0,
+          "writeCount": 12,
+          "writeBusinessIds": 12,
+          "writeKnownRefs": 0,
+          "originalReplay": null,
+          "readRefsMappedReplay": null,
+          "repairFeedback": null
+        }
+      ],
+      "checkpoints": [
+        {
+          "at": "2026-10-14T01:51:55.916Z",
+          "reason": "completed",
+          "repairCount": 1
+        }
+      ]
+    }
+  ],
+  "dirtyStatuses": {
+    "done": 164,
+    "reserved": 20,
+    "pending": 1
+  },
+  "indexStatuses": {
+    "done": 256
+  },
+  "indexErrorCount": 0,
+  "unfinishedTurns": 0
+}

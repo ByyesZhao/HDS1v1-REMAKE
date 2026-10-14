@@ -1,0 +1,56 @@
+{
+  "checkedAt": "2026-10-14T02:23:33.805Z",
+  "source": "TypeScript source via tsx/cjs",
+  "offline": true,
+  "databaseReadOnly": true,
+  "jobId": "f7669e69-96cd-4638-b417-48770a2a3681",
+  "snapshotCount": 21,
+  "selectedCount": 20,
+  "responses": [
+    {
+      "at": "2026-10-14T01:45:06.400Z",
+      "repairCount": 0,
+      "readRefs": 21,
+      "readCount": 21,
+      "passed": true,
+      "units": 10,
+      "normalizedIdsOnly": true
+    },
+    {
+      "at": "2026-10-14T01:46:35.599Z",
+      "repairCount": 1,
+      "readRefs": 20,
+      "readCount": 20,
+      "passed": true,
+      "units": 10,
+      "normalizedIdsOnly": true
+    },
+    {
+      "at": "2026-10-14T01:49:07.992Z",
+      "repairCount": 2,
+      "readRefs": 21,
+      "readCount": 21,
+      "passed": true,
+      "units": 10,
+      "normalizedIdsOnly": true
+    },
+    {
+      "at": "2026-10-14T01:55:18.496Z",
+      "repairCount": 2,
+      "readRefs": 20,
+      "readCount": 20,
+      "passed": true,
+      "units": 10,
+      "normalizedIdsOnly": true
+    },
+    {
+      "at": "2026-10-14T02:01:39.184Z",
+      "repairCount": 2,
+      "readRefs": 20,
+      "readCount": 20,
+      "passed": true,
+      "units": 10,
+      "normalizedIdsOnly": true
+    }
+  ]
+}

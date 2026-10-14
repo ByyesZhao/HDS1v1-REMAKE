@@ -1,6 +1,6 @@
 {
   "name": "koishi-plugin-hdsi-remake",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "private": true,
   "description": "Single-character QQ life simulation for Koishi",
   "main": "lib/index.js",

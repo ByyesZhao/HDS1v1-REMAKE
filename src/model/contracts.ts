@@ -6,6 +6,7 @@ import { milliseconds } from '../time';
 import type { MemoryCandidate, MaintenanceUnit, OwnerVersion } from '../memory/types';
 import {summaryRepairPair} from '../memory/summary-repair';
 import {promotionEligible} from '../memory/capacity';
+import {ownerReference} from './context-views';
 
 const text = z.string();
 const time = z.iso.datetime({ offset: true });
@@ -180,10 +181,14 @@ export function consolidationTask(snapshot:MemoryCandidate[],selectedIds:string[
   return {name:'memory_consolidation',prompt:kind==='audit'?prompts.memory_audit:prompts.memory_consolidation,schema:z.toJSONSchema(schema),parse(value:unknown){
     const parsed=schema.parse(value),touched=new Set<string>(),unitKeys=new Set<string>(),covered=new Set<string>();
     const available=new Map(snapshot.map(row=>[row.id,row])),sources=new Set(snapshot.flatMap(row=>row.sourceIds));
+    const referenceIds=new Map(snapshot.map(row=>[ownerReference(row),row.id]));
     const repairLongs=snapshot.filter(r=>selectedIds.includes(r.id)||!!r.linkedLongId&&selectedIds.includes(r.linkedLongId)).filter(r=>summaryRepairPair(r,r.linkedLongId?available.get(r.linkedLongId)??null:null)).map(r=>r.linkedLongId!);
     const units=parsed.units.map(u=>{
       requireControl(!unitKeys.has(u.unitKey),'unitKey','duplicate unit');unitKeys.add(u.unitKey);
-      requireControl(u.readOwners.every(id=>available.has(id)),'readOwners','unknown snapshot owner');
+      // Only aliases of this frozen snapshot are accepted; all checks below use business IDs.
+      u.readOwners=u.readOwners.map(id=>available.has(id)?id:referenceIds.get(id)??id);
+      const unknown=u.readOwners.find(id=>!available.has(id));
+      requireControl(unknown===undefined,'readOwners',`unknown snapshot owner ${JSON.stringify(unknown)}; use resources.owners[].id for readOwners; roles owner refs only locate the supplied owner, never guess an ID`);
       requireControl(u.ids.every(id=>u.readOwners.includes(id)),'ids','writes outside readOwners');
       requireControl(new Set(u.ids).size===u.ids.length,'ids','duplicate identities');
       if(kind==='consolidation'&&u.ids.some(id=>repairLongs.includes(id)||repairLongs.includes(available.get(id)?.linkedLongId??'')))requireControl(['refine','merge','merge_short'].includes(u.action)&&repairLongs.filter(id=>u.ids.includes(id)||u.ids.some(s=>available.get(s)?.linkedLongId===id)).every(id=>u.action==='merge_short'?u.readOwners.includes(id):u.ids.includes(id)),'summary','missing summary requires a sourced summary repair');

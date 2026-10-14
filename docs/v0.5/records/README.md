@@ -4,6 +4,7 @@
 
 | 记录 | 状态 |
 | --- | --- |
+| [记忆整合对象引用与0.5.3](memory-owner-reference-20261014/README.md) | 合同、提示及失败检查点恢复；验收与部署状态见原记录 |
 | [最新代码与文档核对](document-current-sync-20261014/README.md) | 19cdf58基线；同步普通活动空闲资格、个人输出必填数组、网页checkpoint最终归档时机及最新导航；保留历史证据，最近产品验收1546项通过 |
 | [2026-10-13架构与0.5.2代码核对](document-current-architecture-20261013/README.md) | 7138aad基线；总架构、8份子系统和3份参考核对，整合三类引用权限与恢复规则，架构正文仅保留当前实现；类型检查与79项定向回归通过 |
 | [existingLongId修复与0.5.2交付](existing-long-reference-20261013/README.md) | 三操作权限、确认lookup投影和discarded最终门禁已实现；R1～R3关闭证据及独立代码复核完成，工程验收／正式部署以记录实时状态为准 |

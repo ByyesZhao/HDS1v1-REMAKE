@@ -1,0 +1,36 @@
+{
+  "version": "0.5.3",
+  "versions": {
+    "package.json": "0.5.3",
+    "package-lock.json": "0.5.3",
+    "runtime/package.json": "0.5.3",
+    "runtime/package-lock.json": "0.5.3"
+  },
+  "typecheck": {
+    "exitCode": 0
+  },
+  "build": {
+    "exitCode": 0
+  },
+  "targeted": {
+    "files": 6,
+    "passed": 74,
+    "failed": 0
+  },
+  "sourceReplay": {
+    "responses": 5,
+    "passed": 5,
+    "networkRequests": 0
+  },
+  "independentReview": {
+    "findings": 0,
+    "scope": "product code and regression tests"
+  },
+  "initialSandboxLimitations": {
+    "fullSuiteCompleted": false,
+    "browserLaunch": "Windows sandbox crashpad failure",
+    "directoryJunction": "EPERM in two launcher readonly cases",
+    "resolution": "rerun full suite with normal local permissions and a persistent workspace TEMP"
+  },
+  "offlineOnly": true
+}
