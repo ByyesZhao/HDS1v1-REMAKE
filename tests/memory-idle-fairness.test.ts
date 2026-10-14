@@ -33,9 +33,9 @@ it('empty_night_zero_calls and eligible_batches_not_every_15_minutes',async()=>{
  expect(d.maintenance.startOne(min(15))).toBe(true);expect(d.models.calls[1].input.context.selectedIds).toHaveLength(1);await flush();d.maintenance.applyOneReady(min(15));expect(d.maintenance.startOne(min(15))).toBe(false);expect(d.models.calls).toHaveLength(2);await d.maintenance.stop();
 });
 it('blocked_ready_no_zero_timer and retry_pause_stop_gates',async()=>{
- const d=create();deep(d);const state=d.storage.character();state.scene.activity={description:'洗澡',startsAt:at,expectedEndAt:min(3),phoneAccess:false};d.storage.set('character',state);
+ const d=create();deep(d);d.storage.set('runtime',{...d.storage.runtime(),sharedClock:{activityId:'shared',status:'active',startedAt:at,lastInputAt:null,lastOutputAt:null,lastSilentCompletedAt:null,mode:'shared_offline'}});
  expect(d.maintenance.nextDeadline(min(30))).toBe(days(1));expect(d.maintenance.applyOneReady(min(30))).toBe('none');
- state.scene.activity=null;d.storage.set('character',state);d.storage.set('runtime',{...d.storage.runtime(),paused:true});expect(d.maintenance.applyOneReady(min(30))).toBe('none');expect(d.maintenance.startOne(min(30))).toBe(false);await d.maintenance.stop();expect(d.maintenance.nextDeadline(min(30))).toBeNull();
+ d.storage.set('runtime',{...d.storage.runtime(),sharedClock:null,paused:true});expect(d.maintenance.applyOneReady(min(30))).toBe('none');expect(d.maintenance.startOne(min(30))).toBe(false);await d.maintenance.stop();expect(d.maintenance.nextDeadline(min(30))).toBeNull();
 });
 it('reserved_linked_long_waits_for_retry_without_zero_timer',async()=>{
  const d=create(),l=long(d.store,'reserved-long'),s=d.store.makeOwner({ownerType:'short',ownerId:'new-short'},{content:'新进展',linkedLongId:l.id,sourceIds:['e']},at);

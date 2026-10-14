@@ -6,12 +6,29 @@ import {MemoryCleanup} from '../src/memory/cleanup';
 import {MemoryLifecycle} from '../src/memory/lifecycle';
 import {MemoryIndex} from '../src/memory/index';
 import {MemoryMaintenance} from '../src/memory/maintenance';
-import {defaultMemoryCapacity} from '../src/memory/types';
+import {defaultMemoryCapacity,type MaintenanceJob} from '../src/memory/types';
 import {HdsiApp} from '../src/app';
 import {SerialHost} from '../src/host/runtime';
 const min=(n:number)=>new Date(Date.parse(at)+n*60000).toISOString();
 const hosts:SerialHost[]=[];afterEach(async()=>{for(const h of hosts.splice(0))await h.stop();vi.useRealTimers();});
-function create(){const d=fixture(),idle=new MemoryIdle(d.storage,15,true),cap=new MemoryCapacity(d.store,defaultMemoryCapacity),cleanup=new MemoryCleanup(d.store,cap),life=new MemoryLifecycle(d.store,cap);idle.record('story',at);d.storage.set('runtime',{...d.storage.runtime(),nextEnvironmentAt:days(1),nextMaintenanceAt:days(1)});let host:SerialHost;const index=new MemoryIndex(d.store,{model:'offline',embed:async()=>[1,0]},{clock:d.clock});const maintenance=new MemoryMaintenance(d.store,life,index,d.models,{clock:d.clock,idle,onReady:()=>void host.wake()});const dependencies={...d,memoryStore:d.store,memoryCapacity:cap,memoryIdle:idle,memoryCleanup:cleanup,memoryLifecycle:life,maintenance};host=new SerialHost(new HdsiApp(dependencies),{timers:false});hosts.push(host);return {...dependencies,host};}
+function create(timers=false){const d=fixture(),idle=new MemoryIdle(d.storage,15,true),cap=new MemoryCapacity(d.store,defaultMemoryCapacity),cleanup=new MemoryCleanup(d.store,cap),life=new MemoryLifecycle(d.store,cap);idle.record('story',at);d.storage.set('runtime',{...d.storage.runtime(),nextEnvironmentAt:days(1),nextMaintenanceAt:days(1)});let host:SerialHost;const index=new MemoryIndex(d.store,{model:'offline',embed:async()=>[1,0]},{clock:d.clock});const maintenance=new MemoryMaintenance(d.store,life,index,d.models,{clock:d.clock,idle,onReady:()=>void host.wake()});const dependencies={...d,memoryStore:d.store,memoryCapacity:cap,memoryIdle:idle,memoryCleanup:cleanup,memoryLifecycle:life,maintenance};host=new SerialHost(new HdsiApp(dependencies),{timers});hosts.push(host);return {...dependencies,host};}
+
+it('host timer drains 33 dirty owners after 15 quiet minutes during an ongoing ordinary activity',async()=>{
+ vi.useFakeTimers();const d=create(true);
+ const activity={description:'角色独自整理材料',startsAt:at,expectedEndAt:null,phoneAccess:false};
+ d.storage.set('character',{...d.storage.character(),scene:{...d.storage.character().scene,activity}});
+ for(let i=0;i<33;i++){const row=long(d.store,`dirty-${String(i).padStart(2,'0')}`);d.store.queueDirty(row,'event',at);}
+ d.models.outputs.memory_consolidation=(input:any)=>({units:input.selectedIds.map((id:string)=>({unitKey:id,action:'retain',ids:[id],readOwners:[id],sourceIds:[]}))});
+ await d.host.start();expect(d.models.calls).toHaveLength(0);
+ d.clock.advance(14*60000);await vi.advanceTimersByTimeAsync(14*60000);expect(d.models.calls).toHaveLength(0);
+ d.clock.advance(60000);await vi.advanceTimersByTimeAsync(60000);
+ await vi.waitFor(()=>expect(d.store.dirtyOwners().filter(r=>r.status==='pending'||r.status==='reserved')).toHaveLength(0));
+ expect(d.models.calls.map(c=>c.name)).toEqual(['memory_consolidation','memory_consolidation']);
+ expect(d.models.calls.map(c=>c.input.context.selectedIds.length)).toEqual([20,13]);
+ expect(d.store.jobs<MaintenanceJob>('memory_maintenance_jobs').map(j=>j.status)).toEqual(['done','done']);
+ expect(d.storage.character().scene.activity).toEqual(activity);
+ expect(d.storage.all('turns')).toHaveLength(0);
+});
 it('maintenance_errors_not_front_failure',async()=>{const d=create(),r=long(d.store,'failed-backend');d.store.queueDirty(r,'event',at);d.models.runModel=async()=>{throw Error('backend failed');};d.clock.time=min(15);await d.host.start();await d.maintenance.stop();expect(d.maintenance.status().lastError).toBe('记忆整合执行失败，等待重试');expect(d.storage.runtime().lastFailure??null).toBeNull();expect(d.storage.runtime().paused).toBe(false);});
 it('inflight_backend_does_not_block_input_story',async()=>{
  const d=create();const r=long(d.store,'old');d.store.queueDirty(r,'event',at);let resolve!:(v:any)=>void;d.models.outputs.memory_consolidation=()=>new Promise(r=>resolve=r);

@@ -20,14 +20,16 @@ export class MemoryIdle {
     let reason:IdleEligibility['reason']='ready';
     if(runtime.paused)reason='paused';else if(this.storage.unfinishedTurn())reason='unfinished';else if(runtime.openBatch)reason='batch';
     else if(runtime.sharedClock?.status==='active'||state?.scene.mode!=='chat'&&!!state?.scene.shared)reason='shared_activity';
-    else if(state?.scene.activity&&milliseconds(state.scene.activity.startsAt)<=milliseconds(now)||state&&isSleeping(state,now)&&!this.duringSleep)reason='activity';
+    // Ordinary simulated life does not mean the foreground executor is busy.
+    // Shared activity and in-progress work are guarded above; sleep is configurable.
+    else if(state&&isSleeping(state,now)&&!this.duringSleep)reason='activity';
     else if(readyAt&&milliseconds(readyAt)>milliseconds(now))reason='waiting';
     return {allowed:reason==='ready',readyAt,reason};
   }
   nextDeadline(now:string):string|null {
     const e=this.eligibility(now);if(e.reason==='waiting')return e.readyAt;
     if(e.reason==='activity'){
-      const state=this.storage.character();const end=state.scene.activity?.expectedEndAt??(!this.duringSleep&&isSleeping(state,now)?state.sleep?.wakeAt:null);
+      const state=this.storage.character();const end=!this.duringSleep&&isSleeping(state,now)?state.sleep?.wakeAt:null;
       return end&&milliseconds(end)>milliseconds(now)?end:null;
     }return null;
   }
