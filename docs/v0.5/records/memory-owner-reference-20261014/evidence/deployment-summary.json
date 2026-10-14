@@ -1,0 +1,80 @@
+{
+  "checkedAt": "2026-10-14T02:33:46.076Z",
+  "version": "0.5.3",
+  "acceptedCommit": "53a03fcd2108096de4eb102dd8d8b376fb90a0fa",
+  "backup": {
+    "relativePath": "runtime/archive/batches/20261014-memory-owner-reference-053/2026-10-14T023311152Z-6e87e675",
+    "manifestSha256": "505841b485b472187200facdfb9abe5413c4ab42c4c63f36c8520e2074efb98e",
+    "verified": true
+  },
+  "safeStop": {
+    "checkedAt": "2026-10-14T02:27:52.5703928Z",
+    "exitCode": 0,
+    "originalProcessesExited": true,
+    "port5141Listeners": 0,
+    "stopDescriptorPresent": false,
+    "remainingProcesses": []
+  },
+  "deployedLib": {
+    "files": 250,
+    "allAcceptedHashesMatch": true
+  },
+  "readonlyCheck": {
+    "exitCode": 0,
+    "networkRequests": 0
+  },
+  "preserved": {
+    "fileHashesUnchanged": true,
+    "allTableRowsUnchanged": true,
+    "state": {
+      "paused": true,
+      "lastFailure": {
+        "kind": "error",
+        "stage": "maintenance",
+        "task": "memory_consolidation"
+      },
+      "maintenancePause": {
+        "jobId": "f7669e69-96cd-4638-b417-48770a2a3681",
+        "retryCycle": 1
+      },
+      "unfinished": 0,
+      "outbox": [
+        {
+          "status": "confirmed",
+          "n": 153
+        }
+      ],
+      "maintenance": [
+        {
+          "status": "done",
+          "n": 12
+        },
+        {
+          "status": "failed",
+          "n": 1
+        }
+      ],
+      "index": [
+        {
+          "status": "done",
+          "n": 256
+        }
+      ]
+    },
+    "checkedTableCount": 42
+  },
+  "integrity": [
+    {
+      "quick_check": "ok"
+    }
+  ],
+  "versions": {
+    "package.json": "0.5.3",
+    "package-lock.json": "0.5.3",
+    "runtime/package.json": "0.5.3",
+    "runtime/package-lock.json": "0.5.3"
+  },
+  "serviceRestarted": false,
+  "resumeExecuted": false,
+  "historicalMemoriesMerged": false
+}

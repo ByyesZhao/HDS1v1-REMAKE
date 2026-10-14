@@ -32,3 +32,11 @@ node docs/v0.5/records/memory-owner-reference-20261014/evidence/replay-saved-res
 ```
 
 原失败任务完成后其快照会回收，此时重放需使用本次停服备份；工具不会替换为当前对象。离线通过不等于正式队列已完成，正式服务由用户手动启动；原全局暂停仍需 `hdsi.resume` 恢复。
+
+## 正式部署
+
+源码提交 `53a03fc`，根插件、runtime 与两份锁文件均为 0.5.3。2026-10-14 10:27 安全退出，10:33 完成备份与部署。原服务及关联浏览器进程全部退出，5141 无监听，停止控制文件已移除。
+
+[部署核验](evidence/deployment-summary.json)：250 个 lib 文件与验收构建逐一匹配；只读运行检查通过且无网络请求；42 张表、数据库文件和配置指纹均保持，quick_check=ok。备份位于 `runtime/archive/batches/20261014-memory-owner-reference-053/2026-10-14T023311152Z-6e87e675`，清单 SHA256 为 `505841b485b472187200facdfb9abe5413c4ab42c4c63f36c8520e2074efb98e`。
+
+未启动 HDSI、未执行正式库 resume 或应用历史整合。停止时仍为失败周期 1、20 个预留与 1 个待办；由用户手动运行 start-hdsi.cmd，待机器人就绪后发送 hdsi.resume，为所属失败任务开新周期，保留原快照与检查点继续处理。
