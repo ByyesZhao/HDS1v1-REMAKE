@@ -1,6 +1,6 @@
 # 当前模型调用与网页搜索配置参考
 
-源码基线：`7138aad`（0.5.2），核对日期2026-10-13。类型检查、定向回归及文档核验见[记录](../records/document-current-architecture-20261013/README.md)，返回[版本索引](../README.md)。本批关联权限修复没有增加模型连接或更改模型／强度。
+源码基线：`19cdf58`（0.5.2），核对日期2026-10-14。当前核对与最近工程验收摘要见[记录](../records/document-current-sync-20261014/README.md)，返回[版本索引](../README.md)。普通活动空闲资格和研究进度诊断修正未增加模型连接或更改模型／强度。
 
 默认整合／审核参数为memory.consolidationTimeoutMs=600000、consolidationMaxRetries=2；索引使用backgroundTimeoutMs=120000，重试等待retryDelayMs=300000。600000ms覆盖一次后台准备中的模型、网页续调用和格式修补，续调用不重新计时。首次＋最多2次自动重试约束后台执行周期；默认第三次失败暂停，人工resume只重开所属失败任务周期，同jobId／runId及两次格式修补、网页20／40预算保留。audit使用memory_audit提示／投影，实际任务名及连接仍为memory_consolidation。
 

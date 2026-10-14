@@ -1,0 +1,35 @@
+{
+  "checkedAt": "2026-10-14T02:09:29.417Z",
+  "baseline": "19cdf58b49398d1b4e9e181d44bf4ae809421fb2",
+  "markdownFiles": 170,
+  "linksChecked": 1382,
+  "errors": [],
+  "numberedSectionErrors": [],
+  "originalInputCount": 3,
+  "changedInputs": [],
+  "historicalFiles": 981,
+  "changedHistory": [],
+  "productFiles": 415,
+  "changedProduct": [],
+  "outsideDocumentation": [],
+  "releaseTagCommit": "7138aadf80bd390bf51a24b0cd027327ee365ce2",
+  "tagMismatch": false,
+  "versions": [
+    {
+      "file": "package.json",
+      "version": "0.5.2"
+    },
+    {
+      "file": "package-lock.json",
+      "version": "0.5.2"
+    },
+    {
+      "file": "runtime/package.json",
+      "version": "0.5.2"
+    },
+    {
+      "file": "runtime/package-lock.json",
+      "version": "0.5.2"
+    }
+  ]
+}

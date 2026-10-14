@@ -1,0 +1,22 @@
+[
+  {
+    "commit": "bb23480",
+    "scope": "previous synthetic product acceptance, not rerun for this documentation edit",
+    "testFiles": 227,
+    "passed": 1537,
+    "failed": 0,
+    "skipped": 2,
+    "success": true,
+    "reportSha256": "a74b13ee828ff52ab0ab7bb9e604e04cde16f5184f208d2b29dc49bc74f58d08"
+  },
+  {
+    "commit": "19cdf58",
+    "scope": "previous synthetic product acceptance, not rerun for this documentation edit",
+    "testFiles": 227,
+    "passed": 1546,
+    "failed": 0,
+    "skipped": 2,
+    "success": true,
+    "reportSha256": "696ad63ee2a38b51f850d24a348997375650b0e1c3e7aee2045c020bd5562587"
+  }
+]

@@ -1,5 +1,7 @@
 # HDSI 重制版 V0.5
 
+2026-10-14 [最新代码与文档核对](docs/v0.5/records/document-current-sync-20261014/README.md)：当前产品基线19cdf58、包版本0.5.2。普通生活活动不再阻挡深度记忆整理，前台／共同活动保护和15分钟等待保留；研究进度类型与诊断已明确。最近产品验收227文件1546项通过、2项既有跳过，文档核对与历史批次证据分别记录。
+
 2026-10-13 [existingLongId引用权限修复与0.5.2交付](docs/v0.5/records/existing-long-reference-20261013/README.md)：基础记忆可复用已提供短期的真实关联长期，create与awaken权限分离；确认lookup恢复重建实际发送名单，最终提交拒绝discarded目标。工程验收、正式部署与Git状态以本批记录为准；服务由用户手动重启。
 
 2026-10-13[记忆整合重试与起床边界修复](docs/v0.5/records/memory-retry-waking-20261013/README.md)已实现并完成离线验收：整合／audit 600秒、首次＋最多2次自动重试、耗尽全局暂停，包含错误／checkpoint取证及起床原睡眠输入。223文件1491项通过、0失败、2项既有跳过（总1493项）；typecheck／build／demo通过，插件合同2文件10项通过，双场景smoke各四阶段提交通过；独立复核关闭两项P2。正式部署与Git状态见交付记录；服务启动及人工resume未执行。
