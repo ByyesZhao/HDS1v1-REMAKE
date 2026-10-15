@@ -1,6 +1,6 @@
 # HDSI V0.5：当前文档与审核入口
 
-当前包版本0.5.3，包含[对象引用修复](records/memory-owner-reference-20261014/README.md)和后续[正文必填合同修复](records/memory-content-contract-20261014/README.md)；此前研究进度类型诊断与普通活动空闲资格修正保持。V0.5是文档体系版本，数据库协议各自独立；版本对应见[实现清单](reference/V0.5_IMPLEMENTATION_MAP_20261009.md#3-版本不能混同)。2026-10-14的[文档核对](records/document-current-sync-20261014/README.md)覆盖总架构、8份子系统和3份参考。
+当前包版本0.5.3，包含[接口响应诊断](records/model-response-diagnostics-20261015/README.md)、[对象引用修复](records/memory-owner-reference-20261014/README.md)和后续[正文必填合同修复](records/memory-content-contract-20261014/README.md)；此前研究进度类型诊断与普通活动空闲资格修正保持。V0.5是文档体系版本，数据库协议各自独立；版本对应见[实现清单](reference/V0.5_IMPLEMENTATION_MAP_20261009.md#3-版本不能混同)。2026-10-14的[文档核对](records/document-current-sync-20261014/README.md)覆盖总架构、8份子系统和3份参考。
 
 总架构和子系统只描述当前结构、规则、实现及仍适用的兼容行为。新增能力直接融入所属章节，不在文末累积版本补丁、部署过程或历次测试数字；更新经过、代码基线和验证证据放在records／reviews，原计划保留其编写时含义。
 
@@ -25,6 +25,7 @@
 
 | 材料 | 状态与范围 |
 | --- | --- |
+| [模型接口响应诊断](records/model-response-diagnostics-20261015/README.md) | 分类接口失败阶段，保存安全结构化元数据，通知与status显示原因；旧记录不回填，部署与暂停现场见交付 |
 | [整合正文必填合同](records/memory-content-contract-20261014/README.md) | action区分Schema与解析，明确四种正文动作的content与来源要求；验证、部署与后续main状态见记录 |
 | [记忆整合引用与0.5.3](records/memory-owner-reference-20261014/README.md) | 同冻结快照的readOwners引用归一化，原权限与版本校验保留；验证和部署事实见交付 |
 | [最新代码与文档核对](records/document-current-sync-20261014/README.md) | 19cdf58基线；同步空闲资格、个人输出必填字段、网页检查点归档时机及版本导航；最近工程验收227文件1546项通过、2项既有跳过，原历史材料保留 |

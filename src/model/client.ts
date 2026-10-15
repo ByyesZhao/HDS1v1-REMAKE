@@ -11,6 +11,7 @@ import type { LookupRequest, ModelRunOptions } from '../memory/types';
 import { z } from 'zod';
 import { parseWebTool,webSearchToolSchema,webReadToolSchema } from '../web/content';
 import type { WebMaterial,WebModelCheckpoint,WebSearchResponse } from '../web/types';
+import {requestNetworkCode,requestResponseMetadata,requestDiagnosticMessage,type ModelRequestDiagnostic} from './request-diagnostics';
 
 export interface CompletionRequest { task: ModelTask<unknown>; input: unknown; repair?: { original: unknown; errors: string }; lookupResult?: unknown;tools?:{web:boolean;lookup:boolean};webMaterials?:WebMaterial[];webStatus?:{counters:{successReads:number;failures:number};stopReason:'quota'|null};webResults?:WebSearchResponse[] }
 export interface Transport { complete(request: CompletionRequest, options?: {signal?:AbortSignal}): Promise<unknown> }
@@ -18,7 +19,8 @@ export class ModelFormatError extends Error {}
 export class ModelRequestError extends Error {
   readonly taskName?:string; readonly httpStatus?:number; readonly providerCode?:string;
   readonly kind:'context_limit'|'request';
-  constructor(message:string,info:{taskName?:string;httpStatus?:number;providerCode?:string;kind?:'context_limit'|'request'}={}){super(message);this.name='ModelRequestError';this.taskName=info.taskName;this.httpStatus=info.httpStatus;this.providerCode=info.providerCode;this.kind=info.kind??'request';}
+  readonly diagnostic?:ModelRequestDiagnostic;
+  constructor(message:string,info:{taskName?:string;httpStatus?:number;providerCode?:string;kind?:'context_limit'|'request';diagnostic?:ModelRequestDiagnostic}={}){super(message);this.name='ModelRequestError';this.taskName=info.taskName;this.httpStatus=info.httpStatus;this.providerCode=info.providerCode;this.kind=info.kind??'request';this.diagnostic=info.diagnostic?structuredClone(info.diagnostic):undefined;}
 }
 function contextLimit(code:string|undefined,message:string):boolean {
   return code==='context_length_exceeded'||/\bcontext length (?:is )?exceeded\b/i.test(message)||/\bmaximum context length is \d+ tokens\b/i.test(message);
@@ -43,7 +45,7 @@ export class ModelClient implements ModelRunner {
       for(const id of pending.materialIds)if(!materialPool.has(id))throw Error(`web run ${web!.id}: missing web material ${id}`);
       if(pending.response)hydrate(pending.response);
     }
-    const failure=(stage:string,category:string,error:string,rawResponse?:unknown)=>this.history?.recordFailure({invocationId,responseSequence,runId,taskName:task.name,...(ref?{ownerType:ref.ownerType,ownerId:ref.ownerId,stageKey:ref.stageKey}:{}),...options.executionAttempt,stage,category,error,checkpoint,rawResponse});
+    const failure=(stage:string,category:string,error:string,rawResponse?:unknown,requestDiagnostic?:ModelRequestDiagnostic)=>this.history?.recordFailure({invocationId,responseSequence,runId,taskName:task.name,...(ref?{ownerType:ref.ownerType,ownerId:ref.ownerId,stageKey:ref.stageKey}:{}),...options.executionAttempt,stage,category,error,checkpoint,rawResponse,...(requestDiagnostic?{requestDiagnostic}: {})});
     const save=()=>{options.signal?.throwIfAborted();web?.saveCheckpoint(checkpoint);};
     const lookup = options.lookup === undefined
       ? this.lookupDetails && (async (request: LookupRequest) => this.lookupDetails!(typeof request === 'string' ? request : request.query))
@@ -63,7 +65,7 @@ export class ModelClient implements ModelRunner {
       const quota=!!web&&!!state&&(state.counters.successReads>=web.limits.successReads||state.counters.failures>=web.limits.failures);
       const tools={web:!!web?.available&&!quota,lookup:!!lookup&&!checkpoint.lookupUsed};
       const materials=[...materialPool.values()];
-      let raw:unknown;responseSequence++;try{raw=await this.transport.complete({task:selectedTask,input,repair:checkpoint.repair,lookupResult:checkpoint.privateLookupResult,tools,webMaterials:materials,webResults:checkpoint.toolResults.map(hydrate),webStatus:state?{counters:state.counters,stopReason:quota?'quota':null}:undefined},{signal:options.signal});}catch(error){failure('transport',options.signal?.aborted?'interrupted':error instanceof ModelRequestError?error.kind:'request',error instanceof ModelRequestError?error.message:'model transport failed');throw error;}
+      let raw:unknown;responseSequence++;try{raw=await this.transport.complete({task:selectedTask,input,repair:checkpoint.repair,lookupResult:checkpoint.privateLookupResult,tools,webMaterials:materials,webResults:checkpoint.toolResults.map(hydrate),webStatus:state?{counters:state.counters,stopReason:quota?'quota':null}:undefined},{signal:options.signal});}catch(error){failure('transport',options.signal?.aborted?'interrupted':error instanceof ModelRequestError?error.kind:'request',error instanceof ModelRequestError?error.message:'model transport failed',undefined,error instanceof ModelRequestError?error.diagnostic:undefined);throw error;}
       options.signal?.throwIfAborted();if(materials.length)web!.markProvided(materials.map(m=>m.id));
       let value:any,operation:ReturnType<typeof parseWebTool>;
       try {
@@ -116,23 +118,46 @@ export class ChatCompletionsTransport implements Transport {
     const responseFormat = format === 'prompt' ? undefined : format === 'json_schema'
       ? { type: 'json_schema', json_schema: { name: request.task.name, strict: false, schema } }
       : { type: 'json_object' };
+    const started=performance.now();
     let response:Response;
+    let metadata:Partial<ModelRequestDiagnostic>={};
+    const failure=(phase:ModelRequestDiagnostic['phase'],reason:ModelRequestDiagnostic['reason'],extra:Partial<ModelRequestDiagnostic>={})=>{
+      const diagnostic={...metadata,...extra,phase,reason,elapsedMs:Math.max(0,Math.round(performance.now()-started))};
+      return new ModelRequestError(requestDiagnosticMessage(request.task.name,diagnostic),{taskName:request.task.name,httpStatus:diagnostic.httpStatus,providerCode:diagnostic.providerCode,diagnostic});
+    };
     try {response = await this.fetcher(`${c.baseUrl.replace(/\/$/, '')}/chat/completions`, {
       signal: options.signal, method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${c.apiKey}` },
       body: JSON.stringify({ model: c.model, reasoning_effort: c.reasoningEffort, stream: false, messages, response_format: responseFormat }),
-    });}catch(error){if(options.signal?.aborted)throw error;throw new ModelRequestError(`${request.task.name}: model network request failed`,{taskName:request.task.name});}
+    });}catch(error){if(options.signal?.aborted)throw error;throw failure('request','network_error',{networkCode:requestNetworkCode(error)});}
+    metadata=requestResponseMetadata(response,c.apiKey);
+    let rawBody:string;
+    try{rawBody=await response.text();}catch(error){options.signal?.throwIfAborted();throw failure('body','body_read_failed',{networkCode:requestNetworkCode(error)});}
+    options.signal?.throwIfAborted();
+    metadata.responseBytes=Buffer.byteLength(rawBody,'utf8');
+    let body:any,jsonValid=true;
+    try{body=JSON.parse(rawBody);}catch{jsonValid=false;}
+    const code=jsonValid&&body&&typeof body==='object'&&typeof body.error?.code==='string'&&/^[a-zA-Z0-9_.-]{1,80}$/.test(body.error.code)&&!/^sk-/i.test(body.error.code)&&!(c.apiKey&&body.error.code.includes(c.apiKey))?body.error.code:undefined;
+    const providerMessage=jsonValid&&typeof body?.error?.message==='string'?body.error.message:'';
+    if(code)metadata.providerCode=code;
     if (!response.ok) {
-      let code:string|undefined,message='';
-      try{const body=await response.json() as {error?:{code?:unknown;message?:unknown}};
-        if(typeof body.error?.code==='string'&&/^[a-zA-Z0-9_.-]{1,80}$/.test(body.error.code))code=body.error.code;
-        if(typeof body.error?.message==='string')message=body.error.message;
-      }catch{}
-      const kind=contextLimit(code,message)?'context_limit':'request';
-      throw new ModelRequestError(`${request.task.name}: model HTTP ${response.status} (${kind})`,{taskName:request.task.name,httpStatus:response.status,providerCode:code,kind});
+      const kind=contextLimit(code,providerMessage)?'context_limit':'request';
+      const error=failure('http','http_error');
+      throw new ModelRequestError(`${request.task.name}: model HTTP ${response.status} (${kind}); ${error.message}`,{taskName:request.task.name,httpStatus:response.status,providerCode:code,kind,diagnostic:error.diagnostic});
     }
-    try {const body = await response.json() as { choices: Array<{ message: { content: string | null } }> };
-      const content = body.choices?.[0]?.message?.content;if(typeof content!=='string')throw Error('missing response content');return content;
-    }catch(error){throw new ModelRequestError(`${request.task.name}: invalid response envelope`,{taskName:request.task.name});}
+    if(!rawBody.trim())throw failure('json','empty_body');
+    if(!jsonValid)throw failure('json','invalid_json');
+    if(!body||typeof body!=='object'||Array.isArray(body))throw failure('envelope','invalid_envelope');
+    if(body.error!==undefined&&body.error!==null)throw failure('envelope','provider_error');
+    if(!Array.isArray(body.choices))throw failure('envelope','missing_choices');
+    metadata.choiceCount=body.choices.length;
+    if(!body.choices.length)throw failure('envelope','empty_choices');
+    const choice=body.choices[0],message=choice?.message;
+    if(['stop','length','content_filter','tool_calls','function_call'].includes(choice?.finish_reason))metadata.finishReason=choice.finish_reason;
+    if(!message||typeof message!=='object'||Array.isArray(message))throw failure('envelope','missing_message');
+    if(!Object.hasOwn(message,'content'))throw failure('envelope','missing_content');
+    metadata.contentValueType=message.content===null?'null':Array.isArray(message.content)?'array':typeof message.content;
+    if(typeof message.content!=='string')throw failure('envelope','non_string_content');
+    return message.content;
   }
 }
 const lookupRequestSchema=z.union([z.string(),z.object({query:z.string(),scope:z.enum(['current','archive']),includeDetailHistory:z.boolean()})]);

@@ -2,13 +2,14 @@ import {createHash,randomUUID} from 'node:crypto';
 import type {Storage} from '../storage';
 import type {Clock} from '../types';
 import type {ModelRunRef,WebModelCheckpoint,WebOwnerRef} from '../web/types';
+import type {ModelRequestDiagnostic} from './request-diagnostics';
 export type CheckpointArchiveReason='completed'|'superseded'|'cancelled'|'compacted';
 interface RecordBase {
  id:string;type:'failure'|'checkpoint';runId:string;taskName:string;stageKey?:string;
  ownerType?:ModelRunRef['ownerType'];ownerId?:string;occurredAt:string;
  retryCycle?:number;attemptId?:string;checkpoint?:WebModelCheckpoint;
 }
-export type ModelRunRecord=RecordBase&({type:'failure';invocationId:string;responseSequence:number;stage:string;category:string;error:string;rawResponse?:unknown}|{type:'checkpoint';reason:CheckpointArchiveReason;checkpoint:WebModelCheckpoint});
+export type ModelRunRecord=RecordBase&({type:'failure';invocationId:string;responseSequence:number;stage:string;category:string;error:string;rawResponse?:unknown;requestDiagnostic?:ModelRequestDiagnostic}|{type:'checkpoint';reason:CheckpointArchiveReason;checkpoint:WebModelCheckpoint});
 export type ModelRunFailure=Omit<Extract<ModelRunRecord,{type:'failure'}>,'id'|'occurredAt'|'type'>;
 export class ModelRunHistory {
  constructor(private storage:Pick<Storage,'prepare'>,private clock:Clock){}

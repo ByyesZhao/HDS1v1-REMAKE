@@ -1,0 +1,35 @@
+{
+  "checkedAt": "2026-10-15T01:25:51.090Z",
+  "readOnly": true,
+  "networkRequests": 0,
+  "errors": [
+    {
+      "at": "2026-10-14T10:14:35.271Z",
+      "task": "expression",
+      "cause": "invalid_json_in_unmodified_model_content",
+      "replayError": "Expected ':' after property name in JSON at position 165 (line 1 column 166)"
+    },
+    {
+      "at": "2026-10-14T11:41:10.607Z",
+      "task": "narrative",
+      "cause": "onsite_observation_linked_to_experience_before_instance_start",
+      "instanceStart": "2026-10-14T11:00:00.000Z",
+      "linkedExperienceAt": "2026-10-14T18:21:00+08:00",
+      "laterExperienceAt": "2026-10-14T19:00:00+08:00",
+      "originalReplay": {
+        "passed": false,
+        "error": "onsite observation requires perceptible actual instance experience"
+      },
+      "laterIndexExampleReplay": {
+        "passed": true,
+        "observations": 1
+      }
+    },
+    {
+      "at": "2026-10-14T13:20:18.834Z",
+      "task": "expression",
+      "cause": "invalid_json_in_unmodified_model_content",
+      "replayError": "Expected ':' after property name in JSON at position 106 (line 1 column 107)"
+    }
+  ]
+}

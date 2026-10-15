@@ -1,0 +1,20 @@
+{
+  "checkedAt": "2026-10-15T01:30:15.401Z",
+  "paused": true,
+  "lastError": "narrative: invalid response envelope",
+  "lastFailure": {
+    "kind": "request",
+    "task": "narrative",
+    "stage": "generation",
+    "at": "2026-10-15T01:15:00.378Z",
+    "safeSummary": "生成失败，程序已暂停"
+  },
+  "maintenancePause": null,
+  "unfinished": [
+    {
+      "id": "e49884fe-8fdf-40f5-824f-e7eef5692b16",
+      "at": "2026-10-15T01:00:00.021Z",
+      "outputComplete": 0
+    }
+  ]
+}

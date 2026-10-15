@@ -171,6 +171,8 @@ replyTrace只保存选择ID、集合指纹、代际、输入版本、等待期�
 
 ## 13. 不可变模型错误与checkpoint取证
 
+接口响应失败另附可选requestDiagnostic，区分连接、响应体读取、外层JSON、HTTP状态及choices／message／content结构错误。诊断只保留HTTP状态、耗时、解码响应字节数、MIME、安全请求ID、允许名单网络码、格式受限供应商码和已知结构类型，不保存响应正文或供应商错误message。原有模型内容校验失败的raw/checkpoint取证保持。安全暂停通知与status显示可定位的原因摘要；历史无此字段时不回填或猜测旧错误。调用者取消、格式修补预算、暂停及原轮恢复规则保持。
+
 可写Storage增量创建model_run_records(id TEXT PRIMARY KEY, data TEXT NOT NULL)，不提升既有持久协议版本，不回填无法还原的旧历史。调用失败的逐响应留存需要向ModelClient注入ModelRunHistory；正式插件已注入，素材CLI等独立脚本未统一注入，不能据此宣称所有CLI调用都有这份历史。已接入历史的ModelClient每次调用产生独立诊断invocationId，failure ID由invocationId、响应序号与类别组成；业务runId／stageKey和修补预算仍原样接续。每份无效响应在检查repairLimit之前保存，包含耗尽预算的最后一稿；前台恢复沿同runId再失败也不会覆盖先前记录。维护执行错误另关联jobId、retryCycle与attemptId。
 
 维护执行的不可变failure category明确区分prepare、archive、apply、timeout和interrupted。未知准备／transport异常不保留任意错误字符串，只记通用准备失败；已知安全ModelRequestError／ModelFormatError和本地归档／应用Error.message经认证字段、Bearer／Basic、常见key／token／password／secret、sk-key及URL用户信息脱敏，正文规范化并限2000字符后加短阶段前缀。不存stack、cause、任意对象属性或transport headers。这些细节仅留私有历史；job.lastError、runtime、通知和status继续使用通用安全摘要。成功重试或人工resume不会抹掉历史诊断；原ModelClient无效raw／checkpoint留存仍按既有取证合同，不宣称任意字符串都能自动识别为秘密。传输错误只保存安全分类／摘要，不包含认证头；不记录token用量或计费。
