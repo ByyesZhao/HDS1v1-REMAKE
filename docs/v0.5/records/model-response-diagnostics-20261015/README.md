@@ -37,3 +37,11 @@
 离线测试覆盖各类响应、读取失败、网络原因、HTTP上下文超限、安全元数据、结构化持久记录、暂停通知、成功响应与取消。三个历史错误的回放仅使用只读正式库；模型正文不复制到公开交付材料。
 
 [历史三条错误回放](evidence/prior-three-error-check.json)仅读取正式库，[定向回归](evidence/targeted-summary.json)4文件81项通过，[工程检查](evidence/engineering-checks.json)确认类型与构建通过。[独立产品审查](INDEPENDENT_REVIEW.md)无P0–P3发现，另13项内存探针通过。[全量验收](evidence/full-test-summary.json)：230文件1578项通过，0失败、2项既有跳过。正式部署状态由本目录证据确认。本次不会替用户恢复今天暂停的旧轮；部署后仍由用户手动启动并按需要执行 hdsi.resume。新诊断对下一次请求生效，不能补出旧请求当时丢失的信息。
+
+## 正式部署
+
+验收源码 `2d05c72`，包版本 0.5.3。2026-10-15 09:31安全退出、备份并部署，原服务及关联浏览器进程退出，5141无监听，停止控制文件移除。
+
+[部署证据](evidence/deployment-summary.json)：252个lib文件与验收构建逐一匹配；只读运行检查通过，无网络请求；数据库与配置指纹、42张表内容保持，quick_check=ok。备份为 `runtime/archive/batches/20261015-model-response-diagnostics-053/2026-10-15T013145532Z-d7088292`，清单SHA256为 `82acf5beb0645f2292fc5bc5bdb1479fe82a92adf6b68dbc1105c5d31e5b6e3d`。
+
+正式库仍保留paused=true、今天09:00学校通知未完成轮及其checkpoint，未执行resume、未改写历史错误。用户手动运行start-hdsi.cmd后，再发送hdsi.resume恢复原轮。21个维护任务与346个索引任务均已完成，既有250条发送记录均确认。

@@ -1,0 +1,73 @@
+{
+  "checkedAt": "2026-10-15T01:31:47.423Z",
+  "version": "0.5.3",
+  "acceptedCommit": "2d05c7288ebdf5bc42de61feb5c072d2fdaceb63",
+  "backup": {
+    "relativePath": "runtime/archive/batches/20261015-model-response-diagnostics-053/2026-10-15T013145532Z-d7088292",
+    "manifestSha256": "82acf5beb0645f2292fc5bc5bdb1479fe82a92adf6b68dbc1105c5d31e5b6e3d",
+    "verified": true
+  },
+  "safeStop": {
+    "checkedAt": "2026-10-15T01:31:45.4617371Z",
+    "exitCode": 0,
+    "originalProcessesExited": true,
+    "port5141Listeners": 0,
+    "stopDescriptorPresent": false,
+    "remainingProcesses": []
+  },
+  "deployedLib": {
+    "files": 252,
+    "allAcceptedHashesMatch": true
+  },
+  "readonlyCheck": {
+    "exitCode": 0,
+    "networkRequests": 0
+  },
+  "preserved": {
+    "fileHashesUnchanged": true,
+    "allTableRowsUnchanged": true,
+    "state": {
+      "paused": true,
+      "lastFailure": {
+        "kind": "request",
+        "stage": "generation",
+        "task": "narrative"
+      },
+      "maintenancePause": null,
+      "unfinished": 1,
+      "outbox": [
+        {
+          "status": "confirmed",
+          "n": 250
+        }
+      ],
+      "maintenance": [
+        {
+          "status": "done",
+          "n": 21
+        }
+      ],
+      "index": [
+        {
+          "status": "done",
+          "n": 346
+        }
+      ]
+    },
+    "checkedTableCount": 42
+  },
+  "integrity": [
+    {
+      "quick_check": "ok"
+    }
+  ],
+  "versions": {
+    "package.json": "0.5.3",
+    "package-lock.json": "0.5.3",
+    "runtime/package.json": "0.5.3",
+    "runtime/package-lock.json": "0.5.3"
+  },
+  "serviceRestarted": false,
+  "resumeExecuted": false,
+  "historicalMemoriesMerged": false
+}
